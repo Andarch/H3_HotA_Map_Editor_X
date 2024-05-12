@@ -57,7 +57,7 @@ def parse_general() -> dict:
         "map_size"           : 0,
         "has_hero"           : False,
         "is_two_level"       : False,
-#        "allow_plague"       : True,
+        #"allow_plague"       : True,
         "is_arena"           : False,
         "difficulty"         : 0,
         "allowed_difficulty" : [],
@@ -69,7 +69,7 @@ def parse_general() -> dict:
     if info["map_format"] == MapFormat.HotA:
         info["hota_version"] = io.read_int(4)
 
-        if info["hota_version"] == 6:
+        if info["hota_version"] >= 5:
             info["hota_data_1"]        =      io.read_raw(1)
             info["is_arena"]           = bool(io.read_int(1))
             info["hota_data_2"]        =      io.read_raw(8)

@@ -69,10 +69,15 @@ def main() -> None:
             case ["guards"]:
                 map_data["object_data"] = scripts.generate_guards(map_data["object_data"])
 
-            case ["temp"]:
-                map_data["object_data"] = scripts.temp(map_data["object_data"])
+            case ["swap_layers"]:
+                scripts.swap_layers(map_data['terrain'], map_data['object_data'], map_data['player_specs'],
+                    map_data['general']['is_two_level'], map_data['conditions'])
 
             case ["q"] | ["quit"] | ["exit"]: break
+
+            case ["h"] | ["hlp"] | ['help']:
+                print("\nopen\nsave\nprint\ncount or list\nguards\nswap_layers\nq or quit or exit\nh or hlp or help")
+            
             case _: print("Unrecognized command.")
 
 ################
