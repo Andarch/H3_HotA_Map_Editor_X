@@ -1,16 +1,29 @@
-# h3_map_editor.py
+# Disclaimer
+This is a fork of the original project by Shakajiub (https://github.com/Shakajiub/h3_map_editor) with some enhancements.
+
+## Change log
+	- Added help/h/help command to show available commands and scripts
+	- Added swap_layers script
+	- Added missing value of 255 (Random) to the Town class.
+
+# h3_map_editor_plus.py
 Simple command-line HoMM 3 Map Editor made with pure python. Allows you to open a map, run custom scripts to edit the map, then save it. Useful for mass changes that are tedious to make with the normal editor, or changing things that the normal map editor does not allow you to change, like passing the limits for monster or resource quantities, having Seer's Huts that want you to bring a Cannon, or reward you with the Titan's Lightning Bolt directly into your spellbook. Currently supports HotA version 1.7.1.
 
 
 ## Usage
 
 ```
-./h3_map_editor.py [filename]
+./h3_map_editor_plus.py [filename]
 ```
 
 When launching the editor, you can specify which map to open with the first argument. You can omit the ".h3m" extension and the editor will still find the file. The filepath starts in the directory of the main script.
 
 ### Commands
+
+```
+> help/h/hlp
+```
+Shows you a list of available commands and scripts.
 
 ```
 > open [filename]
@@ -36,6 +49,11 @@ To exit the editor.
 ## Scripts
 
 To actually make changes in the map file, you will need to use custom scripts. All scripts should be implemented in [src/scripts.py](src/scripts.py), which also has a few examples described below. Adding a custom script right now means implementing your functions in the scripts file, then adding a corresponding command to run the script in the main function. You may also use the "temp" script at the top of the file for testing your scripts.
+
+```
+> swap_layers [> swap_layers]
+```
+Swaps the layers in a map, including terrain, objects, and settings such as main towns and win/loss conditions.
 
 ```
 count_objects [> count]
