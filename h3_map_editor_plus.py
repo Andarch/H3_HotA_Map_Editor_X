@@ -76,7 +76,35 @@ def main() -> None:
             case ["q"] | ["quit"] | ["exit"]: break
 
             case ["h"] | ["hlp"] | ['help']:
-                print("\nopen\nsave\nprint\ncount or list\nguards\nswap_layers\nq or quit or exit\nh or hlp or help")
+                print(
+                    "\n"
+                    "*COMMANDS*\n"
+                    "open\n"
+                    "save\n"
+                    "print\n"
+                    "h / hlp / help\n"
+                    "q / quit / exit\n"
+                    "\n"
+                    "*VALID KEYS FOR PRINT*\n"
+                    "general\n"
+                    "player_specs\n"
+                    "conditions\n"
+                    "teams\n"
+                    "start_heroes\n"
+                    "ban_flags\n"
+                    "rumors\n"
+                    "hero_data\n"
+                    "terrain\n"
+                    "object_defs\n"
+                    "object_data\n"
+                    "events\n"
+                    "null_bytes\n"
+                    "\n"
+                    "*SCRIPTS*\n"
+                    "swap_layers\n"
+                    "count / list\n"
+                    "guards\n"
+                )
             
             case _: print("Unrecognized command.")
 
