@@ -8,10 +8,12 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 
 # Usage
 
+## Launch
+
 ```
 ./h3_map_editor_plus.py
 ```
-or
+-or-
 ```
 ./h3_map_editor_plus.py [filename]
 ```
@@ -46,7 +48,7 @@ To exit the editor.
 
 ## Scripts
 
-To actually make changes in the map file, you will need to use custom scripts. All scripts should be implemented in [src/scripts.py](src/scripts.py), which also has a few examples described below. Adding a custom script right now means implementing your functions in the scripts file, then adding a corresponding command to run the script in the main function. You may also use the "temp" script at the top of the file for testing your scripts.
+To actually make changes in the map file, you will need to use custom scripts. All scripts should be implemented in [src/scripts.py](src/scripts.py).
 
 ```
 > swap_layers [> swap_layers]
