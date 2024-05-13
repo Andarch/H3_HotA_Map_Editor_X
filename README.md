@@ -13,10 +13,6 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 ```
 ./h3_map_editor_plus.py
 ```
--or-
-```
-./h3_map_editor_plus.py [filename]
-```
 
 ## Commands
 
@@ -26,19 +22,19 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 Shows you a list of available commands and scripts.
 
 ```
-> open [filename]
+> open
 ```
-Can be used to open a map while the editor is running.
+Can be used to open 1 or 2 maps while the editor is running.
 
 ```
-> save [filename]
+> save
 ```
-To write your changes into a new map file. You can omit the ".h3m" extension here as well, the editor will add it if necessary. If you do not specify the filename, the map will be saved as "output.h3m".
+To write your changes into 1 or 2 new map files. You can omit the ".h3m" extension here as well, the editor will add it if necessary.
 
 ```
 > print/show [key]
 ```
-Shows you the parsed data for a specific key (e.g. "general"). See [h3_map_editor_plus.py](h3_map_editor_plus.py) (map_data) for a list of all the keys.
+Shows you the parsed data for a specific key (e.g. "general"). If you have 2 maps open, you'll be prompted to specify which map you want to print info from. See [h3_map_editor_plus.py](h3_map_editor_plus.py) (map_data) for a list of all the keys.
 
 ```
 > quit/q/exit
