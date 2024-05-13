@@ -5,6 +5,8 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 	- Added help/h/help command to show available commands and scripts
 	- Added swap_layers script
 	- Added missing value of 255 (Random) to the Town class.
+	- Added functionality to load 2 maps and choose which one to edit when launching scripts.
+	- Also can save 2 maps
 
 # Usage
 
