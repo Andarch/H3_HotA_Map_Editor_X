@@ -4,16 +4,21 @@ from random import choice, randint
 
 import data.creatures as cd # Creature details
 import data.objects   as od # Object details
+import json
 
-def print_40(obj_data: dict) -> None:
-    for obj in obj_data:
-        if obj["type"] == 40:
-            print(f"Object: {obj}")
-            print(f"Coordinates: {obj['coords']}\n")
-            
-def delete_40(obj_data: list) -> list:
-    obj_data[:] = [obj for obj in obj_data if obj["type"] != 40]
-    return obj_data
+#################
+## JSON EXPORT ##
+#################
+
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, bytes):
+            return obj.decode('latin-1')
+        return json.JSONEncoder.default(self, obj)
+
+def export_to_json(map_data: dict, filename: str) -> None:
+    with open(filename, 'w') as f:
+        json.dump(map_data, f, cls=CustomEncoder, indent=4)
 
 ###################
 ## TOWN SETTINGS ##
@@ -26,6 +31,7 @@ def town_settings(obj_data: dict) -> dict:
             obj["spell_research"] = True
 
             # Enable all spells
+
             for i in range(len(obj["spells_cant_appear"])):
                 obj["spells_cant_appear"][i] = 0
 
