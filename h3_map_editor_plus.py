@@ -91,6 +91,21 @@ def main() -> None:
                     map_data[map_key]["conditions"]
                 )
 
+            case ["town_settings"]:
+                if map_data["map2"] is not None:
+                    map_key = choose_map()
+                scripts.town_settings(map_data[map_key]["object_data"])
+
+            case ["print_40"]:
+                if map_data["map2"] is not None:
+                    map_key = choose_map()
+                scripts.print_40(map_data[map_key]["object_data"])
+
+            case ["delete_40"]:
+                if map_data["map2"] is not None:
+                    map_key = choose_map()
+                scripts.delete_40(map_data[map_key]["object_data"])
+
             case ["q"] | ["quit"] | ["exit"]: break
 
             case ["h"] | ["hlp"] | ['help']:

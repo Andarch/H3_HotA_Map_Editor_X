@@ -5,6 +5,40 @@ from random import choice, randint
 import data.creatures as cd # Creature details
 import data.objects   as od # Object details
 
+def print_40(obj_data: dict) -> None:
+    for obj in obj_data:
+        if obj["type"] == 40:
+            print(f"Object: {obj}")
+            print(f"Coordinates: {obj['coords']}\n")
+            
+def delete_40(obj_data: list) -> list:
+    obj_data[:] = [obj for obj in obj_data if obj["type"] != 40]
+    return obj_data
+
+###################
+## TOWN SETTINGS ##
+###################
+
+def town_settings(obj_data: dict) -> dict:
+    for obj in obj_data:
+        if obj["type"] == od.ID.Town or obj["type"] == od.ID.Random_Town:
+            # Enable spell research
+            obj["spell_research"] = True
+
+            # Enable all spells
+            for i in range(len(obj["spells_cant_appear"])):
+                obj["spells_cant_appear"][i] = 0
+
+            # Enable all buildings
+            if "buildings_disabled" in obj:
+                for i in range(len(obj["buildings_disabled"])):
+                    obj["buildings_disabled"][i] = 0
+            else:
+                obj["has_fort"] = True
+
+            print(f"Enabled all settings for town at {obj['coords']}")
+    return obj_data
+
 #################
 ## SWAP LAYERS ##
 #################
