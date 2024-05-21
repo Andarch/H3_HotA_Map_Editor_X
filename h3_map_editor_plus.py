@@ -46,7 +46,7 @@ def main() -> None:
     # This should contain some common info, tips and maybe some news.
     print("\n##################################")
     print(  "##                              ##")
-    print(  "##  h3_map_editor_plus.py v0.1  ##")
+    print(  "##  h3_map_editor_plus.py v0.2  ##")
     print(  "##                              ##")
     print(  "##################################")
 
@@ -60,7 +60,7 @@ def main() -> None:
     while True:
         command = input("\n[Enter command] > ")
         match command.split():
-            case ["open"]: open_maps()
+            case ["open"] | ["load"]: open_maps()
             case ["save"]: save_maps()
 
             case ["print", key] | ["show", key]:
@@ -69,6 +69,13 @@ def main() -> None:
                 if key in map_data[map_key]:
                     print(map_data[map_key][key])
                 else: print("\nUnrecognized key.")
+
+            case ["export", filename]:
+                if map_data["map2"] is not None:
+                    map_key = choose_map()
+                scripts.export_to_json(map_data[map_key], filename)
+
+            case ["q"] | ["quit"] | ["exit"]: break
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
@@ -80,7 +87,7 @@ def main() -> None:
                     map_key = choose_map()
                 map_data[map_key]["object_data"] = scripts.generate_guards(map_data[map_key]["object_data"])
 
-            case ["swap_layers"]:
+            case ["swap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 scripts.swap_layers(
@@ -91,27 +98,21 @@ def main() -> None:
                     map_data[map_key]["conditions"]
                 )
 
-            case ["town_settings"]:
+            case ["towns"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 scripts.town_settings(map_data[map_key]["object_data"])
-
-            case ["export", filename]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                scripts.export_to_json(map_data[map_key], filename)
-
-            case ["q"] | ["quit"] | ["exit"]: break
 
             case ["h"] | ["hlp"] | ['help']:
                 print(
                     "\n"
                     "*COMMANDS*\n"
-                    "open\n"
+                    "open | load\n"
                     "save\n"
                     "print\n"
-                    "h / hlp / help\n"
-                    "q / quit / exit\n"
+                    "export\n"
+                    "h | hlp | help\n"
+                    "q | quit | exit\n"
                     "\n"
                     "*VALID KEYS FOR PRINT*\n"
                     "general\n"
@@ -129,8 +130,9 @@ def main() -> None:
                     "null_bytes\n"
                     "\n"
                     "*SCRIPTS*\n"
-                    "swap_layers\n"
-                    "count / list\n"
+                    "towns\n"
+                    "swap\n"
+                    "count | list\n"
                     "guards\n"
                 )
             
@@ -147,14 +149,27 @@ def choose_map() -> str:
 def open_maps() -> None:
     num_maps = input("\nHow many maps do you want to open (1 or 2)? ")
 
+    if num_maps.lower() in ['q', 'exit', 'quit']:
+        print("\nExiting...")
+        return
+
     if num_maps == '1':
         map_data["map2"] = None
         filename1 = input("\nEnter the map filename: ")
+        if filename1.lower() in ['q', 'exit', 'quit']:
+            print("\Aborting...")
+            return
         open_map(filename1, "map1")
     elif num_maps == '2':
         filename1 = input("\nEnter the filename for map 1: ")
+        if filename1.lower() in ['q', 'exit', 'quit']:
+            print("\Aborting...")
+            return
         open_map(filename1, "map1")
         filename2 = input("\nEnter the filename for map 2: ")
+        if filename2.lower() in ['q', 'exit', 'quit']:
+            print("\Aborting...")
+            return
         map_data["map2"] = {
             "general"     : {}, 
             "player_specs": [], 

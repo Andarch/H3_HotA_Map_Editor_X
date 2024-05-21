@@ -91,10 +91,6 @@ def swap_layers(terrain, object_data, player_specs, is_two_level, conditions):
 
     print("Layers swapped successfully.")
 
-def temp(obj_data: dict) -> dict:
-    print("temp script")
-    return obj_data
-
 ###################
 ## COUNT OBJECTS ##
 ###################

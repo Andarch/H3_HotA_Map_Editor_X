@@ -7,6 +7,7 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 	- Added missing value of 255 (Random) to the Town class.
 	- Added functionality to load 2 maps and choose which one to edit when launching scripts.
 	- Also can save 2 maps
+	- Added town_settings and JSON export scripts
 
 # Usage
 
@@ -19,12 +20,12 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 ## Commands
 
 ```
-> help/h/hlp
+> help | h | hlp
 ```
 Shows you a list of available commands and scripts.
 
 ```
-> open
+> open | load
 ```
 Can be used to open 1 or 2 maps while the editor is running.
 
@@ -34,12 +35,12 @@ Can be used to open 1 or 2 maps while the editor is running.
 To write your changes into 1 or 2 new map files. You can omit the ".h3m" extension here as well, the editor will add it if necessary.
 
 ```
-> print/show [key]
+> print [key] | show [key]
 ```
 Shows you the parsed data for a specific key (e.g. "general"). If you have 2 maps open, you'll be prompted to specify which map you want to print info from. See [h3_map_editor_plus.py](h3_map_editor_plus.py) (map_data) for a list of all the keys.
 
 ```
-> quit/q/exit
+> quit | q | exit
 ```
 To exit the editor.
 
@@ -49,7 +50,17 @@ To exit the editor.
 To actually make changes in the map file, you will need to use custom scripts. All scripts should be implemented in [src/scripts.py](src/scripts.py).
 
 ```
-> swap_layers [> swap_layers]
+> export_to_json [> export]
+```
+Exports all map data to a .json file
+
+```
+> town_settings [> towns]
+```
+Enables spell research, all spells, and all buildings in all towns on the map. (This does not affect whether a spell is enabled globally, and it does not build any buildings, just enables them all.)
+
+```
+> swap_layers [> swap]
 ```
 Swaps the layers in a map, including terrain, objects, and settings such as main towns and win/loss conditions.
 
