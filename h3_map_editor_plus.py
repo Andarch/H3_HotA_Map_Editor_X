@@ -15,6 +15,8 @@ import src.handler_06_rumors_and_events  as h6
 import src.handler_07_terrain            as h7
 import src.handler_08_objects            as h8
 
+EXIT_COMMANDS = ['q', 'exit', 'quit']
+
 map_data = {
     "map1": {
         "general"     : {}, # General tab in Map Specifications
@@ -65,43 +67,47 @@ def main() -> None:
 
             case ["print", key] | ["show", key]:
                 if map_data["map2"] is not None:
-                    map_key = choose_map()
-                if key in map_data[map_key]:
-                    print(map_data[map_key][key])
-                else: print("\nUnrecognized key.")
+                    map_key = choose_map()                
+                if map_key is not None:
+                    if key in map_data[map_key]:
+                        print(map_data[map_key][key])
+                    else: print("\nUnrecognized key.")
 
             case ["export", filename]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                scripts.export_to_json(map_data[map_key], filename)
-
-            case ["q"] | ["quit"] | ["exit"]: break
+                if map_key is not None:
+                    scripts.export_to_json(map_data[map_key], filename)
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                scripts.count_objects(map_data[map_key]["object_data"])
+                if map_key is not None:
+                    scripts.count_objects(map_data[map_key]["object_data"])
 
             case ["guards"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                map_data[map_key]["object_data"] = scripts.generate_guards(map_data[map_key]["object_data"])
+                if map_key is not None:
+                    map_data[map_key]["object_data"] = scripts.generate_guards(map_data[map_key]["object_data"])
 
             case ["swap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                scripts.swap_layers(
-                    map_data[map_key]["terrain"],
-                    map_data[map_key]["object_data"],
-                    map_data[map_key]["player_specs"],
-                    map_data[map_key]["general"]["is_two_level"],
-                    map_data[map_key]["conditions"]
+                if map_key is not None:
+                    scripts.swap_layers(
+                        map_data[map_key]["terrain"],
+                        map_data[map_key]["object_data"],
+                        map_data[map_key]["player_specs"],
+                        map_data[map_key]["general"]["is_two_level"],
+                        map_data[map_key]["conditions"]
                 )
 
             case ["towns"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                scripts.town_settings(map_data[map_key]["object_data"])
+                if map_key is not None:
+                    scripts.town_settings(map_data[map_key]["object_data"])
 
             case ["h"] | ["hlp"] | ['help']:
                 print(
@@ -135,11 +141,18 @@ def main() -> None:
                     "count | list\n"
                     "guards\n"
                 )
+
+            case [cmd] if cmd in EXIT_COMMANDS: break
             
             case _: print("\nUnrecognized command.")
 
 def choose_map() -> str:
     choice = input("\nWhich map do you want to edit? (1/2) ")
+
+    if choice.lower() in EXIT_COMMANDS:
+        print("\nAborting...")
+        return
+
     return "map1" if choice == '1' else "map2"
 
 ################
@@ -149,26 +162,26 @@ def choose_map() -> str:
 def open_maps() -> None:
     num_maps = input("\nHow many maps do you want to open (1 or 2)? ")
 
-    if num_maps.lower() in ['q', 'exit', 'quit']:
-        print("\nExiting...")
+    if num_maps.lower() in EXIT_COMMANDS:
+        print("\nAborting...")
         return
 
     if num_maps == '1':
         map_data["map2"] = None
         filename1 = input("\nEnter the map filename: ")
-        if filename1.lower() in ['q', 'exit', 'quit']:
-            print("\Aborting...")
+        if filename1.lower() in EXIT_COMMANDS:
+            print("\nAborting...")
             return
         open_map(filename1, "map1")
     elif num_maps == '2':
         filename1 = input("\nEnter the filename for map 1: ")
-        if filename1.lower() in ['q', 'exit', 'quit']:
-            print("\Aborting...")
+        if filename1.lower() in EXIT_COMMANDS:
+            print("\nAborting...")
             return
         open_map(filename1, "map1")
         filename2 = input("\nEnter the filename for map 2: ")
-        if filename2.lower() in ['q', 'exit', 'quit']:
-            print("\Aborting...")
+        if filename2.lower() in EXIT_COMMANDS:
+            print("\nAborting...")
             return
         map_data["map2"] = {
             "general"     : {}, 
