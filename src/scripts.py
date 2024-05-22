@@ -1,10 +1,157 @@
 #!/usr/bin/env python3
 
 from random import choice, randint
+from PIL import Image
 
 import data.creatures as cd # Creature details
 import data.objects   as od # Object details
 import json
+
+#############################
+## GENERATE MINIMAP IMAGES ##
+#############################
+
+OWNERNONE = 0xfe
+
+class MAPSPECIAL:
+    NONE = 0
+    MINE = 1
+    ARTIFACT = 2
+    MONSTER = 3
+    ANY = 4
+
+class TERRAIN:
+    # normal
+    DIRT = 0
+    SAND = 1
+    GRASS = 2
+    SNOW = 3
+    SWAMP = 4
+    ROUGH = 5
+    SUBTERAIN = 6
+    LAVA = 7
+    WATER = 8
+    ROCK = 9
+    HIGHLANDS = 10
+    WASTELAND = 11
+
+    # blocked
+    BDIRT = 20
+    BSAND = 21
+    BGRASS = 22
+    BSNOW = 23
+    BSWAMP = 24
+    BROUGH = 25
+    BSUBTERAIN = 26
+    BLAVA = 27
+    BWATER = 28
+    BROCK = 29
+    BHIGHLANDS = 30
+    BWASTELAND = 31
+
+    # players
+    RED = 40
+    BLUE = 41
+    TAN = 42
+    GREEN = 43
+    ORANGE = 44
+    PURPLE = 45
+    TEAL = 46
+    PINK = 47
+    NEUTRAL = 48
+
+    # special
+    NONE = 50
+    MINE = 51
+    ARTIFACT = 52
+    MONSTER = 53
+    ANY = 54
+
+    # offsets
+    OFFBLOCKED = 20
+    OFFPLAYERS = 40
+    OFFSPECIAL = 50
+
+    # count
+    TERRAINNUM = 12
+
+def generate_minimap_images(general, terrain):
+    size = general.get("map_size")
+    half = size * size
+    layers = [terrain[:half]]  # overworld
+    if general.get("is_two_level", False):
+        layers.append(terrain[half:])  # underground
+    for layer_index, layer in enumerate(layers):
+        img = Image.new('RGB', (size, size))
+        for i, cell in enumerate(layer):
+            x = i % size
+            y = i // size
+            surface = get_cell_surface(cell)  # get the surface type of the cell
+            color = determine_color(surface)  # determine color based on surface type
+            img.putpixel((x, y), color)
+        img.save(f".\\images\\{general['map_key']}_layer_{layer_index}.png")
+
+def get_cell_surface(cell):
+    if cell.owner != OWNERNONE:
+        if cell.owner > TERRAIN.NEUTRAL - TERRAIN.OFFPLAYERS:
+            return TERRAIN.NEUTRAL
+        return cell.owner + TERRAIN.OFFPLAYERS
+    elif cell.special != MAPSPECIAL.NONE:
+        return cell.special + TERRAIN.OFFSPECIAL
+    elif cell.access == 0:
+        return cell.surface
+    else:
+        return cell.surface + TERRAIN.OFFBLOCKED
+
+def determine_color(cell_value):
+    color_mapping = {
+        # Terrain
+        TERRAIN.DIRT: (0x52, 0x39, 0x08),
+        TERRAIN.SAND: (0xde, 0xce, 0x8c),
+        TERRAIN.GRASS: (0x00, 0x42, 0x00),
+        TERRAIN.SNOW: (0xb5, 0xc6, 0xc6),
+        TERRAIN.SWAMP: (0x4a, 0x84, 0x6b),
+        TERRAIN.ROUGH: (0x84, 0x73, 0x31),
+        TERRAIN.SUBTERAIN: (0x84, 0x31, 0x00),
+        TERRAIN.LAVA: (0x4a, 0x4a, 0x4a),
+        TERRAIN.WATER: (0x08, 0x52, 0x94),
+        TERRAIN.ROCK: (0x00, 0x00, 0x00),
+        TERRAIN.HIGHLANDS: (0x29, 0x73, 0x18),
+        TERRAIN.WASTELAND: (0xbd, 0x5a, 0x08),
+        # Blocked Terrain
+        TERRAIN.BDIRT: (0x39, 0x29, 0x08),
+        TERRAIN.BSAND: (0xa5, 0x9c, 0x6b),
+        TERRAIN.BGRASS: (0x00, 0x31, 0x00),
+        TERRAIN.BSNOW: (0x8c, 0x9c, 0x9c),
+        TERRAIN.BSWAMP: (0x21, 0x5a, 0x42),
+        TERRAIN.BROUGH: (0x63, 0x52, 0x21),
+        TERRAIN.BSUBTERAIN: (0x5a, 0x08, 0x00),
+        TERRAIN.BLAVA: (0x29, 0x29, 0x29),
+        TERRAIN.BWATER: (0x00, 0x29, 0x6b),
+        TERRAIN.BROCK: (0x00, 0x00, 0x00),
+        TERRAIN.BHIGHLANDS: (0x21, 0x52, 0x10),
+        TERRAIN.BWASTELAND: (0x9c, 0x42, 0x08),
+        # Player colors
+        TERRAIN.RED: (0xff, 0x00, 0x00),
+        TERRAIN.BLUE: (0x31, 0x52, 0xff),
+        TERRAIN.TAN: (0x9c, 0x73, 0x52),
+        TERRAIN.GREEN: (0x42, 0x94, 0x29),
+        TERRAIN.ORANGE: (0xff, 0x84, 0x00),
+        TERRAIN.PURPLE: (0x8c, 0x29, 0xa5),
+        TERRAIN.TEAL: (0x08, 0x9c, 0xa5),
+        TERRAIN.PINK: (0xc6, 0x7b, 0x8c),
+        TERRAIN.NEUTRAL: (0x84, 0x84, 0x84),
+        # Special coloring
+        TERRAIN.NONE: (0xff, 0xff, 0xff),
+        TERRAIN.MINE: (0xff, 0x00, 0xcc),
+        TERRAIN.ARTIFACT: (0x33, 0xff, 0xff),
+        TERRAIN.MONSTER: (0x33, 0xff, 0x00),
+        TERRAIN.ANY: (0xff, 0xff, 0x00),
+    }
+
+    default_color = (0x00, 0x00, 0x00)  # Black
+
+    return color_mapping.get(cell_value, default_color)
 
 #################
 ## JSON EXPORT ##
