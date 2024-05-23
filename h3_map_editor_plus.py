@@ -3,9 +3,16 @@
 from sys  import argv
 from gzip import open
 
-import src.file_io as io
-import src.scripts as scripts
+from src.scripts import count
+from src.scripts import export
+from src.scripts import guards
+from src.scripts import minimap
+from src.scripts import swap
+from src.scripts import towns
 
+import os
+
+import src.file_io as io
 import src.handler_01_general            as h1
 import src.handler_02_players_and_teams  as h2
 import src.handler_03_conditions         as h3
@@ -60,6 +67,7 @@ def main() -> None:
     open_maps()
 
     while True:
+        print(os.getcwd())
         command = input("\n[Enter command] > ")
         match command.split():
             case ["open"] | ["load"]: open_maps()
@@ -77,25 +85,25 @@ def main() -> None:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.export_to_json(map_data[map_key], filename)
+                    export.export_to_json(map_data[map_key], filename)
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.count_objects(map_data[map_key]["object_data"])
+                    count.count_objects(map_data[map_key]["object_data"])
 
             case ["guards"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    map_data[map_key]["object_data"] = scripts.generate_guards(map_data[map_key]["object_data"])
+                    map_data[map_key]["object_data"] = guards.generate_guards(map_data[map_key]["object_data"])
 
             case ["swap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.swap_layers(
+                    swap.swap_layers(
                         map_data[map_key]["terrain"],
                         map_data[map_key]["object_data"],
                         map_data[map_key]["player_specs"],
@@ -107,16 +115,17 @@ def main() -> None:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.town_settings(map_data[map_key]["object_data"])
+                    towns.town_settings(map_data[map_key]["object_data"])
 
-            case ["images"]:
+            case ["minimap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.generate_minimap_images(map_data[map_key]["general"],
-                                                    map_data[map_key]["terrain"],
-                                                    map_data[map_key]["object_data"],
-                                                    map_data[map_key]["object_defs"]
+                    print(os.getcwd())
+                    minimap.main(map_data[map_key]["general"],
+                                 map_data[map_key]["terrain"],
+                                 map_data[map_key]["object_data"],
+                                 map_data[map_key]["object_defs"]
                     )
 
             case ["h"] | ["hlp"] | ['help']:
@@ -146,6 +155,7 @@ def main() -> None:
                     "null_bytes\n"
                     "\n"
                     "*SCRIPTS*\n"
+                    "minimap\n"
                     "towns\n"
                     "swap\n"
                     "count | list\n"
