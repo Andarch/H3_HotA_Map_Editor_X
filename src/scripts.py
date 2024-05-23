@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from random import choice, randint
+from enum import Enum
 from PIL import Image
 
 import data.creatures as cd # Creature details
@@ -10,6 +11,18 @@ import json
 #############################
 ## GENERATE MINIMAP IMAGES ##
 #############################
+
+class OWNER(Enum):
+    RED = 0
+    BLUE = 1
+    TAN = 2
+    GREEN = 3
+    ORANGE = 4
+    PURPLE = 5
+    TEAL = 6
+    PINK = 7
+    NEUTRAL = 255
+
 
 # OWNERNONE = 0xfe
 
@@ -72,22 +85,63 @@ class TERRAIN:
     # OFFPLAYERS = 40
     # OFFSPECIAL = 50
 
-def generate_minimap_images(general, terrain):
+def generate_minimap_images(general, terrain, objects):
     size = general.get("map_size")
     half = size * size
     layers = [terrain[:half]]  # overworld
     if general.get("is_two_level", False):
         layers.append(terrain[half:])  # underground
-    for layer_index, layer in enumerate(layers):
-        img = Image.new('RGB', (size, size))
+
+    # initialize ownership lists
+    ownership_overworld = [[None for _ in range(size)] for _ in range(size)]
+    ownership_underground = [[None for _ in range(size)] for _ in range(size)]
+
+    # set ownership based on object data
+    for obj in objects:
+        x, y, z = obj["coords"]
+        owner = obj.get("owner")
+        obj_type = obj.get("type")  # get the type of the object
+        obj_name = od.ID(obj_type).name  # get the name of the object type
+
+        # Map raw integer owner value to corresponding OWNER instance
+        if owner is not None:
+            owner = OWNER(owner)
+
+        # Subtract 1 from x and y to get 0-based indices
+        x -= 1
+        y -= 1
+
+        if owner is not None:
+            # Debug: Print owner, object type and object coordinates
+            print(f"Owner: {owner}")
+            print(f"Object Name: {obj_name}")
+            print(f"Object coordinates: {x}, {y}, {z}")
+            print()  # line break
+            try:
+                if z == 0:  # overworld
+                    ownership_overworld[y][x] = owner
+                elif z == 1:  # underground
+                    ownership_underground[y][x] = owner
+            except IndexError:
+                print(f"IndexError for object at coordinates: {x}, {y}, {z}")
+
+    # create images for each layer
+    ownership_layers = [ownership_overworld]
+    if general.get("is_two_level", False):
+        ownership_layers.append(ownership_underground)
+
+    for layer_index, (layer, ownership) in enumerate(zip(layers, ownership_layers)):
+        img = Image.new('RGB', (size, size))  # create an image with the same size as the map
         for i, tile in enumerate(layer):
             x = i % size
             y = i // size
-            color = determine_color(tile[0])  # determine color based on terrain type
+            color = determine_color(tile[0], ownership[y][x])  # determine color based on terrain type and owner
+            print(f"Color: {color}")
             img.putpixel((x, y), color)
+        img = img.resize((1024, 1024), Image.HAMMING)  # resize the image to 1024x1024 using the HAMMING filter
         img.save(f".\\images\\{general.get('name')}_layer_{layer_index}.png")
 
-def determine_color(tile_value):
+def determine_color(tile_value, owner):
     color_mapping = {
         # Terrain
         TERRAIN.DIRT: (0x52, 0x39, 0x08),
@@ -116,15 +170,15 @@ def determine_color(tile_value):
         # TERRAIN.BHIGHLANDS: (0x21, 0x52, 0x10),
         # TERRAIN.BWASTELAND: (0x9c, 0x42, 0x08),
         # # Player colors
-        # TERRAIN.RED: (0xff, 0x00, 0x00),
-        # TERRAIN.BLUE: (0x31, 0x52, 0xff),
-        # TERRAIN.TAN: (0x9c, 0x73, 0x52),
-        # TERRAIN.GREEN: (0x42, 0x94, 0x29),
-        # TERRAIN.ORANGE: (0xff, 0x84, 0x00),
-        # TERRAIN.PURPLE: (0x8c, 0x29, 0xa5),
-        # TERRAIN.TEAL: (0x08, 0x9c, 0xa5),
-        # TERRAIN.PINK: (0xc6, 0x7b, 0x8c),
-        # TERRAIN.NEUTRAL: (0x84, 0x84, 0x84),
+        OWNER.RED: (0xff, 0x00, 0x00),
+        OWNER.BLUE: (0x31, 0x52, 0xff),
+        OWNER.TAN: (0x9c, 0x73, 0x52),
+        OWNER.GREEN: (0x42, 0x94, 0x29),
+        OWNER.ORANGE: (0xff, 0x84, 0x00),
+        OWNER.PURPLE: (0x8c, 0x29, 0xa5),
+        OWNER.TEAL: (0x08, 0x9c, 0xa5),
+        OWNER.PINK: (0xc6, 0x7b, 0x8c),
+        OWNER.NEUTRAL: (0x84, 0x84, 0x84),
         # # Special coloring
         # TERRAIN.NONE: (0xff, 0xff, 0xff),
         # TERRAIN.MINE: (0xff, 0x00, 0xcc),
@@ -133,9 +187,12 @@ def determine_color(tile_value):
         # TERRAIN.ANY: (0xff, 0xff, 0x00),
     }
 
-    default_color = (0x00, 0x00, 0x00)  # Black
+  # If there's an object on the tile (i.e., owner is not None), return the color associated with the owner
+    if owner is not None:
+        return color_mapping[owner]
 
-    return color_mapping.get(tile_value, default_color)
+    # If there's no object on the tile, return the color associated with the tile_value
+    return color_mapping[tile_value]
 
 #################
 ## JSON EXPORT ##
