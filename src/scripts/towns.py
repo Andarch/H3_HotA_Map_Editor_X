@@ -6,7 +6,7 @@ import data.objects   as od # Object details
 ## TOWN SETTINGS ##
 ###################
 
-def town_settings(obj_data: dict) -> dict:
+def main(obj_data: dict) -> dict:
     for obj in obj_data:
         if obj["type"] == od.ID.Town or obj["type"] == od.ID.Random_Town:
             # Enable spell research

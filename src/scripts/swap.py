@@ -4,7 +4,7 @@
 ## SWAP LAYERS ##
 #################
 
-def swap_layers(terrain, object_data, player_specs, is_two_level, conditions):
+def main(terrain, object_data, player_specs, is_two_level, conditions):
     if not is_two_level:
         print("Error: This map does not have an underground layer to swap with the overworld.")
         return

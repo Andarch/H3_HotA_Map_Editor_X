@@ -43,7 +43,7 @@ def get_creature_text(creature: int, amount: int) -> str:
             break
     return text + cd.NAME[creature]
 
-def generate_guards(obj_data: dict) -> dict:
+def main(obj_data: dict) -> dict:
     print("\n---[ Generating guards (v.110) ]---\n")
 
     valid_types = {

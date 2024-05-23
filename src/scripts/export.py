@@ -12,6 +12,6 @@ class CustomEncoder(json.JSONEncoder):
             return obj.decode('latin-1')
         return json.JSONEncoder.default(self, obj)
 
-def export_to_json(map_data: dict, filename: str) -> None:
+def main(map_data: dict, filename: str) -> None:
     with open(filename, 'w') as f:
         json.dump(map_data, f, cls=CustomEncoder, indent=4)

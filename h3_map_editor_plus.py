@@ -10,8 +10,6 @@ from src.scripts import minimap
 from src.scripts import swap
 from src.scripts import towns
 
-import os
-
 import src.file_io as io
 import src.handler_01_general            as h1
 import src.handler_02_players_and_teams  as h2
@@ -67,7 +65,6 @@ def main() -> None:
     open_maps()
 
     while True:
-        print(os.getcwd())
         command = input("\n[Enter command] > ")
         match command.split():
             case ["open"] | ["load"]: open_maps()
@@ -85,25 +82,25 @@ def main() -> None:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    export.export_to_json(map_data[map_key], filename)
+                    export.main(map_data[map_key], filename)
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    count.count_objects(map_data[map_key]["object_data"])
+                    count.main(map_data[map_key]["object_data"])
 
             case ["guards"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    map_data[map_key]["object_data"] = guards.generate_guards(map_data[map_key]["object_data"])
+                    map_data[map_key]["object_data"] = guards.main(map_data[map_key]["object_data"])
 
             case ["swap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    swap.swap_layers(
+                    swap.main(
                         map_data[map_key]["terrain"],
                         map_data[map_key]["object_data"],
                         map_data[map_key]["player_specs"],
@@ -115,13 +112,12 @@ def main() -> None:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    towns.town_settings(map_data[map_key]["object_data"])
+                    towns.main(map_data[map_key]["object_data"])
 
             case ["minimap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    print(os.getcwd())
                     minimap.main(map_data[map_key]["general"],
                                  map_data[map_key]["terrain"],
                                  map_data[map_key]["object_data"],

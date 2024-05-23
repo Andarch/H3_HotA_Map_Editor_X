@@ -4,7 +4,7 @@
 ## COUNT OBJECTS ##
 ###################
 
-def count_objects(obj_data: dict) -> None:
+def main(obj_data: dict) -> None:
     print("\n---[ Counting objects (v.101) ]---")
     print("\n[ Amount ] (Type, Subtype)\n")
 
