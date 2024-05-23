@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from enum import Enum
+from enum import IntEnum
 from PIL import Image
 
 import data.objects as od # Object details
@@ -9,7 +9,7 @@ import data.objects as od # Object details
 ## GENERATE MINIMAP IMAGES ##
 #############################
 
-class OWNER(Enum):
+class OWNER(IntEnum):
     RED = 0
     BLUE = 1
     TAN = 2
@@ -20,7 +20,7 @@ class OWNER(Enum):
     PINK = 7
     NEUTRAL = 255
     
-class TILETYPE(Enum):
+class TILETYPE(IntEnum):
     FREE = 0
     ACCESSIBLE = 1
     BLOCKED = 2
@@ -81,42 +81,47 @@ def main(general, terrain, objects, defs):
         blockMask = def_.get("red_squares", None)
         visitMask = def_.get("yellow_squares", None)
 
-        # Print the blockMask bits for debugging
-        if blockMask is not None:
-            for i, mask in enumerate(blockMask):
-                print(f"blockMask bit {i}: {bin(mask)}")
-
-        # Skip interactive objects
-        if visitMask and any(mask != 0 for mask in visitMask):
-            print("Skipping interactive object")
-            continue
-
-        # Skip objects that don't have blockMask
-        if not blockMask:
-            print("Skipping object without blockMask")
-            print(f"Object: {obj}")  # Print the entire object
-            continue
-
         x, y, z = obj["coords"]
-        print(f"Object coordinates: ({x}, {y}, {z})")
 
-        print(f"Entire blockMask: {blockMask}")
+        # Get the owner of the object
+        owner = obj.get("owner")
+        obj_type = obj.get("type")  # get the type of the object
+        obj_name = od.ID(obj_type).name  # get the name of the object type
+
+        # Map raw integer owner value to corresponding OWNER instance
+        if owner is not None:
+            owner = OWNER(owner)
+
+        # Subtract 1 from x and y to get 0-based indices
+        x -= 1
+        y -= 1
+
+        if owner is not None:
+            # Debug: Print owner, object type and object coordinates
+            print(f"Owner: {owner}")
+            print(f"Object Name: {obj_name}")
+            print(f"Object coordinates: {x}, {y}, {z}")
+            print()  # line break
+            try:
+                if z == 0:  # overworld
+                    ownership_overworld[y][x] = owner.value
+                elif z == 1:  # underground
+                    ownership_underground[y][x] = owner.value
+            except IndexError:
+                print(f"IndexError for object at coordinates: {x}, {y}, {z}")
 
         for r in range(6):  # 6 rows y-axis, from top to bottom
             for c in range(8):  # 8 columns x-axis, from left to right
                 index = r * 8 + c  # Calculate the index into blockMask
-                print(f"blockMask[{index}]: {blockMask[index]}")
                 if blockMask[index] == 1:  # Check if the value at index in blockMask is 1
-                    print(f"Bit is passable at position ({r}, {c}) in blockMask")
                     # Draw regular terrain
+                    pass
                 else:
-                    print(f"Bit is blocked at position ({r}, {c}) in blockMask")
                     if 0 <= x - 7 + c < size and 0 <= y - 5 + r < size:  # Adjust the coordinates here
-                        print(f"Drawing obstacle at coordinates: ({x - 7 + c}, {y - 5 + r}, {z})")
                         if z == 0:  # overworld
-                            ownership_overworld[y - 5 + r][x - 7 + c] = TILETYPE.BLOCKED.value  # And here
+                            ownership_overworld[y - 5 + r][x - 7 + c] = owner.value if owner is not None else TILETYPE.BLOCKED.value
                         elif z == 1:  # underground
-                            ownership_underground[y - 5 + r][x - 7 + c] = TILETYPE.BLOCKED.value  # And here
+                            ownership_underground[y - 5 + r][x - 7 + c] = owner.value if owner is not None else TILETYPE.BLOCKED.value
 
     # create images for each layer
     ownership_layers = [ownership_overworld]
@@ -128,12 +133,12 @@ def main(general, terrain, objects, defs):
         for i, tile in enumerate(layer):
             x = i % size
             y = i // size
-            color = determine_color(tile[0], ownership[y][x])  # determine color based on terrain type and owner
+            color = determine_color(tile[0], ownership[y][x], blockMask, index)  # determine color based on terrain type and owner
             img.putpixel((x, y), color)
         img = img.resize((1024, 1024), Image.HAMMING)  # resize the image to 1024x1024 using the HAMMING filter
         img.save(f".\\images\\{general.get('name')}_layer_{layer_index}.png")
 
-def determine_color(tile_value, owner):
+def determine_color(tile_value, owner, blockMask, index):
     color_mapping = {
         # Terrain
         TERRAIN.DIRT: (0x52, 0x39, 0x08),
@@ -171,12 +176,17 @@ def determine_color(tile_value, owner):
         OWNER.TEAL: (0x08, 0x9c, 0xa5),
         OWNER.PINK: (0xc6, 0x7b, 0x8c),
         OWNER.NEUTRAL: (0x84, 0x84, 0x84),
-
     }
 
-    # If there's an obstacle on the tile, return the color associated with the blocked terrain
+    # If there's an owner, return the owner's color
     if owner is not None:
+        owner_enum = OWNER(owner)  # Convert integer to OWNER enum
+        print(f"Owner: {owner_enum}, Type: {type(owner_enum)}")  # Debug line
+        return color_mapping[owner_enum]
+
+    # If the tile is blocked, return the blocked terrain color
+    if blockMask[index] == 0:
         return color_mapping[getattr(TERRAIN, 'B' + tile_value.name.upper())]
 
-    # If there's no obstacle on the tile, return the color associated with the tile_value
+    # If the tile is not blocked, return the terrain color
     return color_mapping[tile_value]
