@@ -113,7 +113,11 @@ def main() -> None:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 if map_key is not None:
-                    scripts.generate_minimap_images(map_data[map_key]["general"], map_data[map_key]["terrain"], map_data[map_key]["object_data"])
+                    scripts.generate_minimap_images(map_data[map_key]["general"],
+                                                    map_data[map_key]["terrain"],
+                                                    map_data[map_key]["object_data"],
+                                                    map_data[map_key]["object_defs"]
+                    )
 
             case ["h"] | ["hlp"] | ['help']:
                 print(
