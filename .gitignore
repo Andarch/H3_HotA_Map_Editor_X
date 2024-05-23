@@ -131,3 +131,4 @@ dmypy.json
 # Custom
 *.h3m
 .vs/
+/vendor/
