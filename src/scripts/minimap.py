@@ -95,10 +95,10 @@ owner_colors = {
 ############################################################################
 
 def main(general, terrain, objects, defs):
-    size = general.get("map_size")
+    size = general["map_size"]
     half = size * size
     layers = [terrain[:half]]  # overworld
-    if general.get("is_two_level", False):
+    if general["is_two_level"]:
         layers.append(terrain[half:])  # underground
 
     # initialize ownership lists
@@ -108,40 +108,26 @@ def main(general, terrain, objects, defs):
     ]
     ownership_overworld, ownership_underground = ownership_layers
 
-    blocked_tiles_overworld = set()  # Create a set to store the indices of all blocked tiles
-    blocked_tiles_underground = set()  # Create a set to store the indices of all interactive tiles
+    # Create sets to store the indices of all blocked tiles
+    blocked_tiles_overworld = set()
+    blocked_tiles_underground = set()
 
     ######################################
     #          Process objects           #
     ######################################
 
     for obj in objects:
-        print(f"\nProcessing object...")
-        
-        obj_type = obj.get("type")  # get the type of the object
-        obj_subtype = obj.get("subtype")  # get the type of the object
-        obj_name = od.ID(obj_type).name  # get the name of the object type
-        x, y, z = obj["coords"]
+        obj_x, obj_y, obj_z = obj["coords"]
 
-        if "owner" in obj and obj_type not in {od.ID.Hero, od.ID.Prison, od.ID.Random_Hero, od.ID.Hero_Placeholder}:
+        if "owner" in obj and obj["type"] not in {od.ID.Hero, od.ID.Prison, od.ID.Random_Hero, od.ID.Hero_Placeholder}:
             owner = obj["owner"]
         else:
             owner = None
 
-        # Get the correct definition using obj["def_id"]
+        # Get masks for blocked and interactive tiles
         def_ = defs[obj["def_id"]]
-
-        # Get blockMask from the definition
         blockMask = def_["red_squares"]
         interactiveMask = def_["yellow_squares"]
-
-        print(f"Object type: {obj_type}")
-        print(f"Object subtype: {obj_subtype}")
-        print(f"Object name: {obj_name}")
-        print(f"Object coordinates: {x}, {y}, {z}")
-        print(f"Owner: {owner}")
-        print(f"Block Mask: {blockMask}")
-        print(f"Interactive Mask: {interactiveMask}")
 
         if owner is None:
             isInteractive = False
@@ -157,32 +143,28 @@ def main(general, terrain, objects, defs):
                 if not yellowSquaresOnly and isInteractive and not allPassable:
                     break
             if isInteractive and yellowSquaresOnly:
-                print("ALL YELLOW SQUARES")
                 continue
             if allPassable:
-                print("ALL PASSABLE")
                 continue
 
         for r in range(6):  # 6 rows y-axis, from top to bottom
             for c in range(8):  # 8 columns x-axis, from left to right
                 index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
-
                 if blockMask[index] != 1:  # If tile is blocked
-                    blocked_tile_x = x - 7 + c
-                    blocked_tile_y = y - 5 + r
+                    blocked_tile_x = obj_x - 7 + c
+                    blocked_tile_y = obj_y - 5 + r
                     if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:  # Check if the blocked tile is within the map
-                        if z == OVERWORLD:
+                        if obj_z == OVERWORLD:
                             blocked_tiles_overworld.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
-                        elif z == UNDERGROUND:
+                        elif obj_z == UNDERGROUND:
                             blocked_tiles_underground.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
-
-                    if 0 <= x - 7 + c < size and 0 <= y - 5 + r < size:  # Ownership
-                        if z == OVERWORLD:
-                            if ownership_overworld[y - 5 + r][x - 7 + c] is None:
-                                ownership_overworld[y - 5 + r][x - 7 + c] = owner if owner is not None else None
-                        elif z == UNDERGROUND:
-                            if ownership_underground[y - 5 + r][x - 7 + c] is None:
-                                ownership_underground[y - 5 + r][x - 7 + c] = owner if owner is not None else None
+                    if 0 <= obj_x - 7 + c < size and 0 <= obj_y - 5 + r < size:  # Ownership
+                        if obj_z == OVERWORLD:
+                            if ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
+                        elif obj_z == UNDERGROUND:
+                            if ownership_underground[obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership_underground[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
     ####################################
     #          Create images           #
