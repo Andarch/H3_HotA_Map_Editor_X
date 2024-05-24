@@ -101,7 +101,7 @@ def main(general, terrain, objects, defs):
     if general["is_two_level"]:
         layers.append(terrain[half:])  # underground
 
-    # initialize ownership lists
+    # Initialize ownership lists
     ownership_layers = [
         [[None for _ in range(size)] for _ in range(size)],  # overworld
         [[None for _ in range(size)] for _ in range(size)]  # underground
@@ -117,8 +117,7 @@ def main(general, terrain, objects, defs):
     ######################################
 
     for obj in objects:
-        obj_x, obj_y, obj_z = obj["coords"]
-
+        # Determine the object's owner
         if "owner" in obj and obj["type"] not in {od.ID.Hero, od.ID.Prison, od.ID.Random_Hero, od.ID.Hero_Placeholder}:
             owner = obj["owner"]
         else:
@@ -129,6 +128,7 @@ def main(general, terrain, objects, defs):
         blockMask = def_["red_squares"]
         interactiveMask = def_["yellow_squares"]
 
+        # End this iteration of the loop (skip the object) under conditions where we don't want to draw the object on the minimap
         if owner is None:
             isInteractive = False
             yellowSquaresOnly = True
@@ -146,7 +146,9 @@ def main(general, terrain, objects, defs):
                 continue
             if allPassable:
                 continue
-
+        
+        # Complete object processing to determine blocked tiles and ownership
+        obj_x, obj_y, obj_z = obj["coords"]
         for r in range(6):  # 6 rows y-axis, from top to bottom
             for c in range(8):  # 8 columns x-axis, from left to right
                 index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
@@ -156,13 +158,10 @@ def main(general, terrain, objects, defs):
                     if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:  # Check if the blocked tile is within the map
                         if obj_z == OVERWORLD:
                             blocked_tiles_overworld.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
-                        elif obj_z == UNDERGROUND:
-                            blocked_tiles_underground.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
-                    if 0 <= obj_x - 7 + c < size and 0 <= obj_y - 5 + r < size:  # Ownership
-                        if obj_z == OVERWORLD:
                             if ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] is None:
                                 ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
                         elif obj_z == UNDERGROUND:
+                            blocked_tiles_underground.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
                             if ownership_underground[obj_y - 5 + r][obj_x - 7 + c] is None:
                                 ownership_underground[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
@@ -170,13 +169,12 @@ def main(general, terrain, objects, defs):
     #          Create images           #
     ####################################
 
-    # create images for each layer
+    # Create images for each layer
     for layer_index, (layer, ownership) in enumerate(zip(layers, ownership_layers)):
         img = Image.new('RGB', (size, size))  # create an image with the same size as the map
         for i, tile in enumerate(layer):
             x = i % size
             y = i // size
-
             owner = ownership[y][x]
             if owner is not None:  # If there's an owner, use the owner's color
                 color = owner_colors[OWNER(owner)]
