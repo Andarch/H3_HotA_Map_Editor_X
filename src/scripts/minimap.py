@@ -8,6 +8,9 @@ import data.objects as od # Object details
 OVERWORLD = 0
 UNDERGROUND = 1
 IMAGE_SIZE = 1024
+ROWS = 6
+COLUMNS = 8
+BLOCKED_OFFSET = 20
 
 class TERRAIN(IntEnum):
     # normal
@@ -101,35 +104,27 @@ def main(general, terrain, objects, defs):
     if general["is_two_level"]:
         layers.append(terrain[half:])  # underground
 
-    # Initialize ownership lists
-    ownership_layers = [
-        [[None for _ in range(size)] for _ in range(size)],  # overworld
-        [[None for _ in range(size)] for _ in range(size)]  # underground
-    ]
-    ownership_overworld, ownership_underground = ownership_layers
-
-    # Create sets to store the indices of all blocked tiles
-    blocked_tiles_overworld = set()
-    blocked_tiles_underground = set()
+    # Initialize ownership and blocked tiles dictionaries using list comprehensions
+    ownership = {layer: [[None for _ in range(size)] for _ in range(size)] for layer in [OVERWORLD, UNDERGROUND]}
+    blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
 
     ######################################
     #          Process objects           #
     ######################################
 
     for obj in objects:
-        # Determine the object's owner
-        if "owner" in obj and obj["type"] not in {od.ID.Hero, od.ID.Prison, od.ID.Random_Hero, od.ID.Hero_Placeholder}:
-            owner = obj["owner"]
-        else:
-            owner = None
-
         # Get masks for blocked and interactive tiles
         def_ = defs[obj["def_id"]]
         blockMask = def_["red_squares"]
         interactiveMask = def_["yellow_squares"]
 
-        # End this iteration of the loop (skip the object) under conditions where we don't want to draw the object on the minimap
-        if owner is None:
+        def determine_owner():
+            if "owner" in obj and obj["type"] not in {od.ID.Hero, od.ID.Prison, od.ID.Random_Hero, od.ID.Hero_Placeholder}:
+                return obj["owner"]
+            else:
+                return None
+
+        def should_skip_object():
             isInteractive = False
             yellowSquaresOnly = True
             allPassable = True
@@ -142,46 +137,46 @@ def main(general, terrain, objects, defs):
                     allPassable = False
                 if not yellowSquaresOnly and isInteractive and not allPassable:
                     break
-            if isInteractive and yellowSquaresOnly:
-                continue
-            if allPassable:
-                continue
+            return isInteractive and yellowSquaresOnly
+
+        owner = determine_owner()
+
+        if owner is None and should_skip_object():
+            continue
         
         # Complete object processing to determine blocked tiles and ownership
         obj_x, obj_y, obj_z = obj["coords"]
-        for r in range(6):  # 6 rows y-axis, from top to bottom
-            for c in range(8):  # 8 columns x-axis, from left to right
+        for r in range(ROWS):  # 6 rows y-axis, from top to bottom
+            for c in range(COLUMNS):  # 8 columns x-axis, from left to right
                 index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
                 if blockMask[index] != 1:  # If tile is blocked
                     blocked_tile_x = obj_x - 7 + c
                     blocked_tile_y = obj_y - 5 + r
                     if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:  # Check if the blocked tile is within the map
                         if obj_z == OVERWORLD:
-                            blocked_tiles_overworld.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
-                            if ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] is None:
-                                ownership_overworld[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
+                            blocked_tiles[OVERWORLD].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
+                            if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
                         elif obj_z == UNDERGROUND:
-                            blocked_tiles_underground.add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
-                            if ownership_underground[obj_y - 5 + r][obj_x - 7 + c] is None:
-                                ownership_underground[obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
+                            blocked_tiles[UNDERGROUND].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
+                            if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
     ####################################
     #          Create images           #
     ####################################
 
     # Create images for each layer
-    for layer_index, (layer, ownership) in enumerate(zip(layers, ownership_layers)):
+    for layer_index, layer in enumerate(layers):
         img = Image.new('RGB', (size, size))  # create an image with the same size as the map
         for i, tile in enumerate(layer):
             x = i % size
             y = i // size
-            owner = ownership[y][x]
+            owner = ownership[layer_index][y][x]
             if owner is not None:  # If there's an owner, use the owner's color
-                color = owner_colors[OWNER(owner)]
-            elif layer_index == 0 and (x, y) in blocked_tiles_overworld:  # If tile coordinates are in the blocked_tiles set for overworld, use the blocked terrain color
-                color = terrain_colors[TERRAIN(tile[0]) + 20]
-            elif layer_index == 1 and (x, y) in blocked_tiles_underground:  # If tile coordinates are in the blocked_tiles set for underground, use the blocked terrain color
-                color = terrain_colors[TERRAIN(tile[0]) + 20]
+                color = owner_colors[owner]
+            elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
+                color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
             else:
                 color = terrain_colors[tile[0]]  # Use the terrain color
 
