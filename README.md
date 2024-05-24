@@ -71,11 +71,11 @@ Enables spell research, all spells, and all buildings in all towns on the map. (
 Swaps the layers in a map, including terrain, objects, and settings such as main towns and win/loss conditions.
 
 ```
-count
+> count
 ```
 Is a simple example that goes through all the objects placed in the map and prints out how many copies of each object can be found.
 
 ```
-guards
+> guards
 ```
 Is a more complex example. The script goes through specific objects (Pandora's Boxes, Artifacts, Resources, etc.) and checks if the last line in the object's message box is "-guards XXX". Whenever it finds that, it generates guards for the object with a total AI value of XXX, then replaces the text with a "Guarded by XYZ" description. See the script itself for a more detailed explanation.
