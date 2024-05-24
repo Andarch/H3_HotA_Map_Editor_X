@@ -23,12 +23,6 @@ class OWNER(IntEnum):
     TEAL = 6
     PINK = 7
     NEUTRAL = 255
-    
-class TILETYPE(IntEnum):
-    FREE = 0
-    ACCESSIBLE = 1
-    BLOCKED = 2
-    USED = 3
 
 class TERRAIN:
     # normal
@@ -60,41 +54,35 @@ class TERRAIN:
     BWASTELAND = 31
 
 def process_object(obj, defs, size, ownership_overworld, ownership_underground):
-    print(f"Processing object {obj}")
+    print(f"\nProcessing object {obj}")
 
     # Get the correct definition using obj["def_id"]
     def_ = defs[obj["def_id"]]
 
-    print(f'Object type: {obj["type"]}')
-    print(f'Object subtype: {obj["subtype"]}')
-    print(f'Definition type: {def_["type"]}')
-    print(f'Definition subtype: {def_["subtype"]}')
-
     # Get blockMask and visitMask from the definition
     blockMask = def_.get("red_squares", None)
-    visitMask = def_.get("yellow_squares", None)
+    # visitMask = def_.get("yellow_squares", None)
 
+    obj_coords = obj["coords"]
     x, y, z = obj["coords"]
 
     # Get the owner of the object
     owner = obj.get("owner")
     obj_type = obj.get("type")  # get the type of the object
+    obj_subtype = obj.get("subtype")  # get the type of the object
     obj_name = od.ID(obj_type).name  # get the name of the object type
+
+    print(f'\nOwner: {owner}')
 
     # Map raw integer owner value to corresponding OWNER instance
     if owner is not None:
         owner = OWNER(owner)
 
     # Subtract 1 from x and y to get 0-based indices
-    x -= 1
-    y -= 1
+    # x -= 1
+    # y -= 1
 
     if owner is not None:
-        # Debug: Print owner, object type and object coordinates
-        print(f"Owner: {owner}")
-        print(f"Object Name: {obj_name}")
-        print(f"Object coordinates: {x}, {y}, {z}")
-        print()  # line break
         try:
             if z == 0:  # overworld
                 ownership_overworld[y][x] = owner.value
@@ -112,11 +100,11 @@ def process_object(obj, defs, size, ownership_overworld, ownership_underground):
             else:
                 if 0 <= x - 7 + c < size and 0 <= y - 5 + r < size:  # Adjust the coordinates here
                     if z == 0:  # overworld
-                        ownership_overworld[y - 5 + r][x - 7 + c] = owner.value if owner is not None else TILETYPE.BLOCKED.value
+                        ownership_overworld[y - 5 + r][x - 7 + c] = owner.value if owner is not None else None
                     elif z == 1:  # underground
-                        ownership_underground[y - 5 + r][x - 7 + c] = owner.value if owner is not None else TILETYPE.BLOCKED.value
+                        ownership_underground[y - 5 + r][x - 7 + c] = owner.value if owner is not None else None
 
-    return blockMask, index
+    return blockMask, index, obj_type, obj_subtype, obj_name, obj_coords
 
 def determine_color(tile_value, owner, blockMask, index):
     color_mapping = {
@@ -161,12 +149,12 @@ def determine_color(tile_value, owner, blockMask, index):
     # If there's an owner, return the owner's color
     if owner is not None:
         owner_enum = OWNER(owner)  # Convert integer to OWNER enum
-        print(f"Owner: {owner_enum}, Type: {type(owner_enum)}")  # Debug line
         return color_mapping[owner_enum]
 
     # If the tile is blocked, return the blocked terrain color
-    if blockMask[index] == 0:
-        return color_mapping[getattr(TERRAIN, 'B' + tile_value.name.upper())]
+    if blockMask is not None:
+        if blockMask[index] == 0:
+            return color_mapping[getattr(TERRAIN, 'B' + tile_value.name.upper())]
 
     # If the tile is not blocked, return the terrain color
     return color_mapping[tile_value]
@@ -186,7 +174,7 @@ def main(general, terrain, objects, defs):
     ownership_overworld, ownership_underground = ownership_layers
 
     for obj in objects:
-        blockMask, index = process_object(obj, defs, size, ownership_overworld, ownership_underground)
+        blockMask, index, def_type, def_subtype, obj_name, obj_coords = process_object(obj, defs, size, ownership_overworld, ownership_underground)
 
     # create images for each layer
     for layer_index, (layer, ownership) in enumerate(zip(layers, ownership_layers)):
@@ -196,5 +184,19 @@ def main(general, terrain, objects, defs):
             y = i // size
             color = determine_color(tile[0], ownership[y][x], blockMask, index)  # determine color based on terrain type and owner
             img.putpixel((x, y), color)
+
+            # Print the values once per tile
+            if i in blockMask:  # Check if the current tile index is in blockMask
+                print(f'\nObject type: {obj["type"]}')
+                print(f'Object subtype: {obj["subtype"]}')
+                print(f'Definition type: {def_type}')
+                print(f'Definition subtype: {def_subtype}')
+                print(f"Object Name: {obj_name}")
+                obj_x, obj_y, obj_z = obj_coords
+                print(f"Object coordinates: {obj_x}, {obj_y}, {obj_z}")
+                print(f"Tile Value: {tile[0]}, Type: {type(tile[0])}")  # Debug line
+                print(f"Owner: {ownership[y][x]}, Type: {type(ownership[y][x])}")  # Debug line
+                print(f"Block Mask: {blockMask}, Type: {type(blockMask)}")  # Debug line
+
         img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.HAMMING)  # resize the image to 1024x1024 using the HAMMING filter
         img.save(f".\\images\\{general.get('name')}_layer_{layer_index}.png")
