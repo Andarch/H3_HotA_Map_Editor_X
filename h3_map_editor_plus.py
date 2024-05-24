@@ -62,7 +62,14 @@ def main() -> None:
     #    print("")
     #    open_map(argv[1])
 
-    open_maps()
+    # open_maps()  # when not debugging    
+    # DEBUGGING
+    open_map("prism.h3m", "map1")
+    minimap.main(map_data[map_key]["general"],
+                 map_data[map_key]["terrain"],
+                 map_data[map_key]["object_data"],
+                 map_data[map_key]["object_defs"]
+                )
 
     while True:
         command = input("\n[Enter command] > ")

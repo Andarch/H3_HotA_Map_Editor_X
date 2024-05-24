@@ -132,3 +132,4 @@ dmypy.json
 *.h3m
 .vs/
 /vendor/
+.vscode/
