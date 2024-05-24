@@ -134,3 +134,4 @@ dmypy.json
 /vendor/
 .vscode/
 /images/*
+*.pyproj
