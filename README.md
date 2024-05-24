@@ -1,7 +1,9 @@
-# Disclaimer
+# h3_map_editor_plus v0.3
+
+## Disclaimer
 This is a fork of the original project by Shakajiub (https://github.com/Shakajiub/h3_map_editor) with some enhancements.
 
-# Change log
+## Change log (since fork)
 	- Added help/h/help command to show available commands and scripts
 	- Added swap_layers script
 	- Added missing value of 255 (Random) to the Town class.
