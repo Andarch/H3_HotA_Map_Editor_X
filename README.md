@@ -8,6 +8,7 @@ This is a fork of the original project by Shakajiub (https://github.com/Shakajiu
 	- Added functionality to load 2 maps and choose which one to edit when launching scripts.
 	- Also can save 2 maps
 	- Added town_settings and JSON export scripts
+	- Added minimap generation script
 
 # Usage
 
@@ -50,26 +51,31 @@ To exit the editor.
 To actually make changes in the map file, you will need to use custom scripts. All scripts should be implemented in [src/scripts.py](src/scripts.py).
 
 ```
-> export_to_json [> export]
+> minimap
+```
+Generates the minimap in PNG format (two PNG files if two layers)
+
+```
+> export
 ```
 Exports all map data to a .json file
 
 ```
-> town_settings [> towns]
+> towns
 ```
 Enables spell research, all spells, and all buildings in all towns on the map. (This does not affect whether a spell is enabled globally, and it does not build any buildings, just enables them all.)
 
 ```
-> swap_layers [> swap]
+> swap
 ```
 Swaps the layers in a map, including terrain, objects, and settings such as main towns and win/loss conditions.
 
 ```
-count_objects [> count]
+count
 ```
 Is a simple example that goes through all the objects placed in the map and prints out how many copies of each object can be found.
 
 ```
-generate_guards [> guards]
+guards
 ```
 Is a more complex example. The script goes through specific objects (Pandora's Boxes, Artifacts, Resources, etc.) and checks if the last line in the object's message box is "-guards XXX". Whenever it finds that, it generates guards for the object with a total AI value of XXX, then replaces the text with a "Guarded by XYZ" description. See the script itself for a more detailed explanation.
