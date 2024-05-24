@@ -82,20 +82,16 @@ def process_object(obj, defs, size, ownership_overworld, ownership_underground):
     # x -= 1
     # y -= 1
 
-    if owner is not None:
-        try:
-            if z == 0:  # overworld
-                ownership_overworld[y][x] = owner.value
-            elif z == 1:  # underground
-                ownership_underground[y][x] = owner.value
-        except IndexError:
-            print(f"IndexError for object at coordinates: {x}, {y}, {z}")
+    # if owner is not None:
+    #     if z == 0:  # overworld
+    #         ownership_overworld[y][x] = owner.value
+    #     elif z == 1:  # underground
+    #         ownership_underground[y][x] = owner.value
 
     for r in range(6):  # 6 rows y-axis, from top to bottom
         for c in range(8):  # 8 columns x-axis, from left to right
             index = r * 8 + c  # Calculate the index into blockMask
             if blockMask[index] == 1:  # Check if the value at index in blockMask is 1
-                # Draw regular terrain
                 pass
             else:
                 if 0 <= x - 7 + c < size and 0 <= y - 5 + r < size:  # Adjust the coordinates here
@@ -104,9 +100,9 @@ def process_object(obj, defs, size, ownership_overworld, ownership_underground):
                     elif z == 1:  # underground
                         ownership_underground[y - 5 + r][x - 7 + c] = owner.value if owner is not None else None
 
-    return blockMask, index, obj_type, obj_subtype, obj_name, obj_coords
+    return blockMask, obj_type, obj_subtype, obj_name, obj_coords
 
-def determine_color(tile_value, owner, blockMask, index):
+def determine_color(tile_value, owner, blockMask):
     color_mapping = {
         # Terrain
         TERRAIN.DIRT: (0x52, 0x39, 0x08),
@@ -151,10 +147,9 @@ def determine_color(tile_value, owner, blockMask, index):
         owner_enum = OWNER(owner)  # Convert integer to OWNER enum
         return color_mapping[owner_enum]
 
-    # If the tile is blocked, return the blocked terrain color
-    if blockMask is not None:
-        if blockMask[index] == 0:
-            return color_mapping[getattr(TERRAIN, 'B' + tile_value.name.upper())]
+    # # If the tile is blocked, return the blocked terrain color
+    # if blockMask is not None:
+    #         return color_mapping[tile_value + 20]
 
     # If the tile is not blocked, return the terrain color
     return color_mapping[tile_value]
@@ -174,7 +169,7 @@ def main(general, terrain, objects, defs):
     ownership_overworld, ownership_underground = ownership_layers
 
     for obj in objects:
-        blockMask, index, def_type, def_subtype, obj_name, obj_coords = process_object(obj, defs, size, ownership_overworld, ownership_underground)
+        blockMask, def_type, def_subtype, obj_name, obj_coords = process_object(obj, defs, size, ownership_overworld, ownership_underground)
 
     # create images for each layer
     for layer_index, (layer, ownership) in enumerate(zip(layers, ownership_layers)):
@@ -182,7 +177,7 @@ def main(general, terrain, objects, defs):
         for i, tile in enumerate(layer):
             x = i % size
             y = i // size
-            color = determine_color(tile[0], ownership[y][x], blockMask, index)  # determine color based on terrain type and owner
+            color = determine_color(tile[0], ownership[y][x], blockMask)  # determine color based on terrain type and owner
             img.putpixel((x, y), color)
 
             # Print the values once per tile
