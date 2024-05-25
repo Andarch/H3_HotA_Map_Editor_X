@@ -150,4 +150,3 @@ def main(obj_data: dict) -> dict:
               f"({desired_guard_value} desired)")
 
     print("\n---[ Finished generating guards ]---")
-    return obj_data

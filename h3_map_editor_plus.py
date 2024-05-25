@@ -48,6 +48,7 @@ map_data = {
 def main() -> None:
     global map_data    
     map_key = "map1"
+    is_command_running = False
 
     # Print some block of text as an introduction to the editor.
     # This should contain some common info, tips and maybe some news.
@@ -65,64 +66,76 @@ def main() -> None:
     open_maps()
 
     while True:
-        command = input("\n[Enter command] > ")
-        match command.split():
-            case ["open"] | ["load"]: open_maps()
-            case ["save"]: save_maps()
+        if not is_command_running:
+            command = input("\n[Enter command] > ")
+            is_command_running = True
+        else:
+            continue
 
-            case ["print", key] | ["show", key]:
+        match command.split():
+            case ["open"] | ["load"]:
+                open_maps()
+                is_command_running = False
+
+            case ["save"]:
+                save_maps()
+                is_command_running = False
+
+            case ["print", data_key] | ["show", data_key]:
                 if map_data["map2"] is not None:
-                    map_key = choose_map()                
-                if map_key is not None:
-                    if key in map_data[map_key]:
-                        print(map_data[map_key][key])
-                    else: print("\nUnrecognized key.")
+                    map_key = choose_map()
+                if data_key in map_data[map_key]:
+                    print(map_data[map_key][data_key])
+                else:
+                    print("\nUnrecognized data key.")                
+                is_command_running = False
 
             case ["export", filename]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                if map_key is not None:
-                    export.main(map_data[map_key], filename)
+                export.main(map_data[map_key], filename)
+                is_command_running = False
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                if map_key is not None:
-                    count.main(map_data[map_key]["object_data"])
+                count.main(map_data[map_key]["object_data"])
+                is_command_running = False
 
             case ["guards"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                if map_key is not None:
-                    map_data[map_key]["object_data"] = guards.main(map_data[map_key]["object_data"])
+                guards.main(map_data[map_key]["object_data"])
+                is_command_running = False
 
             case ["swap"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                if map_key is not None:
-                    swap.main(
-                        map_data[map_key]["terrain"],
-                        map_data[map_key]["object_data"],
-                        map_data[map_key]["player_specs"],
-                        map_data[map_key]["general"]["is_two_level"],
-                        map_data[map_key]["conditions"]
+                swap.main(
+                    map_data[map_key]["terrain"],
+                    map_data[map_key]["object_data"],
+                    map_data[map_key]["player_specs"],
+                    map_data[map_key]["general"]["is_two_level"],
+                    map_data[map_key]["conditions"]
                 )
+                is_command_running = False
 
             case ["towns"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
-                if map_key is not None:
-                    towns.main(map_data[map_key]["object_data"])
+                towns.main(map_data[map_key]["object_data"])
+                is_command_running = False
 
             case ["minimap"]:
                 if map_data["map2"] is not None:
-                    map_key = choose_map()
-                if map_key is not None:
-                    minimap.main(map_data[map_key]["general"],
-                                 map_data[map_key]["terrain"],
-                                 map_data[map_key]["object_data"],
-                                 map_data[map_key]["object_defs"]
-                    )
+                    map_key = choose_map()                    
+                minimap.main(
+                    map_data[map_key]["general"],
+                    map_data[map_key]["terrain"],
+                    map_data[map_key]["object_data"],
+                    map_data[map_key]["object_defs"]
+                )
+                is_command_running = False
 
             case ["h"] | ["hlp"] | ['help']:
                 print(
@@ -157,10 +170,15 @@ def main() -> None:
                     "count | list\n"
                     "guards\n"
                 )
+                is_command_running = False
 
-            case [cmd] if cmd in EXIT_COMMANDS: break
+            case [cmd]:
+                if cmd in EXIT_COMMANDS:
+                    break
             
-            case _: print("\nUnrecognized command.")
+            case _:
+                print("\nUnrecognized command.")
+                is_command_running = False
 
 def choose_map() -> str:
     choice = input("\nWhich map do you want to edit? (1/2) ")
@@ -168,7 +186,7 @@ def choose_map() -> str:
     if choice.lower() in EXIT_COMMANDS:
         print("\nAborting...")
         return
-
+    
     return "map1" if choice == '1' else "map2"
 
 ################
