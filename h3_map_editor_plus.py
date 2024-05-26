@@ -1,28 +1,10 @@
 #!/usr/bin/env python3
 
-from sys  import argv
 from gzip import open
-
 import time
 import os
 
-from src.constants import *
-from src.scripts import count
-from src.scripts import export
-from src.scripts import guards
-from src.scripts import minimap
-from src.scripts import swap
-from src.scripts import towns
-
-import src.file_io as io
-import src.handler_01_general            as h1
-import src.handler_02_players_and_teams  as h2
-import src.handler_03_conditions         as h3
-import src.handler_04_heroes             as h4
-import src.handler_05_additional_flags   as h5
-import src.handler_06_rumors_and_events  as h6
-import src.handler_07_terrain            as h7
-import src.handler_08_objects            as h8
+from src import *
 
 EXIT_COMMANDS = ['q', 'exit', 'quit']
 
@@ -267,19 +249,19 @@ def main() -> None:
 
                 case ["export", filename]:
                     map_key = get_map_key()
-                    export.main(map_data[map_key], filename)
+                    scripts.export_json(map_data[map_key], filename)
 
                 case ["count"] | ["list"]:
                     map_key = get_map_key()
-                    count.main(map_data[map_key]["object_data"])
+                    scripts.count_objects(map_data[map_key]["object_data"])
 
                 case ["guards"]:
                     map_key = get_map_key()
-                    guards.main(map_data[map_key]["object_data"])
+                    scripts.add_guards(map_data[map_key]["object_data"])
 
                 case ["swap"]:
                     map_key = get_map_key()
-                    swap.main(
+                    scripts.swap_layers(
                         map_data[map_key]["terrain"],
                         map_data[map_key]["object_data"],
                         map_data[map_key]["player_specs"],
@@ -289,11 +271,11 @@ def main() -> None:
 
                 case ["towns"]:
                     map_key = get_map_key()
-                    towns.main(map_data[map_key]["object_data"])
+                    scripts.modify_towns(map_data[map_key]["object_data"])
 
                 case ["minimap"]:
                     map_key = get_map_key()
-                    minimap.main(
+                    scripts.generate_minimap(
                         map_data[map_key]["general"],
                         map_data[map_key]["terrain"],
                         map_data[map_key]["object_data"],
