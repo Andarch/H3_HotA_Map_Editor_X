@@ -75,26 +75,26 @@ def main() -> None:
 
     def print_cyan(text):
         print(f"{cyan}{text}{color_reset}")
-    
+
     def print_prompt(prompt):
         return input(f"\n{yellow}[{prompt}] > {color_reset}")
-    
+
     def print_flush(text):
         print(f"{white}{text}{color_reset}", end=" ", flush=True)
-    
+
     def print_done():
         print(f"{green}DONE{color_reset}")
         time.sleep(SLEEP_TIME)
 
     def print_error(error):
-        print(f"{red}{error}{color_reset}")        
+        print(f"{red}{error}{color_reset}")
         time.sleep(SLEEP_TIME)
 
     def choose_map() -> str:
         choice = print_prompt(f"Enter the map number to edit")
         if choice.lower() in EXIT_COMMANDS:
             print("Aborting...")
-            return    
+            return
         return "map1" if choice == '1' else "map2"
 
     def open_maps() -> None:
@@ -124,19 +124,19 @@ def main() -> None:
                     print("Aborting...")
                     return
                 map_data["map2"] = {
-                    "general"     : {}, 
-                    "player_specs": [], 
-                    "conditions"  : {}, 
-                    "teams"       : {}, 
-                    "start_heroes": {}, 
-                    "ban_flags"   : {}, 
-                    "rumors"      : [], 
-                    "hero_data"   : [], 
-                    "terrain"     : [], 
-                    "object_defs" : [], 
-                    "object_data" : [], 
-                    "events"      : [], 
-                    "null_bytes"  : b'' 
+                    "general"     : {},
+                    "player_specs": [],
+                    "conditions"  : {},
+                    "teams"       : {},
+                    "start_heroes": {},
+                    "ban_flags"   : {},
+                    "rumors"      : [],
+                    "hero_data"   : [],
+                    "terrain"     : [],
+                    "object_defs" : [],
+                    "object_data" : [],
+                    "events"      : [],
+                    "null_bytes"  : b''
                 }
                 open_map(filename2, "map2")
                 break
@@ -150,7 +150,8 @@ def main() -> None:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
 
-        print_flush(f"Loading map...")
+        print_flush("Loading map...")
+        time.sleep(SLEEP_TIME)
 
         # Make sure that the file actually exists.
         try:
@@ -204,7 +205,8 @@ def main() -> None:
                 filename += ".h3m"
         else: filename += ".h3m"
 
-        print_flush(f"Saving map...")
+        print_flush("Saving map...")
+        time.sleep(SLEEP_TIME)
 
         # Save the map byte by byte.
         with open(filename, 'wb') as io.out_file:
@@ -234,7 +236,7 @@ def main() -> None:
     print_cyan(f"##  h3_map_editor_plus.py v0.3  ##")
     print_cyan(f"##                              ##")
     print_cyan(f"##################################")
-    
+
     open_maps()
 
     while True:
@@ -259,7 +261,7 @@ def main() -> None:
                 if data_key in map_data[map_key]:
                     print_cyan(map_data[map_key][data_key])
                 else:
-                    print_error("Error: Unrecognized data key.")                
+                    print_error("Error: Unrecognized data key.")
                 is_command_running = False
 
             case ["export", filename]:
@@ -300,7 +302,7 @@ def main() -> None:
 
             case ["minimap"]:
                 if map_data["map2"] is not None:
-                    map_key = choose_map()                    
+                    map_key = choose_map()
                 minimap.main(
                     map_data[map_key]["general"],
                     map_data[map_key]["terrain"],
@@ -347,7 +349,7 @@ def main() -> None:
                 if cmd in EXIT_COMMANDS:
                     print(f"{color_reset}")
                     break
-            
+
             case _:
                 print_error("Error: Unrecognized command.")
                 is_command_running = False
