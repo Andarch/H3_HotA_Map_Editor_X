@@ -65,11 +65,6 @@ def main() -> None:
     white = "\033[37m"
     color_reset = "\033[0m"
 
-    # First argument passed when launching the editor can be a map file.
-    #if len(argv) > 1:
-    #    print("")
-    #    open_map(argv[1])
-
     ####################
     # HELPER FUNCTIONS #
     ####################
@@ -90,6 +85,11 @@ def main() -> None:
     def print_error(error: str) -> None:
         print(f"{red}{error}{color_reset}")
         time.sleep(SLEEP_TIME)
+
+    def get_map_key() -> str:
+        if map_data["map2"] is not None:
+            return choose_map()
+        return "map1"
 
     def choose_map() -> str:
         choice = print_prompt(f"Enter the map number to edit")
@@ -250,114 +250,99 @@ def main() -> None:
         else:
             continue
 
-        match command.split():
-            case ["open"] | ["load"]:
-                open_maps()
-                busy = False
+        try:
+            match command.split():
+                case ["open"] | ["load"]:
+                    open_maps()
 
-            case ["save"]:
-                save_maps()
-                busy = False
+                case ["save"]:
+                    save_maps()
 
-            case ["print", data_key] | ["show", data_key]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                if data_key in map_data[map_key]:
-                    print_cyan(map_data[map_key][data_key])
-                else:
-                    print_error("Error: Unrecognized data key.")
-                busy = False
+                case ["print", data_key] | ["show", data_key]:
+                    map_key = get_map_key()
+                    if data_key in map_data[map_key]:
+                        print_cyan(map_data[map_key][data_key])
+                    else:
+                        print_error("Error: Unrecognized data key.")
 
-            case ["export", filename]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                export.main(map_data[map_key], filename)
-                busy = False
+                case ["export", filename]:
+                    map_key = get_map_key()
+                    export.main(map_data[map_key], filename)
 
-            case ["count"] | ["list"]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                count.main(map_data[map_key]["object_data"])
-                busy = False
+                case ["count"] | ["list"]:
+                    map_key = get_map_key()
+                    count.main(map_data[map_key]["object_data"])
 
-            case ["guards"]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                guards.main(map_data[map_key]["object_data"])
-                busy = False
+                case ["guards"]:
+                    map_key = get_map_key()
+                    guards.main(map_data[map_key]["object_data"])
 
-            case ["swap"]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                swap.main(
-                    map_data[map_key]["terrain"],
-                    map_data[map_key]["object_data"],
-                    map_data[map_key]["player_specs"],
-                    map_data[map_key]["general"]["is_two_level"],
-                    map_data[map_key]["conditions"]
-                )
-                busy = False
+                case ["swap"]:
+                    map_key = get_map_key()
+                    swap.main(
+                        map_data[map_key]["terrain"],
+                        map_data[map_key]["object_data"],
+                        map_data[map_key]["player_specs"],
+                        map_data[map_key]["general"]["is_two_level"],
+                        map_data[map_key]["conditions"]
+                    )
 
-            case ["towns"]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                towns.main(map_data[map_key]["object_data"])
-                busy = False
+                case ["towns"]:
+                    map_key = get_map_key()
+                    towns.main(map_data[map_key]["object_data"])
 
-            case ["minimap"]:
-                if map_data["map2"] is not None:
-                    map_key = choose_map()
-                minimap.main(
-                    map_data[map_key]["general"],
-                    map_data[map_key]["terrain"],
-                    map_data[map_key]["object_data"],
-                    map_data[map_key]["object_defs"]
-                )
-                busy = False
+                case ["minimap"]:
+                    map_key = get_map_key()
+                    minimap.main(
+                        map_data[map_key]["general"],
+                        map_data[map_key]["terrain"],
+                        map_data[map_key]["object_data"],
+                        map_data[map_key]["object_defs"]
+                    )
 
-            case ["h"] | ["hlp"] | ['help']:
-                print_cyan(
-                    "\n"
-                    "*COMMANDS*\n"
-                    "open | load\n"
-                    "save\n"
-                    "print\n"
-                    "export\n"
-                    "h | hlp | help\n"
-                    "q | quit | exit\n"
-                    "\n"
-                    "*VALID KEYS FOR PRINT*\n"
-                    "general\n"
-                    "player_specs\n"
-                    "conditions\n"
-                    "teams\n"
-                    "start_heroes\n"
-                    "ban_flags\n"
-                    "rumors\n"
-                    "hero_data\n"
-                    "terrain\n"
-                    "object_defs\n"
-                    "object_data\n"
-                    "events\n"
-                    "null_bytes\n"
-                    "\n"
-                    "*SCRIPTS*\n"
-                    "minimap\n"
-                    "towns\n"
-                    "swap\n"
-                    "count | list\n"
-                    "guards"
-                )
-                busy = False
+                case ["h"] | ["hlp"] | ['help']:
+                    print_cyan(
+                        "\n"
+                        "*COMMANDS*\n"
+                        "open | load\n"
+                        "save\n"
+                        "print\n"
+                        "export\n"
+                        "h | hlp | help\n"
+                        "q | quit | exit\n"
+                        "\n"
+                        "*VALID KEYS FOR PRINT*\n"
+                        "general\n"
+                        "player_specs\n"
+                        "conditions\n"
+                        "teams\n"
+                        "start_heroes\n"
+                        "ban_flags\n"
+                        "rumors\n"
+                        "hero_data\n"
+                        "terrain\n"
+                        "object_defs\n"
+                        "object_data\n"
+                        "events\n"
+                        "null_bytes\n"
+                        "\n"
+                        "*SCRIPTS*\n"
+                        "minimap\n"
+                        "towns\n"
+                        "swap\n"
+                        "count | list\n"
+                        "guards"
+                    )
 
-            case [cmd]:
-                if cmd in EXIT_COMMANDS:
-                    print(f"{color_reset}")
-                    break
-                else:
-                    print_error("Error: Unrecognized command.")
-                    time.sleep(SLEEP_TIME)
-                    busy = False
+                case [cmd]:
+                    if cmd in EXIT_COMMANDS:
+                        print(f"{color_reset}")
+                        break
+                    else:
+                        print_error("Error: Unrecognized command.")
+                        time.sleep(SLEEP_TIME)
+        finally:
+            busy = False
 
 if __name__ == "__main__":
     main()
