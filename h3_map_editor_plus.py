@@ -3,15 +3,16 @@
 from sys  import argv
 from gzip import open
 
+import time
+import os
+
+from src.constants import *
 from src.scripts import count
 from src.scripts import export
 from src.scripts import guards
 from src.scripts import minimap
 from src.scripts import swap
 from src.scripts import towns
-
-import time
-from src.constants import *
 
 import src.file_io as io
 import src.handler_01_general            as h1
@@ -56,7 +57,7 @@ def main() -> None:
 
     map_key = "map1"
     map_data = {map_key: {}}
-    is_command_running = False
+    busy = False
     yellow = "\033[33m"
     red = "\033[31m"
     cyan = "\033[36m"
@@ -73,20 +74,20 @@ def main() -> None:
     # HELPER FUNCTIONS #
     ####################
 
-    def print_cyan(text):
+    def print_cyan(text: str) -> None:
         print(f"{cyan}{text}{color_reset}")
 
-    def print_prompt(prompt):
+    def print_prompt(prompt: str) -> str:
         return input(f"\n{yellow}[{prompt}] > {color_reset}")
 
-    def print_flush(text):
+    def print_flush(text: str) -> None:
         print(f"{white}{text}{color_reset}", end=" ", flush=True)
 
-    def print_done():
+    def print_done() -> None:
         print(f"{green}DONE{color_reset}")
         time.sleep(SLEEP_TIME)
 
-    def print_error(error):
+    def print_error(error: str) -> None:
         print(f"{red}{error}{color_reset}")
         time.sleep(SLEEP_TIME)
 
@@ -180,11 +181,14 @@ def main() -> None:
 
         print_done()
 
-        print_cyan("------------------------------------------------------------")
+        terminal_width = os.get_terminal_size().columns
+
+        print("")
+        print_cyan("-" * terminal_width)
         print_cyan(f"{map_data[map_key]['general']['name']}")
-        print_cyan("------------------------------------------------------------")
+        print_cyan("-" * terminal_width)
         print_cyan(f"{map_data[map_key]['general']['description']}")
-        print_cyan("------------------------------------------------------------")
+        print_cyan("-" * terminal_width)
 
     def save_maps() -> None:
         # Check if a second map is open
@@ -240,20 +244,20 @@ def main() -> None:
     open_maps()
 
     while True:
-        if not is_command_running:
+        if not busy:
             command = print_prompt("Enter command")
-            is_command_running = True
+            busy = True
         else:
             continue
 
         match command.split():
             case ["open"] | ["load"]:
                 open_maps()
-                is_command_running = False
+                busy = False
 
             case ["save"]:
                 save_maps()
-                is_command_running = False
+                busy = False
 
             case ["print", data_key] | ["show", data_key]:
                 if map_data["map2"] is not None:
@@ -262,25 +266,25 @@ def main() -> None:
                     print_cyan(map_data[map_key][data_key])
                 else:
                     print_error("Error: Unrecognized data key.")
-                is_command_running = False
+                busy = False
 
             case ["export", filename]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 export.main(map_data[map_key], filename)
-                is_command_running = False
+                busy = False
 
             case ["count"] | ["list"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 count.main(map_data[map_key]["object_data"])
-                is_command_running = False
+                busy = False
 
             case ["guards"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 guards.main(map_data[map_key]["object_data"])
-                is_command_running = False
+                busy = False
 
             case ["swap"]:
                 if map_data["map2"] is not None:
@@ -292,13 +296,13 @@ def main() -> None:
                     map_data[map_key]["general"]["is_two_level"],
                     map_data[map_key]["conditions"]
                 )
-                is_command_running = False
+                busy = False
 
             case ["towns"]:
                 if map_data["map2"] is not None:
                     map_key = choose_map()
                 towns.main(map_data[map_key]["object_data"])
-                is_command_running = False
+                busy = False
 
             case ["minimap"]:
                 if map_data["map2"] is not None:
@@ -309,10 +313,11 @@ def main() -> None:
                     map_data[map_key]["object_data"],
                     map_data[map_key]["object_defs"]
                 )
-                is_command_running = False
+                busy = False
 
             case ["h"] | ["hlp"] | ['help']:
                 print_cyan(
+                    "\n"
                     "*COMMANDS*\n"
                     "open | load\n"
                     "save\n"
@@ -343,16 +348,16 @@ def main() -> None:
                     "count | list\n"
                     "guards"
                 )
-                is_command_running = False
+                busy = False
 
             case [cmd]:
                 if cmd in EXIT_COMMANDS:
                     print(f"{color_reset}")
                     break
-
-            case _:
-                print_error("Error: Unrecognized command.")
-                is_command_running = False
+                else:
+                    print_error("Error: Unrecognized command.")
+                    time.sleep(SLEEP_TIME)
+                    busy = False
 
 if __name__ == "__main__":
     main()
