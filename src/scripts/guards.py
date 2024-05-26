@@ -44,7 +44,7 @@ def get_creature_text(creature: int, amount: int) -> str:
     return text + cd.NAME[creature]
 
 def main(obj_data: dict) -> dict:
-    print("\n---[ Generating guards (v.110) ]---\n")
+    print("\nGenerating guards...", end=" ", flush=True)
 
     valid_types = {
         od.ID.Pandoras_Box            : "{Pandora's Box}\n",
@@ -149,4 +149,4 @@ def main(obj_data: dict) -> dict:
               "for a total AI value of", generated_ai_value,
               f"({desired_guard_value} desired)")
 
-    print("\n---[ Finished generating guards ]---")
+    print("DONE")
