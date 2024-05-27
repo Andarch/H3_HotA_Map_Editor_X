@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
+from enum import IntEnum
 
 import src.file_io as io
-
-from enum import IntEnum
 
 # The terrain of a map is stored as follows:
 #

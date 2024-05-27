@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from enum import IntEnum
 
 class ID(IntEnum):
@@ -18,8 +16,8 @@ class ID(IntEnum):
     LEVEL_1_PLUS = 65533
     LEVEL_1 = 65534
     NONE = 65535 # 2 bytes max
-    
-    
+
+
 
     Pikeman              =   0
     Halberdier           =   1
@@ -262,10 +260,10 @@ NAME = [
     "Enchanters"   , "Sharpshooters"  , "Halflings"     , "Peasants"       ,
     "Boars"        , "Mummies"        , "Nomads"        , "Rogues"         ,
     "Trolls"       ,
-    
+
     "Catapults" , "Ballistas"   , "First Aid Tents",
     "Ammo Carts", "Arrow Towers", "Cannons"        ,
-    
+
     "Sea Dogs"    , "Electric Towers",
     "Nymphs"      , "Oceanids"       , "Crew Mates", "Seamen"      ,
     "Pirates"     , "Corsairs"       , "Stormbirds", "Ayssids"     ,
@@ -273,7 +271,7 @@ NAME = [
     "Sea Serpents", "Haspids"        ,
 
     "Satyrs", "Fangarms", "Leprechauns", "Steel Golems",
-    
+
     "Halfling Grenadiers"  , "Mechanics"   , "Engineers"          , "Armadillos",
     "Bellwether Armadillos", "Automatons"  , "Sentinel Automatons", "Sandworms" ,
     "Olgoi-Khorkhoi"       , "Gunslingers" , "Bounty Hunters"     , "Couatls"   ,

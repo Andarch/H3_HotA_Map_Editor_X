@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-
 import src.file_io    as io
-import data.artifacts as ad  # Artifact details
-import data.creatures as cd  # Creature details
-import data.heroes    as hd  # Hero details
-import data.objects   as od  # Object details
-import data.skills    as skd # Skill details
-import data.spells    as spd # Spell details
+import data.artifacts as artifacts
+import data.creatures as creatures
+import data.heroes    as heroes
+import data.objects   as objects
+import data.skills    as skills
+import data.spells    as spells
 
 from src.handler_06_rumors_and_events import parse_events, write_events
 
@@ -30,7 +28,7 @@ def parse_object_defs() -> list:
         obj["placeable_terrain"]  = io.read_bits(2)
         obj["editor_section"]     = io.read_bits(2)
 
-        obj["type"]    = od.ID(io.read_int(4))
+        obj["type"]    = objects.ID(io.read_int(4))
         obj["subtype"] = get_subtype(obj["type"], io.read_int(4))
 
         obj["editor_group"] =      io.read_int(1)
@@ -58,30 +56,30 @@ def write_object_defs(info: list) -> None:
 
 def get_subtype(obj_type: int, i: int) -> int:
     match obj_type:
-        case od.ID.Artifact:                  return ad.ID(i)
-        case od.ID.Border_Guard:              return od.Border_Color(i)
-        case od.ID.Keymasters_Tent:           return od.Border_Color(i)
-        case od.ID.Cartographer:              return od.Cartographer(i)
-        case od.ID.Creature_Bank:             return od.Creature_Bank(i)
-        case od.ID.Creature_Generator_1:      return od.Dwelling(i)
-        case od.ID.Creature_Generator_4:      return od.Dwelling_Multi(i)
-        case od.ID.Hero:                      return hd.Classes(i)
-        case od.ID.Hill_Fort:                 return od.Hill_Fort(i)
-        case od.ID.Monolith_One_Way_Entrance: return od.One_Way_Monolith(i)
-        case od.ID.Monolith_One_Way_Exit:     return od.One_Way_Monolith(i)
-        case od.ID.Two_Way_Monolith:          return od.Two_Way_Monolith(i)
-        case od.ID.Mine:                      return od.Resource(i)
-        case od.ID.Monster:                   return cd.ID(i)
-        case od.ID.Resource:                  return od.Resource(i)
-        case od.ID.Town:                      return od.Town(i)
-        case od.ID.HotA_Decoration_1:         return od.HotA_Decoration_1(i)
-        case od.ID.HotA_Decoration_2:         return od.HotA_Decoration_2(i)
-        case od.ID.HotA_Ground:               return od.HotA_Ground(i)
-        case od.ID.HotA_Warehouse:            return od.Resource(i)
-        case od.ID.HotA_Visitable_1:          return od.HotA_Visitable_1(i)
-        case od.ID.HotA_Collectible:          return od.HotA_Collectible(i)
-        case od.ID.HotA_Visitable_2:          return od.HotA_Visitable_2(i)
-        case od.ID.Border_Gate:               return od.Border_Color(i)
+        case objects.ID.Artifact:                  return artifacts.ID(i)
+        case objects.ID.Border_Guard:              return objects.Border_Color(i)
+        case objects.ID.Keymasters_Tent:           return objects.Border_Color(i)
+        case objects.ID.Cartographer:              return objects.Cartographer(i)
+        case objects.ID.Creature_Bank:             return objects.Creature_Bank(i)
+        case objects.ID.Creature_Generator_1:      return objects.Dwelling(i)
+        case objects.ID.Creature_Generator_4:      return objects.Dwelling_Multi(i)
+        case objects.ID.Hero:                      return heroes.Classes(i)
+        case objects.ID.Hill_Fort:                 return objects.Hill_Fort(i)
+        case objects.ID.Monolith_One_Way_Entrance: return objects.One_Way_Monolith(i)
+        case objects.ID.Monolith_One_Way_Exit:     return objects.One_Way_Monolith(i)
+        case objects.ID.Two_Way_Monolith:          return objects.Two_Way_Monolith(i)
+        case objects.ID.Mine:                      return objects.Resource(i)
+        case objects.ID.Monster:                   return creatures.ID(i)
+        case objects.ID.Resource:                  return objects.Resource(i)
+        case objects.ID.Town:                      return objects.Town(i)
+        case objects.ID.HotA_Decoration_1:         return objects.HotA_Decoration_1(i)
+        case objects.ID.HotA_Decoration_2:         return objects.HotA_Decoration_2(i)
+        case objects.ID.HotA_Ground:               return objects.HotA_Ground(i)
+        case objects.ID.HotA_Warehouse:            return objects.Resource(i)
+        case objects.ID.HotA_Visitable_1:          return objects.HotA_Visitable_1(i)
+        case objects.ID.HotA_Collectible:          return objects.HotA_Collectible(i)
+        case objects.ID.HotA_Visitable_2:          return objects.HotA_Visitable_2(i)
+        case objects.ID.Border_Gate:               return objects.Border_Color(i)
     return i
 
 def parse_object_data(object_defs: list) -> list:
@@ -100,97 +98,97 @@ def parse_object_data(object_defs: list) -> list:
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
         match obj["type"]:
-            case od.ID.Pandoras_Box:       obj = parse_pandoras_box(obj)
-            case od.ID.Black_Market:       obj = parse_black_market(obj)
-            case od.ID.Campfire:           obj = parse_campfire(obj)
-            case od.ID.Corpse:             obj = parse_corpse(obj)
-            case od.ID.Event:              obj = parse_event(obj)
-            case od.ID.Flotsam:            obj = parse_flotsam(obj)
-            case od.ID.Lean_To:            obj = parse_lean_to(obj)
-            case od.ID.Pyramid:            obj = parse_pyramid(obj)
-            case od.ID.Scholar:            obj = parse_scholar(obj)
-            case od.ID.Sea_Chest:          obj = parse_sea_chest(obj)
-            case od.ID.Seers_Hut:          obj = parse_seers_hut(obj)
-            case od.ID.Shipwreck_Survivor: obj = parse_shipwreck_survivor(obj)
-            case od.ID.Treasure_Chest:     obj = parse_treasure_chest(obj)
-            case od.ID.Tree_of_Knowledge:  obj = parse_tree_of_knowledge(obj)
-            case od.ID.University:         obj = parse_university(obj)
-            case od.ID.Wagon:              obj = parse_wagon(obj)
-            case od.ID.Warriors_Tomb:      obj = parse_warriors_tomb(obj)
+            case objects.ID.Pandoras_Box:       obj = parse_pandoras_box(obj)
+            case objects.ID.Black_Market:       obj = parse_black_market(obj)
+            case objects.ID.Campfire:           obj = parse_campfire(obj)
+            case objects.ID.Corpse:             obj = parse_corpse(obj)
+            case objects.ID.Event:              obj = parse_event(obj)
+            case objects.ID.Flotsam:            obj = parse_flotsam(obj)
+            case objects.ID.Lean_To:            obj = parse_lean_to(obj)
+            case objects.ID.Pyramid:            obj = parse_pyramid(obj)
+            case objects.ID.Scholar:            obj = parse_scholar(obj)
+            case objects.ID.Sea_Chest:          obj = parse_sea_chest(obj)
+            case objects.ID.Seers_Hut:          obj = parse_seers_hut(obj)
+            case objects.ID.Shipwreck_Survivor: obj = parse_shipwreck_survivor(obj)
+            case objects.ID.Treasure_Chest:     obj = parse_treasure_chest(obj)
+            case objects.ID.Tree_of_Knowledge:  obj = parse_tree_of_knowledge(obj)
+            case objects.ID.University:         obj = parse_university(obj)
+            case objects.ID.Wagon:              obj = parse_wagon(obj)
+            case objects.ID.Warriors_Tomb:      obj = parse_warriors_tomb(obj)
 
-            case od.ID.Random_Dwelling:         obj = parse_dwelling(obj)
-            case od.ID.Random_Dwelling_Leveled: obj = parse_leveled(obj)
-            case od.ID.Random_Dwelling_Faction: obj = parse_faction(obj)
+            case objects.ID.Random_Dwelling:         obj = parse_dwelling(obj)
+            case objects.ID.Random_Dwelling_Leveled: obj = parse_leveled(obj)
+            case objects.ID.Random_Dwelling_Faction: obj = parse_faction(obj)
 
-            case od.ID.Quest_Guard: obj["quest"]  = parse_quest()
-            case od.ID.Grail:       obj["radius"] = io.read_int(4)
-            case od.ID.Witch_Hut:   obj["skills"] = io.read_bits(4)
+            case objects.ID.Quest_Guard: obj["quest"]  = parse_quest()
+            case objects.ID.Grail:       obj["radius"] = io.read_int(4)
+            case objects.ID.Witch_Hut:   obj["skills"] = io.read_bits(4)
 
-            case od.ID.HotA_Collectible: obj = parse_hota_collectible(obj)
-            case od.ID.Abandoned_Mine:   obj = parse_abandoned_mine(obj)
+            case objects.ID.HotA_Collectible: obj = parse_hota_collectible(obj)
+            case objects.ID.Abandoned_Mine:   obj = parse_abandoned_mine(obj)
 
-            case od.ID.Mine:
-                if obj["subtype"] == od.Resource.Abandoned:
+            case objects.ID.Mine:
+                if obj["subtype"] == objects.Resource.Abandoned:
                     obj = parse_abandoned_mine(obj)
                 else: obj["owner"] = io.read_int(4)
 
-            case od.ID.HotA_Visitable_2:
+            case objects.ID.HotA_Visitable_2:
                 if obj["subtype"] == 0: # HotA Seafaring_Academy
                     obj = parse_university(obj)
 
             # Some of the HotA objects are implemented in a pretty hacky way.
-            case od.ID.Border_Gate:
+            case objects.ID.Border_Gate:
                 if obj["subtype"] == 1000: # HotA Quest Gate
                     obj["quest"] = parse_quest()
                 elif obj["subtype"] == 1001: # HotA Grave
                     obj = parse_grave(obj)
 
-            case od.ID.Town:        obj = parse_town(obj)
-            case od.ID.Random_Town: obj = parse_town(obj, random=True)
+            case objects.ID.Town:        obj = parse_town(obj)
+            case objects.ID.Random_Town: obj = parse_town(obj, random=True)
 
-            case (od.ID.Resource | od.ID.Random_Resource):
+            case (objects.ID.Resource | objects.ID.Random_Resource):
                 obj = parse_resource(obj)
 
-            case (od.ID.Hero | od.ID.Prison | od.ID.Random_Hero):
+            case (objects.ID.Hero | objects.ID.Prison | objects.ID.Random_Hero):
                 obj = parse_hero(obj)
 
-            case (od.ID.Monster          | od.ID.Random_Monster   |
-                  od.ID.Random_Monster_1 | od.ID.Random_Monster_2 |
-                  od.ID.Random_Monster_3 | od.ID.Random_Monster_4 |
-                  od.ID.Random_Monster_5 | od.ID.Random_Monster_6 |
-                  od.ID.Random_Monster_7):
+            case (objects.ID.Monster          | objects.ID.Random_Monster   |
+                  objects.ID.Random_Monster_1 | objects.ID.Random_Monster_2 |
+                  objects.ID.Random_Monster_3 | objects.ID.Random_Monster_4 |
+                  objects.ID.Random_Monster_5 | objects.ID.Random_Monster_6 |
+                  objects.ID.Random_Monster_7):
                 obj = parse_monster(obj)
 
-            case (od.ID.Artifact                 | od.ID.Random_Artifact |
-                  od.ID.Random_Treasure_Artifact | od.ID.Random_Minor_Artifact |
-                  od.ID.Random_Major_Artifact    | od.ID.Random_Relic):
+            case (objects.ID.Artifact                 | objects.ID.Random_Artifact |
+                  objects.ID.Random_Treasure_Artifact | objects.ID.Random_Minor_Artifact |
+                  objects.ID.Random_Major_Artifact    | objects.ID.Random_Relic):
                 obj = parse_artifact(obj)
 
-            case (od.ID.Ocean_Bottle | od.ID.Sign):
+            case (objects.ID.Ocean_Bottle | objects.ID.Sign):
                 obj["message"] = io.read_str(io.read_int(4))
                 io.seek(4)
 
-            case (od.ID.Creature_Generator_1 | od.ID.Lighthouse |
-                  od.ID.Creature_Generator_4 | od.ID.Shipyard):
+            case (objects.ID.Creature_Generator_1 | objects.ID.Lighthouse |
+                  objects.ID.Creature_Generator_4 | objects.ID.Shipyard):
                 obj["owner"] = io.read_int(4)
 
-            case (od.ID.Garrison | od.ID.Garrison_Vertical):
+            case (objects.ID.Garrison | objects.ID.Garrison_Vertical):
                 obj = parse_garrison(obj)
 
             # The level 4 HotA Shrine is just a subtype of the level 1 Shrine.
-            case (od.ID.Shrine_of_Magic_Incantation |
-                  od.ID.Shrine_of_Magic_Gesture     |
-                  od.ID.Shrine_of_Magic_Thought):
-                obj["spell"] = spd.ID(io.read_int(4))
+            case (objects.ID.Shrine_of_Magic_Incantation |
+                  objects.ID.Shrine_of_Magic_Gesture     |
+                  objects.ID.Shrine_of_Magic_Thought):
+                obj["spell"] = spells.ID(io.read_int(4))
 
-            case od.ID.Spell_Scroll:
+            case objects.ID.Spell_Scroll:
                 obj = parse_spell_scroll(obj)
 
-            case od.ID.Hero_Placeholder:
+            case objects.ID.Hero_Placeholder:
                 obj = parse_hero_placeholder(obj)
 
-            case (od.ID.Creature_Bank | od.ID.Derelict_Ship |
-                  od.ID.Dragon_Utopia | od.ID.Crypt | od.ID.Shipwreck):
+            case (objects.ID.Creature_Bank | objects.ID.Derelict_Ship |
+                  objects.ID.Dragon_Utopia | objects.ID.Crypt | objects.ID.Shipwreck):
                 obj = parse_bank(obj)
 
         info.append(obj)
@@ -209,117 +207,117 @@ def write_object_data(info: list) -> None:
         io.write_int(0, 5)
 
         match obj["type"]:
-            case od.ID.Pandoras_Box:       write_pandoras_box(obj)
-            case od.ID.Black_Market:       write_black_market(obj)
-            case od.ID.Campfire:           write_campfire(obj)
-            case od.ID.Corpse:             write_corpse(obj)
-            case od.ID.Event:              write_event(obj)
-            case od.ID.Flotsam:            write_flotsam(obj)
-            case od.ID.Lean_To:            write_lean_to(obj)
-            case od.ID.Pyramid:            write_pyramid(obj)
-            case od.ID.Scholar:            write_scholar(obj)
-            case od.ID.Sea_Chest:          write_sea_chest(obj)
-            case od.ID.Seers_Hut:          write_seers_hut(obj)
-            case od.ID.Shipwreck_Survivor: write_shipwreck_survivor(obj)
-            case od.ID.Treasure_Chest:     write_treasure_chest(obj)
-            case od.ID.Tree_of_Knowledge:  write_tree_of_knowledge(obj)
-            case od.ID.University:         write_university(obj)
-            case od.ID.Wagon:              write_wagon(obj)
-            case od.ID.Warriors_Tomb:      write_warriors_tomb(obj)
+            case objects.ID.Pandoras_Box:       write_pandoras_box(obj)
+            case objects.ID.Black_Market:       write_black_market(obj)
+            case objects.ID.Campfire:           write_campfire(obj)
+            case objects.ID.Corpse:             write_corpse(obj)
+            case objects.ID.Event:              write_event(obj)
+            case objects.ID.Flotsam:            write_flotsam(obj)
+            case objects.ID.Lean_To:            write_lean_to(obj)
+            case objects.ID.Pyramid:            write_pyramid(obj)
+            case objects.ID.Scholar:            write_scholar(obj)
+            case objects.ID.Sea_Chest:          write_sea_chest(obj)
+            case objects.ID.Seers_Hut:          write_seers_hut(obj)
+            case objects.ID.Shipwreck_Survivor: write_shipwreck_survivor(obj)
+            case objects.ID.Treasure_Chest:     write_treasure_chest(obj)
+            case objects.ID.Tree_of_Knowledge:  write_tree_of_knowledge(obj)
+            case objects.ID.University:         write_university(obj)
+            case objects.ID.Wagon:              write_wagon(obj)
+            case objects.ID.Warriors_Tomb:      write_warriors_tomb(obj)
 
-            case od.ID.Random_Dwelling:         write_dwelling(obj)
-            case od.ID.Random_Dwelling_Leveled: write_leveled(obj)
-            case od.ID.Random_Dwelling_Faction: write_faction(obj)
+            case objects.ID.Random_Dwelling:         write_dwelling(obj)
+            case objects.ID.Random_Dwelling_Leveled: write_leveled(obj)
+            case objects.ID.Random_Dwelling_Faction: write_faction(obj)
 
-            case od.ID.Quest_Guard: write_quest(obj["quest"])
-            case od.ID.Grail:       io.write_int(obj["radius"], 4)
-            case od.ID.Witch_Hut:   io.write_bits(obj["skills"])
+            case objects.ID.Quest_Guard: write_quest(obj["quest"])
+            case objects.ID.Grail:       io.write_int(obj["radius"], 4)
+            case objects.ID.Witch_Hut:   io.write_bits(obj["skills"])
 
-            case od.ID.HotA_Collectible: write_hota_collectible(obj)
-            case od.ID.Abandoned_Mine:   write_abandoned_mine(obj)
+            case objects.ID.HotA_Collectible: write_hota_collectible(obj)
+            case objects.ID.Abandoned_Mine:   write_abandoned_mine(obj)
 
-            case od.ID.Mine:
-                if obj["subtype"] == od.Resource.Abandoned:
+            case objects.ID.Mine:
+                if obj["subtype"] == objects.Resource.Abandoned:
                     write_abandoned_mine(obj)
                 else: io.write_int(obj["owner"], 4)
 
-            case od.ID.HotA_Visitable_2:
+            case objects.ID.HotA_Visitable_2:
                 if obj["subtype"] == 0: # HotA Seafaring_Academy
                     write_university(obj)
-            case od.ID.Border_Gate:
+            case objects.ID.Border_Gate:
                 if obj["subtype"] == 1000: # HotA Quest Gate
                     write_quest(obj["quest"])
                 elif obj["subtype"] == 1001: # HotA Grave
                     write_grave(obj)
 
-            case od.ID.Town:        write_town(obj)
-            case od.ID.Random_Town: write_town(obj, random=True)
+            case objects.ID.Town:        write_town(obj)
+            case objects.ID.Random_Town: write_town(obj, random=True)
 
-            case (od.ID.Resource | od.ID.Random_Resource):
+            case (objects.ID.Resource | objects.ID.Random_Resource):
                 write_resource(obj)
 
-            case (od.ID.Hero | od.ID.Prison | od.ID.Random_Hero):
+            case (objects.ID.Hero | objects.ID.Prison | objects.ID.Random_Hero):
                 write_hero(obj)
 
-            case (od.ID.Monster          | od.ID.Random_Monster   |
-                  od.ID.Random_Monster_1 | od.ID.Random_Monster_2 |
-                  od.ID.Random_Monster_3 | od.ID.Random_Monster_4 |
-                  od.ID.Random_Monster_5 | od.ID.Random_Monster_6 |
-                  od.ID.Random_Monster_7):
+            case (objects.ID.Monster          | objects.ID.Random_Monster   |
+                  objects.ID.Random_Monster_1 | objects.ID.Random_Monster_2 |
+                  objects.ID.Random_Monster_3 | objects.ID.Random_Monster_4 |
+                  objects.ID.Random_Monster_5 | objects.ID.Random_Monster_6 |
+                  objects.ID.Random_Monster_7):
                 write_monster(obj)
 
-            case (od.ID.Artifact                 | od.ID.Random_Artifact |
-                  od.ID.Random_Treasure_Artifact | od.ID.Random_Minor_Artifact |
-                  od.ID.Random_Major_Artifact    | od.ID.Random_Relic):
+            case (objects.ID.Artifact                 | objects.ID.Random_Artifact |
+                  objects.ID.Random_Treasure_Artifact | objects.ID.Random_Minor_Artifact |
+                  objects.ID.Random_Major_Artifact    | objects.ID.Random_Relic):
                 write_artifact(obj)
 
-            case (od.ID.Ocean_Bottle | od.ID.Sign):
+            case (objects.ID.Ocean_Bottle | objects.ID.Sign):
                 io.write_int(len(obj["message"]), 4)
                 io.write_str(    obj["message"])
                 io.write_int(0, 4)
 
-            case (od.ID.Creature_Generator_1 | od.ID.Lighthouse |
-                  od.ID.Creature_Generator_4 | od.ID.Shipyard):
+            case (objects.ID.Creature_Generator_1 | objects.ID.Lighthouse |
+                  objects.ID.Creature_Generator_4 | objects.ID.Shipyard):
                 io.write_int(obj["owner"], 4)
 
-            case (od.ID.Garrison | od.ID.Garrison_Vertical):
+            case (objects.ID.Garrison | objects.ID.Garrison_Vertical):
                 write_garrison(obj)
 
-            case (od.ID.Shrine_of_Magic_Incantation |
-                  od.ID.Shrine_of_Magic_Gesture     |
-                  od.ID.Shrine_of_Magic_Thought):
+            case (objects.ID.Shrine_of_Magic_Incantation |
+                  objects.ID.Shrine_of_Magic_Gesture     |
+                  objects.ID.Shrine_of_Magic_Thought):
                 io.write_int(obj["spell"], 4)
 
-            case od.ID.Spell_Scroll:
+            case objects.ID.Spell_Scroll:
                 write_spell_scroll(obj)
 
-            case od.ID.Hero_Placeholder:
+            case objects.ID.Hero_Placeholder:
                 write_hero_placeholder(obj)
 
-            case (od.ID.Creature_Bank | od.ID.Derelict_Ship |
-                  od.ID.Dragon_Utopia | od.ID.Crypt | od.ID.Shipwreck):
+            case (objects.ID.Creature_Bank | objects.ID.Derelict_Ship |
+                  objects.ID.Dragon_Utopia | objects.ID.Crypt | objects.ID.Shipwreck):
                 write_bank(obj)
 
 def parse_hota_collectible(obj: dict) -> dict:
     match obj["subtype"]:
-        case od.HotA_Collectible.Ancient_Lamp: obj = parse_ancient_lamp(obj)
-        case od.HotA_Collectible.Sea_Barrel:   obj = parse_sea_barrel(obj)
-        case od.HotA_Collectible.Jetsam:       obj = parse_flotsam(obj)
-        case od.HotA_Collectible.Vial_of_Mana: obj = parse_vial_of_mana(obj)
+        case objects.HotA_Collectible.Ancient_Lamp: obj = parse_ancient_lamp(obj)
+        case objects.HotA_Collectible.Sea_Barrel:   obj = parse_sea_barrel(obj)
+        case objects.HotA_Collectible.Jetsam:       obj = parse_flotsam(obj)
+        case objects.HotA_Collectible.Vial_of_Mana: obj = parse_vial_of_mana(obj)
     return obj
 
 def write_hota_collectible(obj: dict) -> None:
     match obj["subtype"]:
-        case od.HotA_Collectible.Ancient_Lamp: write_ancient_lamp(obj)
-        case od.HotA_Collectible.Sea_Barrel:   write_sea_barrel(obj)
-        case od.HotA_Collectible.Jetsam:       write_flotsam(obj)
-        case od.HotA_Collectible.Vial_of_Mana: write_vial_of_mana(obj)
+        case objects.HotA_Collectible.Ancient_Lamp: write_ancient_lamp(obj)
+        case objects.HotA_Collectible.Sea_Barrel:   write_sea_barrel(obj)
+        case objects.HotA_Collectible.Jetsam:       write_flotsam(obj)
+        case objects.HotA_Collectible.Vial_of_Mana: write_vial_of_mana(obj)
 
 def parse_creatures(amount: int = 7) -> list:
     info = []
     for _ in range(amount):
         creature = {}
-        creature["id"] = cd.ID(io.read_int(2))
+        creature["id"] = creatures.ID(io.read_int(2))
         creature["amount"]   = io.read_int(2)
         info.append(creature)
     return info
@@ -397,11 +395,11 @@ def parse_contents() -> dict:
         contents["Artifacts"].append(parse_hero_artifact())
 
     for _ in range(io.read_int(1)):
-        contents["Spells"].append(spd.ID(io.read_int(1)))
+        contents["Spells"].append(spells.ID(io.read_int(1)))
 
     for _ in range(io.read_int(1)):
         creature = {}
-        creature["id"] = cd.ID(io.read_int(2))
+        creature["id"] = creatures.ID(io.read_int(2))
         creature["amount"]   = io.read_int(2)
         contents["Creatures"].append(creature)
 
@@ -502,7 +500,7 @@ def parse_campfire(obj: dict) -> dict:
 
     for _ in range(2):
         amount = io.read_int(4)
-        obj["resources"][od.Resource(io.read_int(1))] = amount
+        obj["resources"][objects.Resource(io.read_int(1))] = amount
 
     return obj
 
@@ -518,7 +516,7 @@ def parse_bank(obj: dict) -> dict:
     obj["rewards"]        = []
 
     for _ in range(io.read_int(4)):
-        obj["rewards"].append(ad.ID(io.read_int(4)))
+        obj["rewards"].append(artifacts.ID(io.read_int(4)))
 
     return obj
 
@@ -537,7 +535,7 @@ class Corpse(IntEnum):
 
 def parse_corpse(obj: dict) -> dict:
     obj["contents"] = Corpse(io.read_int(4))
-    obj["value"]    =  ad.ID(io.read_int(4))
+    obj["value"]    =  artifacts.ID(io.read_int(4))
     return obj
 
 def write_corpse(obj: dict) -> None:
@@ -630,7 +628,7 @@ def parse_hero(obj: dict) -> dict:
         "level"             : 1
     }
 
-    hero["id"] = hd.ID(io.read_int(1))
+    hero["id"] = heroes.ID(io.read_int(1))
 
     if io.read_int(1): # Is the name set?
         hero["name"] = io.read_str(io.read_int(4))
@@ -673,7 +671,7 @@ def parse_hero(obj: dict) -> dict:
         hero["artifacts_equipped"]["war_machine_4"] = parse_hero_artifact()
         hero["artifacts_equipped"]["spellbook"]     = parse_hero_artifact()
         hero["artifacts_equipped"]["misc_5"]        = parse_hero_artifact()
-        
+
         for _ in range(io.read_int(2)):
             hero["artifacts_backpack"].append(parse_hero_artifact())
 
@@ -772,7 +770,7 @@ def write_hero(obj: dict) -> None:
         write_hero_artifact(hero["artifacts_equipped"]["war_machine_4"])
         write_hero_artifact(hero["artifacts_equipped"]["spellbook"])
         write_hero_artifact(hero["artifacts_equipped"]["misc_5"])
-        
+
         io.write_int(len(hero["artifacts_backpack"]), 2)
         for artifact in hero["artifacts_backpack"]:
             write_hero_artifact(artifact)
@@ -816,11 +814,11 @@ def write_hero(obj: dict) -> None:
 
 def parse_hero_artifact() -> list:
     artifact = [
-        ad.ID(io.read_int(2)),
+        artifacts.ID(io.read_int(2)),
         io.read_int(2)
     ]
-    if artifact[0] == ad.ID.Spell_Scroll:
-        artifact[1] = spd.ID(artifact[1])
+    if artifact[0] == artifacts.ID.Spell_Scroll:
+        artifact[1] = spells.ID(artifact[1])
     return artifact
 
 def write_hero_artifact(artifact: list) -> None:
@@ -829,9 +827,9 @@ def write_hero_artifact(artifact: list) -> None:
 
 def parse_hero_placeholder(obj: dict) -> dict:
     obj["owner"]   =       io.read_int(1)
-    obj["hero_id"] = hd.ID(io.read_int(1))
+    obj["hero_id"] = heroes.ID(io.read_int(1))
 
-    if obj["hero_id"] == hd.ID.Default:
+    if obj["hero_id"] == heroes.ID.Default:
         obj["power_rating"] = io.read_int(1)
 
     return obj
@@ -840,14 +838,14 @@ def write_hero_placeholder(obj: dict) -> None:
     io.write_int(obj["owner"], 1)
     io.write_int(obj["hero_id"], 1)
 
-    if obj["hero_id"] == hd.ID.Default:
+    if obj["hero_id"] == heroes.ID.Default:
         io.write_int(obj["power_rating"], 1)
 
 def parse_lean_to(obj: dict) -> dict:
     obj["contents"]    =          io.read_int(4)
     obj["trash_bytes"] =          io.read_int(4)
     obj["amount"]      =          io.read_int(4)
-    obj["resource"] = od.Resource(io.read_int(1))
+    obj["resource"] = objects.Resource(io.read_int(1))
     io.seek(5)
     return obj
 
@@ -876,7 +874,7 @@ def parse_monster(obj: dict) -> dict:
         obj["resources"] = []
         for _ in range(7):
             obj["resources"].append(io.read_int(4))
-        obj["artifact"] = ad.ID(io.read_int(2))
+        obj["artifact"] = artifacts.ID(io.read_int(2))
 
     obj["monster_never_flees"]     = bool(io.read_int(1))
     obj["quantity_does_not_grow"]  = bool(io.read_int(1))
@@ -918,7 +916,7 @@ def write_monster(obj: dict) -> None:
 
 def parse_pyramid(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    obj["spell"] = spd.ID(io.read_int(4))
+    obj["spell"] = spells.ID(io.read_int(4))
     return obj
 
 def write_pyramid(obj: dict) -> None:
@@ -1012,12 +1010,12 @@ def write_resource(obj: dict) -> None:
 
 def parse_scholar(obj: dict) -> dict:
     obj["reward_type"] = io.read_int(1)
-    
+
     match obj["reward_type"]:
         case 255: io.seek(1) # Random
-        case 0:   obj["reward_value"] = skd.Primary(io.read_int(1))
-        case 1:   obj["reward_value"] = skd.Secondary(io.read_int(1))
-        case 2:   obj["reward_value"] = spd.ID(io.read_int(1))
+        case 0:   obj["reward_value"] = skills.Primary(io.read_int(1))
+        case 1:   obj["reward_value"] = skills.Secondary(io.read_int(1))
+        case 2:   obj["reward_value"] = spells.ID(io.read_int(1))
 
     io.seek(6)
     return obj
@@ -1033,7 +1031,7 @@ def write_scholar(obj: dict) -> None:
 
 def parse_sea_chest(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = ad.ID(io.read_int(4))
+    obj["artifact"] = artifacts.ID(io.read_int(4))
     return obj
 
 def write_sea_chest(obj: dict) -> None:
@@ -1077,12 +1075,12 @@ def parse_quest() -> dict:
             quest["value"] = io.read_int(4)
 
         case Quest.ACHIEVE_PRIMARY_SKILL_LEVEL:
-            skills = []
-            skills.append(io.read_int(1))
-            skills.append(io.read_int(1))
-            skills.append(io.read_int(1))
-            skills.append(io.read_int(1))
-            quest["value"] = skills
+            primary_skills = []
+            primary_skills.append(io.read_int(1))
+            primary_skills.append(io.read_int(1))
+            primary_skills.append(io.read_int(1))
+            primary_skills.append(io.read_int(1))
+            quest["value"] = primary_skills
 
         case (Quest.DEFEAT_SPECIFIC_HERO | Quest.DEFEAT_SPECIFIC_MONSTER):
             # In parse_hero() and parse_monster(), these are the "start_bytes".
@@ -1093,8 +1091,8 @@ def parse_quest() -> dict:
             quest["value"] = []
             for _ in range(io.read_int(1)):
                 quest["value"].append([
-                    ad.ID(io.read_int(2)),
-                    spd.ID(io.read_int(2))
+                    artifacts.ID(io.read_int(2)),
+                    spells.ID(io.read_int(2))
                 ])
 
         case Quest.RETURN_WITH_CREATURES:
@@ -1106,7 +1104,7 @@ def parse_quest() -> dict:
                 quest["value"].append(io.read_int(4))
 
         case Quest.BE_SPECIFIC_HERO:
-            quest["value"] = hd.ID(io.read_int(1))
+            quest["value"] = heroes.ID(io.read_int(1))
 
         case Quest.BELONG_TO_SPECIFIC_PLAYER:
             quest["value"] = io.read_int(1)
@@ -1205,27 +1203,27 @@ def parse_reward() -> dict:
 
         case Reward.RESOURCE:
             reward["value"] = []
-            reward["value"].append(od.Resource(io.read_int(1)))
+            reward["value"].append(objects.Resource(io.read_int(1)))
             reward["value"].append(io.read_int(4))
 
         case Reward.PRIMARY_SKILL:
             reward["value"] = []
-            reward["value"].append(skd.Primary(io.read_int(1)))
+            reward["value"].append(skills.Primary(io.read_int(1)))
             reward["value"].append(io.read_int(1))
 
         case Reward.SECONDARY_SKILL:
             reward["value"] = []
-            reward["value"].append(skd.Secondary(io.read_int(1)))
+            reward["value"].append(skills.Secondary(io.read_int(1)))
             reward["value"].append(io.read_int(1))
 
         case Reward.ARTIFACT:
             reward["value"] = [
-                ad.ID(io.read_int(2)),
-                spd.ID(io.read_int(2))
+                artifacts.ID(io.read_int(2)),
+                spells.ID(io.read_int(2))
             ]
 
         case Reward.SPELL:
-            reward["value"] = spd.ID(io.read_int(1))
+            reward["value"] = spells.ID(io.read_int(1))
 
         case Reward.CREATURES:
             reward["value"] = parse_creatures(amount=1)
@@ -1285,7 +1283,7 @@ def write_seers_hut(obj: dict) -> None:
 
 def parse_shipwreck_survivor(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = ad.ID(io.read_int(4))
+    obj["artifact"] = artifacts.ID(io.read_int(4))
     return obj
 
 def write_shipwreck_survivor(obj: dict) -> None:
@@ -1295,7 +1293,7 @@ def write_shipwreck_survivor(obj: dict) -> None:
 def parse_spell_scroll(obj: dict) -> dict:
     if io.read_int(1):
         obj = parse_common(obj)
-    obj["spell"] = spd.ID(io.read_int(4))
+    obj["spell"] = spells.ID(io.read_int(4))
     return obj
 
 def write_spell_scroll(obj: dict) -> None:
@@ -1307,7 +1305,7 @@ def write_spell_scroll(obj: dict) -> None:
 def parse_treasure_chest(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["artifact"] = io.read_int(4)
-#    obj["artifact"] = ad.ID(io.read_int(4))
+#    obj["artifact"] = artifacts.ID(io.read_int(4))
     return obj
 
 def write_treasure_chest(obj: dict) -> None:
@@ -1338,9 +1336,9 @@ def write_university(obj: dict) -> None:
 
 def parse_wagon(obj: dict) -> dict:
     obj["contents"] =             io.read_int(4)
-    obj["artifact"] =       ad.ID(io.read_int(4))
+    obj["artifact"] =       artifacts.ID(io.read_int(4))
     obj["amount"]   =             io.read_int(4)
-    obj["resource"] = od.Resource(io.read_int(1))
+    obj["resource"] = objects.Resource(io.read_int(1))
 
     obj["mystery_bytes"] = io.read_raw(5)
     return obj
@@ -1354,7 +1352,7 @@ def write_wagon(obj: dict) -> None:
 
 def parse_warriors_tomb(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = ad.ID(io.read_int(4))
+    obj["artifact"] = artifacts.ID(io.read_int(4))
     return obj
 
 def write_warriors_tomb(obj: dict) -> None:
@@ -1428,7 +1426,7 @@ def parse_sea_barrel(obj: dict) -> dict:
     obj["contents"]      =             io.read_int(4)
     obj["trash_bytes"]   =             io.read_raw(4)
     obj["amount"]        =             io.read_int(4)
-    obj["resource"]      = od.Resource(io.read_int(1))
+    obj["resource"]      = objects.Resource(io.read_int(1))
     obj["mystery_bytes"] =             io.read_raw(5)
     return obj
 
@@ -1452,7 +1450,7 @@ def parse_abandoned_mine(obj: dict) -> dict:
     obj["resources"] =       io.read_bits(1)
     obj["mid_bytes"] =       io.read_raw(3)
     obj["is_custom"] =  bool(io.read_int(1))
-    obj["creature"]  = cd.ID(io.read_int(4))
+    obj["creature"]  = creatures.ID(io.read_int(4))
     obj["min_val"]   =       io.read_int(4)
     obj["max_val"]   =       io.read_int(4)
     return obj
@@ -1467,9 +1465,9 @@ def write_abandoned_mine(obj: dict) -> None:
 
 def parse_grave(obj: dict) -> dict:
     obj["contents"] =             io.read_int(4)
-    obj["artifact"] =       ad.ID(io.read_int(4))
+    obj["artifact"] =       artifacts.ID(io.read_int(4))
     obj["amount"]   =             io.read_int(4)
-    obj["resource"] = od.Resource(io.read_int(1))
+    obj["resource"] = objects.Resource(io.read_int(1))
     obj["mystery_bytes"] =        io.read_raw(5)
     return obj
 

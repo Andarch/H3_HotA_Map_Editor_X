@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from gzip import open
-import time
 import os
+from gzip import open
 
 from src import *
 
 EXIT_COMMANDS = ['q', 'exit', 'quit']
+ABORT_MSG = "Operation aborted."
 
 map_data = {
     "map1": {
@@ -40,33 +40,10 @@ def main() -> None:
     map_key = "map1"
     map_data = {map_key: {}}
     busy = False
-    yellow = "\033[33m"
-    red = "\033[31m"
-    cyan = "\033[36m"
-    green = "\033[32m"
-    white = "\033[37m"
-    color_reset = "\033[0m"
 
     ####################
     # HELPER FUNCTIONS #
     ####################
-
-    def print_cyan(text: str) -> None:
-        print(f"{cyan}{text}{color_reset}")
-
-    def print_prompt(prompt: str) -> str:
-        return input(f"\n{yellow}[{prompt}] > {color_reset}")
-
-    def print_flush(text: str) -> None:
-        print(f"{white}{text}{color_reset}", end=" ", flush=True)
-
-    def print_done() -> None:
-        print(f"{green}DONE{color_reset}")
-        time.sleep(SLEEP_TIME)
-
-    def print_error(error: str) -> None:
-        print(f"{red}{error}{color_reset}")
-        time.sleep(SLEEP_TIME)
 
     def get_map_key() -> str:
         if map_data["map2"] is not None:
@@ -76,7 +53,7 @@ def main() -> None:
     def choose_map() -> str:
         choice = print_prompt(f"Enter the map number to edit")
         if choice.lower() in EXIT_COMMANDS:
-            print("Aborting...")
+            print(ABORT_MSG)
             return
         return "map1" if choice == '1' else "map2"
 
@@ -85,26 +62,26 @@ def main() -> None:
             num_maps = print_prompt(f"Enter the number of maps to open")
 
             if num_maps.lower() in EXIT_COMMANDS:
-                print("Aborting...")
+                print(ABORT_MSG)
                 return
 
             if num_maps == '1':
                 map_data["map2"] = None
                 filename1 = print_prompt("Enter the map filename")
                 if filename1.lower() in EXIT_COMMANDS:
-                    print("Aborting...")
+                    print(ABORT_MSG)
                     return
                 open_map(filename1, "map1")
                 break
             elif num_maps == '2':
                 filename1 = print_prompt("Enter the filename for map 1")
                 if filename1.lower() in EXIT_COMMANDS:
-                    print("Aborting...")
+                    print(ABORT_MSG)
                     return
                 open_map(filename1, "map1")
                 filename2 = print_prompt("Enter the filename for map 2")
                 if filename2.lower() in EXIT_COMMANDS:
-                    print("Aborting...")
+                    print(ABORT_MSG)
                     return
                 map_data["map2"] = {
                     "general"     : {},
@@ -133,8 +110,7 @@ def main() -> None:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
 
-        print_flush("Loading map...")
-        time.sleep(SLEEP_TIME)
+        print_action("Loading map...")
 
         # Make sure that the file actually exists.
         try:
@@ -165,12 +141,12 @@ def main() -> None:
 
         terminal_width = os.get_terminal_size().columns
 
-        print("")
         print_cyan("-" * terminal_width)
         print_cyan(f"{map_data[map_key]['general']['name']}")
         print_cyan("-" * terminal_width)
         print_cyan(f"{map_data[map_key]['general']['description']}")
         print_cyan("-" * terminal_width)
+        print("")
 
     def save_maps() -> None:
         # Check if a second map is open
@@ -191,8 +167,7 @@ def main() -> None:
                 filename += ".h3m"
         else: filename += ".h3m"
 
-        print_flush("Saving map...")
-        time.sleep(SLEEP_TIME)
+        print_action("Saving map...")
 
         # Save the map byte by byte.
         with open(filename, 'wb') as io.out_file:
@@ -222,6 +197,7 @@ def main() -> None:
     print_cyan(f"##  h3_map_editor_plus.py v0.3  ##")
     print_cyan(f"##                              ##")
     print_cyan(f"##################################")
+    print("")
 
     open_maps()
 
@@ -240,10 +216,11 @@ def main() -> None:
                 case ["save"]:
                     save_maps()
 
-                case ["print", data_key] | ["show", data_key]:
+                case ["print", data_key]:
                     map_key = get_map_key()
                     if data_key in map_data[map_key]:
                         print_cyan(map_data[map_key][data_key])
+                        print()
                     else:
                         print_error("Error: Unrecognized data key.")
 
@@ -251,7 +228,7 @@ def main() -> None:
                     map_key = get_map_key()
                     scripts.export_json(map_data[map_key], filename)
 
-                case ["count"] | ["list"]:
+                case ["count"]:
                     map_key = get_map_key()
                     scripts.count_objects(map_data[map_key]["object_data"])
 
@@ -284,45 +261,43 @@ def main() -> None:
 
                 case ["h"] | ["hlp"] | ['help']:
                     print_cyan(
+                        "*BASIC COMMANDS*\n"
+                        "   open | load\n"
+                        "   save\n"
+                        "   h | hlp | help\n"
+                        "   q | quit | exit\n"
                         "\n"
-                        "*COMMANDS*\n"
-                        "open | load\n"
-                        "save\n"
-                        "print\n"
-                        "export\n"
-                        "h | hlp | help\n"
-                        "q | quit | exit\n"
+                        "*SPECIAL COMMANDS*\n"
+                        "   count\n"
+                        "   export <filename>\n"
+                        "   guards\n"
+                        "   minimap\n"
+                        "   print <key>\n"
+                        "   swap\n"
+                        "   towns\n"
                         "\n"
-                        "*VALID KEYS FOR PRINT*\n"
-                        "general\n"
-                        "player_specs\n"
-                        "conditions\n"
-                        "teams\n"
-                        "start_heroes\n"
-                        "ban_flags\n"
-                        "rumors\n"
-                        "hero_data\n"
-                        "terrain\n"
-                        "object_defs\n"
-                        "object_data\n"
-                        "events\n"
-                        "null_bytes\n"
-                        "\n"
-                        "*SCRIPTS*\n"
-                        "minimap\n"
-                        "towns\n"
-                        "swap\n"
-                        "count | list\n"
-                        "guards"
+                        "*KEYS FOR 'PRINT' COMMAND*\n"
+                        "   general\n"
+                        "   player_specs\n"
+                        "   conditions\n"
+                        "   teams\n"
+                        "   start_heroes\n"
+                        "   ban_flags\n"
+                        "   rumors\n"
+                        "   hero_data\n"
+                        "   terrain\n"
+                        "   object_defs\n"
+                        "   object_data\n"
+                        "   events\n"
+                        "   null_bytes\n"
                     )
 
                 case [cmd]:
                     if cmd in EXIT_COMMANDS:
-                        print(f"{color_reset}")
+                        print(f"{COLOR.RESET}")
                         break
                     else:
                         print_error("Error: Unrecognized command.")
-                        time.sleep(SLEEP_TIME)
         finally:
             busy = False
 

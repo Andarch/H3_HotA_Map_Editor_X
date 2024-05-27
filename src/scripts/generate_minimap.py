@@ -1,10 +1,14 @@
-#!/usr/bin/env python3
+
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent / 'data'))
 
 from enum import IntEnum
-from PIL import Image
-import data.objects as od # Object details
+from PIL  import Image
 
-# Constants
+from ..common import *
+from data import objects
+
 OVERWORLD = 0
 UNDERGROUND = 1
 IMAGE_SIZE = 1024
@@ -51,7 +55,7 @@ class OWNER(IntEnum):
     TEAL = 6
     PINK = 7
     NEUTRAL = 255
-            
+
 terrain_colors = {
     # Terrain
     TERRAIN.DIRT: (0x52, 0x39, 0x08),
@@ -94,28 +98,29 @@ owner_colors = {
 }
 
 ignored_objects = {
-    od.ID.Hero,
-    od.ID.Prison,
-    od.ID.Random_Hero,
-    od.ID.Hero_Placeholder
+    objects.ID.Hero,
+    objects.ID.Prison,
+    objects.ID.Random_Hero,
+    objects.ID.Hero_Placeholder
 }
 
 #################
 # MAIN FUNCTION #
 #################
 
-def main(general, terrain, objects, defs):
+def generate_minimap(general, terrain, object_data, defs):
+    print_action("Generating minimap...")
 
     ##################
     # INITIALIZATION #
     ##################
 
-    # Get map size  
-    size = general["map_size"]   
+    # Get map size
+    size = general["map_size"]
 
     # Initialize layer list
     if general["is_two_level"]:
-        half = size * size    	
+        half = size * size
         layers = [terrain[:half]]  # overworld
         layers.append(terrain[half:])  # underground
     else:
@@ -130,7 +135,7 @@ def main(general, terrain, objects, defs):
     #############
 
     # Iterate through objects
-    for obj in objects:
+    for obj in object_data:
 
         # Get object masks
         def_ = defs[obj["def_id"]]
@@ -140,7 +145,7 @@ def main(general, terrain, objects, defs):
         ####################
         # HELPER FUNCTIONS #
         ####################
-        
+
         def determine_owner():
             if "owner" in obj and obj["type"] not in ignored_objects:  # Check if object has "owner" key and should not be ignored
                 return obj["owner"]
@@ -161,7 +166,7 @@ def main(general, terrain, objects, defs):
                 if not yellowSquaresOnly and isInteractive and not allPassable:
                     break
             return isInteractive and yellowSquaresOnly
-        
+
         def process_object():
             obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
             for r in range(ROWS):  # 6 rows y-axis, from top to bottom
@@ -193,19 +198,19 @@ def main(general, terrain, objects, defs):
                         color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
-                    img.putpixel((x, y), color)  # Draw the pixel on the image                
+                    img.putpixel((x, y), color)  # Draw the pixel on the image
                 img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.NEAREST)  # Resize this layer's image
                 img.save(f".\\images\\{general.get('name')}_layer_{layer_index}.png")  # Save this layer's image in PNG format to the .\images directory
 
         #############################
         # HELPER FUNCTION EXECUTION #
         #############################
-        
+
         # Determine if object has owner and/or should be skipped (hidden on minimap).
         # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
         owner = determine_owner()
         if owner is None and should_skip_object():
-            continue        
+            continue
         process_object()
 
     ####################
@@ -213,4 +218,6 @@ def main(general, terrain, objects, defs):
     ####################
 
     # Generate and save minimap images
-    generate_images()     
+    generate_images()
+
+    print_done()

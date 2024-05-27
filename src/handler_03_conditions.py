@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
+from enum import IntEnum
 
 import src.file_io    as io
-import data.artifacts as ad
-from data.objects import Resource
+import data.artifacts as artifacts
 
-from enum import IntEnum
+from data.objects import Resource
 
 # The victory conditions of a map are stored as follows:
 #
@@ -58,7 +57,7 @@ def parse_conditions() -> dict:
 
         match vc:
             case VictoryType.ACQUIRE_ARTIFACT:
-                info["objective_value_1"] = ad.ID(io.read_int(2))
+                info["objective_value_1"] = artifacts.ID(io.read_int(2))
             case VictoryType.ACCUMULATE_CREATURES:
                 info["objective_value_1"] = io.read_int(2)
                 info["objective_value_2"] = io.read_int(4)
@@ -77,7 +76,7 @@ def parse_conditions() -> dict:
                 info["objective_coords"][1] = io.read_int(1)
                 info["objective_coords"][2] = io.read_int(1)
             case VictoryType.TRANSPORT_ARTIFACT:
-                info["objective_value_1"]   = ad.ID(io.read_int(1))
+                info["objective_value_1"]   = artifacts.ID(io.read_int(1))
                 info["objective_coords"][0] = io.read_int(1)
                 info["objective_coords"][1] = io.read_int(1)
                 info["objective_coords"][2] = io.read_int(1)

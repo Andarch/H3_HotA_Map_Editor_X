@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import src.file_io as io
 
 # The banned artifacts/spells/skills of a map are stored as follows:
@@ -14,7 +12,7 @@ def parse_flags() -> dict:
         "spells"   : [],
         "skills"   : []
     }
-    
+
     info["artifacts"] = io.read_bits(21)
     info["spells"]    = io.read_bits(9)
     info["skills"]    = io.read_bits(4)

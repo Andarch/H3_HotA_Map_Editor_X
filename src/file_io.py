@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 in_file  = None
 out_file = None
 
@@ -23,7 +21,7 @@ def read_bits(length: int) -> list:
         bits = format(int(c), '#010b').removeprefix('0b')[::-1]
         for b in bits:
             temp_bits.append(1 if b == '1' else 0)
-    
+
     return temp_bits
 
 def write_raw(data: bytes):

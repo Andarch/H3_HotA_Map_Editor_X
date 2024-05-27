@@ -1,22 +1,16 @@
-#!/usr/bin/env python3
+from ..common import *
 
-#################
-## SWAP LAYERS ##
-#################
-
-def main(terrain, object_data, player_specs, is_two_level, conditions):
+def swap_layers(terrain, object_data, player_specs, is_two_level, conditions):
     if not is_two_level:
-        print("Error: This map does not have an underground layer to swap with the overworld.")
+        print_error("Error: This map does not have an underground layer to swap with the overworld.")
         return
-    
-    print("Swapping terrain...")
+
+    print_action("Swapping layers...")
 
     # Swap terrain tiles between the two layers
     half = len(terrain) // 2
     terrain[:half], terrain[half:] = \
         terrain[half:], terrain[:half]
-    
-    print("Swapping objects...")
 
     # Update the z-coordinate for objects to swap layers
     for obj in object_data:
@@ -24,15 +18,11 @@ def main(terrain, object_data, player_specs, is_two_level, conditions):
             obj["coords"][2] = 1  # Move to underground
         elif obj["coords"][2] == 1:
             obj["coords"][2] = 0  # Move to overworld
-    
-    print("Swapping main town coords...")
 
     # Change main town coords in player data
     for player in player_specs:
         if "town_coords" in player and player["town_coords"] is not None:
             player["town_coords"][2] = 1 if player["town_coords"][2] == 0 else 0
-    
-    print("Swapping win/loss conditions...")
 
     # Swap victory condition coordinates
     if "objective_coords" in conditions:
@@ -44,4 +34,4 @@ def main(terrain, object_data, player_specs, is_two_level, conditions):
         conditions["loss_coords"][2] = \
             1 if conditions["loss_coords"][2] == 0 else 0
 
-    print("Layers swapped successfully.")
+    print_done()

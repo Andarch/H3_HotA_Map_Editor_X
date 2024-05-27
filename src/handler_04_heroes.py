@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-
 import src.file_io    as io
-import data.heroes    as hd
-import data.spells    as sd
-import data.artifacts as ad
+import data.heroes    as heroes
+import data.spells    as spells
+import data.artifacts as artifacts
 
 from src.handler_01_general import MapFormat
 
@@ -32,7 +30,7 @@ def parse_starting_heroes(general_info: dict) -> dict:
         info["hero_flags"] = io.read_bits(20)
 
     for _ in range(io.read_int(4)): # Amount of placeholder heroes
-        info["placeholders"].append(hd.ID(io.read_int(1)))
+        info["placeholders"].append(heroes.ID(io.read_int(1)))
 
     for _ in range(io.read_int(1)): # Amount of custom heroes
         hero = {}
@@ -123,7 +121,7 @@ def parse_hero_data() -> list:
             hero["artifacts_equipped"]["war_machine_4"] = parse_artifact()
             hero["artifacts_equipped"]["spellbook"]     = parse_artifact()
             hero["artifacts_equipped"]["misc_5"]        = parse_artifact()
-            
+
             for _ in range(io.read_int(2)):
                 hero["artifacts_backpack"].append(parse_artifact())
 
@@ -206,7 +204,7 @@ def write_hero_data(info: list) -> None:
             write_artifact(hero["artifacts_equipped"]["war_machine_4"])
             write_artifact(hero["artifacts_equipped"]["spellbook"])
             write_artifact(hero["artifacts_equipped"]["misc_5"])
-            
+
             io.write_int(len(hero["artifacts_backpack"]), 2)
             for artifact in hero["artifacts_backpack"]:
                 write_artifact(artifact)
@@ -245,11 +243,11 @@ def write_hero_data(info: list) -> None:
 
 def parse_artifact() -> list:
     artifact = [
-        ad.ID(io.read_int(2)),
+        artifacts.ID(io.read_int(2)),
         io.read_int(2)
     ]
-    if artifact[0] == ad.ID.Spell_Scroll:
-        artifact[1] = sd.ID(artifact[1])
+    if artifact[0] == artifacts.ID.Spell_Scroll:
+        artifact[1] = spells.ID(artifact[1])
     return artifact
 
 def write_artifact(artifact: list) -> None:

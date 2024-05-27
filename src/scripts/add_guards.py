@@ -1,13 +1,9 @@
-#!/usr/bin/env python3
-
 from random import choice, randint
 
-import data.creatures as cd # Creature details
-import data.objects   as od # Object details
+import data.creatures as creatures
+import data.objects   as objects
 
-#####################
-## GENERATE GUARDS ##
-#####################
+from ..common import *
 
 AMOUNT = [
     [    5, "a few ({1-4}) "           ],
@@ -35,28 +31,36 @@ FACTIONS = {
     "Neutral"   : [ 139, 143, 140, 169, 142, 167, 137, 170, 116, 117, 168, 144, 136, 135, 134, 133, 132 ]
 }
 
+######################
+## HELPER FUNCTIONS ##
+######################
+
 def get_creature_text(creature: int, amount: int) -> str:
     text = "a legion ({1000+}) of "
     for pair in AMOUNT:
         if amount < pair[0]:
             text = pair[1]
             break
-    return text + cd.NAME[creature]
+    return text + creatures.NAME[creature]
 
-def main(obj_data: dict) -> dict:
-    print("\nGenerating guards...", end=" ", flush=True)
+###################
+## MAIN FUNCTION ##
+###################
+
+def add_guards(obj_data: dict) -> dict:
+    print_action("Adding guards...")
 
     valid_types = {
-        od.ID.Pandoras_Box            : "{Pandora's Box}\n",
-        od.ID.Artifact                : "{Artifact}\n",
-        od.ID.Random_Artifact         : "{Artifact}\n",
-        od.ID.Random_Treasure_Artifact: "{Artifact}\n",
-        od.ID.Random_Minor_Artifact   : "{Artifact}\n",
-        od.ID.Random_Major_Artifact   : "{Artifact}\n",
-        od.ID.Random_Relic            : "{Artifact}\n",
-        od.ID.Event                   : "",
-        od.ID.Resource                : "{Resources}\n",
-        od.ID.Spell_Scroll            : "{Spell Scroll}\n",
+        objects.ID.Pandoras_Box            : "{Pandora's Box}\n",
+        objects.ID.Artifact                : "{Artifact}\n",
+        objects.ID.Random_Artifact         : "{Artifact}\n",
+        objects.ID.Random_Treasure_Artifact: "{Artifact}\n",
+        objects.ID.Random_Minor_Artifact   : "{Artifact}\n",
+        objects.ID.Random_Major_Artifact   : "{Artifact}\n",
+        objects.ID.Random_Relic            : "{Artifact}\n",
+        objects.ID.Event                   : "",
+        objects.ID.Resource                : "{Resources}\n",
+        objects.ID.Spell_Scroll            : "{Spell Scroll}\n",
     }
 
     for obj in obj_data:
@@ -107,12 +111,12 @@ def main(obj_data: dict) -> dict:
 
             while temp_amount == 0:
                 temp_id = choice(creature_list)
-                temp_amount = round(max_creature_value / cd.AI_VALUE[temp_id])
+                temp_amount = round(max_creature_value / creatures.AI_VALUE[temp_id])
 
             obj["guards"].append({ "id": temp_id, "amount": temp_amount })
-            generated_ai_value += cd.AI_VALUE[temp_id] * temp_amount
+            generated_ai_value += creatures.AI_VALUE[temp_id] * temp_amount
 
-        if obj["type"] != od.ID.Event:
+        if obj["type"] != objects.ID.Event:
             # Get the total amount of each creature (necessary if
             # there's more than one stack of a type of creature).
             total_guards = {}
@@ -138,7 +142,7 @@ def main(obj_data: dict) -> dict:
             obj["message"] = "\n".join(obj_message)
 
             # No yes/no prompt for a Pandora's Box since it always has one.
-            if add_prompt and obj["type"] != od.ID.Pandoras_Box:
+            if add_prompt and obj["type"] != objects.ID.Pandoras_Box:
                 obj["message"] += "\n\nDo you wish to fight the guards?"
 
         # Fill remaining guard slots (up to 7) with correct blank data.
@@ -149,4 +153,4 @@ def main(obj_data: dict) -> dict:
               "for a total AI value of", generated_ai_value,
               f"({desired_guard_value} desired)")
 
-    print("DONE")
+    print_done()

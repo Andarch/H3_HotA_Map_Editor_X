@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-
 import src.file_io as io
-import data.heroes as hd
-from data.objects import Town
+import data.heroes as heroes
 
-from enum import IntEnum
+from data.objects import Town
 
 # The player specs of a map are stored as follows:
 #
@@ -98,23 +95,23 @@ def parse_player_specs() -> list:
             info["town_coords"][2] =      io.read_int(1)
 
         info["has_random_hero"]  =  bool(io.read_int(1))
-        info["starting_hero_id"] = hd.ID(io.read_int(1))
+        info["starting_hero_id"] = heroes.ID(io.read_int(1))
 
-        if info["starting_hero_id"] != hd.ID.Default:
-            info["starting_hero_face"] = hd.ID(io.read_int(1))
+        if info["starting_hero_id"] != heroes.ID.Default:
+            info["starting_hero_face"] = heroes.ID(io.read_int(1))
             info["starting_hero_name"] = io.read_str(io.read_int(4))
             info["garbage_byte"]       = io.read_raw(1)
 
             for _ in range(io.read_int(4)):
                 hero = {}
-                hero["id"]   = hd.ID(io.read_int(1))
+                hero["id"]   = heroes.ID(io.read_int(1))
                 hero["name"] = io.read_str(io.read_int(4))
                 info["available_heroes"].append(hero)
 
         else:
             io.seek(1)
             for _ in range(io.read_int(4)): # Amount of placeholder heroes
-                info["placeholder_heroes"].append(hd.ID(io.read_int(5)))
+                info["placeholder_heroes"].append(heroes.ID(io.read_int(5)))
 
         specs.append(info)
 

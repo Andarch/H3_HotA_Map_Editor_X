@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import src.file_io as io
 
 # The rumors of a map are stored as follows:
@@ -12,7 +10,7 @@ import src.file_io as io
 
 def parse_rumors() -> list:
     info = []
-    
+
     for _ in range(io.read_int(4)): # Amount of rumors
         rumor = {}
         rumor["name"] = io.read_str(io.read_int(4))
