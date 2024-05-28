@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import pprint
 import sys
 from gzip import open
 
@@ -10,6 +11,7 @@ BACK_COMMANDS = ['/b', '/r', '/back', '/return']
 EXIT_COMMANDS = ['/quit', '/exit', '/q']
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
+PRINT_WIDTH = 120
 
 map_data = {
     "map1": None,
@@ -238,7 +240,8 @@ def main() -> None:
                     else:
                         map_key = get_map_key()
                         if data_key in map_data[map_key]:
-                            print_cyan(map_data[map_key][data_key])
+                            data = pprint.pformat(map_data[map_key][data_key], width=PRINT_WIDTH)
+                            print_cyan(data)
                             print()
                         else:
                             print_error("Error: Unrecognized data key.")

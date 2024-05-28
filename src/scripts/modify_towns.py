@@ -2,8 +2,8 @@ import data.objects as objects
 from ..common import *
 
 def modify_towns(obj_data: dict) -> None:
-    print_action("Enabling all buildings, all spells, and spell research for all towns...")
-    print()
+    print_action("Enabling all buildings/spells and spell research for all towns...")
+    # print()
 
     for obj in obj_data:
         if obj["type"] == objects.ID.Town or obj["type"] == objects.ID.Random_Town:
@@ -22,7 +22,7 @@ def modify_towns(obj_data: dict) -> None:
             else:
                 obj["has_fort"] = True
 
-            print(f"    Modified town at {obj['coords']}")
+            # print(f"    Modified town at {obj['coords']}")
 
-    print()
+    # print()
     print_done()
