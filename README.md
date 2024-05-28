@@ -33,12 +33,17 @@ Can be used to open 1 or 2 maps while the editor is running.
 To write your changes into 1 or 2 new map files. You can omit the ".h3m" extension here as well, the editor will add it if necessary.
 
 ```
-> help | h | hlp
+> h | hlp | help
 ```
 Shows you a list of available commands and scripts.
 
 ```
-> quit | q | exit
+> /b | /r | /back | /return
+```
+To back out of prompts.
+
+```
+> /quit | /q | /exit
 ```
 To exit the editor.
 

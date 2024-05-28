@@ -1,29 +1,18 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 from gzip import open
 
 from src import *
 
-EXIT_COMMANDS = ['q', 'exit', 'quit']
-ABORT_MSG = "Operation aborted."
+BACK_COMMANDS = ['/b', '/r', '/back', '/return']
+EXIT_COMMANDS = ['/quit', '/exit', '/q']
+ABORT_MSG = "Operation aborted.\n"
+EXIT_MSG = "Exiting program..."
 
 map_data = {
-    "map1": {
-        "general"     : {}, # General tab in Map Specifications
-        "player_specs": [], # ...
-        "conditions"  : {}, # Special Victory and Loss Conditions
-        "teams"       : {}, # ...
-        "start_heroes": {}, # Available starting heroes
-        "ban_flags"   : {}, # Available artifacts, spells, and skills
-        "rumors"      : [], # ...
-        "hero_data"   : [], # Custom hero details (name, bio, portrait, etc.)
-        "terrain"     : [], # ...
-        "object_defs" : [], # Object definitions (sprite, type, squares, etc.)
-        "object_data" : [], # Object details (messages, guards, quests, etc.)
-        "events"      : [], # ...
-        "null_bytes"  : b'' # All maps end with some null bytes
-    },
+    "map1": None,
     "map2": None
 }
 
@@ -38,71 +27,85 @@ def main() -> None:
     ##################
 
     map_key = "map1"
-    map_data = {map_key: {}}
     busy = False
 
     ####################
     # HELPER FUNCTIONS #
     ####################
 
-    def get_map_key() -> str:
-        if map_data["map2"] is not None:
-            return choose_map()
-        return "map1"
+    def exit() -> None:
+        print(EXIT_MSG)
+        time.sleep(SLEEP_TIME)
+        print(f"{COLOR.RESET}")
+        sys.exit(0)
 
-    def choose_map() -> str:
+    def get_map_key() -> str:
+        if map_data["map2"] is None:
+            return "map1"
+
         choice = print_prompt(f"Enter the map number to edit")
-        if choice.lower() in EXIT_COMMANDS:
+        if choice.lower() in BACK_COMMANDS:
             print(ABORT_MSG)
             return
+        elif choice.lower() in EXIT_COMMANDS:
+            exit()
+
         return "map1" if choice == '1' else "map2"
 
     def open_maps() -> None:
         while True:
             num_maps = print_prompt(f"Enter the number of maps to open")
 
-            if num_maps.lower() in EXIT_COMMANDS:
+            if num_maps.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
+            elif num_maps.lower() in EXIT_COMMANDS:
+                exit()
 
             if num_maps == '1':
+                map_data["map1"] = {}
                 map_data["map2"] = None
-                filename1 = print_prompt("Enter the map filename")
-                if filename1.lower() in EXIT_COMMANDS:
-                    print(ABORT_MSG)
-                    return
-                open_map(filename1, "map1")
-                break
+                while True:
+                    filename1 = print_prompt("Enter the map filename")
+                    if filename1.lower() in BACK_COMMANDS:
+                        break
+                    elif filename1.lower() in EXIT_COMMANDS:
+                        exit()
+                    if open_map(filename1, "map1"):
+                        return
+                    else:
+                        print_error(f"ERROR: Could not find '{filename1}'.")
             elif num_maps == '2':
-                filename1 = print_prompt("Enter the filename for map 1")
-                if filename1.lower() in EXIT_COMMANDS:
-                    print(ABORT_MSG)
-                    return
-                open_map(filename1, "map1")
-                filename2 = print_prompt("Enter the filename for map 2")
-                if filename2.lower() in EXIT_COMMANDS:
-                    print(ABORT_MSG)
-                    return
-                map_data["map2"] = {
-                    "general"     : {},
-                    "player_specs": [],
-                    "conditions"  : {},
-                    "teams"       : {},
-                    "start_heroes": {},
-                    "ban_flags"   : {},
-                    "rumors"      : [],
-                    "hero_data"   : [],
-                    "terrain"     : [],
-                    "object_defs" : [],
-                    "object_data" : [],
-                    "events"      : [],
-                    "null_bytes"  : b''
-                }
-                open_map(filename2, "map2")
+                map_data["map1"] = {}
+                map_data["map2"] = {}
+                back_command_used = False
+                while True:
+                    filename1 = print_prompt("Enter the filename for map 1")
+                    if filename1.lower() in BACK_COMMANDS:
+                        back_command_used = True
+                        break
+                    elif filename1.lower() in EXIT_COMMANDS:
+                        exit()
+                    if open_map(filename1, "map1"):
+                        break
+                    else:
+                        print_error(f"ERROR: Could not find '{filename1}'.")
+                if back_command_used:
+                    continue
+                while True:
+                    filename2 = print_prompt("Enter the filename for map 2")
+                    if filename2.lower() in BACK_COMMANDS:
+                        print("Loading of map 2 aborted. Map 1 is still loaded.\n")
+                        break
+                    elif filename2.lower() in EXIT_COMMANDS:
+                        exit()
+                    if open_map(filename2, "map2"):
+                        return
+                    else:
+                        print_error(f"ERROR: Could not find '{filename2}'.")
                 break
             else:
                 print_error("Error: Can only load 1 or 2 maps.")
-        return
 
     def open_map(filename: str, map_key: str) -> None:
         # Make sure that the filename ends with ".h3m". For convenience,
@@ -117,8 +120,7 @@ def main() -> None:
             with open(filename, 'rb'):
                 pass
         except FileNotFoundError:
-            print_error(f"ERROR: Could not find '{filename}'.")
-            return
+            return False
 
         # Parse file data byte by byte.
         # Refer to the separate handlers for documentation.
@@ -148,15 +150,26 @@ def main() -> None:
         print_cyan("-" * terminal_width)
         print("")
 
+        return True
+
     def save_maps() -> None:
         # Check if a second map is open
         if map_data["map2"] is not None:
             filename1 = print_prompt("Enter a filename to save map 1")
+            if filename1.lower() in BACK_COMMANDS:
+                print(ABORT_MSG)
+                return
             save_map(filename1, "map1")
             filename2 = print_prompt("Enter a filename to save map 2")
+            if filename2.lower() in BACK_COMMANDS:
+                print(ABORT_MSG)
+                return
             save_map(filename2, "map2")
         else:
             filename1 = print_prompt("Enter a filename to save the map")
+            if filename1.lower() in BACK_COMMANDS:
+                print(ABORT_MSG)
+                return
             save_map(filename1, "map1")
 
     def save_map(filename: str, map_key: str) -> None:
@@ -214,50 +227,74 @@ def main() -> None:
                     open_maps()
 
                 case ["save"]:
-                    save_maps()
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        save_maps()
 
                 case ["print", data_key]:
-                    map_key = get_map_key()
-                    if data_key in map_data[map_key]:
-                        print_cyan(map_data[map_key][data_key])
-                        print()
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
                     else:
-                        print_error("Error: Unrecognized data key.")
+                        map_key = get_map_key()
+                        if data_key in map_data[map_key]:
+                            print_cyan(map_data[map_key][data_key])
+                            print()
+                        else:
+                            print_error("Error: Unrecognized data key.")
 
                 case ["export", filename]:
-                    map_key = get_map_key()
-                    scripts.export_json(map_data[map_key], filename)
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.export_json(map_data[map_key], filename)
 
                 case ["count"]:
-                    map_key = get_map_key()
-                    scripts.count_objects(map_data[map_key]["object_data"])
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.count_objects(map_data[map_key]["object_data"])
 
                 case ["guards"]:
-                    map_key = get_map_key()
-                    scripts.add_guards(map_data[map_key]["object_data"])
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.add_guards(map_data[map_key]["object_data"])
 
                 case ["swap"]:
-                    map_key = get_map_key()
-                    scripts.swap_layers(
-                        map_data[map_key]["terrain"],
-                        map_data[map_key]["object_data"],
-                        map_data[map_key]["player_specs"],
-                        map_data[map_key]["general"]["is_two_level"],
-                        map_data[map_key]["conditions"]
-                    )
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.swap_layers(
+                            map_data[map_key]["terrain"],
+                            map_data[map_key]["object_data"],
+                            map_data[map_key]["player_specs"],
+                            map_data[map_key]["general"]["is_two_level"],
+                            map_data[map_key]["conditions"]
+                        )
 
                 case ["towns"]:
-                    map_key = get_map_key()
-                    scripts.modify_towns(map_data[map_key]["object_data"])
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.modify_towns(map_data[map_key]["object_data"])
 
                 case ["minimap"]:
-                    map_key = get_map_key()
-                    scripts.generate_minimap(
-                        map_data[map_key]["general"],
-                        map_data[map_key]["terrain"],
-                        map_data[map_key]["object_data"],
-                        map_data[map_key]["object_defs"]
-                    )
+                    if map_data["map1"] is None:
+                        print_error("Error: No map loaded.")
+                    else:
+                        map_key = get_map_key()
+                        scripts.generate_minimap(
+                            map_data[map_key]["general"],
+                            map_data[map_key]["terrain"],
+                            map_data[map_key]["object_data"],
+                            map_data[map_key]["object_defs"]
+                        )
 
                 case ["h"] | ["hlp"] | ['help']:
                     print_cyan(
@@ -265,7 +302,8 @@ def main() -> None:
                         "   open | load\n"
                         "   save\n"
                         "   h | hlp | help\n"
-                        "   q | quit | exit\n"
+                        "   /b | /r | /back | /return\n"
+                        "   /q | /quit | /exit\n"
                         "\n"
                         "*SPECIAL COMMANDS*\n"
                         "   count\n"
@@ -293,11 +331,17 @@ def main() -> None:
                     )
 
                 case [cmd]:
-                    if cmd in EXIT_COMMANDS:
-                        print(f"{COLOR.RESET}")
-                        break
+                    if cmd in BACK_COMMANDS:
+                        print_error("Error: You are already at the main menu.")
+                        print("For help, enter h, hlp, or help.\n"
+                              "To quit, enter /q, /quit, or /exit.\n")
+                        continue
+                    elif cmd in EXIT_COMMANDS:
+                        exit()
                     else:
                         print_error("Error: Unrecognized command.")
+                        print("For help, enter h, hlp, or help.\n"
+                              "To quit, enter /q, /quit, or /exit.\n")
         finally:
             busy = False
 
