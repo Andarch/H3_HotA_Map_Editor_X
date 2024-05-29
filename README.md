@@ -7,6 +7,8 @@ The goal of **H3 HotA Map Editor X** is to build upon the foundations of the ori
 
 ><small>**Note:** The editor can load two maps at a time. Currently, there's no reason to do so, but soon the `swap` script will support swapping map layers between two different maps, giving you up to four layers to work with.</small>
 
+&nbsp;
+
 ## Launching the editor
 ><small>**Note:** In the future, there will be an installer/executable. For now, use the below methods to launch the editor.</small>
 
@@ -17,6 +19,8 @@ Run this .bat file: `H3 HotA Map Editor X.bat`
 
 ### **Linux / macOS**
 Run this command in a terminal: `./H3_HotA_Map_Editor_X.py`
+
+&nbsp;
 
 ## Basic commands
 
@@ -40,6 +44,8 @@ Backs out of prompts.
 
 `/exit`&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`/quit`&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`/e`&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`/q`  
 Exits the editor.
+
+&nbsp;
 
 ## Script commands
 
