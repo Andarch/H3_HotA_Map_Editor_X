@@ -1,4 +1,5 @@
 
+import os
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent / 'data'))
@@ -200,7 +201,7 @@ def generate_minimap(general, terrain, object_data, defs):
                         color = terrain_colors[tile[0]]  # Use the terrain color
                     img.putpixel((x, y), color)  # Draw the pixel on the image
                 img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.NEAREST)  # Resize this layer's image
-                img.save(f".\\images\\{general.get('name')}_layer_{layer_index}.png")  # Save this layer's image in PNG format to the .\images directory
+                img.save(os.path.join(".", "images", f"{general.get('name')}_layer_{layer_index}.png"))  # Save this layer's image in PNG format to the .\images directory
 
         #############################
         # HELPER FUNCTION EXECUTION #

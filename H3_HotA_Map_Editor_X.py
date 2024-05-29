@@ -7,8 +7,11 @@ from gzip import open
 
 from src import *
 
-BACK_COMMANDS = ['/b', '/r', '/back', '/return']
-EXIT_COMMANDS = ['/quit', '/exit', '/q']
+BACK_COMMANDS = ['/back', '/return', '/b', '/r']
+EXIT_COMMANDS = ['/exit', '/quit', '/e', '/q']
+ERROR_NO_MAP = "Error: No map loaded."
+ERROR_HELP = ("For help, enter 'help' or 'h'.\n"
+              "To exit, enter '/exit', '/quit', '/e', or '/q'.\n")
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
 PRINT_WIDTH = 120
@@ -225,18 +228,18 @@ def main() -> None:
 
         try:
             match command.split():
-                case ["open"] | ["load"]:
+                case ["load"] | ["open"]:
                     open_maps()
 
                 case ["save"]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         save_maps()
 
                 case ["print", data_key]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         if data_key in map_data[map_key]:
@@ -248,28 +251,28 @@ def main() -> None:
 
                 case ["export", filename]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         scripts.export_json(map_data[map_key], filename)
 
                 case ["count"]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         scripts.count_objects(map_data[map_key]["object_data"])
 
-                case ["guards"]:
-                    if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
-                    else:
-                        map_key = get_map_key()
-                        scripts.add_guards(map_data[map_key]["object_data"])
+                # case ["guards"]:
+                #     if map_data["map1"] is None:
+                #         print_error(ERROR_NO_MAP)
+                #     else:
+                #         map_key = get_map_key()
+                #         scripts.add_guards(map_data[map_key]["object_data"])
 
                 case ["swap"]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         scripts.swap_layers(
@@ -282,14 +285,14 @@ def main() -> None:
 
                 case ["towns"]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         scripts.modify_towns(map_data[map_key]["object_data"])
 
                 case ["minimap"]:
                     if map_data["map1"] is None:
-                        print_error("Error: No map loaded.")
+                        print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
                         scripts.generate_minimap(
@@ -299,25 +302,24 @@ def main() -> None:
                             map_data[map_key]["object_defs"]
                         )
 
-                case ["h"] | ["hlp"] | ['help']:
+                case ["help"] | ["h"]:
                     print_cyan(
-                        "*BASIC COMMANDS*\n"
-                        "   open | load\n"
+                        "BASIC COMMANDS\n"
+                        "   help | h\n"
+                        "   load | open\n"
                         "   save\n"
-                        "   h | hlp | help\n"
-                        "   /b | /r | /back | /return\n"
-                        "   /q | /quit | /exit\n"
+                        "   /back | /return | /b | /r\n"
+                        "   /exit | /quit | /e | /q\n"
                         "\n"
-                        "*SPECIAL COMMANDS*\n"
+                        "SCRIPT COMMANDS\n"
                         "   count\n"
-                        "   export <filename>\n"
-                        "   guards\n"
+                        "   export <filename>.json\n"
                         "   minimap\n"
                         "   print <key>\n"
                         "   swap\n"
                         "   towns\n"
                         "\n"
-                        "*KEYS FOR 'PRINT' COMMAND*\n"
+                        "DATA KEYS FOR 'print <key>'\n"
                         "   general\n"
                         "   player_specs\n"
                         "   conditions\n"
@@ -336,15 +338,13 @@ def main() -> None:
                 case [cmd]:
                     if cmd in BACK_COMMANDS:
                         print_error("Error: You are already at the main menu.")
-                        print("For help, enter h, hlp, or help.\n"
-                              "To quit, enter /q, /quit, or /exit.\n")
+                        print(ERROR_HELP)
                         continue
                     elif cmd in EXIT_COMMANDS:
                         exit()
                     else:
                         print_error("Error: Unrecognized command.")
-                        print("For help, enter h, hlp, or help.\n"
-                              "To quit, enter /q, /quit, or /exit.\n")
+                        print(ERROR_HELP)
         finally:
             busy = False
 
