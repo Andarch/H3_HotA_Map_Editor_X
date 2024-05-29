@@ -211,9 +211,9 @@ def main() -> None:
 
     print("")
     print_cyan(f"##################################")
-    print_cyan(f"##                              ##")
-    print_cyan(f"##  h3_map_editor_plus.py v0.3  ##")
-    print_cyan(f"##                              ##")
+    print_cyan(f"##                             ##")
+    print_cyan(f"##  H3 HotA Map Editor X v0.3  ##")
+    print_cyan(f"##                             ##")
     print_cyan(f"##################################")
     print("")
 
