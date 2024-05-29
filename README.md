@@ -3,7 +3,7 @@
 
 This is a fork of the original project by Shakajiub (https://github.com/Shakajiub/h3_map_editor).
 
-The goal of **H3 HotA Map Editor X** is to build upon the foundations of the original program and provide additional functionality for editing maps for Heroes 3: Horn of the Abyss. Eventually there will be a GUI version.
+The goal of **H3 HotA Map Editor X** is to build upon the foundations of the upstream project and provide additional functionality for editing maps for Heroes 3: Horn of the Abyss. Eventually there will be a GUI version.
 
 ><small>**Note:** The editor can load two maps at a time. Currently, there's no reason to do so, but soon the `swap` script will support swapping map layers between two different maps, giving you up to four layers to work with.</small>
 
