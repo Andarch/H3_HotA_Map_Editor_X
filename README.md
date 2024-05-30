@@ -1,7 +1,7 @@
 # **H3 HotA Map Editor X <small>v0.3</small>**
 ### **Supports HotA v1.7.1**
 
-#### *Special thanks to Shakajiub for creating the tool this project was forked from.*
+##### *Special thanks to Shakajiub for creating the tool this project was forked from.*
 
 The goal of **H3 HotA Map Editor X** is to build upon the foundations of the upstream project and provide additional functionality for editing maps for Heroes 3: Horn of the Abyss. Eventually there will be a GUI version.
 
