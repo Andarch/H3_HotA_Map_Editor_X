@@ -263,13 +263,6 @@ def main() -> None:
                         map_key = get_map_key()
                         scripts.count_objects(map_data[map_key]["object_data"])
 
-                # case ["guards"]:
-                #     if map_data["map1"] is None:
-                #         print_error(ERROR_NO_MAP)
-                #     else:
-                #         map_key = get_map_key()
-                #         scripts.add_guards(map_data[map_key]["object_data"])
-
                 case ["swap"]:
                     if map_data["map1"] is None:
                         print_error(ERROR_NO_MAP)
