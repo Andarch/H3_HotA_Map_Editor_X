@@ -3,15 +3,17 @@
 import os
 import pprint
 import sys
+from enum import Enum
 from gzip import open
 
 from src import *
 
+HELP_COMMANDS = ['help', 'h']
 BACK_COMMANDS = ['/back', '/return', '/b', '/r']
 EXIT_COMMANDS = ['/exit', '/quit', '/e', '/q']
 ERROR_NO_MAP = "Error: No map loaded."
-ERROR_HELP = ("For help, enter 'help' or 'h'.\n"
-              "To exit, enter '/exit', '/quit', '/e', or '/q'.\n")
+ERROR_HELP = (f"For help, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.join(HELP_COMMANDS)}\n{COLOR.RESET}"
+              f"To exit, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.join(EXIT_COMMANDS)}\n{COLOR.RESET}")
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
 PRINT_WIDTH = 120
@@ -211,9 +213,9 @@ def main() -> None:
 
     print("")
     print_cyan(f"##################################")
-    print_cyan(f"##                             ##")
-    print_cyan(f"##  H3 HotA Map Editor X v0.3  ##")
-    print_cyan(f"##                             ##")
+    print_cyan(f"##                              ##")
+    print_cyan(f"##  H3 HotA Map Editor X v0.3   ##")
+    print_cyan(f"##                              ##")
     print_cyan(f"##################################")
     print("")
 
@@ -297,14 +299,14 @@ def main() -> None:
 
                 case ["help"] | ["h"]:
                     print_cyan(
-                        "BASIC COMMANDS\n"
-                        "   help | h\n"
+                        "Basic commands:\n"
+                        "\thelp | h\n"
                         "   load | open\n"
                         "   save\n"
                         "   /back | /return | /b | /r\n"
                         "   /exit | /quit | /e | /q\n"
                         "\n"
-                        "SCRIPT COMMANDS\n"
+                        "Script commands:\n"
                         "   count\n"
                         "   export <filename>.json\n"
                         "   minimap\n"
@@ -312,7 +314,7 @@ def main() -> None:
                         "   swap\n"
                         "   towns\n"
                         "\n"
-                        "DATA KEYS FOR 'print <key>'\n"
+                        "Data keys for 'print <key>':\n"
                         "   general\n"
                         "   player_specs\n"
                         "   conditions\n"
