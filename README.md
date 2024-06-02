@@ -1,4 +1,4 @@
-# **H3 HotA Map Editor X <small>v0.3</small>**
+# **H3 HotA Map Editor X**
 ### **Supports HotA v1.7.1**
 
 ##### *Special thanks to Shakajiub for creating the tool this project was forked from.*
