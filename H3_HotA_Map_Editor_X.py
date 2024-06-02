@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import pprint
 import sys
 from enum import Enum
 from gzip import open
@@ -16,7 +15,6 @@ ERROR_HELP = (f"For help, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.jo
               f"To exit, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.join(EXIT_COMMANDS)}\n{COLOR.RESET}")
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
-PRINT_WIDTH = 120
 
 map_data = {
     "map1": None,
@@ -50,7 +48,7 @@ def main() -> None:
         if map_data["map2"] is None:
             return "map1"
 
-        choice = print_prompt(f"Enter the map number to edit")
+        choice = print_prompt("Which map? (1 or 2)")
         if choice.lower() in BACK_COMMANDS:
             print(ABORT_MSG)
             return
@@ -61,7 +59,7 @@ def main() -> None:
 
     def open_maps() -> None:
         while True:
-            num_maps = print_prompt(f"Enter the number of maps to open")
+            num_maps = print_prompt("Enter the number of maps to open")
 
             if num_maps.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
@@ -132,6 +130,7 @@ def main() -> None:
         # Parse file data byte by byte.
         # Refer to the separate handlers for documentation.
         with open(filename, 'rb') as io.in_file:
+            map_data[map_key]["filename"]     = filename
             map_data[map_key]["general"]      = h1.parse_general()
             map_data[map_key]["player_specs"] = h2.parse_player_specs()
             map_data[map_key]["conditions"]   = h3.parse_conditions()
@@ -244,12 +243,7 @@ def main() -> None:
                         print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
-                        if data_key in map_data[map_key]:
-                            data = pprint.pformat(map_data[map_key][data_key], width=PRINT_WIDTH)
-                            print_cyan(data)
-                            print()
-                        else:
-                            print_error("Error: Unrecognized data key.")
+                        scripts.print_data(map_data[map_key], data_key)
 
                 case ["export", filename]:
                     if map_data["map1"] is None:
@@ -300,7 +294,7 @@ def main() -> None:
                 case ["help"] | ["h"]:
                     print_cyan(
                         "Basic commands:\n"
-                        "\thelp | h\n"
+                        "   help | h\n"
                         "   load | open\n"
                         "   save\n"
                         "   /back | /return | /b | /r\n"

@@ -79,6 +79,7 @@ Enables spell research, all spells, and all buildings in all towns on the map. (
 ### Data keys
 The following data keys can be used with the `print <key>` command (replace `<key>` with one of the keys below) to specify what category of parsed data you want to display:
 
+`filename`
 `general`  
 `player_specs`  
 `conditions`  
