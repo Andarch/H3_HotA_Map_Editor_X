@@ -535,12 +535,14 @@ class Corpse(IntEnum):
 
 def parse_corpse(obj: dict) -> dict:
     obj["contents"] = Corpse(io.read_int(4))
-    obj["value"]    =  artifacts.ID(io.read_int(4))
+    # obj["value"]    =  artifacts.ID(io.read_int(4))
+    io.seek(4)
     return obj
 
 def write_corpse(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["value"], 4)
+    # io.write_int(obj["value"], 4)
+    io.write_int(0, 4)
 
 def parse_event(obj: dict) -> dict:
     if io.read_int(1):
@@ -916,12 +918,14 @@ def write_monster(obj: dict) -> None:
 
 def parse_pyramid(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    obj["spell"] = spells.ID(io.read_int(4))
+    # obj["spell"] = spells.ID(io.read_int(4))
+    io.seek(4)
     return obj
 
 def write_pyramid(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["spell"], 4)
+    # io.write_int(obj["spell"], 4)
+    io.write_int(0, 4)
 
 def parse_town(obj: dict, random: bool = False) -> dict:
     obj["start_bytes"] = io.read_raw(4)
@@ -1031,12 +1035,14 @@ def write_scholar(obj: dict) -> None:
 
 def parse_sea_chest(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = artifacts.ID(io.read_int(4))
+    # obj["artifact"] = artifacts.ID(io.read_int(4))
+    io.seek(4)
     return obj
 
 def write_sea_chest(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["artifact"], 4)
+    # io.write_int(obj["artifact"], 4)
+    io.write_int(0, 4)
 
 class Quest(IntEnum):
     NONE                        =  0
@@ -1283,12 +1289,14 @@ def write_seers_hut(obj: dict) -> None:
 
 def parse_shipwreck_survivor(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = artifacts.ID(io.read_int(4))
+    # obj["artifact"] = artifacts.ID(io.read_int(4))
+    io.seek(4)
     return obj
 
 def write_shipwreck_survivor(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["artifact"], 4)
+    # io.write_int(obj["artifact"], 4)
+    io.write_int(0, 4)
 
 def parse_spell_scroll(obj: dict) -> dict:
     if io.read_int(1):
@@ -1352,12 +1360,14 @@ def write_wagon(obj: dict) -> None:
 
 def parse_warriors_tomb(obj: dict) -> dict:
     obj["contents"] =       io.read_int(4)
-    obj["artifact"] = artifacts.ID(io.read_int(4))
+    # obj["artifact"] = artifacts.ID(io.read_int(4))
+    io.seek(4)
     return obj
 
 def write_warriors_tomb(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["artifact"], 4)
+    # io.write_int(obj["artifact"], 4)
+    io.write_int(0, 4)
 
 def parse_dwelling(obj: dict) -> dict:
     obj["owner"] = io.read_int(4)
