@@ -11,7 +11,8 @@ def modify_towns(obj_data: dict) -> None:
             obj["spell_research"] = True
 
             # Enable all spells
-
+            for i in range(len(obj["spells_must_appear"])):
+                obj["spells_must_appear"][i] = 0
             for i in range(len(obj["spells_cant_appear"])):
                 obj["spells_cant_appear"][i] = 0
 
