@@ -33,6 +33,7 @@ def parse_events(is_town: bool = False) -> list:
 
     for i in range(io.read_int(4)): # Amount of timed events
         event = {}
+        event["isTown"]  = is_town
         event["name"]    = io.read_str(io.read_int(4))
         event["message"] = io.read_str(io.read_int(4))
 
@@ -40,12 +41,12 @@ def parse_events(is_town: bool = False) -> list:
         for _ in range(7):
             event["resources"].append(io.read_int(4))
 
-        event["apply_to"]         =      io.read_bits(1)
-        event["apply_human"]      = bool(io.read_int(1))
-        event["apply_ai"]         = bool(io.read_int(1))
-        event["first_occurence"]  =      io.read_int(2)
-        event["subsequent_occurences"] = io.read_int(1)
-        event["trash_bytes"]           = io.read_raw(17 if is_town else 31)
+        event["apply_to"]              =      io.read_bits(1)
+        event["apply_human"]           = bool(io.read_int(1))
+        event["apply_ai"]              = bool(io.read_int(1))
+        event["first_occurence"]       =      io.read_int(2)
+        event["subsequent_occurences"] =      io.read_int(1)
+        event["trash_bytes"]           =      io.read_raw(17 if is_town else 31)
 
         if is_town:
             event["hota_level_7b"] = io.read_int(4)
