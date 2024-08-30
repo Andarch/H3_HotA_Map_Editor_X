@@ -9,15 +9,18 @@ def update_events() -> None:
     # Allow user to select between global and town events
     while True:
         print("Select an option:")
-        print("1. Global Events")
-        print("2. Town Events")
-        print("3. Back")
-        option = input("Enter a number: ")
+        print("   1. Global Events")
+        print("   2. Town Events")
+        print("   3. Back")
+        print()
+        option = print_prompt("Enter a number")
 
         if option == "1":
             update_global_events()
+            break
         elif option == "2":
             update_town_events()
+            break
         elif option == "3":
             break
         else:
@@ -31,6 +34,7 @@ def update_events() -> None:
 
 def update_global_events() -> None:
     print("Global Events")
+    print()
 
 ###############
 # TOWN EVENTS #
@@ -38,3 +42,4 @@ def update_global_events() -> None:
 
 def update_town_events() -> None:
     print("Town Events")
+    print()
