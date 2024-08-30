@@ -291,6 +291,13 @@ def main() -> None:
                             map_data[map_key]["object_defs"]
                         )
 
+                case ["events"]:
+                    if map_data["map1"] is None:
+                        print_error(ERROR_NO_MAP)
+                    else:
+                        map_key = get_map_key()
+                        scripts.update_events()
+
                 case ["help"] | ["h"]:
                     print_cyan(
                         "Basic commands:\n"
@@ -302,6 +309,7 @@ def main() -> None:
                         "\n"
                         "Script commands:\n"
                         "   count\n"
+                        "   events\n"
                         "   export <filename>.json\n"
                         "   minimap\n"
                         "   print <key>\n"

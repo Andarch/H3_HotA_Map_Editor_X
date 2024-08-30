@@ -2,6 +2,10 @@ import time
 
 SLEEP_TIME = 0.75
 
+class EVENTS:
+    GLOBAL = 1
+    TOWNS  = 2
+
 class COLOR:
     RED    = "\033[91m"
     GREEN  = "\033[92m"
