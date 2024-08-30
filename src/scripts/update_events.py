@@ -48,22 +48,22 @@ def update_events(global_events: list, obj_data: list) -> None:
 
     while True:
         print("Select an option:")
-        print("   1. Global Events (Resources)")
-        print("   2. Town Events (Resources)")
-        print("   3. Town Events (Creatures)")
-        print("   4. Back")
+        print_cyan("   1. Global Events (Resources)")
+        print_cyan("   2. Town Events (Resources)")
+        print_cyan("   3. Town Events (Creatures)")
+        print_cyan("   4. Back")
         print()
         option = print_prompt("Enter a number")
 
         if option == "1":
             update_global_events(global_events)
-            break
+            continue
         elif option == "2":
             update_town_events(town_events_resources, TOWN_TABLE.RESOURCES)
-            break
+            continue
         elif option == "3":
             update_town_events(town_events_creatures, TOWN_TABLE.CREATURES)
-            break
+            continue
         elif option == "4":
             break
         else:
