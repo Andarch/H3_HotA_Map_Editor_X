@@ -296,7 +296,10 @@ def main() -> None:
                         print_error(ERROR_NO_MAP)
                     else:
                         map_key = get_map_key()
-                        scripts.update_events(map_data[map_key]["events"])
+                        scripts.update_events(
+                            map_data[map_key]["events"],
+                            map_data[map_key]["object_data"]
+                        )
 
                 case ["help"] | ["h"]:
                     print_cyan(
