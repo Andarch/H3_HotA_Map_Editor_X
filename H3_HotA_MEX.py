@@ -4,7 +4,6 @@ import os
 import sys
 from enum import Enum
 from gzip import open
-
 from src import *
 
 HELP_COMMANDS = ['help', 'h']
@@ -48,30 +47,26 @@ def main() -> None:
         if map_data["map2"] is None:
             return "map1"
 
-        choice = print_prompt("Which map? (1 or 2)")
-        if choice.lower() in BACK_COMMANDS:
-            print(ABORT_MSG)
-            return
-        elif choice.lower() in EXIT_COMMANDS:
-            exit()
-
+        print("Select a map:")
+        print_cyan(f"   1. {map_data['map1']['filename']}")
+        print_cyan(f"   2. {map_data['map2']['filename']}")
+        print()
+        choice = key_prompt("Choose a map", "12")
         return "map1" if choice == '1' else "map2"
 
     def open_maps() -> None:
         while True:
-            num_maps = print_prompt("Enter the number of maps to open")
-
-            if num_maps.lower() in BACK_COMMANDS:
-                print(ABORT_MSG)
-                return
-            elif num_maps.lower() in EXIT_COMMANDS:
-                exit()
-
+            print("Specify number of maps to open:")
+            print_menu_option("1", "Open 1 map")
+            print_menu_option("2", "Open 2 maps")
+            time.sleep(0.1)
+            num_maps = key_prompt("12")
+            print()
             if num_maps == '1':
                 map_data["map1"] = {}
                 map_data["map2"] = None
                 while True:
-                    filename1 = print_prompt("Enter the map filename")
+                    filename1 = print_string_prompt("Enter the map filename")
                     if filename1.lower() in BACK_COMMANDS:
                         break
                     elif filename1.lower() in EXIT_COMMANDS:
@@ -85,7 +80,7 @@ def main() -> None:
                 map_data["map2"] = {}
                 back_command_used = False
                 while True:
-                    filename1 = print_prompt("Enter the filename for map 1")
+                    filename1 = print_string_prompt("Enter the filename of map 1")
                     if filename1.lower() in BACK_COMMANDS:
                         back_command_used = True
                         break
@@ -98,7 +93,7 @@ def main() -> None:
                 if back_command_used:
                     continue
                 while True:
-                    filename2 = print_prompt("Enter the filename for map 2")
+                    filename2 = print_string_prompt("Enter the filename of map 2")
                     if filename2.lower() in BACK_COMMANDS:
                         print("Loading of map 2 aborted. Map 1 is still loaded.\n")
                         break
@@ -109,8 +104,6 @@ def main() -> None:
                     else:
                         print_error(f"ERROR: Could not find '{filename2}'.")
                 break
-            else:
-                print_error("Error: Can only load 1 or 2 maps.")
 
     def open_map(filename: str, map_key: str) -> None:
         # Make sure that the filename ends with ".h3m". For convenience,
@@ -161,18 +154,18 @@ def main() -> None:
     def save_maps() -> None:
         # Check if a second map is open
         if map_data["map2"] is not None:
-            filename1 = print_prompt("Enter a filename to save map 1")
+            filename1 = print_string_prompt("Enter a filename to save map 1")
             if filename1.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
             save_map(filename1, "map1")
-            filename2 = print_prompt("Enter a filename to save map 2")
+            filename2 = print_string_prompt("Enter a filename to save map 2")
             if filename2.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
             save_map(filename2, "map2")
         else:
-            filename1 = print_prompt("Enter a filename to save the map")
+            filename1 = print_string_prompt("Enter a filename to save the map")
             if filename1.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
@@ -210,143 +203,161 @@ def main() -> None:
     # EXECUTION #
     #############
 
-    print("")
-    print_cyan(f"###################################")
-    print_cyan(f"##                               ##")
-    print_cyan(f"##  H3 HotA Map Editor X v0.3.1  ##")
-    print_cyan(f"##                               ##")
-    print_cyan(f"###################################")
-    print("")
+    cprint()
+    cprint()
+    cprint("###################################")
+    cprint("##                               ##")
+    cprint("##  H3 HotA Map Editor X v0.3.1  ##")
+    cprint("##                               ##")
+    cprint("###################################")
+    cprint()
+    time.sleep(SLEEP_TIME)
+    cprint()
+    print_cyan("Use the number keys on your keyboard to navigate the editor.")
+    print()
+    print()
+    print("Select an option:")
+    print_menu_option("1", "Open map(s)")
+    print_menu_option("2", "Quit editor")
+    menu_item = key_prompt("12")
+    print()
+    print()
 
-    open_maps()
+    match menu_item:
+        case "1": open_maps()
+        case "2": exit()
 
-    while True:
-        if not busy:
-            command = print_prompt("Enter command")
-            busy = True
-        else:
-            continue
+    # while True:
+    #     if not busy:
+    #         busy = True
+    #         print("Select an option:")
+    #         print_cyan("   1. Open map(s)")
+    #         print_cyan("   2. Quit editor")
+    #         print()
+    #         command = key_prompt("12")
+    #     else:
+    #         continue
 
-        try:
-            match command.split():
-                case ["load"] | ["open"]:
-                    open_maps()
+    #     try:
+    #         match command.split():
+    #             case ["load"] | ["open"]:
+    #                 open_maps()
 
-                case ["save"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        save_maps()
+    #             case ["save"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     save_maps()
 
-                case ["print", data_key]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.print_data(map_data[map_key], data_key)
+    #             case ["print", data_key]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.print_data(map_data[map_key], data_key)
 
-                case ["export", filename]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.export_json(map_data[map_key], filename)
+    #             case ["export", filename]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.export_json(map_data[map_key], filename)
 
-                case ["count"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.count_objects(map_data[map_key]["object_data"])
+    #             case ["count"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.count_objects(map_data[map_key]["object_data"])
 
-                case ["swap"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.swap_layers(
-                            map_data[map_key]["terrain"],
-                            map_data[map_key]["object_data"],
-                            map_data[map_key]["player_specs"],
-                            map_data[map_key]["general"]["is_two_level"],
-                            map_data[map_key]["conditions"]
-                        )
+    #             case ["swap"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.swap_layers(
+    #                         map_data[map_key]["terrain"],
+    #                         map_data[map_key]["object_data"],
+    #                         map_data[map_key]["player_specs"],
+    #                         map_data[map_key]["general"]["is_two_level"],
+    #                         map_data[map_key]["conditions"]
+    #                     )
 
-                case ["towns"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.modify_towns(map_data[map_key]["object_data"])
+    #             case ["towns"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.modify_towns(map_data[map_key]["object_data"])
 
-                case ["minimap"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.generate_minimap(
-                            map_data[map_key]["general"],
-                            map_data[map_key]["terrain"],
-                            map_data[map_key]["object_data"],
-                            map_data[map_key]["object_defs"]
-                        )
+    #             case ["minimap"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.generate_minimap(
+    #                         map_data[map_key]["general"],
+    #                         map_data[map_key]["terrain"],
+    #                         map_data[map_key]["object_data"],
+    #                         map_data[map_key]["object_defs"]
+    #                     )
 
-                case ["events"]:
-                    if map_data["map1"] is None:
-                        print_error(ERROR_NO_MAP)
-                    else:
-                        map_key = get_map_key()
-                        scripts.update_events(
-                            map_data[map_key]["events"],
-                            map_data[map_key]["object_data"]
-                        )
+    #             case ["events"]:
+    #                 if map_data["map1"] is None:
+    #                     print_error(ERROR_NO_MAP)
+    #                 else:
+    #                     map_key = get_map_key()
+    #                     scripts.update_events(
+    #                         map_data[map_key]["events"],
+    #                         map_data[map_key]["object_data"]
+    #                     )
 
-                case ["help"] | ["h"]:
-                    print_cyan(
-                        "Basic commands:\n"
-                        "   help | h\n"
-                        "   load | open\n"
-                        "   save\n"
-                        "   /back | /return | /b | /r\n"
-                        "   /exit | /quit | /e | /q\n"
-                        "\n"
-                        "Script commands:\n"
-                        "   count\n"
-                        "   events\n"
-                        "   export <filename>.json\n"
-                        "   minimap\n"
-                        "   print <key>\n"
-                        "   swap\n"
-                        "   towns\n"
-                        "\n"
-                        "Data keys for 'print <key>':\n"
-                        "   general\n"
-                        "   player_specs\n"
-                        "   conditions\n"
-                        "   teams\n"
-                        "   start_heroes\n"
-                        "   ban_flags\n"
-                        "   rumors\n"
-                        "   hero_data\n"
-                        "   terrain\n"
-                        "   object_defs\n"
-                        "   object_data\n"
-                        "   events\n"
-                        "   null_bytes\n"
-                    )
+    #             case ["help"] | ["h"]:
+    #                 print_cyan(
+    #                     "Basic commands:\n"
+    #                     "   help | h\n"
+    #                     "   load | open\n"
+    #                     "   save\n"
+    #                     "   /back | /return | /b | /r\n"
+    #                     "   /exit | /quit | /e | /q\n"
+    #                     "\n"
+    #                     "Script commands:\n"
+    #                     "   count\n"
+    #                     "   events\n"
+    #                     "   export <filename>.json\n"
+    #                     "   minimap\n"
+    #                     "   print <key>\n"
+    #                     "   swap\n"
+    #                     "   towns\n"
+    #                     "\n"
+    #                     "Data keys for 'print <key>':\n"
+    #                     "   general\n"
+    #                     "   player_specs\n"
+    #                     "   conditions\n"
+    #                     "   teams\n"
+    #                     "   start_heroes\n"
+    #                     "   ban_flags\n"
+    #                     "   rumors\n"
+    #                     "   hero_data\n"
+    #                     "   terrain\n"
+    #                     "   object_defs\n"
+    #                     "   object_data\n"
+    #                     "   events\n"
+    #                     "   null_bytes\n"
+    #                 )
 
-                case [cmd]:
-                    if cmd in BACK_COMMANDS:
-                        print_error("Error: You are already at the main menu.")
-                        print(ERROR_HELP)
-                        continue
-                    elif cmd in EXIT_COMMANDS:
-                        exit()
-                    else:
-                        print_error("Error: Unrecognized command.")
-                        print(ERROR_HELP)
-        finally:
-            busy = False
+    #             case [cmd]:
+    #                 if cmd in BACK_COMMANDS:
+    #                     print_error("Error: You are already at the main menu.")
+    #                     print(ERROR_HELP)
+    #                     continue
+    #                 elif cmd in EXIT_COMMANDS:
+    #                     exit()
+    #                 else:
+    #                     print_error("Error: Unrecognized command.")
+    #                     print(ERROR_HELP)
+    #     finally:
+    #         busy = False
 
 if __name__ == "__main__":
     main()
