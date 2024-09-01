@@ -53,7 +53,7 @@ def update_events(global_events: list, obj_data: list) -> None:
         print_cyan("   3. Town Events (Creatures)")
         print_cyan("   4. Back")
         print()
-        option = key_prompt("1234")
+        option = key_press("1234")
 
         if option == "1":
             update_global_events(global_events)

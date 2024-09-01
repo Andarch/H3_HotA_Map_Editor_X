@@ -15,6 +15,11 @@ ERROR_HELP = (f"For help, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.jo
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
 
+menu_start = [
+    "OPEN",
+    "QUIT"
+]
+
 map_data = {
     "map1": None,
     "map2": None
@@ -37,50 +42,29 @@ def main() -> None:
     # HELPER FUNCTIONS #
     ####################
 
-    def exit() -> None:
-        print(EXIT_MSG)
-        time.sleep(SLEEP_TIME)
-        print(f"{COLOR.RESET}")
-        sys.exit(0)
-
-    def get_map_key() -> str:
-        if map_data["map2"] is None:
-            return "map1"
-
-        print("Select a map:")
-        print_cyan(f"   1. {map_data['map1']['filename']}")
-        print_cyan(f"   2. {map_data['map2']['filename']}")
-        print()
-        choice = key_prompt("Choose a map", "12")
-        return "map1" if choice == '1' else "map2"
-
     def open_maps() -> None:
         while True:
-            print("Specify number of maps to open:")
-            print_menu_option("1", "Open 1 map")
-            print_menu_option("2", "Open 2 maps")
-            time.sleep(0.1)
-            num_maps = key_prompt("12")
-            print()
-            if num_maps == '1':
+            cprint(text=SELECT)
+            cprint(type=CP.MENU, number=1, text="Open 1 map")
+            cprint(type=CP.MENU, number=2, text="Open 2 maps")
+            choice = key_press("12")
+            cprint()
+            if choice == '1':
                 map_data["map1"] = {}
                 map_data["map2"] = None
                 while True:
-                    filename1 = print_string_prompt("Enter the map filename")
-                    if filename1.lower() in BACK_COMMANDS:
-                        break
-                    elif filename1.lower() in EXIT_COMMANDS:
-                        exit()
+                    filename1 = cprint(type=CP.PROMPT, text="Enter the map filename")
+                    str_check(filename1)
                     if open_map(filename1, "map1"):
                         return
                     else:
-                        print_error(f"ERROR: Could not find '{filename1}'.")
-            elif num_maps == '2':
+                        cprint(type=CP.ERROR, text=f"Could not find '{filename1}'.")
+            elif choice == '2':
                 map_data["map1"] = {}
                 map_data["map2"] = {}
                 back_command_used = False
                 while True:
-                    filename1 = print_string_prompt("Enter the filename of map 1")
+                    filename1 = cprint(type=CP.PROMPT, text="Enter the filename of map 1")
                     if filename1.lower() in BACK_COMMANDS:
                         back_command_used = True
                         break
@@ -89,11 +73,11 @@ def main() -> None:
                     if open_map(filename1, "map1"):
                         break
                     else:
-                        print_error(f"ERROR: Could not find '{filename1}'.")
+                        cprint(type=CP.ERROR, text=f"Could not find '{filename1}'.")
                 if back_command_used:
                     continue
                 while True:
-                    filename2 = print_string_prompt("Enter the filename of map 2")
+                    filename2 = cprint(type=CP.PROMPT, text="Enter the filename of map 2")
                     if filename2.lower() in BACK_COMMANDS:
                         print("Loading of map 2 aborted. Map 1 is still loaded.\n")
                         break
@@ -102,7 +86,7 @@ def main() -> None:
                     if open_map(filename2, "map2"):
                         return
                     else:
-                        print_error(f"ERROR: Could not find '{filename2}'.")
+                        cprint(type=CP.ERROR, text=f"Could not find '{filename2}'.")
                 break
 
     def open_map(filename: str, map_key: str) -> None:
@@ -111,7 +95,7 @@ def main() -> None:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
 
-        print_action("Loading map...")
+        cprint(type=CP.ACTION, text="Loading map...")
 
         # Make sure that the file actually exists.
         try:
@@ -138,18 +122,42 @@ def main() -> None:
             map_data[map_key]["events"]       = h6.parse_events()
             map_data[map_key]["null_bytes"]   = io.in_file.read()
 
-        print_done()
+        cprint(type=CP.ACTION, text=DONE)
 
         terminal_width = os.get_terminal_size().columns
 
-        print_cyan("-" * terminal_width)
-        print_cyan(f"{map_data[map_key]['general']['name']}")
-        print_cyan("-" * terminal_width)
-        print_cyan(f"{map_data[map_key]['general']['description']}")
-        print_cyan("-" * terminal_width)
-        print("")
+        cprint(type=CP.INFO, text="-" * terminal_width)
+        cprint(type=CP.INFO, text=f"{map_data[map_key]['general']['name']}")
+        cprint(type=CP.INFO, text="-" * terminal_width)
+        cprint(type=CP.INFO, text=f"{map_data[map_key]['general']['description']}")
+        cprint(type=CP.INFO, text="-" * terminal_width)
+        cprint()
 
         return True
+
+    def get_map_key() -> str:
+        if map_data["map2"] is None:
+            return "map1"
+
+        print("Select a map:")
+        print_cyan(f"   1. {map_data['map1']['filename']}")
+        print_cyan(f"   2. {map_data['map2']['filename']}")
+        print()
+        choice = key_press("Choose a map", "12")
+        return "map1" if choice == '1' else "map2"
+
+    def str_check(string: str) -> bool:
+        if string.lower() in BACK_COMMANDS:
+            return True
+        elif string.lower() in EXIT_COMMANDS:
+            exit()
+        return False
+
+    def exit() -> None:
+        print(EXIT_MSG)
+        time.sleep(SLEEP_TIME)
+        print(f"{COLOR.RESET}")
+        sys.exit(0)
 
     def save_maps() -> None:
         # Check if a second map is open
@@ -205,25 +213,21 @@ def main() -> None:
 
     cprint()
     cprint()
-    cprint("###################################")
-    cprint("##                               ##")
-    cprint("##  H3 HotA Map Editor X v0.3.1  ##")
-    cprint("##                               ##")
-    cprint("###################################")
+    cprint(text="###################################")
+    cprint(text="##                               ##")
+    cprint(text="##  H3 HotA Map Editor X v0.3.1  ##")
+    cprint(text="##                               ##")
+    cprint(text="###################################")
     cprint()
     time.sleep(SLEEP_TIME)
     cprint()
-    print_cyan("Use the number keys on your keyboard to navigate the editor.")
-    print()
-    print()
-    print("Select an option:")
-    print_menu_option("1", "Open map(s)")
-    print_menu_option("2", "Quit editor")
-    menu_item = key_prompt("12")
-    print()
-    print()
+    for i, option in enumerate(menu_start):
+        cprint(type=CP.MENU, number=i + 1, text=option, offset=4)
+    choice = key_press("12")
+    cprint()
+    cprint()
 
-    match menu_item:
+    match choice:
         case "1": open_maps()
         case "2": exit()
 
@@ -234,7 +238,7 @@ def main() -> None:
     #         print_cyan("   1. Open map(s)")
     #         print_cyan("   2. Quit editor")
     #         print()
-    #         command = key_prompt("12")
+    #         command = key_press("12")
     #     else:
     #         continue
 
