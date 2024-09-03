@@ -3,11 +3,17 @@ import keyboard
 import pygetwindow as gw  # For checking active window
 import os
 import shutil
+import threading
 import time
 
 SLEEP_TIME = 0.75
 SELECT = "Select an option:"
 DONE = "DONE"
+
+screen_content = []
+previous_width = shutil.get_terminal_size().columns
+redraw_scheduled = False
+is_redrawing = False
 
 class COLOR:
     RED    = "\033[91m"
@@ -26,38 +32,64 @@ class MSG(Enum):
     SPECIAL  = "SPECIAL"
     ERROR = "ERROR"
 
+def hide_cursor(hide: bool) -> None:
+    if hide:
+        print("\033[?25l", end="", flush=True)
+    else:
+        print("\033[?25h", end="", flush=True)
+
 def is_terminal_focused() -> bool:
     active_window = gw.getActiveWindow()
     if active_window:
         return 'h3 hota map editor x' in active_window.title.lower()
     return False
 
-def show_cursor(show: bool) -> None:
-    if show:
-        print("\033[?25h", end="", flush=True)
-    else:
-        print("\033[?25l", end="", flush=True)
+def get_terminal_width():
+    return shutil.get_terminal_size().columns
 
-def print_header():
-    os.system('cls')
+def monitor_terminal_size():
+    global previous_width, redraw_scheduled
+    while True:
+        current_width = get_terminal_width()
+        if current_width != previous_width:
+            previous_width = current_width
+            if not redraw_scheduled:
+                redraw_scheduled = True
+                threading.Timer(0, redraw_screen).start()
+        time.sleep(0.05)
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def redraw_screen():
+    global redraw_scheduled, is_redrawing
+    redraw_scheduled = False
+    is_redrawing = True
+    clear_screen()
+    for type, number, text, offset in screen_content:
+        cprint(type, number, text, offset)
+    is_redrawing = False
+
+def redraw_header():
+    clear_screen()
     cprint()
     cprint()
-    cprint(text="###################################")
-    cprint(text="##                               ##")
-    cprint(text="##  H3 HotA Map Editor X v0.3.1  ##")
-    cprint(text="##                               ##")
-    cprint(text="###################################")
+    cprint(text="#####################################################")
+    cprint(text="##                                                 ##")
+    cprint(text="##           H3 HotA Map Editor X v0.3.1           ##")
+    cprint(text="##                                                 ##")
+    cprint(text="#####################################################")
     cprint()
     cprint()
 
 def cprint(type=MSG.NORMAL, number=-1, text="", offset=0):
-    if type == MSG.MENU:
-        ctext = menu_text(
-            f"[{COLOR.YELLOW}{str(number)}{COLOR.WHITE}] {text}{COLOR.RESET}",
-            offset
-        )
-    elif type == MSG.PROMPT:
-        ctext = center_text(f"{COLOR.YELLOW}[{text}] > {COLOR.RESET}")
+    global screen_content, is_redrawing
+    if not is_redrawing:
+        screen_content.append((type, number, text, offset))
+    if type == MSG.PROMPT:
+        ctext = left_text(f"{COLOR.YELLOW}[{text}] > {COLOR.RESET}", offset)
+    elif type == MSG.ACTION:
+        ctext = left_text(f"{COLOR.WHITE}{text}{COLOR.RESET}", offset)
     else:
         ctext = center_text(text)
     match type:
@@ -66,13 +98,13 @@ def cprint(type=MSG.NORMAL, number=-1, text="", offset=0):
         case MSG.INFO:
             print(f"{COLOR.CYAN}{ctext}{COLOR.RESET}")
         case MSG.MENU:
-            print(ctext)
+            print(left_text(f"[{COLOR.YELLOW}{str(number)}{COLOR.WHITE}] {text}{COLOR.RESET}",
+            offset))
         case MSG.PROMPT:
             user_input = robust_input(ctext)
-            print()
             return user_input
         case MSG.ACTION:
-            print(f"{COLOR.WHITE}{text}{COLOR.RESET}", end=" ", flush=True)
+            print(ctext)
             time.sleep(SLEEP_TIME)
         case MSG.SPECIAL:
             print(f"{COLOR.GREEN}{text}{COLOR.RESET}")
@@ -81,17 +113,18 @@ def cprint(type=MSG.NORMAL, number=-1, text="", offset=0):
         case MSG.ERROR:
             print(f"\n{COLOR.RED}Error: {text}{COLOR.RESET}")
             time.sleep(SLEEP_TIME)
-            print()
 
 def center_text(text: str) -> str:
     terminal_width = shutil.get_terminal_size().columns
     padding = (terminal_width - len(text)) // 2
     return ' ' * padding + text
 
-def menu_text(text: str, offset: int) -> str:
+def left_text(text: str, offset: int) -> str:
     terminal_width = shutil.get_terminal_size().columns
     padding = terminal_width // 2 - offset
     return ' ' * padding + text
+
+# def align_text(text: str, align: str) -> str:
 
 def key_press(valid_keys: str) -> str:
     time.sleep(0.1)
@@ -105,7 +138,7 @@ def key_press(valid_keys: str) -> str:
         time.sleep(0.01)
 
 def robust_input(prompt):
-    print(prompt, end='', flush=True)
+    print(prompt, end="", flush=True)
     input_chars = []
     time.sleep(0.1)
     while True:

@@ -2,6 +2,7 @@
 
 import os
 import sys
+import threading
 from enum import Enum
 from gzip import open
 from src import *
@@ -39,6 +40,7 @@ def main() -> None:
 
     map_key = "map1"
     busy = False
+    global previous_width
 
     ####################
     # HELPER FUNCTIONS #
@@ -46,32 +48,30 @@ def main() -> None:
 
     def open_maps() -> None:
         while True:
-            print_header()
-            cprint(type=MSG.MENU, number=1, text="Open 1 map", offset=8)
-            cprint(type=MSG.MENU, number=2, text="Open 2 maps", offset=8)
+            redraw_header()
+            cprint(type=MSG.MENU, number=1, text="Open 1 map", offset=27)
+            cprint(type=MSG.MENU, number=2, text="Open 2 maps", offset=27)
             choice = key_press("12")
-            cprint()
+            redraw_header()
             if choice == '1':
                 map_data["map1"] = {}
                 map_data["map2"] = None
                 while True:
-                    filename1 = cprint(type=MSG.PROMPT, text="Enter the map filename", offset=8)
+                    filename1 = cprint(type=MSG.PROMPT, text="Enter the map filename", offset=27)
+                    redraw_header()
                     check_if_nav_cmd(filename1)
                     if open_map(filename1, "map1"):
                         return
                     else:
-                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.")
+                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.", offset=27)
             elif choice == '2':
                 map_data["map1"] = {}
                 map_data["map2"] = {}
                 back_command_used = False
                 while True:
                     filename1 = cprint(type=MSG.PROMPT, text="Enter the filename of map 1")
-                    if filename1.lower() in BACK_COMMANDS:
-                        back_command_used = True
-                        break
-                    elif filename1.lower() in EXIT_COMMANDS:
-                        exit()
+                    redraw_header()
+                    check_if_nav_cmd(filename1)
                     if open_map(filename1, "map1"):
                         break
                     else:
@@ -80,11 +80,7 @@ def main() -> None:
                     continue
                 while True:
                     filename2 = cprint(type=MSG.PROMPT, text="Enter the filename of map 2")
-                    if filename2.lower() in BACK_COMMANDS:
-                        print("Loading of map 2 aborted. Map 1 is still loaded.\n")
-                        break
-                    elif filename2.lower() in EXIT_COMMANDS:
-                        exit()
+                    check_if_nav_cmd(filename1)
                     if open_map(filename2, "map2"):
                         return
                     else:
@@ -97,7 +93,7 @@ def main() -> None:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
 
-        cprint(type=MSG.ACTION, text="Loading map...")
+        cprint(type=MSG.ACTION, text=f"Loading {filename}...", offset=27)
 
         # Make sure that the file actually exists.
         try:
@@ -213,18 +209,26 @@ def main() -> None:
     # EXECUTION #
     #############
 
-    show_cursor(False)
-    print_header()
-    time.sleep(SLEEP_TIME)
-    for i, option in enumerate(menu_start):
-        cprint(type=MSG.MENU, number=i + 1, text=option, offset=8)
-    choice = key_press("12")
-    cprint()
-    cprint()
+    previous_width = get_terminal_width()
+    monitor_thread = threading.Thread(target=monitor_terminal_size, daemon=True)
+    monitor_thread.start()
 
-    match choice:
-        case "1": open_maps()
-        case "2": exit()
+    hide_cursor(True)
+    redraw_header()
+    time.sleep(SLEEP_TIME)
+
+    while True:
+        for i, option in enumerate(menu_start):
+            cprint(type=MSG.MENU, number=i + 1, text=option, offset=27)
+        choice = key_press("12")
+        cprint()
+        cprint()
+
+        match choice:
+            case "1": open_maps()
+            case "2": exit()
+
+        time.sleep(0.01)
 
     # while True:
     #     if not busy:
