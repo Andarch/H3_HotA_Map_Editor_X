@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import ctypes
 import sys
 import threading
 from enum import Enum
@@ -14,6 +15,10 @@ ERROR_HELP = (f"For help, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join
               f"To exit, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(EXIT_COMMANDS)}\n{CLR.RESET}")
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
+
+#########################
+# GLOBAL INITIALIZATION #
+#########################
 
 menu_start = [
     "OPEN",
@@ -33,14 +38,6 @@ map_data = {
 
 def main() -> None:
 
-    ##################
-    # INITIALIZATION #
-    ##################
-
-    map_key = "Map 1"
-    busy = False
-    global previous_width
-
     ####################
     # HELPER FUNCTIONS #
     ####################
@@ -49,8 +46,8 @@ def main() -> None:
         def main() -> str:
             while True:
                 start_new_screen()
-                cprint(type = MSG.MENU, menu_item = 1, text = "Open 1 map")
-                cprint(type = MSG.MENU, menu_item = 2, text = "Open 2 maps")
+                xprint(type = MSG.MENU, menu_item = 1, text = "Open 1 map")
+                xprint(type = MSG.MENU, menu_item = 2, text = "Open 2 maps")
                 result = process_key_press(detect_key_press("12"))
                 if result == "esc":
                     break
@@ -81,13 +78,13 @@ def main() -> None:
                         prompt = "Enter the map filename"
                     case "2":
                         prompt = f"Enter the filename for {map_key}"
-                filename = cprint(type = MSG.PROMPT, text = prompt)
+                filename = xprint(type = MSG.PROMPT, text = prompt)
                 if filename:
                     filename = append_h3m(filename)
                     if open_map(filename, map_key):
                         return "success"
                     else:
-                        cprint(type = MSG.ERROR, text = f"Could not find {filename}.", flush = True)
+                        xprint(type = MSG.ERROR, text = f"Could not find {filename}.", flush = True)
                         return "failure"
                 else:
                     return "esc"
@@ -95,7 +92,7 @@ def main() -> None:
         return main()
 
     def open_map(filename: str, map_key: str) -> None:
-        cprint(type = MSG.ACTION, text = f"Loading {filename}...")
+        xprint(type = MSG.ACTION, text = f"Loading {filename}...")
         try:
             with open(filename, "rb"):
                 pass
@@ -116,13 +113,13 @@ def main() -> None:
             map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
             map_data[map_key]["events"]       = h6.parse_events()
             map_data[map_key]["null_bytes"]   = io.in_file.read()
-        cprint(type = MSG.SPECIAL, text = DONE)
+        xprint(type = MSG.SPECIAL, text = DONE)
         terminal_width = get_terminal_width()
-        cprint(type = MSG.INFO, text = "-" * terminal_width)
-        cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
-        cprint(type = MSG.INFO, text = "-" * terminal_width)
-        cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
-        cprint(type = MSG.INFO, text = "-" * terminal_width)
+        xprint(type = MSG.INFO, text = "-" * terminal_width)
+        xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
+        xprint(type = MSG.INFO, text = "-" * terminal_width)
+        xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
+        xprint(type = MSG.INFO, text = "-" * terminal_width)
         return True
 
     def save_maps() -> None:
@@ -189,41 +186,41 @@ def main() -> None:
         choice = detect_key_press("Choose a map", "12")
         return "Map 1" if choice == "1" else "Map 2"
 
-    # def check_if_nav_cmd(string: str) -> bool:
-    #     if string.lower() in BACK_COMMANDS:
-    #         return True
-    #     elif string.lower() in EXIT_COMMANDS:
-    #         exit()
-    #     return False
-
     def exit() -> None:
-        print(EXIT_MSG)
+        xprint()
+        xprint(text = EXIT_MSG)
         time.sleep(SLEEP.NORMAL)
         print(f"{CLR.RESET}")
         sys.exit(0)
+
+    ##################
+    # INITIALIZATION #
+    ##################
+
+    map_key = "Map 1"
+    busy = False
 
     #############
     # EXECUTION #
     #############
 
-    previous_width = get_terminal_width()
-    monitor_thread = threading.Thread(target = monitor_terminal_size, daemon = True)
-    monitor_thread.start()
+    if(initialize()):
+        try:
+            while True:
+                start_new_screen()
+                for i, option in enumerate(menu_start):
+                    xprint(type = MSG.MENU, menu_item = i + 1, text = option)
+                choice = detect_key_press("12")
 
-    hide_cursor(True)
-    # time.sleep(SLEEP.NORMAL)
+                match choice:
+                    case "1": open_maps()
+                    case "2": exit()
 
-    while True:
-        start_new_screen()
-        for i, option in enumerate(menu_start):
-            cprint(type = MSG.MENU, menu_item = i + 1, text = option)
-        choice = detect_key_press("12")
-
-        match choice:
-            case "1": open_maps()
-            case "2": exit()
-
-        time.sleep(SLEEP.TIC)
+                time.sleep(SLEEP.TIC)
+        except KeyboardInterrupt:
+            exit()
+    else:
+        exit()
 
     # while True:
     #     if not busy:
