@@ -153,11 +153,9 @@ def key_press(valid_keys: str) -> str:
                     continue
                 if event.name in valid_keys:
                     previous_key = event.name
-                    time.sleep(SLEEP.TIC)
                     return event.name
                 elif event.name == "esc":
                     previous_key = "esc"
-                    time.sleep(SLEEP.TIC)
                     return "esc"
             elif event.event_type == keyboard.KEY_UP:
                 previous_key = ""
@@ -171,6 +169,8 @@ def prompt_input(prompt: str) -> str:
         if is_terminal_focused():
             event = keyboard.read_event()
             if event.event_type == keyboard.KEY_DOWN:
+                if(event.name == previous_key):
+                    continue
                 if is_terminal_focused():
                     if event.name == "enter" and len(input_chars) > 0:
                         cprint()
@@ -186,5 +186,7 @@ def prompt_input(prompt: str) -> str:
                     elif not keyboard.is_modifier(event.name) and len(event.name) == 1:
                         input_chars.append(event.name)
                         print(event.name, end = "", flush = True)
+            elif event.event_type == keyboard.KEY_UP:
+                previous_key = ""
         time.sleep(SLEEP.TIC)
     return "".join(input_chars)
