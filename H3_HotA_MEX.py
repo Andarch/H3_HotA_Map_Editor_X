@@ -48,29 +48,29 @@ def main() -> None:
 
     def open_maps() -> None:
         while True:
-            redraw_header()
-            cprint(type=MSG.MENU, number=1, text="Open 1 map", offset=27)
-            cprint(type=MSG.MENU, number=2, text="Open 2 maps", offset=27)
+            start_new_screen()
+            cprint(type=MSG.MENU, number=1, text="Open 1 map")
+            cprint(type=MSG.MENU, number=2, text="Open 2 maps")
             choice = key_press("12")
-            redraw_header()
+            start_new_screen()
             if choice == '1':
                 map_data["map1"] = {}
                 map_data["map2"] = None
                 while True:
-                    filename1 = cprint(type=MSG.PROMPT, text="Enter the map filename", offset=27)
-                    redraw_header()
+                    filename1 = cprint(type=MSG.PROMPT, text="Enter the map filename")
+                    start_new_screen()
                     check_if_nav_cmd(filename1)
                     if open_map(filename1, "map1"):
                         return
                     else:
-                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.", offset=27)
+                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.")
             elif choice == '2':
                 map_data["map1"] = {}
                 map_data["map2"] = {}
                 back_command_used = False
                 while True:
                     filename1 = cprint(type=MSG.PROMPT, text="Enter the filename of map 1")
-                    redraw_header()
+                    start_new_screen()
                     check_if_nav_cmd(filename1)
                     if open_map(filename1, "map1"):
                         break
@@ -93,7 +93,7 @@ def main() -> None:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
 
-        cprint(type=MSG.ACTION, text=f"Loading {filename}...", offset=27)
+        cprint(type=MSG.ACTION, text=f"Loading {filename}...")
 
         # Make sure that the file actually exists.
         try:
@@ -214,15 +214,13 @@ def main() -> None:
     monitor_thread.start()
 
     hide_cursor(True)
-    redraw_header()
+    start_new_screen()
     time.sleep(SLEEP_TIME)
 
     while True:
         for i, option in enumerate(menu_start):
-            cprint(type=MSG.MENU, number=i + 1, text=option, offset=27)
+            cprint(type=MSG.MENU, number=i + 1, text=option)
         choice = key_press("12")
-        cprint()
-        cprint()
 
         match choice:
             case "1": open_maps()

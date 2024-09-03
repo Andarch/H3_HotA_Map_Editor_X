@@ -7,13 +7,17 @@ import threading
 import time
 
 SLEEP_TIME = 0.75
-SELECT = "Select an option:"
+PRINT_OFFSET = 27
 DONE = "DONE"
 
 screen_content = []
 previous_width = shutil.get_terminal_size().columns
 redraw_scheduled = False
 is_redrawing = False
+
+class ALIGN(Enum):
+    LEFT = "LEFT"
+    CENTER = "CENTER"
 
 class COLOR:
     RED    = "\033[91m"
@@ -59,18 +63,21 @@ def monitor_terminal_size():
         time.sleep(0.05)
 
 def clear_screen():
+    global screen_content
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def redraw_screen():
-    global redraw_scheduled, is_redrawing
+    global redraw_scheduled, is_redrawing, screen_content
     redraw_scheduled = False
     is_redrawing = True
     clear_screen()
-    for type, number, text, offset in screen_content:
-        cprint(type, number, text, offset)
+    for type, number, text in screen_content:
+        cprint(type, number, text)
     is_redrawing = False
 
-def redraw_header():
+def start_new_screen():
+    global screen_content
+    screen_content = []
     clear_screen()
     cprint()
     cprint()
@@ -82,24 +89,23 @@ def redraw_header():
     cprint()
     cprint()
 
-def cprint(type=MSG.NORMAL, number=-1, text="", offset=0):
+def cprint(type=MSG.NORMAL, number=-1, text="") -> None:
     global screen_content, is_redrawing
     if not is_redrawing:
-        screen_content.append((type, number, text, offset))
+        screen_content.append((type, number, text))
     if type == MSG.PROMPT:
-        ctext = left_text(f"{COLOR.YELLOW}[{text}] > {COLOR.RESET}", offset)
+        ctext = align_text(text=f"{COLOR.YELLOW}[{text}] > {COLOR.RESET}")
     elif type == MSG.ACTION:
-        ctext = left_text(f"{COLOR.WHITE}{text}{COLOR.RESET}", offset)
+        ctext = align_text(text=f"{COLOR.WHITE}{text}{COLOR.RESET}")
     else:
-        ctext = center_text(text)
+        ctext = align_text(ALIGN.CENTER, text)
     match type:
         case MSG.NORMAL:
             print(ctext)
         case MSG.INFO:
             print(f"{COLOR.CYAN}{ctext}{COLOR.RESET}")
         case MSG.MENU:
-            print(left_text(f"[{COLOR.YELLOW}{str(number)}{COLOR.WHITE}] {text}{COLOR.RESET}",
-            offset))
+            print(align_text(text=f"[{COLOR.YELLOW}{str(number)}{COLOR.WHITE}] {text}{COLOR.RESET}"))
         case MSG.PROMPT:
             user_input = robust_input(ctext)
             return user_input
@@ -114,17 +120,13 @@ def cprint(type=MSG.NORMAL, number=-1, text="", offset=0):
             print(f"\n{COLOR.RED}Error: {text}{COLOR.RESET}")
             time.sleep(SLEEP_TIME)
 
-def center_text(text: str) -> str:
+def align_text(align=ALIGN.LEFT, text="") -> str:
     terminal_width = shutil.get_terminal_size().columns
-    padding = (terminal_width - len(text)) // 2
+    if align == ALIGN.LEFT:
+        padding = terminal_width // 2 - PRINT_OFFSET
+    else:
+        padding = (terminal_width - len(text)) // 2
     return ' ' * padding + text
-
-def left_text(text: str, offset: int) -> str:
-    terminal_width = shutil.get_terminal_size().columns
-    padding = terminal_width // 2 - offset
-    return ' ' * padding + text
-
-# def align_text(text: str, align: str) -> str:
 
 def key_press(valid_keys: str) -> str:
     time.sleep(0.1)
