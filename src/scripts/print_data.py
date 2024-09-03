@@ -11,7 +11,7 @@ def print_data(map_key: dict, data_key: str) -> None:
     print_done()
 
     if data_key in map_key:
-        data = pprint.pformat(map_key[data_key], width=PRINT_WIDTH)
+        data = pprint.pformat(map_key[data_key], width = PRINT_WIDTH)
         print_cyan(data)
         print()
     else:

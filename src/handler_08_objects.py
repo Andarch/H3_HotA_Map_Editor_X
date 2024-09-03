@@ -144,7 +144,7 @@ def parse_object_data(object_defs: list) -> list:
                     obj = parse_grave(obj)
 
             case objects.ID.Town:        obj = parse_town(obj)
-            case objects.ID.Random_Town: obj = parse_town(obj, random=True)
+            case objects.ID.Random_Town: obj = parse_town(obj, random = True)
 
             case (objects.ID.Resource | objects.ID.Random_Resource):
                 obj = parse_resource(obj)
@@ -251,7 +251,7 @@ def write_object_data(info: list) -> None:
                     write_grave(obj)
 
             case objects.ID.Town:        write_town(obj)
-            case objects.ID.Random_Town: write_town(obj, random=True)
+            case objects.ID.Random_Town: write_town(obj, random = True)
 
             case (objects.ID.Resource | objects.ID.Random_Resource):
                 write_resource(obj)
@@ -952,7 +952,7 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     for _ in range(io.read_int(4)): # Amount of special buildings.
         obj["buildings_special"].append(io.read_int(1))
 
-    obj["events"]    = parse_events(is_town=True)
+    obj["events"]    = parse_events(is_town = True)
     obj["alignment"] = io.read_int(1)
 
     io.seek(3)
@@ -991,7 +991,7 @@ def write_town(obj: dict, random: bool = False) -> None:
     for i in obj["buildings_special"]:
         io.write_int(i, 1)
 
-    write_events(obj["events"], is_town=True)
+    write_events(obj["events"], is_town = True)
 
     io.write_int(obj["alignment"], 1)
     io.write_int(0, 3)
@@ -1102,7 +1102,7 @@ def parse_quest() -> dict:
                 ])
 
         case Quest.RETURN_WITH_CREATURES:
-            quest["value"] = parse_creatures(amount=io.read_int(1))
+            quest["value"] = parse_creatures(amount = io.read_int(1))
 
         case Quest.RETURN_WITH_RESOURCES:
             quest["value"] = []
@@ -1232,7 +1232,7 @@ def parse_reward() -> dict:
             reward["value"] = spells.ID(io.read_int(1))
 
         case Reward.CREATURES:
-            reward["value"] = parse_creatures(amount=1)
+            reward["value"] = parse_creatures(amount = 1)
 
     return reward
 

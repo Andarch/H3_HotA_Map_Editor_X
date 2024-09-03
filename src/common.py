@@ -1,57 +1,138 @@
 from enum import Enum
 import keyboard
-import pygetwindow as gw  # For checking active window
+import pygetwindow as gw
 import os
 import shutil
 import threading
 import time
 
-SLEEP_TIME = 0.75
-PRINT_OFFSET = 27
+class ALIGN(Enum):
+    LEFT   = "LEFT"
+    CENTER = "CENTER"
+
+class CLR:
+    RESET   = "\033[0m"
+    NO_BOLD = "\033[22m"
+    DEFAULT = "\033[39m"
+    RED     = "\033[91m"
+    GREEN   = "\033[92m"
+    YELLOW  = "\033[93m"
+    BLUE    = "\033[94m"
+    MAGENTA = "\033[95m"
+    CYAN    = "\033[96m"
+    WHITE   = "\033[97m"
+    GREY    = "\033[90m"
+
+class MSG(Enum):
+    NORMAL  = "NORMAL"
+    INFO    = "INFO"
+    MENU    = "MENU"
+    PROMPT  = "PROMPT"
+    ACTION  = "ACTION"
+    SPECIAL = "SPECIAL"
+    ERROR   = "ERROR"
+
+class SLEEP:
+    TIC    = 0.01
+    SHORT  = 0.05
+    NORMAL = 0.75
+    LONG   = 1.5
+
+TITLE = "H3 HotA Map Editor X v0.3.1"
+PRINT_WIDTH = 75
+PRINT_OFFSET = 37
 DONE = "DONE"
 
 screen_content = []
 previous_width = shutil.get_terminal_size().columns
 redraw_scheduled = False
 is_redrawing = False
-
-class ALIGN(Enum):
-    LEFT = "LEFT"
-    CENTER = "CENTER"
-
-class COLOR:
-    RED    = "\033[91m"
-    GREEN  = "\033[92m"
-    YELLOW = "\033[93m"
-    CYAN   = "\033[96m"
-    WHITE  = "\033[97m"
-    RESET  = "\033[0m"
-
-class MSG(Enum):
-    NORMAL = "NORMAL"
-    INFO = "INFO"
-    MENU  = "MENU"
-    PROMPT = "PROMPT"
-    ACTION = "ACTION"
-    SPECIAL  = "SPECIAL"
-    ERROR = "ERROR"
+previous_key = ""
 
 def hide_cursor(hide: bool) -> None:
     if hide:
-        print("\033[?25l", end="", flush=True)
+        print("\033[?25l", end = "", flush = True)
     else:
-        print("\033[?25h", end="", flush=True)
+        print("\033[?25h", end = "", flush = True)
 
 def is_terminal_focused() -> bool:
     active_window = gw.getActiveWindow()
     if active_window:
-        return 'h3 hota map editor x' in active_window.title.lower()
+        return "h3 hota map editor x" in active_window.title.lower()
     return False
 
-def get_terminal_width():
+def get_terminal_width() -> int:
     return shutil.get_terminal_size().columns
 
-def monitor_terminal_size():
+def clear_screen() -> None:
+    global screen_content
+    os.system("cls" if os.name == "nt" else "clear")
+
+def align_text(align = ALIGN.LEFT, text = "") -> str:
+    terminal_width = shutil.get_terminal_size().columns
+    if align == ALIGN.LEFT:
+        padding = terminal_width // 2 - PRINT_OFFSET
+    else:
+        padding = (terminal_width - len(text)) // 2
+    return " " * padding + str(text)
+
+def cprint(type = MSG.NORMAL, text = "", menu_item = -1, flush = False) -> None:
+    global screen_content, is_redrawing
+    if not is_redrawing:
+        screen_content.append((type, text, menu_item, flush))
+    match type:
+        case MSG.NORMAL:
+            print(align_text(text = text))
+        case MSG.INFO:
+            print(align_text(text = f"{CLR.CYAN}{text}{CLR.RESET}"))
+        case MSG.MENU:
+            print(align_text(text = f"[{CLR.YELLOW}{str(menu_item)}{CLR.RESET}] {CLR.WHITE}{text}{CLR.RESET}"))
+        case MSG.PROMPT:
+            input = prompt_input(align_text(text = f"{CLR.YELLOW}[{text}] > {CLR.WHITE}"))
+            return input
+        case MSG.ACTION:
+            print(align_text(text = f"{CLR.WHITE}{text}{CLR.RESET}"), end = " ", flush = True)
+            time.sleep(SLEEP.NORMAL)
+        case MSG.SPECIAL:
+            print(f"{CLR.GREEN}{text}{CLR.RESET}")
+            time.sleep(SLEEP.NORMAL)
+        case MSG.ERROR:
+            if(not flush):
+                print()
+                print(align_text(text = f"{CLR.RED}Error: {text}{CLR.RESET}"))
+            else:
+                print(f"{CLR.RED}Error: {text}{CLR.RESET}")
+            time.sleep(SLEEP.LONG)
+
+def redraw_screen() -> None:
+    global redraw_scheduled, is_redrawing, screen_content
+    redraw_scheduled = False
+    is_redrawing = True
+    clear_screen()
+    for type, text, menu_item, flush in screen_content:
+        cprint(type, text, menu_item, flush)
+    is_redrawing = False
+
+def start_new_screen() -> None:
+    global screen_content
+    screen_content = []
+    clear_screen()
+    # Set up title
+    rowA_fill = f"{CLR.GREY}#" * PRINT_WIDTH + CLR.RESET
+    rowB_fill = f"{CLR.GREY}#" * ((PRINT_WIDTH - (len(TITLE) + 2)) // 2) + CLR.RESET
+    rowB_title = f"{rowB_fill} {CLR.CYAN}{TITLE}{CLR.RESET} {rowB_fill}"
+    # Print title
+    cprint()
+    cprint()
+    cprint(text = rowA_fill)
+    cprint(text = rowA_fill)
+    cprint(text = rowB_title)
+    cprint(text = rowA_fill)
+    cprint(text = rowA_fill)
+    cprint()
+    cprint()
+
+def monitor_terminal_size() -> None:
     global previous_width, redraw_scheduled
     while True:
         current_width = get_terminal_width()
@@ -60,102 +141,50 @@ def monitor_terminal_size():
             if not redraw_scheduled:
                 redraw_scheduled = True
                 threading.Timer(0, redraw_screen).start()
-        time.sleep(0.05)
-
-def clear_screen():
-    global screen_content
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def redraw_screen():
-    global redraw_scheduled, is_redrawing, screen_content
-    redraw_scheduled = False
-    is_redrawing = True
-    clear_screen()
-    for type, number, text in screen_content:
-        cprint(type, number, text)
-    is_redrawing = False
-
-def start_new_screen():
-    global screen_content
-    screen_content = []
-    clear_screen()
-    cprint()
-    cprint()
-    cprint(text="#####################################################")
-    cprint(text="##                                                 ##")
-    cprint(text="##           H3 HotA Map Editor X v0.3.1           ##")
-    cprint(text="##                                                 ##")
-    cprint(text="#####################################################")
-    cprint()
-    cprint()
-
-def cprint(type=MSG.NORMAL, number=-1, text="") -> None:
-    global screen_content, is_redrawing
-    if not is_redrawing:
-        screen_content.append((type, number, text))
-    if type == MSG.PROMPT:
-        ctext = align_text(text=f"{COLOR.YELLOW}[{text}] > {COLOR.RESET}")
-    elif type == MSG.ACTION:
-        ctext = align_text(text=f"{COLOR.WHITE}{text}{COLOR.RESET}")
-    else:
-        ctext = align_text(ALIGN.CENTER, text)
-    match type:
-        case MSG.NORMAL:
-            print(ctext)
-        case MSG.INFO:
-            print(f"{COLOR.CYAN}{ctext}{COLOR.RESET}")
-        case MSG.MENU:
-            print(align_text(text=f"[{COLOR.YELLOW}{str(number)}{COLOR.WHITE}] {text}{COLOR.RESET}"))
-        case MSG.PROMPT:
-            user_input = robust_input(ctext)
-            return user_input
-        case MSG.ACTION:
-            print(ctext)
-            time.sleep(SLEEP_TIME)
-        case MSG.SPECIAL:
-            print(f"{COLOR.GREEN}{text}{COLOR.RESET}")
-            time.sleep(SLEEP_TIME)
-            print()
-        case MSG.ERROR:
-            print(f"\n{COLOR.RED}Error: {text}{COLOR.RESET}")
-            time.sleep(SLEEP_TIME)
-
-def align_text(align=ALIGN.LEFT, text="") -> str:
-    terminal_width = shutil.get_terminal_size().columns
-    if align == ALIGN.LEFT:
-        padding = terminal_width // 2 - PRINT_OFFSET
-    else:
-        padding = (terminal_width - len(text)) // 2
-    return ' ' * padding + text
+        time.sleep(SLEEP.SHORT)
 
 def key_press(valid_keys: str) -> str:
-    time.sleep(0.1)
+    global previous_key
     while True:
         if is_terminal_focused():
-            for key in valid_keys:
-                if keyboard.is_pressed(key):
-                    while keyboard.is_pressed(key):
-                        time.sleep(0.01)
-                    return key
-        time.sleep(0.01)
+            event = keyboard.read_event()
+            if event.event_type == keyboard.KEY_DOWN:
+                if(event.name == previous_key):
+                    continue
+                if event.name in valid_keys:
+                    previous_key = event.name
+                    time.sleep(SLEEP.TIC)
+                    return event.name
+                elif event.name == "esc":
+                    previous_key = "esc"
+                    time.sleep(SLEEP.TIC)
+                    return "esc"
+            elif event.event_type == keyboard.KEY_UP:
+                previous_key = ""
+        time.sleep(SLEEP.TIC)
 
-def robust_input(prompt):
-    print(prompt, end="", flush=True)
+def prompt_input(prompt: str) -> str:
+    global previous_key
+    print(prompt, end = "", flush = True)
     input_chars = []
-    time.sleep(0.1)
     while True:
         if is_terminal_focused():
             event = keyboard.read_event()
             if event.event_type == keyboard.KEY_DOWN:
                 if is_terminal_focused():
-                    if event.name == 'enter':
+                    if event.name == "enter" and len(input_chars) > 0:
+                        cprint()
+                        cprint()
                         break
-                    elif event.name == 'backspace':
+                    elif event.name == "backspace":
                         if input_chars:
                             input_chars.pop()
-                            print('\b \b', end='', flush=True)
+                            print("\b \b", end = "", flush = True)
+                    elif event.name == "esc":
+                        previous_key = "esc"
+                        return ""
                     elif not keyboard.is_modifier(event.name) and len(event.name) == 1:
                         input_chars.append(event.name)
-                        print(event.name, end='', flush=True)
-        time.sleep(0.01)
-    return ''.join(input_chars)
+                        print(event.name, end = "", flush = True)
+        time.sleep(SLEEP.TIC)
+    return "".join(input_chars)

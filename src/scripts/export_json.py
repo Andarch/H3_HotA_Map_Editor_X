@@ -12,6 +12,6 @@ def export_json(map_key: dict, filename: str) -> None:
     print_action("Exporting JSON file...")
 
     with open(filename, 'w') as f:
-        json.dump(map_key, f, cls=CustomEncoder, indent=4)
+        json.dump(map_key, f, cls = CustomEncoder, indent = 4)
 
     print_done()

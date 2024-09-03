@@ -90,9 +90,9 @@ def convert_resource_value(value) -> str:
 
 def color_number(value: str) -> str:
     if value.startswith('+'):
-        return f"{COLOR.GREEN}{value}{COLOR.RESET}"  # Green for positive numbers
+        return f"{CLR.GREEN}{value}{CLR.RESET}"  # Green for positive numbers
     elif value.startswith('-'):
-        return f"{COLOR.RED}{value}{COLOR.RESET}"  # Red for negative numbers
+        return f"{CLR.RED}{value}{CLR.RESET}"  # Red for negative numbers
     return value
 
 #################
@@ -131,7 +131,7 @@ def update_global_events(global_events: list) -> None:
             color_number(str(resources[6]))
         ])
 
-    print(tabulate(table, headers, tablefmt="fancy_grid"))
+    print(tabulate(table, headers, tablefmt = "fancy_grid"))
     print()
 
 ###############
@@ -220,7 +220,7 @@ def update_town_events(town_events: list, table_type: int) -> None:
             table.append(blank_row)
 
     if table:
-        print(tabulate(table, headers, tablefmt="fancy_grid"))
+        print(tabulate(table, headers, tablefmt = "fancy_grid"))
         print()
     else:
         print_error("No events found for the selected table type.")

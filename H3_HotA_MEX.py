@@ -7,12 +7,12 @@ from enum import Enum
 from gzip import open
 from src import *
 
-HELP_COMMANDS = ['help', 'h']
-BACK_COMMANDS = ['/back', '/return', '/b', '/r']
-EXIT_COMMANDS = ['/exit', '/quit', '/e', '/q']
+HELP_COMMANDS = ["help", "h"]
+BACK_COMMANDS = ["/back", "/return", "/b", "/r"]
+EXIT_COMMANDS = ["/exit", "/quit", "/e", "/q"]
 ERROR_NO_MAP = "Error: No map loaded."
-ERROR_HELP = (f"For help, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.join(HELP_COMMANDS)}\n{COLOR.RESET}"
-              f"To exit, enter one of these commands:\n{COLOR.CYAN}\t{'\n\t'.join(EXIT_COMMANDS)}\n{COLOR.RESET}")
+ERROR_HELP = (f"For help, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(HELP_COMMANDS)}\n{CLR.RESET}"
+              f"To exit, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(EXIT_COMMANDS)}\n{CLR.RESET}")
 ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
 
@@ -49,62 +49,58 @@ def main() -> None:
     def open_maps() -> None:
         while True:
             start_new_screen()
-            cprint(type=MSG.MENU, number=1, text="Open 1 map")
-            cprint(type=MSG.MENU, number=2, text="Open 2 maps")
+            cprint(type = MSG.MENU, menu_item = 1, text = "Open 1 map")
+            cprint(type = MSG.MENU, menu_item = 2, text = "Open 2 maps")
             choice = key_press("12")
-            start_new_screen()
-            if choice == '1':
+            if choice == "1":
                 map_data["map1"] = {}
                 map_data["map2"] = None
                 while True:
-                    filename1 = cprint(type=MSG.PROMPT, text="Enter the map filename")
                     start_new_screen()
-                    check_if_nav_cmd(filename1)
+                    filename1 = cprint(type = MSG.PROMPT, text = "Enter the map filename")
+                    if(filename1):
+                        append_h3m(filename1)
+                    else:
+                        break
                     if open_map(filename1, "map1"):
                         return
                     else:
-                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.")
-            elif choice == '2':
+                        cprint(type = MSG.ERROR, text = f"Could not find {filename1}.", flush = True)
+            elif choice == "2":
                 map_data["map1"] = {}
                 map_data["map2"] = {}
                 back_command_used = False
                 while True:
-                    filename1 = cprint(type=MSG.PROMPT, text="Enter the filename of map 1")
                     start_new_screen()
-                    check_if_nav_cmd(filename1)
+                    filename1 = cprint(type = MSG.PROMPT, text = "Enter the filename of map 1")
+                    append_h3m(filename1)
                     if open_map(filename1, "map1"):
                         break
                     else:
-                        cprint(type=MSG.ERROR, text=f"Could not find '{filename1}'.")
+                        cprint(type = MSG.ERROR, text = f"Could not find {filename1}.")
                 if back_command_used:
                     continue
                 while True:
-                    filename2 = cprint(type=MSG.PROMPT, text="Enter the filename of map 2")
-                    check_if_nav_cmd(filename1)
+                    filename2 = cprint(type = MSG.PROMPT, text = "Enter the filename of map 2")
+                    append_h3m(filename2)
                     if open_map(filename2, "map2"):
                         return
                     else:
-                        cprint(type=MSG.ERROR, text=f"Could not find '{filename2}'.")
+                        cprint(type = MSG.ERROR, text = f"Could not find {filename2}.")
+                break
+            elif choice == "esc":
                 break
 
     def open_map(filename: str, map_key: str) -> None:
-        # Make sure that the filename ends with ".h3m". For convenience,
-        # users should be able to open maps without typing the extension.
-        if filename[-4:] != ".h3m":
-            filename += ".h3m"
+        cprint(type = MSG.ACTION, text = f"Loading {filename}...")
 
-        cprint(type=MSG.ACTION, text=f"Loading {filename}...")
-
-        # Make sure that the file actually exists.
         try:
-            with open(filename, 'rb'):
+            with open(filename, "rb"):
                 pass
         except FileNotFoundError:
             return False
 
-        # Parse file data byte by byte.
-        # Refer to the separate handlers for documentation.
-        with open(filename, 'rb') as io.in_file:
+        with open(filename, "rb") as io.in_file:
             map_data[map_key]["filename"]     = filename
             map_data[map_key]["general"]      = h1.parse_general()
             map_data[map_key]["player_specs"] = h2.parse_player_specs()
@@ -120,42 +116,18 @@ def main() -> None:
             map_data[map_key]["events"]       = h6.parse_events()
             map_data[map_key]["null_bytes"]   = io.in_file.read()
 
-        cprint(type=MSG.ACTION, text=DONE)
+        cprint(type = MSG.ACTION, text = DONE)
 
         terminal_width = os.get_terminal_size().columns
 
-        cprint(type=MSG.INFO, text="-" * terminal_width)
-        cprint(type=MSG.INFO, text=f"{map_data[map_key]['general']['name']}")
-        cprint(type=MSG.INFO, text="-" * terminal_width)
-        cprint(type=MSG.INFO, text=f"{map_data[map_key]['general']['description']}")
-        cprint(type=MSG.INFO, text="-" * terminal_width)
+        cprint(type = MSG.INFO, text = "-" * terminal_width)
+        cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
+        cprint(type = MSG.INFO, text = "-" * terminal_width)
+        cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
+        cprint(type = MSG.INFO, text = "-" * terminal_width)
         cprint()
 
         return True
-
-    def get_map_key() -> str:
-        if map_data["map2"] is None:
-            return "map1"
-
-        print("Select a map:")
-        print_cyan(f"   1. {map_data['map1']['filename']}")
-        print_cyan(f"   2. {map_data['map2']['filename']}")
-        print()
-        choice = key_press("Choose a map", "12")
-        return "map1" if choice == '1' else "map2"
-
-    def check_if_nav_cmd(string: str) -> bool:
-        if string.lower() in BACK_COMMANDS:
-            return True
-        elif string.lower() in EXIT_COMMANDS:
-            exit()
-        return False
-
-    def exit() -> None:
-        print(EXIT_MSG)
-        time.sleep(SLEEP_TIME)
-        print(f"{COLOR.RESET}")
-        sys.exit(0)
 
     def save_maps() -> None:
         # Check if a second map is open
@@ -188,7 +160,7 @@ def main() -> None:
         print_action("Saving map...")
 
         # Save the map byte by byte.
-        with open(filename, 'wb') as io.out_file:
+        with open(filename, "wb") as io.out_file:
             h1.write_general(        map_data[map_key]["general"])
             h2.write_player_specs(   map_data[map_key]["player_specs"])
             h3.write_conditions(     map_data[map_key]["conditions"])
@@ -205,28 +177,57 @@ def main() -> None:
 
         print_done()
 
+    def append_h3m(filename: str) -> str:
+        if filename[-4:] != ".h3m":
+            filename += ".h3m"
+        return filename
+
+    def get_map_key() -> str:
+        if map_data["map2"] is None:
+            return "map1"
+
+        print("Select a map:")
+        print_cyan(f"   1. {map_data["map1"]["filename"]}")
+        print_cyan(f"   2. {map_data["map2"]["filename"]}")
+        print()
+        choice = key_press("Choose a map", "12")
+        return "map1" if choice == "1" else "map2"
+
+    # def check_if_nav_cmd(string: str) -> bool:
+    #     if string.lower() in BACK_COMMANDS:
+    #         return True
+    #     elif string.lower() in EXIT_COMMANDS:
+    #         exit()
+    #     return False
+
+    def exit() -> None:
+        print(EXIT_MSG)
+        time.sleep(SLEEP.NORMAL)
+        print(f"{CLR.RESET}")
+        sys.exit(0)
+
     #############
     # EXECUTION #
     #############
 
     previous_width = get_terminal_width()
-    monitor_thread = threading.Thread(target=monitor_terminal_size, daemon=True)
+    monitor_thread = threading.Thread(target = monitor_terminal_size, daemon = True)
     monitor_thread.start()
 
     hide_cursor(True)
-    start_new_screen()
-    time.sleep(SLEEP_TIME)
+    # time.sleep(SLEEP.NORMAL)
 
     while True:
+        start_new_screen()
         for i, option in enumerate(menu_start):
-            cprint(type=MSG.MENU, number=i + 1, text=option)
+            cprint(type = MSG.MENU, menu_item = i + 1, text = option)
         choice = key_press("12")
 
         match choice:
             case "1": open_maps()
             case "2": exit()
 
-        time.sleep(0.01)
+        time.sleep(SLEEP.TIC)
 
     # while True:
     #     if not busy:
@@ -331,7 +332,7 @@ def main() -> None:
     #                     "   swap\n"
     #                     "   towns\n"
     #                     "\n"
-    #                     "Data keys for 'print <key>':\n"
+    #                     "Print categories:\n"
     #                     "   general\n"
     #                     "   player_specs\n"
     #                     "   conditions\n"
