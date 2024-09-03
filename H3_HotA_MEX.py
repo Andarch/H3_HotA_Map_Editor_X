@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 import threading
 from enum import Enum
@@ -24,8 +23,8 @@ menu_start = [
 valid_files = []
 
 map_data = {
-    "map1": None,
-    "map2": None
+    "map 1": None,
+    "map 2": None
 }
 
 #################
@@ -38,7 +37,7 @@ def main() -> None:
     # INITIALIZATION #
     ##################
 
-    map_key = "map1"
+    map_key = "map 1"
     busy = False
     global previous_width
 
@@ -47,48 +46,52 @@ def main() -> None:
     ####################
 
     def open_maps() -> None:
+
+        # Helper for open_maps()
+        def process_choice(choice: str) -> bool:
+
+            # Helper for process_choice()
+            def process_filename(map: str, choice: str) -> bool:
+                match choice:
+                    case "1":
+                        prompt = "Enter the map filename"
+                    case "2":
+                        prompt = f"Enter the filename for {map}"
+                filename = cprint(type = MSG.PROMPT, text = prompt)
+                if filename:
+                    filename = append_h3m(filename)
+                    if open_map(filename, map):
+                        return True
+                    else:
+                        cprint(type = MSG.ERROR, text = f"Could not find {filename}.", flush = True)
+                        return False
+                else:
+                    return False
+
+            # Main for process_choice()
+            match choice:
+                case "1":
+                    map_data["map 1"] = {}
+                    map_data["map 2"] = None
+                case "2":
+                    map_data["map 1"] = {}
+                    map_data["map 2"] = {}
+                case "esc": return
+            while True:
+                start_new_screen()
+                if not process_filename("map 1", choice):
+                    break
+                if choice == "2":
+                    if not process_filename("map 2", choice):
+                        break
+
+        # Main for open_maps()
         while True:
             start_new_screen()
             cprint(type = MSG.MENU, menu_item = 1, text = "Open 1 map")
             cprint(type = MSG.MENU, menu_item = 2, text = "Open 2 maps")
-            choice = key_press("12")
-            if choice == "1":
-                map_data["map1"] = {}
-                map_data["map2"] = None
-                while True:
-                    start_new_screen()
-                    filename1 = cprint(type = MSG.PROMPT, text = "Enter the map filename")
-                    if(filename1):
-                        append_h3m(filename1)
-                    else:
-                        break
-                    if open_map(filename1, "map1"):
-                        return
-                    else:
-                        cprint(type = MSG.ERROR, text = f"Could not find {filename1}.", flush = True)
-            elif choice == "2":
-                map_data["map1"] = {}
-                map_data["map2"] = {}
-                back_command_used = False
-                while True:
-                    start_new_screen()
-                    filename1 = cprint(type = MSG.PROMPT, text = "Enter the filename of map 1")
-                    append_h3m(filename1)
-                    if open_map(filename1, "map1"):
-                        break
-                    else:
-                        cprint(type = MSG.ERROR, text = f"Could not find {filename1}.")
-                if back_command_used:
-                    continue
-                while True:
-                    filename2 = cprint(type = MSG.PROMPT, text = "Enter the filename of map 2")
-                    append_h3m(filename2)
-                    if open_map(filename2, "map2"):
-                        return
-                    else:
-                        cprint(type = MSG.ERROR, text = f"Could not find {filename2}.")
-                break
-            elif choice == "esc":
+            process_choice(key_press("12"))
+            if choice == "esc":
                 break
 
     def open_map(filename: str, map_key: str) -> None:
@@ -116,38 +119,37 @@ def main() -> None:
             map_data[map_key]["events"]       = h6.parse_events()
             map_data[map_key]["null_bytes"]   = io.in_file.read()
 
-        cprint(type = MSG.ACTION, text = DONE)
+        cprint(type = MSG.SPECIAL, text = DONE)
 
-        terminal_width = os.get_terminal_size().columns
+        terminal_width = get_terminal_width()
 
         cprint(type = MSG.INFO, text = "-" * terminal_width)
         cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
         cprint(type = MSG.INFO, text = "-" * terminal_width)
         cprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
         cprint(type = MSG.INFO, text = "-" * terminal_width)
-        cprint()
 
         return True
 
     def save_maps() -> None:
         # Check if a second map is open
-        if map_data["map2"] is not None:
+        if map_data["map 2"] is not None:
             filename1 = print_string_prompt("Enter a filename to save map 1")
             if filename1.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
-            save_map(filename1, "map1")
+            save_map(filename1, "map 1")
             filename2 = print_string_prompt("Enter a filename to save map 2")
             if filename2.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
-            save_map(filename2, "map2")
+            save_map(filename2, "map 2")
         else:
             filename1 = print_string_prompt("Enter a filename to save the map")
             if filename1.lower() in BACK_COMMANDS:
                 print(ABORT_MSG)
                 return
-            save_map(filename1, "map1")
+            save_map(filename1, "map 1")
 
     def save_map(filename: str, map_key: str) -> None:
         # Make sure that the filename ends with ".h3m". For convenience,
@@ -183,15 +185,15 @@ def main() -> None:
         return filename
 
     def get_map_key() -> str:
-        if map_data["map2"] is None:
-            return "map1"
+        if map_data["map 2"] is None:
+            return "map 1"
 
         print("Select a map:")
-        print_cyan(f"   1. {map_data["map1"]["filename"]}")
-        print_cyan(f"   2. {map_data["map2"]["filename"]}")
+        print_cyan(f"   1. {map_data["map 1"]["filename"]}")
+        print_cyan(f"   2. {map_data["map 2"]["filename"]}")
         print()
         choice = key_press("Choose a map", "12")
-        return "map1" if choice == "1" else "map2"
+        return "map 1" if choice == "1" else "map 2"
 
     # def check_if_nav_cmd(string: str) -> bool:
     #     if string.lower() in BACK_COMMANDS:
@@ -246,34 +248,34 @@ def main() -> None:
     #                 open_maps()
 
     #             case ["save"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     save_maps()
 
     #             case ["print", data_key]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
     #                     scripts.print_data(map_data[map_key], data_key)
 
     #             case ["export", filename]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
     #                     scripts.export_json(map_data[map_key], filename)
 
     #             case ["count"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
     #                     scripts.count_objects(map_data[map_key]["object_data"])
 
     #             case ["swap"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
@@ -286,14 +288,14 @@ def main() -> None:
     #                     )
 
     #             case ["towns"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
     #                     scripts.modify_towns(map_data[map_key]["object_data"])
 
     #             case ["minimap"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()
@@ -305,7 +307,7 @@ def main() -> None:
     #                     )
 
     #             case ["events"]:
-    #                 if map_data["map1"] is None:
+    #                 if map_data["map 1"] is None:
     #                     print_error(ERROR_NO_MAP)
     #                 else:
     #                     map_key = get_map_key()

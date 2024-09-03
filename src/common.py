@@ -69,7 +69,7 @@ def clear_screen() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
 def align_text(align = ALIGN.LEFT, text = "") -> str:
-    terminal_width = shutil.get_terminal_size().columns
+    terminal_width = get_terminal_width()
     if align == ALIGN.LEFT:
         padding = terminal_width // 2 - PRINT_OFFSET
     else:
