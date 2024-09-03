@@ -143,7 +143,7 @@ def monitor_terminal_size() -> None:
                 threading.Timer(0, redraw_screen).start()
         time.sleep(SLEEP.SHORT)
 
-def key_press(valid_keys: str) -> str:
+def detect_key_press(valid_keys: str) -> str:
     global previous_key
     while True:
         if is_terminal_focused():
@@ -163,8 +163,8 @@ def key_press(valid_keys: str) -> str:
 
 def prompt_input(prompt: str) -> str:
     global previous_key
-    print(prompt, end = "", flush = True)
     input_chars = []
+    print(prompt, end = "", flush = True)
     while True:
         if is_terminal_focused():
             event = keyboard.read_event()
