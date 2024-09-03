@@ -71,7 +71,7 @@ def main() -> None:
                     match result:
                         case "success": return "success"
                         case "failure": continue
-                        case "esc": return
+                        case "esc": return ""
                     if choice == "2":
                         if not process_filename("Map 2", choice):
                             continue
