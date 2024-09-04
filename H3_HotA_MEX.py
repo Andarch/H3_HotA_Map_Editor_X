@@ -4,13 +4,13 @@ import sys
 # from enum import Enum
 from src import *
 
-HELP_COMMANDS = ["help", "h"]
-BACK_COMMANDS = ["/back", "/return", "/b", "/r"]
-EXIT_COMMANDS = ["/exit", "/quit", "/e", "/q"]
+# HELP_COMMANDS = ["help", "h"]
+# BACK_COMMANDS = ["/back", "/return", "/b", "/r"]
+# EXIT_COMMANDS = ["/exit", "/quit", "/e", "/q"]
 ERROR_NO_MAP = "Error: No map loaded."
-ERROR_HELP = (f"For help, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(HELP_COMMANDS)}\n{CLR.RESET}"
-              f"To exit, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(EXIT_COMMANDS)}\n{CLR.RESET}")
-ABORT_MSG = "Operation aborted.\n"
+# ERROR_HELP = (f"For help, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(HELP_COMMANDS)}\n{CLR.RESET}"
+#               f"To exit, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(EXIT_COMMANDS)}\n{CLR.RESET}")
+# ABORT_MSG = "Operation aborted.\n"
 EXIT_MSG = "Exiting program..."
 
 #########################
@@ -21,6 +21,16 @@ menu_start = [
     "OPEN",
     "QUIT"
 ]
+
+menu_open = [
+    "Open 1 map",
+    "Open 2 maps"
+]
+
+menus = {
+    "start": menu_start,
+    "open" : menu_open
+}
 
 valid_files = []
 
@@ -72,8 +82,15 @@ def main() -> None:
         try:
             while True:
                 start_new_screen()
-                for i, option in enumerate(menu_start):
-                    xprint(type = MSG.MENU, menu_item = i + 1, text = option)
+                menu = menus["start"]
+                menu_width = determine_menu_width(menu)
+                for i, option in enumerate(menu):
+                    xprint(
+                        type = MSG.MENU,
+                        menu_num = i + 1,
+                        text = option,
+                        menu_width = menu_width
+                    )
                 choice = detect_key_press("12")
                 match choice:
                     case "1": io.open_map_prompts()

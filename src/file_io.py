@@ -8,7 +8,7 @@ from . import handler_05_additional_flags  as h5
 from . import handler_06_rumors_and_events as h6
 from . import handler_07_terrain           as h7
 from . import handler_08_objects           as h8
-from H3_HotA_MEX import map_data
+from H3_HotA_MEX import map_data, menus
 
 in_file  = None
 out_file = None
@@ -78,11 +78,20 @@ def peek(length: int) -> None:
 
 def open_map_prompts() -> None:
     def main() -> str:
+        global menus
         while True:
             start_new_screen()
-            xprint(type = MSG.MENU, menu_item = 1, text = "Open 1 map")
-            xprint(type = MSG.MENU, menu_item = 2, text = "Open 2 maps")
-            result = process_key_press(detect_key_press("12"))
+            menu = menus["open"]
+            menu_width = determine_menu_width(menu)
+            for i, option in enumerate(menu):
+                xprint(
+                    type = MSG.MENU,
+                    menu_num = i + 1,
+                    text = option,
+                    menu_width = menu_width
+                )
+            choice = detect_key_press("12")
+            result = process_key_press(choice)
             if result == "esc":
                 break
     def process_key_press(choice: str) -> str:
@@ -127,7 +136,7 @@ def open_map_prompts() -> None:
     return main()
 
 def open_map(filename: str, map_key: str) -> None:
-    global map_data, in_file
+    global map_data, in_file, terminal_width
     xprint(type = MSG.ACTION, text = f"Loading {filename}...")
     try:
         with open(filename, "rb"):
@@ -150,7 +159,6 @@ def open_map(filename: str, map_key: str) -> None:
         map_data[map_key]["events"]       = h6.parse_events()
         map_data[map_key]["null_bytes"]   = in_file.read()
     xprint(type = MSG.SPECIAL, text = DONE)
-    terminal_width = get_terminal_width()
     xprint(type = MSG.INFO, text = "-" * terminal_width)
     xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
     xprint(type = MSG.INFO, text = "-" * terminal_width)
