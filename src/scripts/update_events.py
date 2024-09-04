@@ -48,10 +48,10 @@ def update_events(global_events: list, obj_data: list) -> None:
 
     while True:
         print("Select an option:")
-        print_cyan("   1. Global Events (Resources)")
-        print_cyan("   2. Town Events (Resources)")
-        print_cyan("   3. Town Events (Creatures)")
-        print_cyan("   4. Back")
+        # print_cyan("   1. Global Events (Resources)")
+        # print_cyan("   2. Town Events (Resources)")
+        # print_cyan("   3. Town Events (Creatures)")
+        # print_cyan("   4. Back")
         print()
         option = detect_key_press("1234")
 
@@ -66,8 +66,8 @@ def update_events(global_events: list, obj_data: list) -> None:
             continue
         elif option == "4":
             break
-        else:
-            print_error("Error: Invalid option. Please try again.")
+        # else:
+            # print_error("Error: Invalid option. Please try again.")
 
 ####################
 # HELPER FUNCTIONS #
@@ -101,7 +101,7 @@ def color_number(value: str) -> str:
 
 def update_global_events(global_events: list) -> None:
     if not global_events:
-        print_error("No global events found.")
+        # print_error("No global events found.")
         return
 
     table = []
@@ -222,5 +222,5 @@ def update_town_events(town_events: list, table_type: int) -> None:
     if table:
         print(tabulate(table, headers, tablefmt = "fancy_grid"))
         print()
-    else:
-        print_error("No events found for the selected table type.")
+    # else:
+        # print_error("No events found for the selected table type.")

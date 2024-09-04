@@ -122,69 +122,65 @@ def main() -> None:
         xprint(type = MSG.INFO, text = "-" * terminal_width)
         return True
 
-    def save_maps() -> None:
-        # Check if a second map is open
-        if map_data["Map 2"] is not None:
-            filename1 = print_string_prompt("Enter a filename to save Map 1")
-            if filename1.lower() in BACK_COMMANDS:
-                print(ABORT_MSG)
-                return
-            save_map(filename1, "Map 1")
-            filename2 = print_string_prompt("Enter a filename to save Map 2")
-            if filename2.lower() in BACK_COMMANDS:
-                print(ABORT_MSG)
-                return
-            save_map(filename2, "Map 2")
-        else:
-            filename1 = print_string_prompt("Enter a filename to save the map")
-            if filename1.lower() in BACK_COMMANDS:
-                print(ABORT_MSG)
-                return
-            save_map(filename1, "Map 1")
+    # def save_maps() -> None:
+    #     if map_data["Map 2"] is not None:
+    #         filename1 = print_string_prompt("Enter a filename to save Map 1")
+    #         if filename1.lower() in BACK_COMMANDS:
+    #             print(ABORT_MSG)
+    #             return
+    #         save_map(filename1, "Map 1")
+    #         filename2 = print_string_prompt("Enter a filename to save Map 2")
+    #         if filename2.lower() in BACK_COMMANDS:
+    #             print(ABORT_MSG)
+    #             return
+    #         save_map(filename2, "Map 2")
+    #     else:
+    #         filename1 = print_string_prompt("Enter a filename to save the map")
+    #         if filename1.lower() in BACK_COMMANDS:
+    #             print(ABORT_MSG)
+    #             return
+    #         save_map(filename1, "Map 1")
 
-    def save_map(filename: str, map_key: str) -> None:
-        # Make sure that the filename ends with ".h3m". For convenience,
-        # users should be able to save maps without typing the extension.
-        if len(filename) > 4:
-            if filename[-4:] != ".h3m":
-                filename += ".h3m"
-        else: filename += ".h3m"
+    # def save_map(filename: str, map_key: str) -> None:
+    #     if len(filename) > 4:
+    #         if filename[-4:] != ".h3m":
+    #             filename += ".h3m"
+    #     else: filename += ".h3m"
 
-        print_action("Saving map...")
+    #     print_action("Saving map...")
 
-        # Save the map byte by byte.
-        with open(filename, "wb") as io.out_file:
-            h1.write_general(        map_data[map_key]["general"])
-            h2.write_player_specs(   map_data[map_key]["player_specs"])
-            h3.write_conditions(     map_data[map_key]["conditions"])
-            h2.write_teams(          map_data[map_key]["teams"])
-            h4.write_starting_heroes(map_data[map_key]["start_heroes"])
-            h5.write_flags(          map_data[map_key]["ban_flags"])
-            h6.write_rumors(         map_data[map_key]["rumors"])
-            h4.write_hero_data(      map_data[map_key]["hero_data"])
-            h7.write_terrain(        map_data[map_key]["terrain"])
-            h8.write_object_defs(    map_data[map_key]["object_defs"])
-            h8.write_object_data(    map_data[map_key]["object_data"])
-            h6.write_events(         map_data[map_key]["events"])
-            io.out_file.write(       map_data[map_key]["null_bytes"])
+    #     with open(filename, "wb") as io.out_file:
+    #         h1.write_general(        map_data[map_key]["general"])
+    #         h2.write_player_specs(   map_data[map_key]["player_specs"])
+    #         h3.write_conditions(     map_data[map_key]["conditions"])
+    #         h2.write_teams(          map_data[map_key]["teams"])
+    #         h4.write_starting_heroes(map_data[map_key]["start_heroes"])
+    #         h5.write_flags(          map_data[map_key]["ban_flags"])
+    #         h6.write_rumors(         map_data[map_key]["rumors"])
+    #         h4.write_hero_data(      map_data[map_key]["hero_data"])
+    #         h7.write_terrain(        map_data[map_key]["terrain"])
+    #         h8.write_object_defs(    map_data[map_key]["object_defs"])
+    #         h8.write_object_data(    map_data[map_key]["object_data"])
+    #         h6.write_events(         map_data[map_key]["events"])
+    #         io.out_file.write(       map_data[map_key]["null_bytes"])
 
-        print_done()
+    #     print_done()
 
     def append_h3m(filename: str) -> str:
         if filename[-4:] != ".h3m":
             filename += ".h3m"
         return filename
 
-    def get_map_key() -> str:
-        if map_data["Map 2"] is None:
-            return "Map 1"
+    # def get_map_key() -> str:
+    #     if map_data["Map 2"] is None:
+    #         return "Map 1"
 
-        print("Select a map:")
-        print_cyan(f"   1. {map_data["Map 1"]["filename"]}")
-        print_cyan(f"   2. {map_data["Map 2"]["filename"]}")
-        print()
-        choice = detect_key_press("Choose a map", "12")
-        return "Map 1" if choice == "1" else "Map 2"
+    #     print("Select a map:")
+    #     print_cyan(f"   1. {map_data["Map 1"]["filename"]}")
+    #     print_cyan(f"   2. {map_data["Map 2"]["filename"]}")
+    #     print()
+    #     choice = detect_key_press("Choose a map", "12")
+    #     return "Map 1" if choice == "1" else "Map 2"
 
     def exit() -> None:
         xprint()
