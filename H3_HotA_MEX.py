@@ -64,7 +64,7 @@ def main() -> None:
         xprint()
         xprint(text = EXIT_MSG)
         time.sleep(SLEEP.NORMAL)
-        print(f"{CLR.RESET}")
+        xprint(text = CLR.RESET)
         sys.exit(0)
 
     ##################

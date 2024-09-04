@@ -143,7 +143,6 @@ def align_text(align = ALIGN.LEFT, text = "", menu_width = 0) -> str:
         return " " * padding + str(text)
     elif align == ALIGN.CENTER_LEFT:
         padding = terminal_width // 2 - menu_width // 2 - 2
-        print(text, padding)
         return " " * padding + str(text)
 
 def strip_ansi_codes(text: str) -> str:
