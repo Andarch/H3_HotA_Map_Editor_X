@@ -7,10 +7,6 @@ import shutil
 import threading
 import time
 
-class ALIGN(Enum):
-    LEFT   = "LEFT"
-    CENTER = "CENTER"
-
 class CLR:
     RESET   = "\033[0m"
     NO_BOLD = "\033[22m"
@@ -31,6 +27,7 @@ class MSG(Enum):
     PROMPT  = "PROMPT"
     ACTION  = "ACTION"
     SPECIAL = "SPECIAL"
+    HEADER  = "HEADER"
     ERROR   = "ERROR"
 
 class SLEEP:
@@ -41,7 +38,7 @@ class SLEEP:
 
 TITLE = "H3 HotA Map Editor X v0.3.1"
 PRINT_WIDTH = 75
-PRINT_OFFSET = 37
+PRINT_OFFSET = PRINT_WIDTH // 2
 DONE = "DONE"
 
 screen_content = []
@@ -87,7 +84,7 @@ def hide_cursor(hide: bool) -> None:
 
 def xprint(type = MSG.NORMAL, text = "", menu_item = -1, flush = False) -> None:
     global screen_content, is_redrawing
-    if not is_redrawing:
+    if not is_redrawing and type != MSG.HEADER:
         screen_content.append((type, text, menu_item, flush))
     match type:
         case MSG.NORMAL:
@@ -105,6 +102,8 @@ def xprint(type = MSG.NORMAL, text = "", menu_item = -1, flush = False) -> None:
         case MSG.SPECIAL:
             print(f"{CLR.GREEN}{text}{CLR.RESET}")
             time.sleep(SLEEP.NORMAL)
+        case MSG.HEADER:
+            print(align_text(text = text))
         case MSG.ERROR:
             if(not flush):
                 xprint()
@@ -113,38 +112,46 @@ def xprint(type = MSG.NORMAL, text = "", menu_item = -1, flush = False) -> None:
                 print(f"{CLR.RED}Error: {text}{CLR.RESET}")
             time.sleep(SLEEP.LONG)
 
-def align_text(align = ALIGN.LEFT, text = "") -> str:
+def align_text(text: str) -> str:
     terminal_width = get_terminal_width()
-    if align == ALIGN.LEFT:
-        padding = terminal_width // 2 - PRINT_OFFSET
-    else:
-        padding = (terminal_width - len(text)) // 2
+    padding = terminal_width // 2 - PRINT_OFFSET
     return " " * padding + str(text)
 
-def start_new_screen() -> None:
+def start_new_screen(reset: bool = True) -> None:
     global screen_content
-    screen_content = []
+    if reset:
+        screen_content = []
     clear_screen()
-    # Set up title
-    rowA_fill = f"{CLR.GREY}#" * PRINT_WIDTH + CLR.RESET
-    rowB_fill = f"{CLR.GREY}#" * ((PRINT_WIDTH - (len(TITLE) + 2)) // 2) + CLR.RESET
-    rowB_title = f"{rowB_fill} {CLR.CYAN}{TITLE}{CLR.RESET} {rowB_fill}"
-    # Print title
-    xprint()
-    xprint()
-    xprint(text = rowA_fill)
-    xprint(text = rowA_fill)
-    xprint(text = rowB_title)
-    xprint(text = rowA_fill)
-    xprint(text = rowA_fill)
-    xprint()
-    xprint()
+    terminal_width = get_terminal_width()
+    title_length = len(TITLE)
+    # Set up header
+    if terminal_width >= PRINT_WIDTH:
+        rowA_fill = f"{CLR.GREY}#" * PRINT_WIDTH + CLR.RESET
+        total_fill_length = PRINT_WIDTH - (title_length + 2)
+    else:
+        rowA_fill = f"{CLR.GREY}#" * terminal_width + CLR.RESET
+        total_fill_length = terminal_width - (title_length + 2)
+    rowB_fill_left = f"{CLR.GREY}#" * (total_fill_length // 2) + CLR.RESET
+    rowB_fill_right = f"{CLR.GREY}#" * (total_fill_length // 2) + CLR.RESET
+    if total_fill_length % 2 != 0:
+        rowB_fill_right += f"{CLR.GREY}#" + CLR.RESET
+    rowB_title = f"{rowB_fill_left} {CLR.CYAN}{TITLE}{CLR.RESET} {rowB_fill_right}"
+    # Print header
+    xprint(type = MSG.HEADER, text = "")
+    xprint(type = MSG.HEADER, text = "")
+    xprint(type = MSG.HEADER, text = rowA_fill)
+    xprint(type = MSG.HEADER, text = rowA_fill)
+    xprint(type = MSG.HEADER, text = rowB_title)
+    xprint(type = MSG.HEADER, text = rowA_fill)
+    xprint(type = MSG.HEADER, text = rowA_fill)
+    xprint(type = MSG.HEADER, text = "")
+    xprint(type = MSG.HEADER, text = "")
 
 def redraw_screen() -> None:
     global redraw_scheduled, is_redrawing, screen_content
     redraw_scheduled = False
     is_redrawing = True
-    clear_screen()
+    start_new_screen(False)
     for type, text, menu_item, flush in screen_content:
         xprint(type, text, menu_item, flush)
     is_redrawing = False
