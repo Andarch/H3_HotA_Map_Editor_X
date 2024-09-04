@@ -211,11 +211,9 @@ def main() -> None:
                 for i, option in enumerate(menu_start):
                     xprint(type = MSG.MENU, menu_item = i + 1, text = option)
                 choice = detect_key_press("12")
-
                 match choice:
                     case "1": open_maps()
                     case "2": exit()
-
                 time.sleep(SLEEP.TIC)
         except KeyboardInterrupt:
             exit()
