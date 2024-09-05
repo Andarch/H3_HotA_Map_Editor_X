@@ -81,18 +81,8 @@ def main() -> None:
     if(initialize()):
         try:
             while True:
-                start_new_screen()
-                menu = menus["start"]
-                menu_width = determine_menu_width(menu)
-                for i, option in enumerate(menu):
-                    xprint(
-                        type = MSG.MENU,
-                        menu_num = i + 1,
-                        text = option,
-                        menu_width = menu_width
-                    )
-                choice = detect_key_press("12")
-                match choice:
+                input = menu_prompt(menus["start"])
+                match input:
                     case "1": io.open_map_prompts()
                     case "2": exit()
                 time.sleep(SLEEP.TIC)

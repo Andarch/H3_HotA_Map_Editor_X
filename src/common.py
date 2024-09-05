@@ -220,6 +220,20 @@ def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
 
+def menu_prompt(menu: list) -> str:
+    start_new_screen()
+    menu_width = determine_menu_width(menu)
+    for i, option in enumerate(menu):
+        xprint(
+            type = MSG.MENU,
+            menu_num = i + 1,
+            text = option,
+            menu_width = menu_width
+        )
+    valid_keys = ''.join(str(i + 1) for i in range(len(menu)))
+    choice = detect_key_press(valid_keys)
+    return choice
+
 def is_terminal_focused() -> bool:
     active_window = gw.getActiveWindow()
     if active_window:

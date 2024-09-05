@@ -80,18 +80,8 @@ def open_map_prompts() -> None:
     def main() -> str:
         global menus
         while True:
-            start_new_screen()
-            menu = menus["open"]
-            menu_width = determine_menu_width(menu)
-            for i, option in enumerate(menu):
-                xprint(
-                    type = MSG.MENU,
-                    menu_num = i + 1,
-                    text = option,
-                    menu_width = menu_width
-                )
-            choice = detect_key_press("12")
-            result = process_key_press(choice)
+            input = menu_prompt(menus["open"])
+            result = process_key_press(input)
             if result == "esc":
                 break
     def process_key_press(choice: str) -> str:
