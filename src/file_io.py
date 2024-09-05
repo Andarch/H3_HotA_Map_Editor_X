@@ -80,14 +80,14 @@ def open_map_prompts() -> None:
     def main() -> str:
         global menus
         while True:
-            input = menu_prompt(menus["open"])
-            result = process_key_press(input)
+            key = menu_prompt(menus["open"])
+            result = process_key(key)
             if result == "esc":
                 break
-    def process_key_press(choice: str) -> str:
+    def process_key(key: str) -> str:
         def main() -> str:
             global map_data
-            match choice:
+            match key:
                 case "1":
                     map_data["Map 1"] = {}
                     map_data["Map 2"] = None
@@ -97,21 +97,19 @@ def open_map_prompts() -> None:
                 case "esc":
                     return "esc"
             while True:
-                start_new_screen()
-                result = process_filename("Map 1", choice)
+                draw_screen()
+                result = process_filename("Map 1", key)
                 match result:
                     case "success": return "success"
                     case "failure": continue
                     case "esc": return ""
-                if choice == "2":
-                    if not process_filename("Map 2", choice):
+                if key == "2":
+                    if not process_filename("Map 2", key):
                         continue
-        def process_filename(map_key: str, choice: str) -> str:
-            match choice:
-                case "1":
-                    prompt = "Enter the map filename"
-                case "2":
-                    prompt = f"Enter the filename for {map_key}"
+        def process_filename(map_key: str, key: str) -> str:
+            match key:
+                case "1": prompt = "Enter the map filename"
+                case "2": prompt = f"Enter the filename for {map_key}"
             filename = xprint(type = MSG.PROMPT, text = prompt)
             if filename:
                 filename = append_h3m(filename)

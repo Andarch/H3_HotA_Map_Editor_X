@@ -47,25 +47,25 @@ def update_events(global_events: list, obj_data: list) -> None:
             })
 
     while True:
-        print("Select an option:")
+        # print("Select an option:")
         # print_cyan("   1. Global Events (Resources)")
         # print_cyan("   2. Town Events (Resources)")
         # print_cyan("   3. Town Events (Creatures)")
         # print_cyan("   4. Back")
         print()
-        option = detect_key_press("1234")
+        # option = detect_key_press("1234")
 
-        if option == "1":
-            update_global_events(global_events)
-            continue
-        elif option == "2":
-            update_town_events(town_events_resources, TOWN_TABLE.RESOURCES)
-            continue
-        elif option == "3":
-            update_town_events(town_events_creatures, TOWN_TABLE.CREATURES)
-            continue
-        elif option == "4":
-            break
+        # if option == "1":
+        #     update_global_events(global_events)
+        #     continue
+        # elif option == "2":
+        #     update_town_events(town_events_resources, TOWN_TABLE.RESOURCES)
+        #     continue
+        # elif option == "3":
+        #     update_town_events(town_events_creatures, TOWN_TABLE.CREATURES)
+        #     continue
+        # elif option == "4":
+        #     break
         # else:
             # print_error("Error: Invalid option. Please try again.")
 

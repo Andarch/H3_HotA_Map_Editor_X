@@ -81,8 +81,8 @@ def main() -> None:
     if(initialize()):
         try:
             while True:
-                input = menu_prompt(menus["start"])
-                match input:
+                key = menu_prompt(menus["start"])
+                match key:
                     case "1": io.open_map_prompts()
                     case "2": exit()
                 time.sleep(SLEEP.TIC)
@@ -92,16 +92,6 @@ def main() -> None:
         exit()
 
     # while True:
-    #     if not busy:
-    #         busy = True
-    #         print("Select an option:")
-    #         print_cyan("   1. Open map(s)")
-    #         print_cyan("   2. Quit editor")
-    #         print()
-    #         command = detect_key_press("12")
-    #     else:
-    #         continue
-
     #     try:
     #         match command.split():
     #             case ["load"] | ["open"]:
