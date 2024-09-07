@@ -124,7 +124,7 @@ def open_prompts() -> bool:
                         return "failure"
                 else:
                     return "esc"
-            def open_map(filename: str, map_key: str) -> None:
+            def open_map(filename: str, map_key: str) -> bool:
                 global map_data, in_file
                 xprint(type = MSG.ACTION, text = f"Loading {filename}...")
                 try:
