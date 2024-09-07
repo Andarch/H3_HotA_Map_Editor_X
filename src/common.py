@@ -49,8 +49,8 @@ class SLEEP:
     LONG   = 1.5
 
 TITLE = "H3 HotA Map Editor X"
-VERSION = "0.3.1"
-TITLE_VERSION = f"{TITLE} v{VERSION}"
+VERSION = "v0.3.1"
+TITLE_VERSION = f"{TITLE} {VERSION}"
 PRINT_WIDTH = 75
 PRINT_OFFSET = PRINT_WIDTH // 2
 DONE = "DONE"
@@ -171,36 +171,16 @@ def draw_screen(reset: bool = True) -> None:
     if reset:
         screen_content = []
     clear_screen()
-    # title_length = len(TITLE_VERSION)
-    title_length = len(TITLE)
-    version_length = len(VERSION) + 1  # +1 for "v"
 
     # Set up header
     fill_color = CLR.GREY + CLR.FAINT
-    fill_symbol = "#"
     text_color = CLR.CYAN
+    color = (fill_color, text_color)
+    fill_symbol = "#"
 
-    if terminal_width >= PRINT_WIDTH:
-        filler_row = f"{fill_color}{fill_symbol}" * PRINT_WIDTH + CLR.RESET
-        title_fill_length = PRINT_WIDTH - (title_length + 2)
-        version_fill_length = PRINT_WIDTH - (version_length + 2)
-    else:
-        filler_row = f"{fill_color}{fill_symbol}" * terminal_width + CLR.RESET
-        title_fill_length = terminal_width - (title_length + 2)
-        version_fill_length = terminal_width - (version_length + 2)
-
-    title_row_left = f"{fill_color}{fill_symbol}" * (title_fill_length // 2) + CLR.RESET
-    title_row_right = f"{fill_color}{fill_symbol}" * (title_fill_length // 2) + CLR.RESET
-    version_row_left = f"{fill_color}{fill_symbol}" * (version_fill_length // 2) + CLR.RESET
-    version_row_right = f"{fill_color}{fill_symbol}" * (version_fill_length // 2) + CLR.RESET
-
-    if title_fill_length % 2 != 0:
-        title_row_right += f"{fill_color}{fill_symbol}" + CLR.RESET
-    if version_fill_length % 2 != 0:
-        version_row_right += f"{fill_color}{fill_symbol}" + CLR.RESET
-
-    title_row = f"{title_row_left} {text_color}{TITLE}{CLR.RESET} {title_row_right}"
-    version_row = f"{version_row_left} {text_color}v{VERSION}{CLR.RESET} {version_row_right}"
+    filler_row = create_filler_row(color, fill_symbol)
+    title_row = create_filler_row(color, fill_symbol, TITLE)
+    version_row = create_filler_row(color, fill_symbol, VERSION)
 
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
@@ -240,6 +220,27 @@ def redraw_screen() -> None:
 def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
+
+def create_filler_row(color: tuple, symbol: str, text = "") -> str:
+    global terminal_width
+    if not text:
+        if terminal_width >= PRINT_WIDTH:
+            filler_row = f"{color[0]}{symbol}" * PRINT_WIDTH + CLR.RESET
+        else:
+            filler_row = f"{color[0]}{symbol}" * terminal_width + CLR.RESET
+        return filler_row
+    else:
+        text_length = len(text)
+        if terminal_width >= PRINT_WIDTH:
+            fill_length = PRINT_WIDTH - (text_length + 2)
+        else:
+            fill_length = terminal_width - (text_length + 2)
+        row_left = f"{color[0]}{symbol}" * (fill_length // 2) + CLR.RESET
+        row_right = f"{color[0]}{symbol}" * (fill_length // 2) + CLR.RESET
+        if fill_length % 2 != 0:
+            row_right += f"{color[0]}{symbol}" + CLR.RESET
+        text_row = f"{row_left} {color[1]}{text}{CLR.RESET} {row_right}"
+        return text_row
 
 def menu_prompt(menu: list) -> str:
     def main()  -> str:
