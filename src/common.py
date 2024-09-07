@@ -15,17 +15,22 @@ class ALIGN(Enum):
     CENTER_LEFT = "CENTER_LEFT"
 
 class CLR:
-    RESET   = "\033[0m"
-    FAINT   = "\033[2m"
-    DEFAULT = "\033[39m"
-    RED     = "\033[91m"
-    GREEN   = "\033[92m"
-    YELLOW  = "\033[93m"
-    BLUE    = "\033[94m"
-    MAGENTA = "\033[95m"
-    CYAN    = "\033[96m"
-    WHITE   = "\033[97m"
-    GREY    = "\033[90m"
+    RESET     = "\033[0m"
+    FAINT     = "\033[2m"
+    ITALIC    = "\033[3m"
+    UNDERLINE = "\033[4m"
+    BLINK     = "\033[5m"
+    INVERTED  = "\033[7m"
+    STRIKE    = "\033[9m"
+    DEFAULT   = "\033[39m"
+    RED       = "\033[91m"
+    GREEN     = "\033[92m"
+    YELLOW    = "\033[93m"
+    BLUE      = "\033[94m"
+    MAGENTA   = "\033[95m"
+    CYAN      = "\033[96m"
+    WHITE     = "\033[97m"
+    GREY      = "\033[90m"
 
 class MSG(Enum):
     NORMAL  = "NORMAL"
@@ -43,15 +48,17 @@ class SLEEP:
     NORMAL = 0.75
     LONG   = 1.5
 
-TITLE = "H3 HotA Map Editor X v0.3.1"
+TITLE = "H3 HotA Map Editor X"
+VERSION = "0.3.1"
+TITLE_VERSION = f"{TITLE} v{VERSION}"
 PRINT_WIDTH = 75
 PRINT_OFFSET = PRINT_WIDTH // 2
 DONE = "DONE"
 
 screen_content = []
 
-terminal_width = None
-old_terminal_width = None
+terminal_width = 0
+old_terminal_width = 0
 
 redraw_scheduled = False
 is_redrawing = False
@@ -63,7 +70,7 @@ def initialize():
     terminal_width = old_terminal_width = get_terminal_width()
     hide_cursor(True)
 
-    mutex_name = "H3_HotA_Map_Editor_X"
+    mutex_name = TITLE.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     last_error = ctypes.windll.kernel32.GetLastError()
     if last_error == 183:
@@ -164,25 +171,36 @@ def draw_screen(reset: bool = True) -> None:
     if reset:
         screen_content = []
     clear_screen()
+    # title_length = len(TITLE_VERSION)
     title_length = len(TITLE)
+    version_length = len(VERSION) + 1  # +1 for "v"
 
     # Set up header
-    color = CLR.GREY + CLR.FAINT
-    fill = "#"
+    fill_color = CLR.GREY + CLR.FAINT
+    fill_symbol = "#"
+    text_color = CLR.CYAN
+
     if terminal_width >= PRINT_WIDTH:
-        filler_row = f"{color}{fill}" * PRINT_WIDTH + CLR.RESET
-        fill_length = PRINT_WIDTH - (title_length + 2)
+        filler_row = f"{fill_color}{fill_symbol}" * PRINT_WIDTH + CLR.RESET
+        title_fill_length = PRINT_WIDTH - (title_length + 2)
+        version_fill_length = PRINT_WIDTH - (version_length + 2)
     else:
-        filler_row = f"{color}{fill}" * terminal_width + CLR.RESET
-        fill_length = terminal_width - (title_length + 2)
+        filler_row = f"{fill_color}{fill_symbol}" * terminal_width + CLR.RESET
+        title_fill_length = terminal_width - (title_length + 2)
+        version_fill_length = terminal_width - (version_length + 2)
 
-    title_row_left = f"{color}{fill}" * (fill_length // 2) + CLR.RESET
-    title_row_right = f"{color}{fill}" * (fill_length // 2) + CLR.RESET
+    title_row_left = f"{fill_color}{fill_symbol}" * (title_fill_length // 2) + CLR.RESET
+    title_row_right = f"{fill_color}{fill_symbol}" * (title_fill_length // 2) + CLR.RESET
+    version_row_left = f"{fill_color}{fill_symbol}" * (version_fill_length // 2) + CLR.RESET
+    version_row_right = f"{fill_color}{fill_symbol}" * (version_fill_length // 2) + CLR.RESET
 
-    if fill_length % 2 != 0:
-        title_row_right += f"{color}{fill}" + CLR.RESET
+    if title_fill_length % 2 != 0:
+        title_row_right += f"{fill_color}{fill_symbol}" + CLR.RESET
+    if version_fill_length % 2 != 0:
+        version_row_right += f"{fill_color}{fill_symbol}" + CLR.RESET
 
-    title_row = f"{title_row_left} {CLR.CYAN}{TITLE}{CLR.RESET} {title_row_right}"
+    title_row = f"{title_row_left} {text_color}{TITLE}{CLR.RESET} {title_row_right}"
+    version_row = f"{version_row_left} {text_color}v{VERSION}{CLR.RESET} {version_row_right}"
 
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
@@ -200,6 +218,8 @@ def draw_screen(reset: bool = True) -> None:
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = title_row)
+    xprint(type = MSG.HEADER, text = filler_row)
+    xprint(type = MSG.HEADER, text = version_row)
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = "")
@@ -262,7 +282,7 @@ def menu_prompt(menu: list) -> str:
 def is_terminal_focused() -> bool:
     active_window = gw.getActiveWindow()
     if active_window:
-        return "h3 hota map editor x" in active_window.title.lower()
+        return "H3 HotA Map Editor X" in active_window.title
     return False
 
 def prompt_input(prompt: str) -> str:
