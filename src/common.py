@@ -76,7 +76,7 @@ def initialize():
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     last_error = ctypes.windll.kernel32.GetLastError()
     if last_error == 183:
-        draw_screen()
+        draw_header()
         xprint(type = MSG.ERROR, text = "Another instance of the editor is already running.")
         return False
 
@@ -163,8 +163,8 @@ def align_text(align = ALIGN.LEFT, text = "", menu_width = 0) -> str:
         return " " * padding + str(text)
 
 def strip_ansi_codes(text: str) -> str:
-    ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
-    return ansi_escape.sub('', text)
+    ansi_escape = re.compile(r"\x1B[@-_][0-?]*[ -/]*[@-~]")
+    return ansi_escape.sub("", text)
 
 def determine_menu_width(menu: list) -> int:
     width = 0
@@ -176,9 +176,9 @@ def determine_menu_width(menu: list) -> int:
             width = option_length
     return width
 
-def draw_screen(reset: bool = True) -> None:
+def draw_header(new_screen: bool = True) -> None:
     global screen_content, terminal_width
-    if reset:
+    if new_screen:
         screen_content = []
     clear_screen()
 
@@ -186,21 +186,21 @@ def draw_screen(reset: bool = True) -> None:
     fill_symbol = "#"
     fill_color = CLR.GREY + CLR.FAINT
     text_color = CLR.CYAN
-    color = (fill_color, text_color)
-
-    filler_row = create_filled_row(fill_symbol, color)
-    title_row = create_filled_row(fill_symbol, color, TITLE)
-    version_row = create_filled_row(fill_symbol, color, VERSION)
-
+    colors = (fill_color, text_color)
+    filler_row = create_filled_row(fill_symbol, colors)
+    title_row = create_filled_row(fill_symbol, colors, TITLE)
+    version_row = create_filled_row(fill_symbol, colors, VERSION)
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
     if map1_data:
         if map2_data:
-            maps_loaded_row = f"Map 1: {map1_data['filename']} | Map 2: {map2_data['filename']}"
+            maps_loaded_row1 = f"Map 1: {map1_data["filename"]} | Map 2: {map2_data["filename"]}"
         else:
-            maps_loaded_row = f"Map 1: {map1_data['filename']}"
+            maps_loaded_row1 = map1_data["general"]["name"]
+            maps_loaded_row2 = CLR.FAINT + map1_data["filename"] + CLR.RESET
     else:
-        maps_loaded_row = "No maps loaded"
+        maps_loaded_row1 = "No map loaded"
+        maps_loaded_row2 = ""
 
     # Print header
     xprint(type = MSG.HEADER, text = "")
@@ -214,15 +214,15 @@ def draw_screen(reset: bool = True) -> None:
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = "")
     xprint(type = MSG.HEADER, text = "")
-    xprint(type = MSG.HEADER, text = maps_loaded_row)
-    xprint(type = MSG.HEADER, text = "")
+    xprint(type = MSG.HEADER, text = maps_loaded_row1)
+    xprint(type = MSG.HEADER, text = maps_loaded_row2)
     xprint(type = MSG.HEADER, text = "")
 
 def redraw_screen() -> None:
     global redraw_scheduled, is_redrawing, screen_content
     redraw_scheduled = False
     is_redrawing = True
-    draw_screen(False)
+    draw_header(False)
     for type, text, menu_num, align, menu_width in screen_content:
         xprint(type, text, menu_num, align, menu_width)
     is_redrawing = False
@@ -231,13 +231,13 @@ def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
 
-def create_filled_row(symbol: str, color = (CLR.DEFAULT, CLR.DEFAULT), text = "") -> str:
+def create_filled_row(symbol: str, colors = (CLR.DEFAULT, CLR.DEFAULT), text = "") -> str:
     global terminal_width
     if not text:
         if terminal_width >= PRINT_WIDTH:
-            filler_row = f"{color[0]}{symbol}" * PRINT_WIDTH + CLR.RESET
+            filler_row = f"{colors[0]}{symbol}" * PRINT_WIDTH + CLR.RESET
         else:
-            filler_row = f"{color[0]}{symbol}" * terminal_width + CLR.RESET
+            filler_row = f"{colors[0]}{symbol}" * terminal_width + CLR.RESET
         return filler_row
     else:
         text_length = len(text)
@@ -245,16 +245,16 @@ def create_filled_row(symbol: str, color = (CLR.DEFAULT, CLR.DEFAULT), text = ""
             fill_length = PRINT_WIDTH - (text_length + 2)
         else:
             fill_length = terminal_width - (text_length + 2)
-        row_left = f"{color[0]}{symbol}" * (fill_length // 2) + CLR.RESET
-        row_right = f"{color[0]}{symbol}" * (fill_length // 2) + CLR.RESET
+        row_left = f"{colors[0]}{symbol}" * (fill_length // 2) + CLR.RESET
+        row_right = f"{colors[0]}{symbol}" * (fill_length // 2) + CLR.RESET
         if fill_length % 2 != 0:
-            row_right += f"{color[0]}{symbol}" + CLR.RESET
-        text_row = f"{row_left} {color[1]}{text}{CLR.RESET} {row_right}"
+            row_right += f"{colors[0]}{symbol}" + CLR.RESET
+        text_row = f"{row_left} {colors[1]}{text}{CLR.RESET} {row_right}"
         return text_row
 
 def menu_prompt(menu: list) -> Tuple[str, int]:
     def main() -> str:
-        draw_screen()
+        draw_header()
         menu_width = determine_menu_width(menu)
         menu_num = 0
         valid_keys = ""

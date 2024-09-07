@@ -81,7 +81,6 @@ def open_map_prompts() -> bool:
         global menus
         while True:
             input, _ = menu_prompt(menus["open"])
-            time.sleep(SLEEP.LONG)
             result = process_key_press(input)
             if result == "esc":
                 break
@@ -101,7 +100,7 @@ def open_map_prompts() -> bool:
                 case "esc":
                     return "esc"
             while True:
-                draw_screen()
+                draw_header()
                 result = process_filename("Map 1", input)
                 match result:
                     case "success": return "success"
