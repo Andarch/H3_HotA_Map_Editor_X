@@ -127,7 +127,7 @@ def open_map_prompts() -> bool:
     return main()
 
 def open_map(filename: str, map_key: str) -> None:
-    global map_data, in_file, terminal_width
+    global map_data, in_file
     xprint(type = MSG.ACTION, text = f"Loading {filename}...")
     try:
         with open(filename, "rb"):
