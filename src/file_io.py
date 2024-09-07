@@ -147,11 +147,12 @@ def open_map(filename: str, map_key: str) -> None:
         map_data[map_key]["events"]       = h6.parse_events()
         map_data[map_key]["null_bytes"]   = in_file.read()
     xprint(type = MSG.SPECIAL, text = DONE)
-    xprint(type = MSG.INFO, text = "-" * terminal_width)
+    filler_row = create_filled_row("-")
+    xprint(type = MSG.INFO, text = filler_row)
     xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
-    xprint(type = MSG.INFO, text = "-" * terminal_width)
+    xprint(type = MSG.INFO, text = filler_row)
     xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
-    xprint(type = MSG.INFO, text = "-" * terminal_width)
+    xprint(type = MSG.INFO, text = filler_row)
     return True
 
 # def save_maps() -> None:

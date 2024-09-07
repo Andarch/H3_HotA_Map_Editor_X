@@ -173,14 +173,14 @@ def draw_screen(reset: bool = True) -> None:
     clear_screen()
 
     # Set up header
+    fill_symbol = "#"
     fill_color = CLR.GREY + CLR.FAINT
     text_color = CLR.CYAN
     color = (fill_color, text_color)
-    fill_symbol = "#"
 
-    filler_row = create_filler_row(color, fill_symbol)
-    title_row = create_filler_row(color, fill_symbol, TITLE)
-    version_row = create_filler_row(color, fill_symbol, VERSION)
+    filler_row = create_filled_row(fill_symbol, color)
+    title_row = create_filled_row(fill_symbol, color, TITLE)
+    version_row = create_filled_row(fill_symbol, color, VERSION)
 
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
@@ -221,7 +221,7 @@ def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
 
-def create_filler_row(color: tuple, symbol: str, text = "") -> str:
+def create_filled_row(symbol: str, color = (CLR.DEFAULT, CLR.DEFAULT), text = "") -> str:
     global terminal_width
     if not text:
         if terminal_width >= PRINT_WIDTH:

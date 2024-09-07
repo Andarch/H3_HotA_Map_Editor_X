@@ -81,8 +81,8 @@ def main() -> None:
     if(initialize()):
         try:
             while True:
-                key = menu_prompt(menus["start"])
-                match key:
+                key_press = menu_prompt(menus["start"])
+                match key_press:
                     case "1": io.open_map_prompts()
                     case "2": exit()
                 time.sleep(SLEEP.TIC)
