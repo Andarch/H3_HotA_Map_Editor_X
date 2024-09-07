@@ -110,47 +110,48 @@ def open_prompts() -> bool:
                     if not process_filename("Map 2", input):
                         continue
         def process_filename(map_key: str, input: str) -> str:
-            match input:
-                case "1": prompt = "Enter the map filename"
-                case "2": prompt = f"Enter the filename for {map_key}"
-            filename = xprint(type = MSG.PROMPT, text = prompt)
-            if filename:
-                filename = append_h3m(filename)
-                if open_map(filename, map_key):
-                    return "success"
+            def main() -> str:
+                match input:
+                    case "1": prompt = "Enter the map filename"
+                    case "2": prompt = f"Enter the filename for {map_key}"
+                filename = xprint(type = MSG.PROMPT, text = prompt)
+                if filename:
+                    filename = append_h3m(filename)
+                    if open_map(filename, map_key):
+                        return "success"
+                    else:
+                        xprint(type = MSG.ERROR, text = f"Could not find {filename}.", align = True)
+                        return "failure"
                 else:
-                    xprint(type = MSG.ERROR, text = f"Could not find {filename}.", align = True)
-                    return "failure"
-            else:
-                return "esc"
+                    return "esc"
+            def open_map(filename: str, map_key: str) -> None:
+                global map_data, in_file
+                xprint(type = MSG.ACTION, text = f"Loading {filename}...")
+                try:
+                    with open(filename, "rb"):
+                        pass
+                except FileNotFoundError:
+                    return False
+                with open(filename, "rb") as in_file:
+                    map_data[map_key]["filename"]     = filename
+                    map_data[map_key]["general"]      = h1.parse_general()
+                    map_data[map_key]["player_specs"] = h2.parse_player_specs()
+                    map_data[map_key]["conditions"]   = h3.parse_conditions()
+                    map_data[map_key]["teams"]        = h2.parse_teams()
+                    map_data[map_key]["start_heroes"] = h4.parse_starting_heroes(map_data[map_key]["general"])
+                    map_data[map_key]["ban_flags"]    = h5.parse_flags()
+                    map_data[map_key]["rumors"]       = h6.parse_rumors()
+                    map_data[map_key]["hero_data"]    = h4.parse_hero_data()
+                    map_data[map_key]["terrain"]      = h7.parse_terrain(map_data[map_key]["general"])
+                    map_data[map_key]["object_defs"]  = h8.parse_object_defs()
+                    map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
+                    map_data[map_key]["events"]       = h6.parse_events()
+                    map_data[map_key]["null_bytes"]   = in_file.read()
+                xprint(type = MSG.SPECIAL, text = DONE)
+                return True
+            return main()
         return main()
     return main()
-
-def open_map(filename: str, map_key: str) -> None:
-    global map_data, in_file
-    xprint(type = MSG.ACTION, text = f"Loading {filename}...")
-    try:
-        with open(filename, "rb"):
-            pass
-    except FileNotFoundError:
-        return False
-    with open(filename, "rb") as in_file:
-        map_data[map_key]["filename"]     = filename
-        map_data[map_key]["general"]      = h1.parse_general()
-        map_data[map_key]["player_specs"] = h2.parse_player_specs()
-        map_data[map_key]["conditions"]   = h3.parse_conditions()
-        map_data[map_key]["teams"]        = h2.parse_teams()
-        map_data[map_key]["start_heroes"] = h4.parse_starting_heroes(map_data[map_key]["general"])
-        map_data[map_key]["ban_flags"]    = h5.parse_flags()
-        map_data[map_key]["rumors"]       = h6.parse_rumors()
-        map_data[map_key]["hero_data"]    = h4.parse_hero_data()
-        map_data[map_key]["terrain"]      = h7.parse_terrain(map_data[map_key]["general"])
-        map_data[map_key]["object_defs"]  = h8.parse_object_defs()
-        map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
-        map_data[map_key]["events"]       = h6.parse_events()
-        map_data[map_key]["null_bytes"]   = in_file.read()
-    xprint(type = MSG.SPECIAL, text = DONE)
-    return True
 
 # def save_map_prompts() -> None:
 #     if map_data["Map 2"] is not None:
