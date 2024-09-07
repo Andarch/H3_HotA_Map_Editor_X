@@ -186,11 +186,11 @@ def draw_screen(reset: bool = True) -> None:
     map2_data = map_data["Map 2"]
     if map1_data:
         if map2_data:
-            rowC = f"Map 1: {map1_data['filename']} | Map 2: {map2_data['filename']}"
+            maps_loaded_row = f"Map 1: {map1_data['filename']} | Map 2: {map2_data['filename']}"
         else:
-            rowC = f"Map 1: {map1_data['filename']}"
+            maps_loaded_row = f"Map 1: {map1_data['filename']}"
     else:
-        rowC = "No maps loaded"
+        maps_loaded_row = "No maps loaded"
 
     # Print header
     xprint(type = MSG.HEADER, text = "")
@@ -204,7 +204,7 @@ def draw_screen(reset: bool = True) -> None:
     xprint(type = MSG.HEADER, text = filler_row)
     xprint(type = MSG.HEADER, text = "")
     xprint(type = MSG.HEADER, text = "")
-    xprint(type = MSG.HEADER, text = rowC)
+    xprint(type = MSG.HEADER, text = maps_loaded_row)
     xprint(type = MSG.HEADER, text = "")
     xprint(type = MSG.HEADER, text = "")
 
