@@ -76,18 +76,22 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
-def open_map_prompts() -> None:
+def open_map_prompts() -> bool:
     def main() -> str:
         global menus
         while True:
-            key = menu_prompt(menus["open"])
-            result = process_key(key)
+            input, _ = menu_prompt(menus["open"])
+            time.sleep(SLEEP.LONG)
+            result = process_key_press(input)
             if result == "esc":
                 break
-    def process_key(key: str) -> str:
+            match result:
+                case "success": return True
+                case "esc": return False
+    def process_key_press(input: str) -> str:
         def main() -> str:
             global map_data
-            match key:
+            match input:
                 case "1":
                     map_data["Map 1"] = {}
                     map_data["Map 2"] = None
@@ -98,16 +102,16 @@ def open_map_prompts() -> None:
                     return "esc"
             while True:
                 draw_screen()
-                result = process_filename("Map 1", key)
+                result = process_filename("Map 1", input)
                 match result:
                     case "success": return "success"
                     case "failure": continue
                     case "esc": return ""
-                if key == "2":
-                    if not process_filename("Map 2", key):
+                if input == "2":
+                    if not process_filename("Map 2", input):
                         continue
-        def process_filename(map_key: str, key: str) -> str:
-            match key:
+        def process_filename(map_key: str, input: str) -> str:
+            match input:
                 case "1": prompt = "Enter the map filename"
                 case "2": prompt = f"Enter the filename for {map_key}"
             filename = xprint(type = MSG.PROMPT, text = prompt)
@@ -116,7 +120,7 @@ def open_map_prompts() -> None:
                 if open_map(filename, map_key):
                     return "success"
                 else:
-                    xprint(type = MSG.ERROR, text = f"Could not find {filename}.", flush = True)
+                    xprint(type = MSG.ERROR, text = f"Could not find {filename}.", align = True)
                     return "failure"
             else:
                 return "esc"
@@ -155,7 +159,7 @@ def open_map(filename: str, map_key: str) -> None:
     xprint(type = MSG.INFO, text = filler_row)
     return True
 
-# def save_maps() -> None:
+# def save_map_prompts() -> None:
 #     if map_data["Map 2"] is not None:
 #         filename1 = print_string_prompt("Enter a filename to save Map 1")
 #         if filename1.lower() in BACK_COMMANDS:

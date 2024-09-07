@@ -1,6 +1,6 @@
-from enum import Enum
 from H3_HotA_MEX import map_data
 import ctypes
+from enum import Enum
 import keyboard
 import pygetwindow as gw
 import os
@@ -8,11 +8,13 @@ import re
 import shutil
 import threading
 import time
+from typing import Tuple
 
 class ALIGN(Enum):
-    LEFT        = "LEFT"
-    CENTER      = "CENTER"
-    CENTER_LEFT = "CENTER_LEFT"
+    LEFT   = "LEFT"
+    CENTER = "CENTER"
+    MENU   = "MENU"
+    FLUSH  = "FLUSH"
 
 class CLR:
     RESET     = "\033[0m"
@@ -75,7 +77,7 @@ def initialize():
     last_error = ctypes.windll.kernel32.GetLastError()
     if last_error == 183:
         draw_screen()
-        xprint(type = MSG.ERROR, text = "Another instance of the editor is already running.", flush = False)
+        xprint(type = MSG.ERROR, text = "Another instance of the editor is already running.")
         return False
 
     monitor_thread = threading.Thread(target = monitor_terminal_size, daemon = True)
@@ -103,10 +105,10 @@ def hide_cursor(hide: bool) -> None:
     else:
         print("\033[?25h", end = "", flush = True)
 
-def xprint(type = MSG.NORMAL, text = "", menu_num = -1, flush = False, menu_width = 0) -> None:
+def xprint(type = MSG.NORMAL, text = "", menu_num = -1, align = ALIGN.LEFT, menu_width = 0) -> None:
     global screen_content, is_redrawing
     if not is_redrawing and type != MSG.HEADER:
-        screen_content.append((type, text, menu_num, flush, menu_width))
+        screen_content.append((type, text, menu_num, align, menu_width))
     match type:
         case MSG.NORMAL:
             print(align_text(text = text))
@@ -114,7 +116,7 @@ def xprint(type = MSG.NORMAL, text = "", menu_num = -1, flush = False, menu_widt
             print(align_text(text = f"{CLR.CYAN}{text}{CLR.RESET}"))
         case MSG.MENU:
             print(align_text(
-                align = ALIGN.CENTER_LEFT,
+                align = ALIGN.MENU,
                 text = f"[{CLR.YELLOW}{str(menu_num)}{CLR.RESET}] {CLR.WHITE}{text}{CLR.RESET}",
                 menu_width = menu_width
             ))
@@ -130,11 +132,19 @@ def xprint(type = MSG.NORMAL, text = "", menu_num = -1, flush = False, menu_widt
         case MSG.HEADER:
             print(align_text(align = ALIGN.CENTER, text = text))
         case MSG.ERROR:
-            if(not flush):
-                xprint()
-                print(align_text(text = f"{CLR.RED}Error: {text}{CLR.RESET}"))
-            else:
-                print(f"{CLR.RED}Error: {text}{CLR.RESET}")
+            match align:
+                case ALIGN.LEFT:
+                    xprint()
+                    print(align_text(text = f"{CLR.RED}Error: {text}{CLR.RESET}"))
+                case ALIGN.MENU:
+                    xprint()
+                    print(align_text(
+                        align = ALIGN.MENU,
+                        text = f"{CLR.RED}Error: {text}{CLR.RESET}",
+                        menu_width = menu_width
+                    ))
+                case ALIGN.FLUSH:
+                    print(f"{CLR.RED}Error: {text}{CLR.RESET}")
             time.sleep(SLEEP.LONG)
 
 def align_text(align = ALIGN.LEFT, text = "", menu_width = 0) -> str:
@@ -148,7 +158,7 @@ def align_text(align = ALIGN.LEFT, text = "", menu_width = 0) -> str:
     elif align == ALIGN.CENTER:
         padding = terminal_width // 2 - text_length // 2
         return " " * padding + str(text)
-    elif align == ALIGN.CENTER_LEFT:
+    elif align == ALIGN.MENU:
         padding = terminal_width // 2 - menu_width // 2 - 2
         return " " * padding + str(text)
 
@@ -213,8 +223,8 @@ def redraw_screen() -> None:
     redraw_scheduled = False
     is_redrawing = True
     draw_screen(False)
-    for type, text, menu_num, flush, menu_width in screen_content:
-        xprint(type, text, menu_num, flush, menu_width)
+    for type, text, menu_num, align, menu_width in screen_content:
+        xprint(type, text, menu_num, align, menu_width)
     is_redrawing = False
 
 def clear_screen() -> None:
@@ -242,22 +252,28 @@ def create_filled_row(symbol: str, color = (CLR.DEFAULT, CLR.DEFAULT), text = ""
         text_row = f"{row_left} {color[1]}{text}{CLR.RESET} {row_right}"
         return text_row
 
-def menu_prompt(menu: list) -> str:
-    def main()  -> str:
+def menu_prompt(menu: list) -> Tuple[str, int]:
+    def main() -> str:
         draw_screen()
         menu_width = determine_menu_width(menu)
+        menu_num = 0
         valid_keys = ""
-        for i, option in enumerate(menu):
-            menu_num = i + 1
-            valid_keys += str(menu_num)
-            xprint(
-                type = MSG.MENU,
-                menu_num = menu_num,
-                text = option,
-                menu_width = menu_width
-            )
+        for _, text in enumerate(menu):
+            if text:
+                menu_num += 1
+                if(menu_num == 10):
+                    menu_num = 0
+                valid_keys += str(menu_num)
+                xprint(
+                    type = MSG.MENU,
+                    menu_num = menu_num,
+                    text = text,
+                    menu_width = menu_width
+                )
+            else:
+                xprint()
         input = detect_key_press(valid_keys)
-        return input
+        return input, menu_width
     def detect_key_press(valid_keys: str) -> str:
         global old_key_press
         while True:

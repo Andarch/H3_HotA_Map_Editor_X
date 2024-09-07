@@ -18,8 +18,8 @@ EXIT_MSG = "Exiting program..."
 #########################
 
 menu_start = [
-    "OPEN",
-    "QUIT"
+    "Open",
+    "Exit"
 ]
 
 menu_open = [
@@ -27,9 +27,26 @@ menu_open = [
     "Open 2 maps"
 ]
 
+menu_main = [
+    "Open",
+    "Save",
+    "",
+    "Display map data",
+    "Count objects",
+    "Export .json file",
+    "",
+    "Swap layers",
+    "Modify towns (buildings/spells)",
+    "Generate minimap",
+    "Update events (global/town)",
+    "",
+    "Exit"
+]
+
 menus = {
     "start": menu_start,
-    "open" : menu_open
+    "open" : menu_open,
+    "main" : menu_main
 }
 
 valid_files = []
@@ -80,12 +97,31 @@ def main() -> None:
 
     if(initialize()):
         try:
-            while True:
-                key_press = menu_prompt(menus["start"])
-                match key_press:
-                    case "1": io.open_map_prompts()
+            success = False
+            while not success:
+                input, _ = menu_prompt(menus["start"])
+                match input:
+                    case "1": success = io.open_map_prompts()
                     case "2": exit()
                 time.sleep(SLEEP.TIC)
+
+            while True:
+                success = False
+                while not success:
+                    input, menu_width = menu_prompt(menus["main"])
+                    xprint()
+                    match input:
+                        case "1": success = io.open_map_prompts()
+                        case "2": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "3": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "4": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "5": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "6": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "7": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "8": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "9": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
+                        case "0": exit()
+                    time.sleep(SLEEP.TIC)
         except KeyboardInterrupt:
             exit()
     else:
