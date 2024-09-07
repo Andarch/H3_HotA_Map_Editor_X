@@ -185,22 +185,24 @@ def draw_header(new_screen: bool = True) -> None:
     # Set up header
     fill_symbol = "#"
     fill_color = CLR.GREY + CLR.FAINT
-    text_color = CLR.CYAN
-    colors = (fill_color, text_color)
-    filler_row = create_filled_row(fill_symbol, colors)
-    title_row = create_filled_row(fill_symbol, colors, TITLE)
-    version_row = create_filled_row(fill_symbol, colors, VERSION)
+    title_color = CLR.CYAN
+    header_colors = (fill_color, title_color)
+    filler_row = create_filled_row(fill_symbol, header_colors)
+    title_row = create_filled_row(fill_symbol, header_colors, TITLE)
+    version_row = create_filled_row(fill_symbol, header_colors, VERSION)
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
+    mapname_color1 = CLR.MAGENTA
+    mapname_color2 = mapname_color1 + CLR.FAINT
     if map1_data:
         if map2_data:
             maps_loaded_row1 = f"Map 1: {map1_data["filename"]} | Map 2: {map2_data["filename"]}"
         else:
-            maps_loaded_row1 = map1_data["general"]["name"]
-            maps_loaded_row2 = CLR.FAINT + map1_data["filename"] + CLR.RESET
+            maps_loaded_row1 = mapname_color1 + map1_data["general"]["name"] + CLR.RESET
+            maps_loaded_row2 = mapname_color2 + map1_data["filename"] + CLR.RESET
     else:
-        maps_loaded_row1 = "No map loaded"
-        maps_loaded_row2 = ""
+        maps_loaded_row1 = mapname_color1 + "No map opened" + CLR.RESET
+        maps_loaded_row2 = mapname_color2 + "Press 1 to open a map" + CLR.RESET
 
     # Print header
     xprint(type = MSG.HEADER, text = "")
@@ -216,6 +218,7 @@ def draw_header(new_screen: bool = True) -> None:
     xprint(type = MSG.HEADER, text = "")
     xprint(type = MSG.HEADER, text = maps_loaded_row1)
     xprint(type = MSG.HEADER, text = maps_loaded_row2)
+    xprint(type = MSG.HEADER, text = "")
     xprint(type = MSG.HEADER, text = "")
 
 def redraw_screen() -> None:

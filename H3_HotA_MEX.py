@@ -19,6 +19,7 @@ EXIT_MSG = "Exiting program..."
 
 menu_start = [
     "Open",
+    "",
     "Exit"
 ]
 
