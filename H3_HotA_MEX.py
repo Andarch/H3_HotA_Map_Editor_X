@@ -102,7 +102,7 @@ def main() -> None:
             while not success:
                 input, _ = menu_prompt(menus["start"])
                 match input:
-                    case "1": success = io.open_map_prompts()
+                    case "1": success = io.open_prompts()
                     case "2": exit()
                 time.sleep(SLEEP.TIC)
 
@@ -112,7 +112,7 @@ def main() -> None:
                     input, menu_width = menu_prompt(menus["main"])
                     xprint()
                     match input:
-                        case "1": success = io.open_map_prompts()
+                        case "1": success = io.open_prompts()
                         case "2": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
                         case "3": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
                         case "4": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)

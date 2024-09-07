@@ -76,18 +76,18 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
-def open_map_prompts() -> bool:
+def open_prompts() -> bool:
     def main() -> str:
         global menus
         while True:
             input, _ = menu_prompt(menus["open"])
-            result = process_key_press(input)
+            result = process_keypress(input)
             if result == "esc":
                 break
             match result:
                 case "success": return True
                 case "esc": return False
-    def process_key_press(input: str) -> str:
+    def process_keypress(input: str) -> str:
         def main() -> str:
             global map_data
             match input:
@@ -150,12 +150,6 @@ def open_map(filename: str, map_key: str) -> None:
         map_data[map_key]["events"]       = h6.parse_events()
         map_data[map_key]["null_bytes"]   = in_file.read()
     xprint(type = MSG.SPECIAL, text = DONE)
-    filler_row = create_filled_row("-")
-    xprint(type = MSG.INFO, text = filler_row)
-    xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["name"]}")
-    xprint(type = MSG.INFO, text = filler_row)
-    xprint(type = MSG.INFO, text = f"{map_data[map_key]["general"]["description"]}")
-    xprint(type = MSG.INFO, text = filler_row)
     return True
 
 # def save_map_prompts() -> None:
