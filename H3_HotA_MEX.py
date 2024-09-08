@@ -18,9 +18,9 @@ def main() -> None:
     # HELPER FUNCTIONS #
     ####################
 
-    # def get_map_key() -> str:
-    #     if map_data["Map 2"] is None:
-    #         return "Map 1"
+    def get_map_key() -> str:
+        if not map_data["Map 2"]:
+            return "Map 1"
 
     #     print("Select a map:")
     #     print_cyan(f"   1. {map_data["Map 1"]["filename"]}")
@@ -59,12 +59,14 @@ def main() -> None:
                     xprint()
                     match input:
                         case 1: success = io.open_maps()
-                        case 2: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 2: success = io.save_maps()
                         case 3: xprint(type=MSG.ERROR, text="Not yet functional.")
                         case 4: xprint(type=MSG.ERROR, text="Not yet functional.")
                         case 5: xprint(type=MSG.ERROR, text="Not yet functional.")
                         case 6: xprint(type=MSG.ERROR, text="Not yet functional.")
-                        case 7: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 7:
+                            map_key = get_map_key()
+                            scripts.modify_towns(map_data[map_key]["object_data"])
                         case 8: xprint(type=MSG.ERROR, text="Not yet functional.")
                         case 9: xprint(type=MSG.ERROR, text="Not yet functional.")
                         case 0: exit()

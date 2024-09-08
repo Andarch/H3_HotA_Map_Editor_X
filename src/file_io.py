@@ -150,76 +150,78 @@ def open_maps() -> bool:
         return main()
     return main()
 
-def save_prompts() -> bool:
+def save_maps() -> bool:
     def main() -> bool:
-        global menus, map_data
         while True:
-            input1, _ = xprint().menu_prompt(menus["saveA"])
-            if input == "esc":
-                return False
+            amount = get_map_amount()
+            if not amount: return False
             while True:
-                draw_header()
-                input2, _ = xprint().menu_prompt(menus["saveB"])
-                match input2:
-                    case "1": pass  # Save
-                    case "2": pass  # Save as
-                    case "esc": break
-                result = process_filename("Map 1", input)
-                match input1:
-                    case "1":
-                        match result:
-                            case "success": return True
-                            case "failure": continue
-                            case "esc": break
-                    case "2":
-                        match result:
-                            case "success": pass
-                            case "failure": continue
-                            case "esc": break
-                        result = process_filename("Map 2", input)
-                        match result:
-                            case "success": return True
-                            case "failure": continue
-                            case "esc": break
-    def process_filename(map_key: str, input: str) -> str:
-            match input:
-                case "1": prompt = "Enter the map filename"
-                case "2": prompt = f"Enter the filename for {map_key}"
-            filename = xprint(type=MSG.PROMPT, text=prompt)
-            if filename:
-                filename = append_h3m(filename)
-                if save_map(filename, map_key):
-                    return "success"
-                else:
-                    xprint(type=MSG.ERROR, text=f"Could not find {filename}.", align=True)
-                    return "failure"
-            else:
-                return "esc"
-    def save_map(filename: str, map_key: str) -> bool:
-        global map_data, in_file
-        xprint(type=MSG.ACTION, text=f"Loading {filename}...")
-        try:
-            with open(filename, "rb"):
-                pass
-        except FileNotFoundError:
-            return False
-        with open(filename, "rb") as in_file:
-            map_data[map_key]["filename"]     = filename
-            map_data[map_key]["general"]      = h1.parse_general()
-            map_data[map_key]["player_specs"] = h2.parse_player_specs()
-            map_data[map_key]["conditions"]   = h3.parse_conditions()
-            map_data[map_key]["teams"]        = h2.parse_teams()
-            map_data[map_key]["start_heroes"] = h4.parse_starting_heroes(map_data[map_key]["general"])
-            map_data[map_key]["ban_flags"]    = h5.parse_flags()
-            map_data[map_key]["rumors"]       = h6.parse_rumors()
-            map_data[map_key]["hero_data"]    = h4.parse_hero_data()
-            map_data[map_key]["terrain"]      = h7.parse_terrain(map_data[map_key]["general"])
-            map_data[map_key]["object_defs"]  = h8.parse_object_defs()
-            map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
-            map_data[map_key]["events"]       = h6.parse_events()
-            map_data[map_key]["null_bytes"]   = in_file.read()
-        xprint(type=MSG.SPECIAL, text=DONE)
-        return True
+                type = get_save_type()
+                if not type: return False
+                while True:
+                    filename, success = save_map(MAP1, amount, type)
+                    if not filename: break
+                    if not success: continue
+                    if amount is 1: return True
+                    if amount is 2:
+                        first_loop = True
+                        while True:
+                            if first_loop: new_screen = False
+                            else: new_screen = True
+                            filename, success = save_map(MAP2, amount, type, new_screen)
+                            if not filename: break
+                            if not success: continue
+                            return True
+
+    def get_map_amount() -> int:
+        global menus
+        input = xprint(menu=menus["saveA"])
+        if input == "esc": return False
+        else: return int(input)
+
+    def get_save_type() -> int:
+        global menus
+        input = xprint(menu=menus["saveB"])
+        if input == "esc": return False
+        else: return int(input)
+
+    def save_map(map_key: str, amount: int, type: int, new_screen=True) -> Tuple[bool, bool]:
+        def main() -> Tuple[bool, bool]:
+            draw_header(new_screen=new_screen)
+            if type is 1: filename = map_data[map_key]["filename"]
+            if type is 2: filename = get_filename(map_key, amount)
+            if not filename: return False, False
+            save_parsed_data(filename, map_key)
+            return True, True
+
+        def get_filename(map_key: str, amount: int) -> str:
+            if amount == 1: prompt = "Enter a new filename"
+            elif amount == 2: prompt = f"Enter a new filename for {map_key}"
+            input = xprint(type=MSG.PROMPT, text=prompt)
+            if input: filename = append_h3m(input)
+            else: return False
+            return filename
+
+        def save_parsed_data(filename: str, map_key: str) -> bool:
+            global map_data, out_file
+            xprint(type=MSG.ACTION, text=f"Saving {filename}...")
+            with open(filename, "wb") as out_file:
+                h1.write_general(        map_data[map_key]["general"])
+                h2.write_player_specs(   map_data[map_key]["player_specs"])
+                h3.write_conditions(     map_data[map_key]["conditions"])
+                h2.write_teams(          map_data[map_key]["teams"])
+                h4.write_starting_heroes(map_data[map_key]["start_heroes"])
+                h5.write_flags(          map_data[map_key]["ban_flags"])
+                h6.write_rumors(         map_data[map_key]["rumors"])
+                h4.write_hero_data(      map_data[map_key]["hero_data"])
+                h7.write_terrain(        map_data[map_key]["terrain"])
+                h8.write_object_defs(    map_data[map_key]["object_defs"])
+                h8.write_object_data(    map_data[map_key]["object_data"])
+                h6.write_events(         map_data[map_key]["events"])
+                out_file.write(          map_data[map_key]["null_bytes"])
+            xprint(type=MSG.SPECIAL, text=DONE)
+            return True
+        return main()
     return main()
 
 # def save_map_prompts() -> None:
