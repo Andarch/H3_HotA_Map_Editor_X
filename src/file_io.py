@@ -157,7 +157,7 @@ def save_maps() -> bool:
             if not amount: return False
             while True:
                 type = get_save_type()
-                if not type: return False
+                if not type: break
                 while True:
                     filename, success = save_map(MAP1, amount, type)
                     if not filename: break
