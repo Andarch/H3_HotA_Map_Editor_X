@@ -1,61 +1,12 @@
 #!/usr/bin/env python3
 
-import sys
-# from enum import Enum
 from src import *
-
-# HELP_COMMANDS = ["help", "h"]
-# BACK_COMMANDS = ["/back", "/return", "/b", "/r"]
-# EXIT_COMMANDS = ["/exit", "/quit", "/e", "/q"]
-ERROR_NO_MAP = "Error: No map loaded."
-# ERROR_HELP = (f"For help, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(HELP_COMMANDS)}\n{CLR.RESET}"
-#               f"To exit, enter one of these commands:\n{CLR.CYAN}\t{"\n\t".join(EXIT_COMMANDS)}\n{CLR.RESET}")
-# ABORT_MSG = "Operation aborted.\n"
-EXIT_MSG = "Exiting program..."
 
 #########################
 # GLOBAL INITIALIZATION #
 #########################
 
-menu_start = [
-    "Open",
-    "",
-    "Exit"
-]
-
-menu_open = [
-    "Open 1 map",
-    "Open 2 maps"
-]
-
-menu_main = [
-    "Open",
-    "Save",
-    "",
-    "Display map data",
-    "Count objects",
-    "Export .json file",
-    "",
-    "Swap layers",
-    "Modify towns (buildings/spells)",
-    "Generate minimap",
-    "Update events (global/town)",
-    "",
-    "Exit"
-]
-
-menus = {
-    "start": menu_start,
-    "open" : menu_open,
-    "main" : menu_main
-}
-
-valid_files = []
-
-map_data = {
-    "Map 1": None,
-    "Map 2": None
-}
+# valid_files = []
 
 #################
 # MAIN FUNCTION #
@@ -78,13 +29,6 @@ def main() -> None:
     #     choice = detect_key_press("Choose a map", "12")
     #     return "Map 1" if choice == "1" else "Map 2"
 
-    def exit() -> None:
-        xprint()
-        xprint(text = EXIT_MSG)
-        time.sleep(SLEEP.NORMAL)
-        xprint(text = CLR.RESET)
-        sys.exit(0)
-
     ##################
     # INITIALIZATION #
     ##################
@@ -100,28 +44,29 @@ def main() -> None:
         try:
             success = False
             while not success:
-                input, _ = menu_prompt(menus["start"])
+                input = xprint(menu=menus["start"])
+                if input == "esc": continue
                 match input:
-                    case "1": success = io.open_prompts()
-                    case "2": exit()
+                    case 1: success = io.open_maps()
+                    case 2: exit()
                 time.sleep(SLEEP.TIC)
 
             while True:
                 success = False
                 while not success:
-                    input, menu_width = menu_prompt(menus["main"])
+                    input = xprint(menu=menus["main"])
                     xprint()
                     match input:
-                        case "1": success = io.open_prompts()
-                        case "2": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "3": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "4": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "5": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "6": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "7": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "8": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "9": xprint(type = MSG.ERROR, text = "Not yet functional.", align = ALIGN.MENU, menu_width = menu_width)
-                        case "0": exit()
+                        case 1: success = io.open_maps()
+                        case 2: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 3: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 4: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 5: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 6: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 7: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 8: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 9: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 0: exit()
                     time.sleep(SLEEP.TIC)
         except KeyboardInterrupt:
             exit()
