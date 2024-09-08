@@ -55,6 +55,7 @@ def main() -> None:
                 success = False
                 while not success:
                     input = xprint(menu=menus["main"])
+                    if input == "esc": continue
                     xprint()
                     match input:
                         case 1: success = io.open_maps()

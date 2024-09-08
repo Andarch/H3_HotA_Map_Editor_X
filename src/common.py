@@ -116,7 +116,7 @@ old_terminal_width = 0
 redraw_scheduled = False
 is_redrawing = False
 
-old_key_press = ""
+old_keypress = ""
 
 def initialize():
     global terminal_width, old_terminal_width
@@ -131,8 +131,11 @@ def initialize():
         xprint(type=MSG.ERROR, text="Another instance of the editor is already running.")
         return False
 
-    monitor_thread = threading.Thread(target = monitor_terminal_size, daemon = True)
-    monitor_thread.start()
+    monitor_thread1 = threading.Thread(target = monitor_old_keypress, daemon = True)
+    monitor_thread1.start()
+
+    monitor_thread2 = threading.Thread(target = monitor_terminal_size, daemon = True)
+    monitor_thread2.start()
 
     return True
 
@@ -141,6 +144,17 @@ def hide_cursor(hide: bool) -> None:
         print("\033[?25l", end = "", flush = True)
     else:
         print("\033[?25h", end = "", flush = True)
+
+def monitor_old_keypress() -> None:
+    global old_keypress
+    while True:
+        if is_terminal_focused():
+            event = keyboard.read_event()
+            if event.event_type == keyboard.KEY_UP:
+                old_keypress = ""
+        else:
+            old_keypress = ""
+        time.sleep(SLEEP.TIC)
 
 def monitor_terminal_size() -> None:
     global terminal_width, old_terminal_width, redraw_scheduled
@@ -246,8 +260,8 @@ def create_filled_row(symbol: str, colors=(CLR.DEFAULT, CLR.DEFAULT), text="") -
         text_row = f"{row_left} {colors[1]}{text}{CLR.RESET} {row_right}"
         return text_row
 
-def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0, menu=[]) -> Union[None, str]:
-    def main() -> Union[None, str]:
+def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0, menu=[]) -> Union[None, Union[int, str]]:
+    def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
         if menu: return menu_input(menu)
         if not is_redrawing and type != MSG.HEADER:
@@ -323,6 +337,7 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                     )
                 else:
                     xprint()
+
             input = detect_key_press(valid_keys)
             if input is not "esc": input = int(input)
             return input
@@ -337,29 +352,29 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
             return width
 
         def detect_key_press(valid_keys: str) -> str:
-            global old_key_press
+            global old_keypress
             while True:
                 if is_terminal_focused():
                     event = keyboard.read_event()
                     if event.event_type == keyboard.KEY_DOWN:
                         if is_terminal_focused():
-                            if(event.name == old_key_press):
+                            if(event.name == old_keypress):
                                 continue
                             if event.name in valid_keys:
-                                old_key_press = event.name
+                                old_keypress = event.name
                                 return event.name
                             elif event.name == "esc":
-                                old_key_press = "esc"
+                                old_keypress = "esc"
                                 return "esc"
                     elif event.event_type == keyboard.KEY_UP:
-                        old_key_press = ""
+                        old_keypress = ""
                 else:
-                    old_key_press = ""
+                    old_keypress = ""
                 time.sleep(SLEEP.TIC)
         return main()
 
     def string_prompt(prompt: str) -> str:
-        global old_key_press
+        global old_keypress
         input_chars = []
         print(prompt, end = "", flush = True)
         while True:
@@ -367,7 +382,7 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                 event = keyboard.read_event()
                 if event.event_type == keyboard.KEY_DOWN:
                     if is_terminal_focused():
-                        if(event.name == old_key_press):
+                        if(event.name == old_keypress):
                             continue
                         if event.name == "enter" and len(input_chars) > 0:
                             xprint()
@@ -378,13 +393,13 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                                 input_chars.pop()
                                 print("\b \b", end = "", flush = True)
                         elif event.name == "esc":
-                            old_key_press = "esc"
+                            old_keypress = "esc"
                             return ""
                         elif not keyboard.is_modifier(event.name) and len(event.name) == 1:
                             input_chars.append(event.name)
                             print(event.name, end = "", flush = True)
                 elif event.event_type == keyboard.KEY_UP:
-                    old_key_press = ""
+                    old_keypress = ""
             time.sleep(SLEEP.TIC)
         return "".join(input_chars)
     return main()
