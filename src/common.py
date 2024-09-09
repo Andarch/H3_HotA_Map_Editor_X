@@ -14,14 +14,14 @@ from typing import Union
 
 # endregion
 
-# region Constants
+# region Constants/Enums
 
 TITLE = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
 PRINT_WIDTH = 75
-PRINT_OFFSET = PRINT_WIDTH // 2
 DONE = "DONE"
+ESC = "esc"
 MAP1 = "Map 1"
 MAP2 = "Map 2"
 
@@ -69,6 +69,7 @@ class Menu(Enum):
     START = {
         1: "Open",
        -1: "",
+       -2: "",
         0: "Exit"
     }
     OPEN  = {
@@ -86,13 +87,17 @@ class Menu(Enum):
     MAIN  = {
         1: "Open",
         2: "Save",
+       -1: "",
         3: "Display map data",
         4: "Count objects",
         5: "Export .json file",
+       -2: "",
         6: "Swap layers",
         7: "Modify towns (buildings/spells)",
         8: "Generate minimap",
         9: "Update events (global/town)",
+       -3: "",
+       -4: "",
         0: "Exit"
     }
 
@@ -296,7 +301,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
         stripped_text = strip_ansi_codes(str(text))
         text_length = len(stripped_text)
         if align == Align.LEFT:
-            padding = terminal_width // 2 - PRINT_OFFSET
+            padding = (terminal_width // 2) - (PRINT_WIDTH // 2)
             return " " * padding + str(text)
         elif align == Align.CENTER:
             padding = terminal_width // 2 - text_length // 2
@@ -331,7 +336,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
                     xprint()
 
             input = detect_key_press(valid_keys)
-            if input != "esc": input = int(input)
+            if input != ESC: input = int(input)
             return input
 
         def get_menu_width(menu: dict) -> int:
@@ -355,9 +360,9 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
                             if event.name in valid_keys:
                                 old_keypress = event.name
                                 return event.name
-                            elif event.name == "esc":
-                                old_keypress = "esc"
-                                return "esc"
+                            elif event.name == ESC:
+                                old_keypress = ESC
+                                return ESC
                     elif event.event_type == keyboard.KEY_UP:
                         old_keypress = ""
                 else:
@@ -384,8 +389,8 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
                             if input_chars:
                                 input_chars.pop()
                                 print("\b \b", end = "", flush = True)
-                        elif event.name == "esc":
-                            old_keypress = "esc"
+                        elif event.name == ESC:
+                            old_keypress = ESC
                             return ""
                         elif not keyboard.is_modifier(event.name) and len(event.name) == 1:
                             input_chars.append(event.name)

@@ -45,7 +45,7 @@ def main() -> None:
             success = False
             while not success:
                 input = xprint(menu=Menu.START.value)
-                if input == "esc": continue
+                if input == ESC: continue
                 match input:
                     case 1: success = io.open_maps()
                     case 2: exit()
@@ -55,7 +55,7 @@ def main() -> None:
                 success = False
                 while not success:
                     input = xprint(menu=Menu.MAIN.value)
-                    if input == "esc": continue
+                    if input == ESC: continue
                     xprint()
                     match input:
                         case 1: success = io.open_maps()

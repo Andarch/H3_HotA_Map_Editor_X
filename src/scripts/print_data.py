@@ -3,7 +3,7 @@ import pprint
 
 from ..common import *
 
-PRINT_WIDTH = 120
+# PRINT_WIDTH = 120
 
 def print_data(map_key: dict, data_key: str) -> None:
     print_action("Retrieving map data...")

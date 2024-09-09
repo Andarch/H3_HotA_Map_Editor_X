@@ -98,7 +98,7 @@ def open_maps() -> bool:
 
     def get_map_amount() -> int:
         input = xprint(menu=Menu.OPEN.value)
-        if input == "esc": return False
+        if input == ESC: return False
         else: return int(input)
 
     def open_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
@@ -174,12 +174,12 @@ def save_maps() -> bool:
 
     def get_map_amount() -> int:
         input = xprint(menu=Menu.SAVE_A.value)
-        if input == "esc": return False
+        if input == ESC: return False
         else: return int(input)
 
     def get_save_type() -> int:
         input = xprint(menu=Menu.SAVE_B.value)
-        if input == "esc": return False
+        if input == ESC: return False
         else: return int(input)
 
     def save_map(map_key: str, amount: int, type: int, new_screen=True) -> Tuple[bool, bool]:
