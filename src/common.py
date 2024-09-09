@@ -10,11 +10,11 @@ import threading
 import time
 from typing import Tuple, Union
 
-class ALIGN(Enum):
+class ALIGN:
     LEFT   = "LEFT"
     CENTER = "CENTER"
     MENU   = "MENU"
-    FLUSH  = "FLUSH"
+    FLUSH  = "FLUSHss"
 
 class CLR:
     RESET     = "\033[0m"
@@ -34,7 +34,7 @@ class CLR:
     WHITE     = "\033[97m"
     GREY      = "\033[90m"
 
-class MSG(Enum):
+class MSG:
     NORMAL  = "NORMAL"
     INFO    = "INFO"
     MENU    = "MENU"
@@ -50,6 +50,8 @@ class SLEEP:
     NORMAL = 0.75
     LONG   = 1.5
 
+# region Constants
+
 TITLE = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
@@ -59,32 +61,31 @@ DONE = "DONE"
 MAP1 = "Map 1"
 MAP2 = "Map 2"
 
-map_data = {
-    MAP1: {},
-    MAP2: {}
-}
+# endregion
 
-menu_start = [
+# region Menus
+
+MENU_START = [
     "Open",
     "Exit"
 ]
 
-menu_open = [
+MENU_OPEN = [
     "Open 1 map",
     "Open 2 maps"
 ]
 
-menu_save1 = [
+MENU_SAVE1 = [
     "Save 1 map",
     "Save 2 maps"
 ]
 
-menu_save2 = [
+MENU_SAVE2 = [
     "Save",
     "Save as"
 ]
 
-menu_main = [
+MENU_MAIN = [
     "Open",
     "Save",
     "",
@@ -100,22 +101,22 @@ menu_main = [
     "Exit"
 ]
 
-menus = {
-    "start": menu_start,
-    "open" : menu_open,
-    "main" : menu_main,
-    "saveA" : menu_save1,
-    "saveB" : menu_save2
+MENUS = {
+    "start": MENU_START,
+    "open" : MENU_OPEN,
+    "main" : MENU_MAIN,
+    "saveA" : MENU_SAVE1,
+    "saveB" : MENU_SAVE2
 }
 
-screen_content = []
+# endregion
 
+map_data = {MAP1:{}, MAP2:{}}
+screen_content = []
 terminal_width = 0
 old_terminal_width = 0
-
 redraw_scheduled = False
 is_redrawing = False
-
 old_keypress = ""
 
 def initialize():
@@ -339,7 +340,7 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                     xprint()
 
             input = detect_key_press(valid_keys)
-            if input is not "esc": input = int(input)
+            if input != "esc": input = int(input)
             return input
 
         def get_menu_width(menu: list) -> int:

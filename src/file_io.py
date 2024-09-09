@@ -8,7 +8,6 @@ from . import handler_05_additional_flags  as h5
 from . import handler_06_rumors_and_events as h6
 from . import handler_07_terrain           as h7
 from . import handler_08_objects           as h8
-from H3_HotA_MEX import map_data, menus
 
 in_file  = None
 out_file = None
@@ -97,8 +96,8 @@ def open_maps() -> bool:
                         return True
 
     def get_map_amount() -> int:
-        global menus
-        input = xprint(menu=menus["open"])
+        global MENUS
+        input = xprint(menu=MENUS["open"])
         if input == "esc": return False
         else: return int(input)
 
@@ -174,14 +173,14 @@ def save_maps() -> bool:
                             return True
 
     def get_map_amount() -> int:
-        global menus
-        input = xprint(menu=menus["saveA"])
+        global MENUS
+        input = xprint(menu=MENUS["saveA"])
         if input == "esc": return False
         else: return int(input)
 
     def get_save_type() -> int:
-        global menus
-        input = xprint(menu=menus["saveB"])
+        global MENUS
+        input = xprint(menu=MENUS["saveB"])
         if input == "esc": return False
         else: return int(input)
 
@@ -223,50 +222,6 @@ def save_maps() -> bool:
             return True
         return main()
     return main()
-
-# def save_map_prompts() -> None:
-#     if map_data["Map 2"] is not None:
-#         filename1 = print_string_prompt("Enter a filename to save Map 1")
-#         if filename1.lower() in BACK_COMMANDS:
-#             print(ABORT_MSG)
-#             return
-#         save_map(filename1, "Map 1")
-#         filename2 = print_string_prompt("Enter a filename to save Map 2")
-#         if filename2.lower() in BACK_COMMANDS:
-#             print(ABORT_MSG)
-#             return
-#         save_map(filename2, "Map 2")
-#     else:
-#         filename1 = print_string_prompt("Enter a filename to save the map")
-#         if filename1.lower() in BACK_COMMANDS:
-#             print(ABORT_MSG)
-#             return
-#         save_map(filename1, "Map 1")
-
-# def save_map(filename: str, map_key: str) -> None:
-#     if len(filename) > 4:
-#         if filename[-4:] != ".h3m":
-#             filename += ".h3m"
-#     else: filename += ".h3m"
-
-#     print_action("Saving map...")
-
-#     with open(filename, "wb") as io.out_file:
-#         h1.write_general(        map_data[map_key]["general"])
-#         h2.write_player_specs(   map_data[map_key]["player_specs"])
-#         h3.write_conditions(     map_data[map_key]["conditions"])
-#         h2.write_teams(          map_data[map_key]["teams"])
-#         h4.write_starting_heroes(map_data[map_key]["start_heroes"])
-#         h5.write_flags(          map_data[map_key]["ban_flags"])
-#         h6.write_rumors(         map_data[map_key]["rumors"])
-#         h4.write_hero_data(      map_data[map_key]["hero_data"])
-#         h7.write_terrain(        map_data[map_key]["terrain"])
-#         h8.write_object_defs(    map_data[map_key]["object_defs"])
-#         h8.write_object_data(    map_data[map_key]["object_data"])
-#         h6.write_events(         map_data[map_key]["events"])
-#         io.out_file.write(       map_data[map_key]["null_bytes"])
-
-#     print_done()
 
 def append_h3m(input: str) -> str:
     if input[-4:] != ".h3m": filename = input + ".h3m"
