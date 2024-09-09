@@ -1,4 +1,5 @@
 from gzip import open
+from typing import Tuple
 from .common  import *
 from . import handler_01_general           as h1
 from . import handler_02_players_and_teams as h2
@@ -96,8 +97,7 @@ def open_maps() -> bool:
                         return True
 
     def get_map_amount() -> int:
-        global MENUS
-        input = xprint(menu=MENUS["open"])
+        input = xprint(menu=Menu.OPEN.value)
         if input == "esc": return False
         else: return int(input)
 
@@ -114,17 +114,17 @@ def open_maps() -> bool:
         def get_filename(map_key: str, amount: int) -> str:
             if amount == 1: prompt = "Enter the map filename"
             elif amount == 2: prompt = f"Enter the filename for {map_key}"
-            input = xprint(type=MSG.PROMPT, text=prompt)
+            input = xprint(type=Text.PROMPT, text=prompt)
             if input: filename = append_h3m(input)
             else: return False
             return filename
 
         def test_open(filename: str) -> str:
-            xprint(type=MSG.ACTION, text=f"Loading {filename}...")
+            xprint(type=Text.ACTION, text=f"Loading {filename}...")
             try:
                 with open(filename, "rb"): return True
             except FileNotFoundError:
-                xprint(type=MSG.ERROR, text=f"Could not find {filename}.", align=ALIGN.FLUSH)
+                xprint(type=Text.ERROR, text=f"Could not find {filename}.", align=Align.FLUSH)
                 return False
 
         def parse_map(filename: str, map_key: str) -> bool:
@@ -144,7 +144,7 @@ def open_maps() -> bool:
                 map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
                 map_data[map_key]["events"]       = h6.parse_events()
                 map_data[map_key]["null_bytes"]   = in_file.read()
-            xprint(type=MSG.SPECIAL, text=DONE)
+            xprint(type=Text.SPECIAL, text=DONE)
 
         return main()
     return main()
@@ -173,14 +173,12 @@ def save_maps() -> bool:
                             return True
 
     def get_map_amount() -> int:
-        global MENUS
-        input = xprint(menu=MENUS["saveA"])
+        input = xprint(menu=Menu.SAVE_A.value)
         if input == "esc": return False
         else: return int(input)
 
     def get_save_type() -> int:
-        global MENUS
-        input = xprint(menu=MENUS["saveB"])
+        input = xprint(menu=Menu.SAVE_B.value)
         if input == "esc": return False
         else: return int(input)
 
@@ -196,14 +194,14 @@ def save_maps() -> bool:
         def get_filename(map_key: str, amount: int) -> str:
             if amount == 1: prompt = "Enter a new filename"
             elif amount == 2: prompt = f"Enter a new filename for {map_key}"
-            input = xprint(type=MSG.PROMPT, text=prompt)
+            input = xprint(type=Text.PROMPT, text=prompt)
             if input: filename = append_h3m(input)
             else: return False
             return filename
 
         def save_parsed_data(filename: str, map_key: str) -> bool:
             global map_data, out_file
-            xprint(type=MSG.ACTION, text=f"Saving {filename}...")
+            xprint(type=Text.ACTION, text=f"Saving {filename}...")
             with open(filename, "wb") as out_file:
                 h1.write_general(        map_data[map_key]["general"])
                 h2.write_player_specs(   map_data[map_key]["player_specs"])
@@ -218,7 +216,7 @@ def save_maps() -> bool:
                 h8.write_object_data(    map_data[map_key]["object_data"])
                 h6.write_events(         map_data[map_key]["events"])
                 out_file.write(          map_data[map_key]["null_bytes"])
-            xprint(type=MSG.SPECIAL, text=DONE)
+            xprint(type=Text.SPECIAL, text=DONE)
             return True
         return main()
     return main()

@@ -90,9 +90,9 @@ def convert_resource_value(value) -> str:
 
 def color_number(value: str) -> str:
     if value.startswith('+'):
-        return f"{CLR.GREEN}{value}{CLR.RESET}"  # Green for positive numbers
+        return f"{Color.GREEN.value}{value}{Color.RESET.value}"  # Green for positive numbers
     elif value.startswith('-'):
-        return f"{CLR.RED}{value}{CLR.RESET}"  # Red for negative numbers
+        return f"{Color.RED.value}{value}{Color.RESET.value}"  # Red for negative numbers
     return value
 
 #################

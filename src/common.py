@@ -1,3 +1,5 @@
+# region Imports
+
 import ctypes
 from enum import Enum
 import keyboard
@@ -8,15 +10,28 @@ import shutil
 import sys
 import threading
 import time
-from typing import Tuple, Union
+from typing import Union
 
-class ALIGN:
-    LEFT   = "LEFT"
-    CENTER = "CENTER"
-    MENU   = "MENU"
-    FLUSH  = "FLUSHss"
+# endregion
 
-class CLR:
+# region Constants
+
+TITLE = "H3 HotA Map Editor X"
+VERSION = "v0.3.1"
+TITLE_VERSION = f"{TITLE} {VERSION}"
+PRINT_WIDTH = 75
+PRINT_OFFSET = PRINT_WIDTH // 2
+DONE = "DONE"
+MAP1 = "Map 1"
+MAP2 = "Map 2"
+
+class Align(Enum):
+    LEFT   = 1
+    CENTER = 2
+    MENU   = 3
+    FLUSH  = 4
+
+class Color(Enum):
     RESET     = "\033[0m"
     FAINT     = "\033[2m"
     ITALIC    = "\033[3m"
@@ -34,82 +49,56 @@ class CLR:
     WHITE     = "\033[97m"
     GREY      = "\033[90m"
 
-class MSG:
-    NORMAL  = "NORMAL"
-    INFO    = "INFO"
-    MENU    = "MENU"
-    PROMPT  = "PROMPT"
-    ACTION  = "ACTION"
-    SPECIAL = "SPECIAL"
-    HEADER  = "HEADER"
-    ERROR   = "ERROR"
-
-class SLEEP:
+class Sleep(Enum):
     TIC    = 0.01
     SHORT  = 0.05
     NORMAL = 0.75
     LONG   = 1.5
 
-# region Constants
+class Text(Enum):
+    NORMAL  = 1
+    INFO    = 2
+    MENU    = 3
+    PROMPT  = 4
+    ACTION  = 5
+    SPECIAL = 6
+    HEADER  = 7
+    ERROR   = 8
 
-TITLE = "H3 HotA Map Editor X"
-VERSION = "v0.3.1"
-TITLE_VERSION = f"{TITLE} {VERSION}"
-PRINT_WIDTH = 75
-PRINT_OFFSET = PRINT_WIDTH // 2
-DONE = "DONE"
-MAP1 = "Map 1"
-MAP2 = "Map 2"
-
-# endregion
-
-# region Menus
-
-MENU_START = [
-    "Open",
-    "Exit"
-]
-
-MENU_OPEN = [
-    "Open 1 map",
-    "Open 2 maps"
-]
-
-MENU_SAVE1 = [
-    "Save 1 map",
-    "Save 2 maps"
-]
-
-MENU_SAVE2 = [
-    "Save",
-    "Save as"
-]
-
-MENU_MAIN = [
-    "Open",
-    "Save",
-    "",
-    "Display map data",
-    "Count objects",
-    "Export .json file",
-    "",
-    "Swap layers",
-    "Modify towns (buildings/spells)",
-    "Generate minimap",
-    "Update events (global/town)",
-    "",
-    "Exit"
-]
-
-MENUS = {
-    "start": MENU_START,
-    "open" : MENU_OPEN,
-    "main" : MENU_MAIN,
-    "saveA" : MENU_SAVE1,
-    "saveB" : MENU_SAVE2
-}
+class Menu(Enum):
+    START = {
+        1: "Open",
+       -1: "",
+        0: "Exit"
+    }
+    OPEN  = {
+        1: "Open 1 map",
+        2: "Open 2 maps"
+    }
+    SAVE_A = {
+        1: "Save 1 map",
+        2: "Save 2 maps"
+    }
+    SAVE_B = {
+        1: "Save",
+        2: "Save as"
+    }
+    MAIN  = {
+        1: "Open",
+        2: "Save",
+        3: "Display map data",
+        4: "Count objects",
+        5: "Export .json file",
+        6: "Swap layers",
+        7: "Modify towns (buildings/spells)",
+        8: "Generate minimap",
+        9: "Update events (global/town)",
+        0: "Exit"
+    }
 
 # endregion
+
+# region Global Variables
 
 map_data = {MAP1:{}, MAP2:{}}
 screen_content = []
@@ -118,6 +107,8 @@ old_terminal_width = 0
 redraw_scheduled = False
 is_redrawing = False
 old_keypress = ""
+
+# endregion
 
 def initialize():
     global terminal_width, old_terminal_width
@@ -129,7 +120,7 @@ def initialize():
     last_error = ctypes.windll.kernel32.GetLastError()
     if last_error == 183:
         draw_header()
-        xprint(type=MSG.ERROR, text="Another instance of the editor is already running.")
+        xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
         return False
 
     monitor_thread1 = threading.Thread(target = monitor_old_keypress, daemon = True)
@@ -155,7 +146,7 @@ def monitor_old_keypress() -> None:
                 old_keypress = ""
         else:
             old_keypress = ""
-        time.sleep(SLEEP.TIC)
+        time.sleep(Sleep.TIC.value)
 
 def monitor_terminal_size() -> None:
     global terminal_width, old_terminal_width, redraw_scheduled
@@ -166,7 +157,7 @@ def monitor_terminal_size() -> None:
             if not redraw_scheduled:
                 redraw_scheduled = True
                 threading.Timer(0, redraw_screen).start()
-        time.sleep(SLEEP.SHORT)
+        time.sleep(Sleep.SHORT.value)
 
 def get_terminal_width() -> int:
     return shutil.get_terminal_size().columns
@@ -185,8 +176,8 @@ def draw_header(new_screen: bool = True) -> None:
 
     # Set up header
     fill1_symbol = "#"
-    fill1_color = CLR.GREY + CLR.FAINT
-    title_color = CLR.CYAN
+    fill1_color = Color.GREY.value + Color.FAINT.value
+    title_color = Color.CYAN.value
     headerA_colors = (fill1_color, title_color)
     fill1_row = create_filled_row(fill1_symbol, headerA_colors)
     title_row = create_filled_row(fill1_symbol, headerA_colors, TITLE)
@@ -194,8 +185,8 @@ def draw_header(new_screen: bool = True) -> None:
 
     map1_data = map_data["Map 1"]
     map2_data = map_data["Map 2"]
-    headerB_color1 = CLR.MAGENTA
-    headerB_color2 = CLR.GREY
+    headerB_color1 = Color.MAGENTA.value
+    headerB_color2 = Color.GREY.value
     fill2_symbol = "-"
     fill2_color = headerB_color2
     headerB_colors = (fill2_color, fill2_color)
@@ -204,28 +195,28 @@ def draw_header(new_screen: bool = True) -> None:
         if map2_data:
             map1_row1 = f"Map 1: {map1_data["filename"]} | Map 2: {map2_data["filename"]}"
         else:
-            map1_row1 = f"{headerB_color1}{map1_data['general']['name']}{CLR.RESET}"
-            map1_row2 = f"{CLR.FAINT}{headerB_color1}{{{map1_data['filename']}}}{CLR.RESET}"
+            map1_row1 = f"{headerB_color1}{map1_data['general']['name']}{Color.RESET.value}"
+            map1_row2 = f"{Color.FAINT.value}{headerB_color1}{{{map1_data['filename']}}}{Color.RESET.value}"
     else:
-        map1_row1 = f"{headerB_color1}No map{CLR.RESET}"
-        map1_row2 = f"{headerB_color1}opened{CLR.RESET}"
+        map1_row1 = f"{headerB_color1}Press a{Color.RESET.value}"
+        map1_row2 = f"{headerB_color1}key{Color.RESET.value}"
 
     # Print header
-    xprint(type=MSG.HEADER, text="")
-    xprint(type=MSG.HEADER, text="")
-    xprint(type=MSG.HEADER, text=fill1_row)
-    xprint(type=MSG.HEADER, text=fill1_row)
-    xprint(type=MSG.HEADER, text=title_row)
-    xprint(type=MSG.HEADER, text=fill1_row)
-    xprint(type=MSG.HEADER, text=version_row)
-    xprint(type=MSG.HEADER, text=fill1_row)
-    xprint(type=MSG.HEADER, text=fill1_row)
-    xprint(type=MSG.HEADER, text="")
-    xprint(type=MSG.HEADER, text=fill2_row)
-    xprint(type=MSG.HEADER, text=map1_row1)
-    xprint(type=MSG.HEADER, text=map1_row2)
-    xprint(type=MSG.HEADER, text=fill2_row)
-    xprint(type=MSG.HEADER, text="")
+    xprint(type=Text.HEADER, text="")
+    xprint(type=Text.HEADER, text="")
+    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=title_row)
+    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=version_row)
+    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text="")
+    xprint(type=Text.HEADER, text=fill2_row)
+    xprint(type=Text.HEADER, text=map1_row1)
+    xprint(type=Text.HEADER, text=map1_row2)
+    xprint(type=Text.HEADER, text=fill2_row)
+    xprint(type=Text.HEADER, text="")
 
 def redraw_screen() -> None:
     global redraw_scheduled, is_redrawing, screen_content
@@ -240,13 +231,13 @@ def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
 
-def create_filled_row(symbol: str, colors=(CLR.DEFAULT, CLR.DEFAULT), text="") -> str:
+def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.value), text="") -> str:
     global terminal_width
     if not text:
         if terminal_width >= PRINT_WIDTH:
-            filler_row = f"{colors[0]}{symbol}" * PRINT_WIDTH + CLR.RESET
+            filler_row = f"{colors[0]}{symbol}" * PRINT_WIDTH + Color.RESET.value
         else:
-            filler_row = f"{colors[0]}{symbol}" * terminal_width + CLR.RESET
+            filler_row = f"{colors[0]}{symbol}" * terminal_width + Color.RESET.value
         return filler_row
     else:
         text_length = len(text)
@@ -254,63 +245,63 @@ def create_filled_row(symbol: str, colors=(CLR.DEFAULT, CLR.DEFAULT), text="") -
             fill_length = PRINT_WIDTH - (text_length + 2)
         else:
             fill_length = terminal_width - (text_length + 2)
-        row_left = f"{colors[0]}{symbol}" * (fill_length // 2) + CLR.RESET
-        row_right = f"{colors[0]}{symbol}" * (fill_length // 2) + CLR.RESET
+        row_left = f"{colors[0]}{symbol}" * (fill_length // 2) + Color.RESET.value
+        row_right = f"{colors[0]}{symbol}" * (fill_length // 2) + Color.RESET.value
         if fill_length % 2 != 0:
-            row_right += f"{colors[0]}{symbol}" + CLR.RESET
-        text_row = f"{row_left} {colors[1]}{text}{CLR.RESET} {row_right}"
+            row_right += f"{colors[0]}{symbol}" + Color.RESET.value
+        text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
 
-def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0, menu=[]) -> Union[None, Union[int, str]]:
+def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
-        if menu: return menu_input(menu)
-        if not is_redrawing and type != MSG.HEADER:
+        if menu: return menu_prompt(menu)
+        if not is_redrawing and type != Text.HEADER:
             screen_content.append((type, text, align, menu_num, menu_width))
         match type:
-            case MSG.NORMAL:
+            case Text.NORMAL:
                 print(align_text(text=text))
-            case MSG.INFO:
-                print(align_text(text=f"{CLR.CYAN}{text}{CLR.RESET}"))
-            case MSG.MENU:
+            case Text.INFO:
+                print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
+            case Text.MENU:
                 print(align_text(
-                    align=ALIGN.MENU,
-                    text=f"[{CLR.YELLOW}{str(menu_num)}{CLR.RESET}] {CLR.WHITE}{text}{CLR.RESET}",
+                    align=Align.MENU,
+                    text=f"[{Color.YELLOW.value}{str(menu_num)}{Color.RESET.value}] {Color.WHITE.value}{text}{Color.RESET.value}",
                     menu_width=menu_width
                 ))
-            case MSG.PROMPT:
+            case Text.PROMPT:
                 xprint()
-                input = string_prompt(align_text(text=f"{CLR.YELLOW}[{text}] > {CLR.WHITE}"))
+                input = string_prompt(align_text(text=f"{Color.YELLOW.value}[{text}] > {Color.WHITE.value}"))
                 return input
-            case MSG.ACTION:
-                print(align_text(text=f"{CLR.WHITE}{text}{CLR.RESET}"), end = " ", flush = True)
-                time.sleep(SLEEP.NORMAL)
-            case MSG.SPECIAL:
-                print(f"{CLR.GREEN}{text}{CLR.RESET}")
-                time.sleep(SLEEP.NORMAL)
-            case MSG.HEADER:
-                print(align_text(align=ALIGN.CENTER, text=text))
-            case MSG.ERROR:
+            case Text.ACTION:
+                print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"), end = " ", flush = True)
+                time.sleep(Sleep.NORMAL.value)
+            case Text.SPECIAL:
+                print(f"{Color.GREEN.value}{text}{Color.RESET.value}")
+                time.sleep(Sleep.NORMAL.value)
+            case Text.HEADER:
+                print(align_text(align=Align.CENTER, text=text))
+            case Text.ERROR:
                 match align:
-                    case ALIGN.LEFT:
+                    case Align.LEFT:
                         xprint()
-                        print(align_text(text=f"{CLR.RED}Error: {text}{CLR.RESET}"))
-                    case ALIGN.FLUSH:
-                        print(f"{CLR.RED}Error: {text}{CLR.RESET}")
-                time.sleep(SLEEP.LONG)
+                        print(align_text(text=f"{Color.RED.value}Error: {text}{Color.RESET.value}"))
+                    case Align.FLUSH:
+                        print(f"{Color.RED.value}Error: {text}{Color.RESET.value}")
+                time.sleep(Sleep.LONG.value)
         return None
 
-    def align_text(align=ALIGN.LEFT, text="", menu_width=0) -> str:
+    def align_text(align=Align.LEFT, text="", menu_width=0) -> str:
         global terminal_width
         stripped_text = strip_ansi_codes(str(text))
         text_length = len(stripped_text)
-        if align == ALIGN.LEFT:
+        if align == Align.LEFT:
             padding = terminal_width // 2 - PRINT_OFFSET
             return " " * padding + str(text)
-        elif align == ALIGN.CENTER:
+        elif align == Align.CENTER:
             padding = terminal_width // 2 - text_length // 2
             return " " * padding + str(text)
-        elif align == ALIGN.MENU:
+        elif align == Align.MENU:
             padding = terminal_width // 2 - menu_width // 2 - 2
             return " " * padding + str(text)
 
@@ -318,22 +309,22 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
         ansi_escape = re.compile(r"\x1B[@-_][0-?]*[ -/]*[@-~]")
         return ansi_escape.sub("", text)
 
-    def menu_input(menu: list) -> str:
+    def menu_prompt(menu: dict) -> str:
         def main() -> str:
             draw_header()
             menu_width = get_menu_width(menu)
-            menu_num = 0
+            # menu_num = 0
             valid_keys = ""
-            for _, text in enumerate(menu):
+            for key, text in menu.items():
                 if text:
-                    menu_num += 1
-                    if(menu_num == 10):
-                        menu_num = 0
-                    valid_keys += str(menu_num)
+                    # menu_num += 1
+                    # if(menu_num == 10):
+                    #     menu_num = 0
+                    valid_keys += str(key)
                     xprint(
-                        type=MSG.MENU,
+                        type=Text.MENU,
                         text=text,
-                        menu_num=menu_num,
+                        menu_num=key,
                         menu_width=menu_width
                     )
                 else:
@@ -343,9 +334,9 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
             if input != "esc": input = int(input)
             return input
 
-        def get_menu_width(menu: list) -> int:
+        def get_menu_width(menu: dict) -> int:
             width = 0
-            for text in menu:
+            for _, text in menu.items():
                 stripped_text = strip_ansi_codes(text)
                 text_length = len(stripped_text)
                 if text_length > width:
@@ -371,7 +362,7 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                         old_keypress = ""
                 else:
                     old_keypress = ""
-                time.sleep(SLEEP.TIC)
+                time.sleep(Sleep.TIC.value)
         return main()
 
     def string_prompt(prompt: str) -> str:
@@ -401,13 +392,13 @@ def xprint(type=MSG.NORMAL, text="", align=ALIGN.LEFT, menu_num=-1, menu_width=0
                             print(event.name, end = "", flush = True)
                 elif event.event_type == keyboard.KEY_UP:
                     old_keypress = ""
-            time.sleep(SLEEP.TIC)
+            time.sleep(Sleep.TIC.value)
         return "".join(input_chars)
     return main()
 
 def exit() -> None:
     xprint()
     xprint(text="Exiting...")
-    time.sleep(SLEEP.NORMAL)
-    xprint(text=CLR.RESET)
+    time.sleep(Sleep.NORMAL.value)
+    xprint(text=Color.RESET.value)
     sys.exit(0)

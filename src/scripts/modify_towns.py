@@ -2,7 +2,7 @@ import data.objects as objects
 from ..common import *
 
 def modify_towns(obj_data: dict) -> None:
-    xprint(type=MSG.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
+    xprint(type=Text.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
 
     for obj in obj_data:
         if obj["type"] == objects.ID.Town or obj["type"] == objects.ID.Random_Town:
@@ -25,4 +25,4 @@ def modify_towns(obj_data: dict) -> None:
             # print(f"    Modified town at {obj['coords']}")
 
     # print()
-    xprint(type=MSG.SPECIAL, text=DONE)
+    xprint(type=Text.SPECIAL, text=DONE)

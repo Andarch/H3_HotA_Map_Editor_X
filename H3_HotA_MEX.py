@@ -44,33 +44,33 @@ def main() -> None:
         try:
             success = False
             while not success:
-                input = xprint(menu=MENUS["start"])
+                input = xprint(menu=Menu.START.value)
                 if input == "esc": continue
                 match input:
                     case 1: success = io.open_maps()
                     case 2: exit()
-                time.sleep(SLEEP.TIC)
+                time.sleep(Sleep.TIC.value)
 
             while True:
                 success = False
                 while not success:
-                    input = xprint(menu=MENUS["main"])
+                    input = xprint(menu=Menu.MAIN.value)
                     if input == "esc": continue
                     xprint()
                     match input:
                         case 1: success = io.open_maps()
                         case 2: success = io.save_maps()
-                        case 3: xprint(type=MSG.ERROR, text="Not yet functional.")
-                        case 4: xprint(type=MSG.ERROR, text="Not yet functional.")
-                        case 5: xprint(type=MSG.ERROR, text="Not yet functional.")
-                        case 6: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 3: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 4: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 5: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 6: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 7:
                             map_key = get_map_key()
                             scripts.modify_towns(map_data[map_key]["object_data"])
-                        case 8: xprint(type=MSG.ERROR, text="Not yet functional.")
-                        case 9: xprint(type=MSG.ERROR, text="Not yet functional.")
+                        case 8: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 9: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 0: exit()
-                    time.sleep(SLEEP.TIC)
+                    time.sleep(Sleep.TIC.value)
         except KeyboardInterrupt:
             exit()
     else:
