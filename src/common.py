@@ -317,23 +317,20 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
     def menu_prompt(menu: dict) -> str:
         def main() -> str:
             draw_header()
-            menu_width = get_menu_width(menu)
-            # menu_num = 0
+            width = get_menu_width(menu)
             valid_keys = ""
-            for key, text in menu.items():
-                if text:
-                    # menu_num += 1
-                    # if(menu_num == 10):
-                    #     menu_num = 0
+            for key, value in menu.items():
+                if value:
                     valid_keys += str(key)
                     xprint(
                         type=Text.MENU,
-                        text=text,
+                        text=value,
                         menu_num=key,
-                        menu_width=menu_width
+                        menu_width=width
                     )
                 else:
                     xprint()
+            xprint()
 
             input = detect_key_press(valid_keys)
             if input != ESC: input = int(input)

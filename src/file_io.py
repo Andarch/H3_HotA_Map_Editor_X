@@ -151,12 +151,17 @@ def open_maps() -> bool:
 
 def save_maps() -> bool:
     def main() -> bool:
+        global map_data
         while True:
-            amount = get_map_amount()
-            if not amount: return False
+            if map_data["Map 2"]:
+                amount = get_map_amount()
+                if not amount: return False
+            else: amount = 1
             while True:
                 type = get_save_type()
-                if not type: break
+                if not type:
+                    if map_data["Map 2"]: break
+                    else: return False
                 while True:
                     filename, success = save_map(MAP1, amount, type)
                     if not filename: break
