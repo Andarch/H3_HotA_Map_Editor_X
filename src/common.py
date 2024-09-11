@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import sys
+from tabulate import tabulate
 import threading
 import time
 from typing import Union
@@ -188,23 +189,48 @@ def draw_header(new_screen: bool = True) -> None:
     title_row = create_filled_row(fill1_symbol, headerA_colors, TITLE)
     version_row = create_filled_row(fill1_symbol, headerA_colors, VERSION)
 
-    map1_data = map_data["Map 1"]
-    map2_data = map_data["Map 2"]
-    headerB_color1 = Color.MAGENTA.value
-    headerB_color2 = Color.GREY.value
+    # Set up subheader
+    map1 = map_data["Map 1"]
+    map2 = map_data["Map 2"]
+    headerB1_color1 = Color.MAGENTA.value
+    headerB2_color1 = Color.YELLOW.value
     fill2_symbol = "-"
-    fill2_color = headerB_color2
+    fill2_color = Color.GREY.value
     headerB_colors = (fill2_color, fill2_color)
     fill2_row = create_filled_row(fill2_symbol, headerB_colors)
-    if map1_data:
-        if map2_data:
-            map1_row1 = f"Map 1: {map1_data["filename"]} | Map 2: {map2_data["filename"]}"
+
+    if map1:
+        map1_row1 = f"{headerB1_color1}{map1['general']['name']}{Color.RESET.value}"
+        map1_row2 = f"{Color.FAINT.value}{headerB1_color1}{{{map1['filename']}}}{Color.RESET.value}"
+        if not map2:
+            map2_row1 = ""
+            map2_row2 = ""
         else:
-            map1_row1 = f"{headerB_color1}{map1_data['general']['name']}{Color.RESET.value}"
-            map1_row2 = f"{Color.FAINT.value}{headerB_color1}{{{map1_data['filename']}}}{Color.RESET.value}"
+            map2_row1 = f"{headerB1_color1}{map2['general']['name']}{Color.RESET.value}"
+            map2_row2 = f"{Color.FAINT.value}{headerB1_color1}{{{map2['filename']}}}{Color.RESET.value}"
+            if terminal_width >= PRINT_WIDTH:
+                cell_width = PRINT_WIDTH // 2 + 6
+            else:
+                cell_width = terminal_width // 2 + 6
+            xprint(text=(PRINT_WIDTH, terminal_width, cell_width))
+            map1_row1 = map1_row1.center(cell_width)
+            map1_row2 = map1_row2.center(cell_width + 4)
+            map2_row1 = map2_row1.center(cell_width)
+            map2_row2 = map2_row2.center(cell_width + 4)
+            final_row1 = f"{map1_row1} | {map2_row1}"
+            final_row2 = f"{map1_row2} | {map2_row2}"
     else:
-        map1_row1 = f"{headerB_color1}Press a{Color.RESET.value}"
-        map1_row2 = f"{headerB_color1}key{Color.RESET.value}"
+        map1_row1 = f"{headerB2_color1}Use the number keys on{Color.RESET.value}"
+        map1_row2 = f"{headerB2_color1}your keyboard to navigate{Color.RESET.value}"
+        map2_row1 = ""
+        map2_row2 = ""
+
+    if not map2:
+        final_row1 = map1_row1
+        final_row2 = map1_row2
+    else:
+        final_row1 = f"{map1_row1}{fill2_color} | {map2_row1}"
+        final_row2 = f"{map1_row2}{fill2_color} | {map2_row2}"
 
     # Print header
     xprint(type=Text.HEADER, text="")
@@ -216,10 +242,12 @@ def draw_header(new_screen: bool = True) -> None:
     xprint(type=Text.HEADER, text=version_row)
     xprint(type=Text.HEADER, text=fill1_row)
     xprint(type=Text.HEADER, text=fill1_row)
+
+    # Print subheader
     xprint(type=Text.HEADER, text="")
     xprint(type=Text.HEADER, text=fill2_row)
-    xprint(type=Text.HEADER, text=map1_row1)
-    xprint(type=Text.HEADER, text=map1_row2)
+    xprint(type=Text.HEADER, text=final_row1)
+    xprint(type=Text.HEADER, text=final_row2)
     xprint(type=Text.HEADER, text=fill2_row)
     xprint(type=Text.HEADER, text="")
 
