@@ -45,6 +45,7 @@ class Color(Enum):
     GREEN     = "\033[92m"
     YELLOW    = "\033[93m"
     BLUE      = "\033[94m"
+    MAGENTA2  = "\033[35m"
     MAGENTA   = "\033[95m"
     CYAN      = "\033[96m"
     WHITE     = "\033[97m"
@@ -192,7 +193,8 @@ def draw_header(new_screen: bool = True) -> None:
     # Set up subheader
     map1 = map_data["Map 1"]
     map2 = map_data["Map 2"]
-    headerB1_color1 = Color.MAGENTA.value
+    headerB1_color1A = Color.MAGENTA.value
+    headerB1_color1B = Color.MAGENTA2.value
     headerB2_color1 = Color.YELLOW.value
     fill2_symbol = "-"
     fill2_color = Color.GREY.value
@@ -200,23 +202,22 @@ def draw_header(new_screen: bool = True) -> None:
     fill2_row = create_filled_row(fill2_symbol, headerB_colors)
 
     if map1:
-        map1_row1 = f"{headerB1_color1}{map1['general']['name']}{Color.RESET.value}"
-        map1_row2 = f"{Color.FAINT.value}{headerB1_color1}{{{map1['filename']}}}{Color.RESET.value}"
+        map1_row1 = f"{headerB1_color1A}{map1['general']['name']}{Color.RESET.value}"
+        map1_row2 = f"{headerB1_color1B}{{{map1['filename']}}}{Color.RESET.value}"
         if not map2:
             map2_row1 = ""
             map2_row2 = ""
         else:
-            map2_row1 = f"{headerB1_color1}{map2['general']['name']}{Color.RESET.value}"
-            map2_row2 = f"{Color.FAINT.value}{headerB1_color1}{{{map2['filename']}}}{Color.RESET.value}"
+            map2_row1 = f"{headerB1_color1A}{map2['general']['name']}{Color.RESET.value}"
+            map2_row2 = f"{headerB1_color1B}{{{map2['filename']}}}{Color.RESET.value}"
             if terminal_width >= PRINT_WIDTH:
                 cell_width = PRINT_WIDTH // 2 + 6
             else:
                 cell_width = terminal_width // 2 + 6
-            xprint(text=(PRINT_WIDTH, terminal_width, cell_width))
             map1_row1 = map1_row1.center(cell_width)
-            map1_row2 = map1_row2.center(cell_width + 4)
+            map1_row2 = map1_row2.center(cell_width)
             map2_row1 = map2_row1.center(cell_width)
-            map2_row2 = map2_row2.center(cell_width + 4)
+            map2_row2 = map2_row2.center(cell_width)
             final_row1 = f"{map1_row1} | {map2_row1}"
             final_row2 = f"{map1_row2} | {map2_row2}"
     else:
