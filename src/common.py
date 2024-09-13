@@ -8,7 +8,6 @@ import os
 import re
 import shutil
 import sys
-from tabulate import tabulate
 import threading
 import time
 from typing import Union
