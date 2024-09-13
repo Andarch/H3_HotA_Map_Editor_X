@@ -47,8 +47,9 @@ def main() -> None:
                 input = xprint(menu=Menu.START.value)
                 if input == ESC: continue
                 match input:
-                    case 1: success = io.open_maps()
-                    case 2: exit()
+                    case 1: success = io.open_maps(1)
+                    case 2: success = io.open_maps(2)
+                    case 0: exit()
                 time.sleep(Sleep.TIC.value)
 
             while True:

@@ -76,14 +76,18 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
-def open_maps() -> bool:
-    def main() -> bool:
+def open_maps(input=-1) -> bool:
+    def main(input: int) -> bool:
         while True:
-            amount = get_map_amount()
-            if not amount: return False
+            if input == -1:
+                amount = get_map_amount()
+                if not amount: return False
+            else: amount = input
             while True:
                 filename, success = open_map(MAP1, amount)
-                if not filename: break
+                if not filename:
+                    if input == -1: break
+                    else: return False
                 if not success: continue
                 if amount is 1: return True
                 if amount is 2:
@@ -147,7 +151,7 @@ def open_maps() -> bool:
             xprint(type=Text.SPECIAL, text=DONE)
 
         return main()
-    return main()
+    return main(input)
 
 def save_maps() -> bool:
     def main() -> bool:

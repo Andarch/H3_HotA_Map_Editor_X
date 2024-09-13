@@ -68,7 +68,8 @@ class Text(Enum):
 
 class Menu(Enum):
     START = {
-        1: "Open",
+        1: "Open 1 map",
+        2: "Open 2 maps",
        -1: "",
        -2: "",
         0: "Exit"
@@ -89,14 +90,14 @@ class Menu(Enum):
         1: "Open",
         2: "Save",
        -1: "",
-        3: "Display map data",
-        4: "Count objects",
-        5: "Export .json file",
+        3: "!!Display map data",
+        4: "!!Count objects",
+        5: "!!Export .json file",
        -2: "",
-        6: "Swap layers",
+        6: "!!Swap layers",
         7: "Modify towns (buildings/spells)",
-        8: "Generate minimap",
-        9: "Update events (global/town)",
+        8: "!!Generate minimap",
+        9: "!!Update events (global/town)",
        -3: "",
        -4: "",
         0: "Exit"
