@@ -102,6 +102,18 @@ class Menu(Enum):
        -4: "",
         0: "Exit"
     }
+    PRINT = {
+        1: "General",
+        2: "Players/Teams",
+        3: "Win/Loss Conditions",
+        4: "Heroes",
+        5: "Disabled Skills/Spells",
+        6: "Terrain",
+        7: "Object Defs",
+        8: "Object Data",
+        9: "Events & Rumors",
+        0: "Null Bytes"
+    }
 
 # endregion
 

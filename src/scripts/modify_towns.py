@@ -1,7 +1,7 @@
 import data.objects as objects
 from ..common import *
 
-def modify_towns(obj_data: dict) -> None:
+def modify_towns(obj_data: dict) -> bool:
     xprint(type=Text.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
 
     for obj in obj_data:
@@ -26,3 +26,4 @@ def modify_towns(obj_data: dict) -> None:
 
     # print()
     xprint(type=Text.SPECIAL, text=DONE)
+    return True
