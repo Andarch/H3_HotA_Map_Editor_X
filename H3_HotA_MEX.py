@@ -63,8 +63,8 @@ def main() -> None:
                     if input == ESC: continue
                     xprint()
                     match input:
-                        case 1: success = io.load_maps()
-                        case 2: success = io.save_maps()
+                        case 1: success = io.map_io()
+                        case 2: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 3:
                             map_key = get_map_key()
                             success = scripts.print_data(map_data[map_key])

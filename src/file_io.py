@@ -76,6 +76,16 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
+def map_io() -> bool:
+    while True:
+        input = xprint(menu=Menu.MAP_IO.value)
+        if input == ESC: return False
+        match input:
+            case 1: success = load_maps()
+            case 2: success = save_maps()
+        if not success: continue
+        return True
+
 def load_maps(input=-1) -> bool:
     def main(input: int) -> bool:
         while True:
