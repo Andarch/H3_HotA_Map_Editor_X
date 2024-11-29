@@ -65,7 +65,7 @@ def main() -> None:
                             map_key = get_map_key()
                             success = scripts.print_data(map_data[map_key])
                         case 4: xprint(type=Text.ERROR, text="Not yet functional.")
-                        case 5: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 5: success = scripts.export_json(map_data[map_key], map_data[map_key]['filename'])
                         case 6: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 7:
                             map_key = get_map_key()

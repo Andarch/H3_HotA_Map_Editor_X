@@ -9,9 +9,11 @@ class CustomEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def export_json(map_key: dict, filename: str) -> None:
-    print_action("Exporting JSON file...")
+    #print_action("Exporting JSON file...")
+    xprint(type=Text.ACTION, text=f"Exporting JSON file...")
 
     with open(filename, 'w') as f:
         json.dump(map_key, f, cls = CustomEncoder, indent = 4)
 
-    print_done()
+    #print_done()
+    xprint(type=Text.SPECIAL, text=DONE)
