@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
+import os
 from src import *
+
+# Change the working directory to the "maps" folder
+os.chdir('maps')
 
 #########################
 # GLOBAL INITIALIZATION #
@@ -47,8 +51,8 @@ def main() -> None:
                 input = xprint(menu=Menu.START.value)
                 if input == ESC: continue
                 match input:
-                    case 1: success = io.open_maps(1)
-                    case 2: success = io.open_maps(2)
+                    case 1: success = io.load_maps(1)
+                    case 2: success = io.load_maps(2)
                     case 0: exit()
                 time.sleep(Sleep.TIC.value)
 
@@ -59,7 +63,7 @@ def main() -> None:
                     if input == ESC: continue
                     xprint()
                     match input:
-                        case 1: success = io.open_maps()
+                        case 1: success = io.load_maps()
                         case 2: success = io.save_maps()
                         case 3:
                             map_key = get_map_key()

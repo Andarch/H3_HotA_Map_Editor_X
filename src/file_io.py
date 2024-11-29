@@ -76,7 +76,7 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
-def open_maps(input=-1) -> bool:
+def load_maps(input=-1) -> bool:
     def main(input: int) -> bool:
         while True:
             if input == -1:
@@ -84,7 +84,7 @@ def open_maps(input=-1) -> bool:
                 if not amount: return False
             else: amount = input
             while True:
-                filename, success = open_map(MAP1, amount)
+                filename, success = load_map(MAP1, amount)
                 if not filename:
                     if input == -1: break
                     else: return False
@@ -95,22 +95,22 @@ def open_maps(input=-1) -> bool:
                     while True:
                         if first_loop: new_screen = False
                         else: new_screen = True
-                        filename, success = open_map(MAP2, amount, new_screen)
+                        filename, success = load_map(MAP2, amount, new_screen)
                         if not filename: break
                         if not success: continue
                         return True
 
     def get_map_amount() -> int:
-        input = xprint(menu=Menu.OPEN.value)
+        input = xprint(menu=Menu.LOAD.value)
         if input == ESC: return False
         else: return int(input)
 
-    def open_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
+    def load_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
         def main() -> Tuple[bool, bool]:
             draw_header(new_screen=new_screen)
             filename = get_filename(map_key, amount)
             if not filename: return False, False
-            success = test_open(filename)
+            success = test_load(filename)
             if not success: return True, False
             parse_map(filename, map_key)
             return True, True
@@ -123,7 +123,7 @@ def open_maps(input=-1) -> bool:
             else: return False
             return filename
 
-        def test_open(filename: str) -> str:
+        def test_load(filename: str) -> str:
             xprint(type=Text.ACTION, text=f"Loading {filename}...")
             try:
                 with open(filename, "rb"): return True

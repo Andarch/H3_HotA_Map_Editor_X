@@ -1,5 +1,4 @@
 import json
-
 from ..common import *
 
 class CustomEncoder(json.JSONEncoder):
@@ -9,11 +8,17 @@ class CustomEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 def export_json(map_key: dict, filename: str) -> None:
-    #print_action("Exporting JSON file...")
+    if filename.endswith('.h3m'):
+        filename = filename[:-4]
+    if not filename.endswith('.json'):
+        filename += '.json'
+    
     xprint(type=Text.ACTION, text=f"Exporting JSON file...")
 
-    with open(filename, 'w') as f:
-        json.dump(map_key, f, cls = CustomEncoder, indent = 4)
-
-    #print_done()
-    xprint(type=Text.SPECIAL, text=DONE)
+    try:
+        with open(filename, 'w') as f:
+            json.dump(map_key, f, cls = CustomEncoder, indent = 4)
+        xprint(type=Text.SPECIAL, text=DONE)
+    except Exception as e:
+        xprint(type=Text.ERROR, text=f"Failed to export JSON file: {e}")
+        
