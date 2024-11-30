@@ -95,7 +95,7 @@ class Menu(Enum):
        -1: "",
         2: "!!Display map data",
         3: "!!Count objects",
-        4: "!!Detect terrain",
+        4: "Count objects per zone",
         5: "Export .json file",
        -2: "",
         6: "!!Swap layers",

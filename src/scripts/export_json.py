@@ -7,8 +7,9 @@ class CustomEncoder(json.JSONEncoder):
             return obj.decode('latin-1')
         return json.JSONEncoder.default(self, obj)
 
-def export_json(map_key: dict, filename: str) -> bool:
-    def main(map_key: dict, filename: str) -> bool:
+def export_json(map_key: dict) -> bool:
+    def main(map_key: dict) -> bool:
+        filename = map_key['filename']
         if filename.endswith('.h3m'):
             filename = filename[:-4]
         if not filename.endswith('.json'):
@@ -33,4 +34,4 @@ def export_json(map_key: dict, filename: str) -> bool:
         if input == ESC: return False
         else: return int(input)
 
-    return main(map_key, filename)
+    return main(map_key)
