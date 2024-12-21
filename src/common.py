@@ -2,8 +2,7 @@
 
 import ctypes
 from enum import Enum
-import keyboard
-import pygetwindow as gw
+import msvcrt
 import os
 import re
 import shutil
@@ -21,9 +20,12 @@ VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
 PRINT_WIDTH = 75
 DONE = "DONE"
-ESC = "esc"
 MAP1 = "Map 1"
 MAP2 = "Map 2"
+
+ESC = 27
+BACKSPACE = 8
+ENTER = "\r"
 
 class Align(Enum):
     LEFT   = 1
@@ -133,7 +135,6 @@ terminal_width = 0
 old_terminal_width = 0
 redraw_scheduled = False
 is_redrawing = False
-old_keypress = ""
 
 # endregion
 
@@ -150,11 +151,8 @@ def initialize():
         xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
         return False
 
-    monitor_thread1 = threading.Thread(target = monitor_old_keypress, daemon = True)
+    monitor_thread1 = threading.Thread(target = monitor_terminal_size, daemon = True)
     monitor_thread1.start()
-
-    monitor_thread2 = threading.Thread(target = monitor_terminal_size, daemon = True)
-    monitor_thread2.start()
 
     return True
 
@@ -163,17 +161,6 @@ def hide_cursor(hide: bool) -> None:
         print("\033[?25l", end = "", flush = True)
     else:
         print("\033[?25h", end = "", flush = True)
-
-def monitor_old_keypress() -> None:
-    global old_keypress
-    while True:
-        if is_terminal_focused():
-            event = keyboard.read_event()
-            if event.event_type == keyboard.KEY_UP:
-                old_keypress = ""
-        else:
-            old_keypress = ""
-        time.sleep(Sleep.TIC.value)
 
 def monitor_terminal_size() -> None:
     global terminal_width, old_terminal_width, redraw_scheduled
@@ -188,12 +175,6 @@ def monitor_terminal_size() -> None:
 
 def get_terminal_width() -> int:
     return shutil.get_terminal_size().columns
-
-def is_terminal_focused() -> bool:
-    active_window = gw.getActiveWindow()
-    if active_window:
-        return TITLE in active_window.title
-    return False
 
 def draw_header(new_screen: bool = True) -> None:
     global screen_content, terminal_width
@@ -367,6 +348,18 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
         def main() -> str:
             draw_header()
             width = get_menu_width(menu)
+            valid_keys = print_menu(menu, width)
+            input = detect_key_press(valid_keys)
+            return input
+        def get_menu_width(menu: dict) -> int:
+            width = 0
+            for _, text in menu.items():
+                stripped_text = strip_ansi_codes(text)
+                text_length = len(stripped_text)
+                if text_length > width:
+                    width = text_length
+            return width
+        def print_menu(menu: dict, width: int) -> str:
             valid_keys = ""
             for key, value in menu.items():
                 if value:
@@ -380,71 +373,35 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
                 else:
                     xprint()
             xprint()
-
-            input = detect_key_press(valid_keys)
-            if input != ESC: input = int(input)
-            return input
-
-        def get_menu_width(menu: dict) -> int:
-            width = 0
-            for _, text in menu.items():
-                stripped_text = strip_ansi_codes(text)
-                text_length = len(stripped_text)
-                if text_length > width:
-                    width = text_length
-            return width
-
+            return valid_keys
         def detect_key_press(valid_keys: str) -> str:
-            global old_keypress
             while True:
-                if is_terminal_focused():
-                    event = keyboard.read_event()
-                    if event.event_type == keyboard.KEY_DOWN:
-                        if is_terminal_focused():
-                            if(event.name == old_keypress):
-                                continue
-                            if event.name in valid_keys:
-                                old_keypress = event.name
-                                return event.name
-                            elif event.name == ESC:
-                                old_keypress = ESC
-                                return ESC
-                    elif event.event_type == keyboard.KEY_UP:
-                        old_keypress = ""
-                else:
-                    old_keypress = ""
-                time.sleep(Sleep.TIC.value)
+                char = msvcrt.getwch()
+                if char in valid_keys:
+                    return int(char)
+                elif ord(char) == ESC:
+                    return ESC
         return main()
 
     def string_prompt(prompt: str) -> str:
-        global old_keypress
-        input_chars = []
         print(prompt, end = "", flush = True)
+        input_chars = []
         while True:
-            if is_terminal_focused():
-                event = keyboard.read_event()
-                if event.event_type == keyboard.KEY_DOWN:
-                    if is_terminal_focused():
-                        if(event.name == old_keypress):
-                            continue
-                        if event.name == "enter" and len(input_chars) > 0:
-                            xprint()
-                            xprint()
-                            break
-                        elif event.name == "backspace":
-                            if input_chars:
-                                input_chars.pop()
-                                print("\b \b", end = "", flush = True)
-                        elif event.name == ESC:
-                            old_keypress = ESC
-                            return ""
-                        elif not keyboard.is_modifier(event.name) and len(event.name) == 1:
-                            input_chars.append(event.name)
-                            print(event.name, end = "", flush = True)
-                elif event.event_type == keyboard.KEY_UP:
-                    old_keypress = ""
-            time.sleep(Sleep.TIC.value)
-        return "".join(input_chars)
+            char = msvcrt.getwch()
+            if char == ENTER:
+                xprint()
+                xprint()
+                return "".join(input_chars)
+            elif ord(char) == BACKSPACE:
+                if input_chars:
+                    input_chars.pop()
+                    print("\b \b", end="", flush=True)
+            elif ord(char) == ESC:
+                return ""
+            else:
+                input_chars.append(char)
+                print(char, end="", flush=True)
+
     return main()
 
 def exit() -> None:
