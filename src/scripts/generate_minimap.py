@@ -110,7 +110,7 @@ ignored_objects = {
 #################
 
 def generate_minimap(general, terrain, object_data, defs):
-    print_action("Generating minimap...")
+    xprint(type=Text.ACTION, text=f"Generating minimap...")
 
     ##################
     # INITIALIZATION #
@@ -221,4 +221,4 @@ def generate_minimap(general, terrain, object_data, defs):
     # Generate and save minimap images
     generate_images()
 
-    print_done()
+    xprint(type=Text.SPECIAL, text=DONE)
