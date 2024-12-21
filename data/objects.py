@@ -41,7 +41,7 @@ class ID(IntEnum):
     Hut_of_the_Magi             =  37
     Idol_of_Fortune             =  38
     Lean_To                     =  39
-    Remove                      =  40
+    #                           =  40
     Library_of_Enlightenment    =  41
     Lighthouse                  =  42
     Monolith_One_Way_Entrance   =  43

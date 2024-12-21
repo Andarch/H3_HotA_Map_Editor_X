@@ -1,4 +1,5 @@
 from .common  import *
+from .menus   import *
 from .scripts import *
 
 from . import file_io as io

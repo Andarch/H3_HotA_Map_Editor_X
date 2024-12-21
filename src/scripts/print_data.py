@@ -1,5 +1,6 @@
 import pprint
 from ..common import *
+from ..menus import *
 
 def print_data(map_key: dict) -> bool:
     input = xprint(menu=Menu.PRINT.value)

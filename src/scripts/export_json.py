@@ -1,5 +1,6 @@
 import json
 from ..common import *
+from ..menus import *
 
 class CustomEncoder(json.JSONEncoder):
     def default(self, obj):

@@ -1,6 +1,7 @@
 from gzip import open
 from typing import Tuple
 from .common  import *
+from .menus import *
 from . import handler_01_general           as h1
 from . import handler_02_players_and_teams as h2
 from . import handler_03_conditions        as h3
