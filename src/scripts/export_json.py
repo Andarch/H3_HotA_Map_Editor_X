@@ -21,7 +21,7 @@ def export_json(map_key: dict) -> bool:
         match type:
             case 1: data = map_key
             case 2: data = map_key['terrain']
-        
+
         xprint(type=Text.ACTION, text=f"Exporting JSON file...")
 
         with open(filename, 'w') as f:
@@ -31,7 +31,7 @@ def export_json(map_key: dict) -> bool:
 
     def get_export_type() -> int:
         input = xprint(menu=Menu.JSON.value)
-        if input == ESC: return False
+        if input == KB.ESC.value: return False
         else: return int(input)
 
     return main(map_key)

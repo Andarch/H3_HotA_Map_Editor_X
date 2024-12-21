@@ -23,9 +23,10 @@ DONE = "DONE"
 MAP1 = "Map 1"
 MAP2 = "Map 2"
 
-ESC = 27
-BACKSPACE = 8
-ENTER = "\r"
+class KB(Enum):
+    BACKSPACE = 8
+    ENTER = "\r"
+    ESC = 27
 
 class Align(Enum):
     LEFT   = 1
@@ -379,8 +380,8 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
                 char = msvcrt.getwch()
                 if char in valid_keys:
                     return int(char)
-                elif ord(char) == ESC:
-                    return ESC
+                elif ord(char) == KB.ESC.value:
+                    return KB.ESC.value
         return main()
 
     def string_prompt(prompt: str) -> str:
@@ -388,15 +389,15 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
         input_chars = []
         while True:
             char = msvcrt.getwch()
-            if char == ENTER:
+            if char == KB.ENTER.value:
                 xprint()
                 xprint()
                 return "".join(input_chars)
-            elif ord(char) == BACKSPACE:
+            elif ord(char) == KB.BACKSPACE.value:
                 if input_chars:
                     input_chars.pop()
                     print("\b \b", end="", flush=True)
-            elif ord(char) == ESC:
+            elif ord(char) == KB.ESC.value:
                 return ""
             else:
                 input_chars.append(char)

@@ -49,7 +49,7 @@ def main() -> None:
             success = False
             while not success:
                 input = xprint(menu=Menu.START.value)
-                if input == ESC: continue
+                if input == KB.ESC.value: continue
                 match input:
                     case 1: success = io.load_maps(1)
                     case 2: success = io.load_maps(2)
@@ -60,7 +60,7 @@ def main() -> None:
                 success = False
                 while not success:
                     input = xprint(menu=Menu.MAIN.value)
-                    if input == ESC: continue
+                    if input == KB.ESC.value: continue
                     xprint()
                     match input:
                         case 1: success = io.map_io()

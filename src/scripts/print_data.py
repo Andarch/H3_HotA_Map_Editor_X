@@ -3,7 +3,7 @@ from ..common import *
 
 def print_data(map_key: dict) -> bool:
     input = xprint(menu=Menu.PRINT.value)
-    if input == ESC: return False
+    if input == KB.ESC.value: return False
     draw_header()
     xprint(type=Text.ACTION, text="Retrieving map data...")
     xprint(type=Text.SPECIAL, text=DONE)

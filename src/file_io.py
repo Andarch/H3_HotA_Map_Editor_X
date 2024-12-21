@@ -79,7 +79,7 @@ def peek(length: int) -> None:
 def map_io() -> bool:
     while True:
         input = xprint(menu=Menu.MAP_IO.value)
-        if input == ESC: return False
+        if input == KB.ESC.value: return False
         match input:
             case 1: success = load_maps()
             case 2: success = save_maps()
@@ -112,7 +112,7 @@ def load_maps(input=-1) -> bool:
 
     def get_map_amount() -> int:
         input = xprint(menu=Menu.LOAD.value)
-        if input == ESC: return False
+        if input == KB.ESC.value: return False
         else: return int(input)
 
     def load_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
@@ -193,12 +193,12 @@ def save_maps() -> bool:
 
     def get_map_amount() -> int:
         input = xprint(menu=Menu.SAVE_A.value)
-        if input == ESC: return False
+        if input == KB.ESC.value: return False
         else: return int(input)
 
     def get_save_type() -> int:
         input = xprint(menu=Menu.SAVE_B.value)
-        if input == ESC: return False
+        if input == KB.ESC.value: return False
         else: return int(input)
 
     def save_map(map_key: str, amount: int, type: int, new_screen=True) -> Tuple[bool, bool]:
