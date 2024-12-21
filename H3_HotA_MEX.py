@@ -76,7 +76,14 @@ def main() -> None:
                         case 7:
                             map_key = get_map_key()
                             success = scripts.modify_towns(map_data[map_key]["object_data"])
-                        case 8: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 8:
+                            map_key = get_map_key()
+                            success = scripts.generate_minimap(
+                                map_data[map_key]["general"],
+                                map_data[map_key]["terrain"],
+                                map_data[map_key]["object_data"],
+                                map_data[map_key]["object_defs"]
+                            )
                         case 9: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 0: exit()
                     time.sleep(Sleep.TIC.value)

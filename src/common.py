@@ -103,7 +103,7 @@ class Menu(Enum):
        -2: "",
         6: "!!Swap layers",
         7: "Modify towns (buildings/spells)",
-        8: "!!Generate minimap",
+        8: "Generate minimap",
         9: "!!Update events (global/town)",
        -3: "",
        -4: "",
@@ -125,6 +125,10 @@ class Menu(Enum):
         1: "All data",
         2: "Terrain only"
     }
+    MINIMAP  = {
+        1: "Normal",
+        2: "Passability only"
+    }
 
 # endregion
 
@@ -143,7 +147,6 @@ def initialize():
     global terminal_width, old_terminal_width
     terminal_width = old_terminal_width = get_terminal_width()
     hide_cursor(True)
-
     mutex_name = TITLE.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     last_error = ctypes.windll.kernel32.GetLastError()
@@ -151,17 +154,13 @@ def initialize():
         draw_header()
         xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
         return False
-
     monitor_thread1 = threading.Thread(target = monitor_terminal_size, daemon = True)
     monitor_thread1.start()
-
     return True
 
 def hide_cursor(hide: bool) -> None:
-    if hide:
-        print("\033[?25l", end = "", flush = True)
-    else:
-        print("\033[?25h", end = "", flush = True)
+    if hide: print("\033[?25l", end = "", flush = True)
+    else: print("\033[?25h", end = "", flush = True)
 
 def monitor_terminal_size() -> None:
     global terminal_width, old_terminal_width, redraw_scheduled

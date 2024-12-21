@@ -109,116 +109,98 @@ ignored_objects = {
 # MAIN FUNCTION #
 #################
 
-def generate_minimap(general, terrain, object_data, defs):
-    xprint(type=Text.ACTION, text=f"Generating minimap...")
+def generate_minimap(general, terrain, object_data, defs) -> bool:
+    def main(general, terrain, object_data, defs) -> bool:
+        xprint(type=Text.ACTION, text=f"Generating minimap...")
+        # Get map size
+        size = general["map_size"]
+        # Initialize layer list
+        if general["is_two_level"]:
+            half = size * size
+            layers = [terrain[:half]]  # overworld
+            layers.append(terrain[half:])  # underground
+        else:
+            layers = [terrain]  # overworld only
+        # Initialize tile dictionaries
+        ownership = {layer: [[None for _ in range(size)] for _ in range(size)] for layer in [OVERWORLD, UNDERGROUND]}
+        blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
+        # Iterate through objects
+        for obj in object_data:
+            # Get object masks
+            def_ = defs[obj["def_id"]]
+            blockMask = def_["red_squares"]
+            interactiveMask = def_["yellow_squares"]
+            # Determine if object has owner and/or should be skipped (hidden on minimap).
+            # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
+            owner = determine_owner(obj)
+            if owner is None and should_skip_object(blockMask, interactiveMask):
+                continue
+            process_object(obj, blockMask, interactiveMask, size, blocked_tiles, ownership, owner)
+        # Generate and save minimap images
+        generate_images(layers, size, blocked_tiles, ownership)
+        xprint(type=Text.SPECIAL, text=DONE)
+        return True
 
-    ##################
-    # INITIALIZATION #
-    ##################
+    def determine_owner(obj: dict) -> int:
+        if "owner" in obj and obj["type"] not in ignored_objects:  # Check if object has "owner" key and should not be ignored
+            return obj["owner"]
+        else:
+            return None
 
-    # Get map size
-    size = general["map_size"]
+    def should_skip_object(blockMask: list, interactiveMask: list) -> bool:
+        isInteractive = False
+        yellowSquaresOnly = True
+        allPassable = True
+        for b, i in zip(blockMask, interactiveMask):  # Iterate through the mask bits
+            if i == 1:  # If there is an interactive tile
+                isInteractive = True
+            if b == i:  # If the elements are the same, then one is not the inverse of the other
+                yellowSquaresOnly = False
+            if b != 1:  # If there is a blocked tile
+                allPassable = False
+            if not yellowSquaresOnly and isInteractive and not allPassable:
+                break
+        return isInteractive and yellowSquaresOnly
 
-    # Initialize layer list
-    if general["is_two_level"]:
-        half = size * size
-        layers = [terrain[:half]]  # overworld
-        layers.append(terrain[half:])  # underground
-    else:
-        layers = [terrain]  # overworld only
+    def process_object(obj: dict, blockMask: list, interactiveMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: int) -> None:
+        obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
+        for r in range(ROWS):  # 6 rows y-axis, from top to bottom
+            for c in range(COLUMNS):  # 8 columns x-axis, from left to right
+                index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
+                # if blockMask[index] != 1:  # If tile is blocked
+                if blockMask[index] != 1 and interactiveMask[index] != 1:  # If tile is blocked
+                    blocked_tile_x = obj_x - 7 + c
+                    blocked_tile_y = obj_y - 5 + r
+                    if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:  # Check if the blocked tile is within the map
+                        if obj_z == OVERWORLD:
+                            blocked_tiles[OVERWORLD].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
+                            if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
+                        elif obj_z == UNDERGROUND:
+                            blocked_tiles[UNDERGROUND].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
+                            if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
+                                ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
-    # Initialize tile dictionaries
-    ownership = {layer: [[None for _ in range(size)] for _ in range(size)] for layer in [OVERWORLD, UNDERGROUND]}
-    blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
-
-    #############
-    # MAIN LOOP #
-    #############
-
-    # Iterate through objects
-    for obj in object_data:
-
-        # Get object masks
-        def_ = defs[obj["def_id"]]
-        blockMask = def_["red_squares"]
-        interactiveMask = def_["yellow_squares"]
-
-        ####################
-        # HELPER FUNCTIONS #
-        ####################
-
-        def determine_owner():
-            if "owner" in obj and obj["type"] not in ignored_objects:  # Check if object has "owner" key and should not be ignored
-                return obj["owner"]
-            else:
-                return None
-
-        def should_skip_object():
-            isInteractive = False
-            yellowSquaresOnly = True
-            allPassable = True
-            for b, i in zip(blockMask, interactiveMask):  # Iterate through the mask bits
-                if i == 1:  # If there is an interactive tile
-                    isInteractive = True
-                if b == i:  # If the elements are the same, then one is not the inverse of the other
-                    yellowSquaresOnly = False
-                if b != 1:  # If there is a blocked tile
-                    allPassable = False
-                if not yellowSquaresOnly and isInteractive and not allPassable:
-                    break
-            return isInteractive and yellowSquaresOnly
-
-        def process_object():
-            obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
-            for r in range(ROWS):  # 6 rows y-axis, from top to bottom
-                for c in range(COLUMNS):  # 8 columns x-axis, from left to right
-                    index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
-                    if blockMask[index] != 1:  # If tile is blocked
-                        blocked_tile_x = obj_x - 7 + c
-                        blocked_tile_y = obj_y - 5 + r
-                        if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:  # Check if the blocked tile is within the map
-                            if obj_z == OVERWORLD:
-                                blocked_tiles[OVERWORLD].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
-                                if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                    ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
-                            elif obj_z == UNDERGROUND:
-                                blocked_tiles[UNDERGROUND].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
-                                if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                    ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
-
-        def generate_images():
-            for layer_index, layer in enumerate(layers):  # Iterate through both layers
-                img = Image.new('RGB', (size, size))  # Initalize a new image the same dimensions as the map
-                for i, tile in enumerate(layer):  # Iterate through each tile on this layer
-                    x = i % size
-                    y = i // size
-                    owner = ownership[layer_index][y][x]  # Check if this tile has an owner
-                    if owner is not None:  # If there's an owner, use the owner's color
-                        color = owner_colors[owner]
-                    elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
+    def generate_images(layers: list, size: int, blocked_tiles: dict, ownership: dict) -> None:
+        for layer_index, layer in enumerate(layers):  # Iterate through both layers
+            img = Image.new('RGB', (size, size))  # Initalize a new image the same dimensions as the map
+            for i, tile in enumerate(layer):  # Iterate through each tile on this layer
+                x = i % size
+                y = i // size
+                owner = ownership[layer_index][y][x]  # Check if this tile has an owner
+                # if owner is not None:  # If there's an owner, use the owner's color
+                #     color = owner_colors[owner]
+                if owner is not None:
+                    if (x, y) in blocked_tiles[layer_index]:
                         color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                     else:
-                        color = terrain_colors[tile[0]]  # Use the terrain color
-                    img.putpixel((x, y), color)  # Draw the pixel on the image
-                img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.NEAREST)  # Resize this layer's image
-                img.save(os.path.join(".", "images", f"{general.get('name')}_layer_{layer_index}.png"))  # Save this layer's image in PNG format to the .\images directory
+                        color = terrain_colors[tile[0]]
+                elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
+                    color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                else:
+                    color = terrain_colors[tile[0]]  # Use the terrain color
+                img.putpixel((x, y), color)  # Draw the pixel on the image
+            # img = img.resize((IMAGE_SIZE, IMAGE_SIZE), Image.NEAREST)  # Resize this layer's image
+            img.save(os.path.join("..", "images", f"{general.get('name')}_layer_{layer_index}.png"))  # Save this layer's image in PNG format to the .\images directory
 
-        #############################
-        # HELPER FUNCTION EXECUTION #
-        #############################
-
-        # Determine if object has owner and/or should be skipped (hidden on minimap).
-        # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
-        owner = determine_owner()
-        if owner is None and should_skip_object():
-            continue
-        process_object()
-
-    ####################
-    # IMAGE GENERATION #
-    ####################
-
-    # Generate and save minimap images
-    generate_images()
-
-    xprint(type=Text.SPECIAL, text=DONE)
+    return main(general, terrain, object_data, defs)
