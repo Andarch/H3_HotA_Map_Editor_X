@@ -66,6 +66,7 @@ class KEYMASTER(IntEnum):
     PURPLE = 5
     WHITE = 6
     BLACK = 7
+    GARRISON = 255
     QUEST = 1000
 
 terrain_colors = {
@@ -98,32 +99,32 @@ terrain_colors = {
 }
 
 terrain_colors_alt = {
-    # Terrain - all dark yellow
-    TERRAIN.DIRT:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.SAND:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.GRASS:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.SNOW:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.SWAMP:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.ROUGH:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.SUBTERRANEAN:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.LAVA:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.WATER: (0x2b, 0x50, 0x71),
+    # Terrain
+    TERRAIN.DIRT:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.SAND:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.GRASS:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.SNOW:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.SWAMP:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.ROUGH:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.SUBTERRANEAN:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.LAVA:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.WATER: (0x4b, 0x56, 0x5e),
     TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS:  (0xa5, 0x9c, 0x6b),
-    TERRAIN.WASTELAND:  (0xa5, 0x9c, 0x6b),
-    # Blocked Terrain - all grey
-    TERRAIN.BDIRT: (0x15, 0x15, 0x15),
-    TERRAIN.BSAND: (0x15, 0x15, 0x15),
-    TERRAIN.BGRASS: (0x15, 0x15, 0x15),
-    TERRAIN.BSNOW: (0x15, 0x15, 0x15),
-    TERRAIN.BSWAMP: (0x15, 0x15, 0x15),
-    TERRAIN.BROUGH: (0x15, 0x15, 0x15),
-    TERRAIN.BSUBTERRANEAN: (0x15, 0x15, 0x15),
-    TERRAIN.BLAVA: (0x15, 0x15, 0x15),
-    TERRAIN.BWATER: (0x1b, 0x2f, 0x50),
+    TERRAIN.HIGHLANDS:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.WASTELAND:  (0x4d, 0x4d, 0x4d),
+    # Blocked Terrain
+    TERRAIN.BDIRT: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSAND: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BGRASS: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSNOW: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSWAMP: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BROUGH: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSUBTERRANEAN: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BLAVA: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BWATER: (0x3c, 0x45, 0x4d),
     TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x15, 0x15, 0x15),
-    TERRAIN.BWASTELAND: (0x15, 0x15, 0x15),
+    TERRAIN.BHIGHLANDS: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BWASTELAND: (0x3d, 0x3d, 0x3d),
 }
 
 owner_colors = {
@@ -139,15 +140,16 @@ owner_colors = {
 }
 
 keymaster_colors = {
-    KEYMASTER.LIGHTBLUE: (0x29, 0x66, 0xEC),
-    KEYMASTER.GREEN: (0x03, 0x74, 0x19),
+    KEYMASTER.LIGHTBLUE: (0x00, 0xb7, 0xff),
+    KEYMASTER.GREEN: (0x06, 0xc6, 0x2f),
     KEYMASTER.RED: (0xCE, 0x19, 0x1A),
-    KEYMASTER.DARKBLUE: (0x10, 0x10, 0xB9),
-    KEYMASTER.BROWN: (0x86, 0x4D, 0x11),
-    KEYMASTER.PURPLE: (0x7F, 0x13, 0xBA),
-    KEYMASTER.WHITE: (0xD1, 0xBF, 0xBF),
-    KEYMASTER.BLACK: (0x2C, 0x29, 0x29),
-    KEYMASTER.QUEST: (0x84, 0x84, 0x84),
+    KEYMASTER.DARKBLUE: (0x14, 0x14, 0xfe),
+    KEYMASTER.BROWN: (0xc8, 0x82, 0x46),
+    KEYMASTER.PURPLE: (0xa8, 0x43, 0xe0),
+    KEYMASTER.WHITE: (0xf7, 0xf7, 0xf7),
+    KEYMASTER.BLACK: (0x12, 0x12, 0x12),
+    KEYMASTER.GARRISON: (0x9c, 0x9a, 0x8b),
+    KEYMASTER.QUEST: (0xff, 0xff, 0x00),
 }
 
 ignored_owned_objects = {
@@ -157,7 +159,7 @@ ignored_owned_objects = {
     objects.ID.Hero_Placeholder
 }
 
-decor_objects = {
+passability_objects = {
     objects.ID.Border_Gate,
     objects.ID.Border_Guard,
     objects.ID.Quest_Guard,
@@ -278,7 +280,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
         # Iterate through objects
         for obj in object_data:
-            if input == 2 and obj["type"] not in decor_objects:
+            if input == 2 and obj["type"] not in passability_objects:
                 continue
             # Get object masks
             def_ = defs[obj["def_id"]]
@@ -299,12 +301,18 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         if input == 1 and "owner" in obj and obj["type"] not in ignored_owned_objects:  # Check if object has "owner" key and should not be ignored
             return obj["owner"]
         elif input == 2:
-            if obj["type"] == objects.ID.Border_Gate and (obj["subtype"] <= 7 or obj["subtype"] == 1000):
+            if (obj["type"] == objects.ID.Border_Gate and obj["subtype"] != 1001) or obj["type"] == objects.ID.Border_Guard:
                 return obj["subtype"]
-            elif obj["type"] == objects.ID.Border_Guard:
-                return obj["subtype"]
-            elif obj["type"] == objects.ID.Quest_Guard or obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
+            elif obj["type"] == objects.ID.Quest_Guard:
                 return 1000
+            elif obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
+                return 255
+            # if obj["type"] == objects.ID.Border_Gate and (obj["subtype"] <= 7 or obj["subtype"] == 1000):
+            #     return obj["subtype"]
+            # elif obj["type"] == objects.ID.Border_Guard:
+            #     return obj["subtype"]
+            # elif obj["type"] == objects.ID.Quest_Guard or obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
+            #     return 1000
         else:
             return None
 
