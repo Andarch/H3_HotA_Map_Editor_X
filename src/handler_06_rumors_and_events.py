@@ -1,17 +1,11 @@
 import src.file_io as io
-
-# The rumors of a map are stored as follows:
-#
-# TODO
-
-# The events of a map are stored as follows:
-#
-# TODO
+from .common import *
 
 def parse_rumors() -> list:
     info = []
+    rumor_count = io.read_int(4)
 
-    for _ in range(io.read_int(4)): # Amount of rumors
+    for _ in range(rumor_count):
         rumor = {}
         rumor["name"] = io.read_str(io.read_int(4))
         rumor["text"] = io.read_str(io.read_int(4))
@@ -30,8 +24,9 @@ def write_rumors(info: list) -> None:
 
 def parse_events(is_town: bool = False) -> list:
     info = []
+    event_count = io.read_int(4)
 
-    for i in range(io.read_int(4)): # Amount of timed events
+    for _ in range(event_count):
         event = {}
         event["isTown"]  = is_town
         event["name"]    = io.read_str(io.read_int(4))
@@ -45,15 +40,17 @@ def parse_events(is_town: bool = False) -> list:
         event["apply_human"]           = bool(io.read_int(1))
         event["apply_ai"]              = bool(io.read_int(1))
         event["first_occurence"]       =      io.read_int(2)
-        event["subsequent_occurences"] =      io.read_int(1)
-        event["trash_bytes"]           =      io.read_raw(17 if is_town else 31)
+        event["subsequent_occurences"] =      io.read_int(2)
+        event["trash_bytes"]           =      io.read_raw(16)
 
         if is_town:
-            event["hota_level_7b"] = io.read_int(4)
-            event["hota_amount"]   = io.read_int(4)
-            event["hota_special"]  = io.read_bits(6)
+            event["allowed_difficulties"] =      io.read_int(4)
+            event["hota_level_7b"]        =      io.read_int(4)
+            event["hota_amount"]          =      io.read_int(4)
+            event["hota_special"]         =      io.read_bits(6)
+            event["apply_neutral_towns"]  = bool(io.read_int(1))
+            event["buildings"]            =      io.read_bits(6)
 
-            event["buildings"] = io.read_bits(6)
             event["creatures"] = []
             for _ in range(7):
                 event["creatures"].append(io.read_int(2))

@@ -226,7 +226,7 @@ def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.va
         text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
 
-def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
+def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
         if menu: return menu_prompt(menu)
@@ -234,6 +234,9 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, menu_num=-1, menu_width=
             screen_content.append((type, text, align, menu_num, menu_width))
         match type:
             case Text.NORMAL:
+                if overwrite:
+                    time.sleep(Sleep.SHORT.value)
+                    print("\033[F\033[K", end="")
                 print(align_text(text=text))
             case Text.INFO:
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))

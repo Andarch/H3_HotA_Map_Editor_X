@@ -46,36 +46,38 @@ class Difficulty(IntEnum):
 
 def parse_general() -> dict:
     info = {
-        "map_format"         : 0,
-        "hota_version"       : 0,
-        "hota_data_1"        : b'',
-        "hota_data_2"        : b'',
-        "name"               : "",
-        "description"        : "",
-        "map_size"           : 0,
-        "has_hero"           : False,
-        "is_two_level"       : False,
-        #"allow_plague"       : True,
-        "is_arena"           : False,
-        "difficulty"         : 0,
-        "allowed_difficulty" : [],
-        "level_cap"          : 0,
+        "map_format"               : 0,
+        "hota_version"             : 0,
+        "is_mirror"                : b'',
+        "terrain_type_count"       : b'',
+        "name"                     : "",
+        "description"              : "",
+        "map_size"                 : 0,
+        "has_hero"                 : False,
+        "is_two_level"             : False,
+        "is_arena"                 : False,
+        "difficulty"               : 0,
+        "allowed_difficulties"     : [],
+        "level_cap"                : 0,
+        "can_hire_defeated_heroes" : 0,
     }
 
     info["map_format"] = MapFormat(io.read_int(4))
 
-    if info["map_format"] == MapFormat.HotA:
-        info["hota_version"] = io.read_int(4)
+    if info["map_format"] != MapFormat.HotA:
+        raise NotImplementedError(f"unsupported map format: {info['map_format']}")
 
-        if info["hota_version"] >= 5:
-            info["hota_data_1"]        =      io.read_raw(1)
-            info["is_arena"]           = bool(io.read_int(1))
-            info["hota_data_2"]        =      io.read_raw(8)
-            info["allowed_difficulty"] =      io.read_bits(1)
+    info["hota_version"] = io.read_int(4)
 
-        else: raise NotImplementedError(f"unsupported hota version: {info['hota_version']}")
-    else: raise NotImplementedError(f"unsupported map format: {info['map_format']}")
+    if info["hota_version"] < 7:
+        raise NotImplementedError(f"unsupported hota version: {info['hota_version']}")
 
+    info["is_mirror"]                = bool(io.read_int(1))
+    info["is_arena"]                 = bool(io.read_int(1))
+    info["terrain_type_count"]       =      io.read_int(4)
+    info["town_type_count"]          =      io.read_int(4)
+    info["allowed_difficulties"]     =      io.read_bits(1)
+    info["can_hire_defeated_heroes"] = bool(io.read_int(1))
     info["has_hero"]     =       bool(io.read_int(1))
     info["map_size"]     =    MapSize(io.read_int(4))
     info["is_two_level"] =       bool(io.read_int(1))
@@ -91,10 +93,10 @@ def write_general(info: dict) -> None:
 
     if info["map_format"] == MapFormat.HotA:
         io.write_int( info["hota_version"], 4)
-        io.write_raw( info["hota_data_1"])
+        io.write_raw( info["is_mirror"])
         io.write_int( info["is_arena"], 1)
-        io.write_raw( info["hota_data_2"])
-        io.write_bits(info["allowed_difficulty"])
+        io.write_raw( info["terrain_type_count"])
+        io.write_bits(info["allowed_difficulties"])
 
     io.write_int(    info["has_hero"], 1)
     io.write_int(    info["map_size"], 4)

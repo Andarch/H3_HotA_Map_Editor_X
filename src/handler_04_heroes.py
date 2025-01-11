@@ -40,7 +40,7 @@ def parse_starting_heroes(general_info: dict) -> dict:
         hero["may_be_hired_by"] = io.read_int(1)
         info["custom_heroes"].append(hero)
 
-    info["unhandled_bytes"] = io.read_raw(57)
+    info["unhandled_bytes"] = io.read_raw(31)
 
     return info
 
