@@ -42,9 +42,9 @@ def parse_events(is_town: bool = False) -> list:
         event["first_occurence"]       =      io.read_int(2)
         event["subsequent_occurences"] =      io.read_int(2)
         event["trash_bytes"]           =      io.read_raw(16)
+        event["allowed_difficulties"] =      io.read_int(4)
 
         if is_town:
-            event["allowed_difficulties"] =      io.read_int(4)
             event["hota_level_7b"]        =      io.read_int(4)
             event["hota_amount"]          =      io.read_int(4)
             event["hota_special"]         =      io.read_bits(6)
@@ -79,9 +79,9 @@ def write_events(info: list, is_town: bool = False) -> None:
         io.write_int( event["first_occurence"], 2)
         io.write_int( event["subsequent_occurences"], 2)
         io.write_raw( event["trash_bytes"])
+        io.write_int( event["allowed_difficulties"], 4)
 
         if is_town:
-            io.write_int( event["allowed_difficulties"], 4)
             io.write_int( event["hota_level_7b"], 4)
             io.write_int( event["hota_amount"], 4)
             io.write_bits(event["hota_special"])

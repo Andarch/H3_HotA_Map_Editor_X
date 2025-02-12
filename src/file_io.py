@@ -1,4 +1,5 @@
-from gzip import open
+from gzip import open as gzopen
+from gzip import GzipFile
 from typing import Tuple
 from .common  import *
 from .menus import *
@@ -138,14 +139,14 @@ def load_maps(input=-1) -> bool:
             xprint(type=Text.NORMAL, text=f"Loading {filename}...")
             xprint()
             try:
-                with open(filename, "rb"): return True
+                with gzopen(filename, "rb"): return True
             except FileNotFoundError:
                 xprint(type=Text.ERROR, text=f"Could not find {filename}.", align=Align.FLUSH)
                 return False
 
         def parse_map(filename: str, map_key: str) -> bool:
             global map_data, in_file
-            with open(filename, "rb") as in_file:
+            with gzopen(filename, "rb") as in_file:
                 map_data[map_key]["filename"]     = filename
                 xprint(text=f"Parsing 1/13: Map Specs...", overwrite=True)
                 map_data[map_key]["general"]      = h1.parse_general()
@@ -236,20 +237,21 @@ def save_maps() -> bool:
         def save_parsed_data(filename: str, map_key: str) -> bool:
             global map_data, out_file
             xprint(type=Text.ACTION, text=f"Saving {filename}...")
-            with open(filename, "wb") as out_file:
-                h1.write_general(        map_data[map_key]["general"])
-                h2.write_player_specs(   map_data[map_key]["player_specs"])
-                h3.write_conditions(     map_data[map_key]["conditions"])
-                h2.write_teams(          map_data[map_key]["teams"])
-                h4.write_starting_heroes(map_data[map_key]["start_heroes"])
-                h5.write_flags(          map_data[map_key]["ban_flags"])
-                h6.write_rumors(         map_data[map_key]["rumors"])
-                h4.write_hero_data(      map_data[map_key]["hero_data"])
-                h7.write_terrain(        map_data[map_key]["terrain"])
-                h8.write_object_defs(    map_data[map_key]["object_defs"])
-                h8.write_object_data(    map_data[map_key]["object_data"])
-                h6.write_events(         map_data[map_key]["events"])
-                out_file.write(          map_data[map_key]["null_bytes"])
+            with open(filename, "wb") as f:
+                with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
+                    h1.write_general(        map_data[map_key]["general"])
+                    h2.write_player_specs(   map_data[map_key]["player_specs"])
+                    h3.write_conditions(     map_data[map_key]["conditions"])
+                    h2.write_teams(          map_data[map_key]["teams"])
+                    h4.write_starting_heroes(map_data[map_key]["start_heroes"])
+                    h5.write_flags(          map_data[map_key]["ban_flags"])
+                    h6.write_rumors(         map_data[map_key]["rumors"])
+                    h4.write_hero_data(      map_data[map_key]["hero_data"])
+                    h7.write_terrain(        map_data[map_key]["terrain"])
+                    h8.write_object_defs(    map_data[map_key]["object_defs"])
+                    h8.write_object_data(    map_data[map_key]["object_data"])
+                    h6.write_events(         map_data[map_key]["events"])
+                    out_file.write(          map_data[map_key]["null_bytes"])
             xprint(type=Text.SPECIAL, text=DONE)
             return True
         return main()

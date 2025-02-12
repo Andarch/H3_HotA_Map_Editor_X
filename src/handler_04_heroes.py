@@ -22,12 +22,8 @@ def parse_starting_heroes(general_info: dict) -> dict:
         "unhandled_bytes": b''
     }
 
-    if general_info["map_format"] == MapFormat.HotA:
-        info["total_heroes"] = io.read_int(4)
-        info["hero_flags"]   = io.read_bits(25)
-
-    elif general_info["map_format"] == MapFormat.SoD:
-        info["hero_flags"] = io.read_bits(20)
+    info["total_heroes"] = io.read_int(4)
+    info["hero_flags"]   = io.read_bits(25)
 
     for _ in range(io.read_int(4)): # Amount of placeholder heroes
         info["placeholders"].append(heroes.ID(io.read_int(1)))
