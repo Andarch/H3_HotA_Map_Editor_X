@@ -77,7 +77,7 @@ def write_events(info: list, is_town: bool = False) -> None:
         io.write_int( event["apply_human"], 1)
         io.write_int( event["apply_ai"], 1)
         io.write_int( event["first_occurence"], 2)
-        io.write_int( event["subsequent_occurences"], 1)
+        io.write_int( event["subsequent_occurences"], 2)
         io.write_raw( event["trash_bytes"])
 
         if is_town:
