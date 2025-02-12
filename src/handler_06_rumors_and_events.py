@@ -81,11 +81,13 @@ def write_events(info: list, is_town: bool = False) -> None:
         io.write_raw( event["trash_bytes"])
 
         if is_town:
-            io.write_int(event["hota_level_7b"], 4)
-            io.write_int(event["hota_amount"], 4)
+            io.write_int( event["allowed_difficulties"], 4)
+            io.write_int( event["hota_level_7b"], 4)
+            io.write_int( event["hota_amount"], 4)
             io.write_bits(event["hota_special"])
-
+            io.write_int( event["apply_neutral_towns"], 1)
             io.write_bits(event["buildings"])
+
             for creature in event["creatures"]:
                 io.write_int(creature, 2)
 

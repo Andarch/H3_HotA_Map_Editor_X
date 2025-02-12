@@ -72,32 +72,32 @@ def parse_general() -> dict:
     if info["hota_version"] < 7:
         raise NotImplementedError(f"unsupported hota version: {info['hota_version']}")
 
-    info["is_mirror"]                = bool(io.read_int(1))
-    info["is_arena"]                 = bool(io.read_int(1))
-    info["terrain_type_count"]       =      io.read_int(4)
-    info["town_type_count"]          =      io.read_int(4)
-    info["allowed_difficulties"]     =      io.read_bits(1)
-    info["can_hire_defeated_heroes"] = bool(io.read_int(1))
-    info["has_hero"]     =       bool(io.read_int(1))
-    info["map_size"]     =    MapSize(io.read_int(4))
-    info["is_two_level"] =       bool(io.read_int(1))
-    info["name"]         =            io.read_str(io.read_int(4))
-    info["description"]  =            io.read_str(io.read_int(4))
-    info["difficulty"]   = Difficulty(io.read_int(1))
-    info["level_cap"]    =            io.read_int(1)
+    info["is_mirror"]                = bool(      io.read_int(1))
+    info["is_arena"]                 = bool(      io.read_int(1))
+    info["terrain_type_count"]       =            io.read_int(4)
+    info["town_type_count"]          =            io.read_int(4)
+    info["allowed_difficulties"]     =            io.read_bits(1)
+    info["can_hire_defeated_heroes"] = bool(      io.read_int(1))
+    info["has_hero"]                 = bool(      io.read_int(1))
+    info["map_size"]                 = MapSize(   io.read_int(4))
+    info["is_two_level"]             = bool(      io.read_int(1))
+    info["name"]                     =            io.read_str(io.read_int(4))
+    info["description"]              =            io.read_str(io.read_int(4))
+    info["difficulty"]               = Difficulty(io.read_int(1))
+    info["level_cap"]                =            io.read_int(1)
 
     return info
 
 def write_general(info: dict) -> None:
-    io.write_int(info["map_format"], 4)
+    io.write_int(    info["map_format"], 4)
+    io.write_int(    info["hota_version"], 4)
 
-    if info["map_format"] == MapFormat.HotA:
-        io.write_int( info["hota_version"], 4)
-        io.write_raw( info["is_mirror"])
-        io.write_int( info["is_arena"], 1)
-        io.write_raw( info["terrain_type_count"])
-        io.write_bits(info["allowed_difficulties"])
-
+    io.write_int(    info["is_mirror"], 1)
+    io.write_int(    info["is_arena"], 1)
+    io.write_int(    info["terrain_type_count"], 4)
+    io.write_int(    info["town_type_count"], 4)
+    io.write_bits(   info["allowed_difficulties"])
+    io.write_int(    info["can_hire_defeated_heroes"], 1)
     io.write_int(    info["has_hero"], 1)
     io.write_int(    info["map_size"], 4)
     io.write_int(    info["is_two_level"], 1)

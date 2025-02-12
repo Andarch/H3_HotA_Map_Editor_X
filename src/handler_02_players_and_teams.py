@@ -137,7 +137,7 @@ def write_player_specs(specs: list) -> None:
         io.write_int(info["has_random_hero"], 1)
         io.write_int(info["starting_hero_id"], 1)
 
-        if info["starting_hero_id"] != 255:
+        if info["starting_hero_id"] != heroes.ID.Default:
             io.write_int(    info["starting_hero_face"], 1)
             io.write_int(len(info["starting_hero_name"]), 4)
             io.write_str(    info["starting_hero_name"])

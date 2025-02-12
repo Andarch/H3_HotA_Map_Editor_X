@@ -39,6 +39,10 @@ def parse_flags() -> dict:
     return info
 
 def write_flags(info: dict) -> None:
+    io.write_int( info["allow_plague"], 4)
+    io.write_bits(info["combo_artifacts"])
+    io.write_int( info["combat_round_limit"], 4)
+    io.write_raw( info["unhandled_bytes"])
     io.write_bits(info["artifacts"])
     io.write_bits(info["spells"])
     io.write_bits(info["skills"])

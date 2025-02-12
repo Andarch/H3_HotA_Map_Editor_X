@@ -251,6 +251,9 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_nu
                 input = string_prompt(align_text(text=f"{Color.YELLOW.value}[{text}] > {Color.WHITE.value}"))
                 return input
             case Text.ACTION:
+                if overwrite:
+                    time.sleep(Sleep.SHORT.value)
+                    print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"), end = " ", flush = True)
                 time.sleep(Sleep.NORMAL.value)
             case Text.SPECIAL:
