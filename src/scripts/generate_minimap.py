@@ -307,12 +307,6 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return 1000
             elif obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
                 return 255
-            # if obj["type"] == objects.ID.Border_Gate and (obj["subtype"] <= 7 or obj["subtype"] == 1000):
-            #     return obj["subtype"]
-            # elif obj["type"] == objects.ID.Border_Guard:
-            #     return obj["subtype"]
-            # elif obj["type"] == objects.ID.Quest_Guard or obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
-            #     return 1000
         else:
             return None
 
