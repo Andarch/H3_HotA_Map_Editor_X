@@ -22,8 +22,5 @@ def modify_towns(obj_data: dict) -> bool:
             else:
                 obj["has_fort"] = True
 
-            # print(f"    Modified town at {obj['coords']}")
-
-    # print()
     xprint(type=Text.SPECIAL, text=DONE)
     return True
