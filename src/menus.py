@@ -54,7 +54,8 @@ class Menu(Enum):
     }
     JSON  = {
         1: "All data",
-        2: "Terrain only"
+        2: "Hero data",
+        3: "Terrain data"
     }
     MINIMAP  = {
         1: "Normal",
