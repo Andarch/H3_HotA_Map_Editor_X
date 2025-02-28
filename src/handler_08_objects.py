@@ -617,8 +617,10 @@ def parse_hero(obj: dict) -> dict:
 
     hero = {
         "id"                : 255,
+        "has_name"          : False,
         "name"              : "",
         "experience"        : -1,
+        "has_portrait"      : False,
         "portrait"          : 255,
         "secondary_skills"  : [],
         "creatures"         : [],
@@ -626,6 +628,7 @@ def parse_hero(obj: dict) -> dict:
         "artifacts_equipped": {},
         "artifacts_backpack": [],
         "patrol"            : 255,
+        "has_biography"     : False,
         "biography"         : "",
         "gender"            : 255,
         "spells"            : b'',
@@ -637,13 +640,15 @@ def parse_hero(obj: dict) -> dict:
 
     hero["id"] = heroes.ID(io.read_int(1))
 
-    if io.read_int(1): # Is the name set?
+    hero["has_name"] = io.read_int(1)
+    if hero["has_name"]:
         hero["name"] = io.read_str(io.read_int(4))
 
     if io.read_int(1): # Is experience set?
         hero["experience"] = io.read_int(4)
 
-    if io.read_int(1): # Is portrait set?
+    hero["has_portrait"] = io.read_int(1)
+    if hero["has_portrait"]:
         hero["portrait"] = io.read_int(1)
 
     if io.read_int(1): # Are secondary skills set?
@@ -685,7 +690,7 @@ def parse_hero(obj: dict) -> dict:
     hero["patrol"] = io.read_int(1)
 
     hero["has_biography"] = io.read_int(1)
-    if hero["has_biography"]: # Is biography set?
+    if hero["has_biography"]:
         hero["biography"] = io.read_str(io.read_int(4))
 
     hero["gender"] = io.read_int(1)
@@ -718,8 +723,8 @@ def write_hero(obj: dict) -> None:
     io.write_int(hero["id"], 1)
 
     #
-    if hero["name"]:
-        io.write_int(1, 1)
+    if hero["has_name"]:
+        io.write_int(hero["has_name"], 1)
         io.write_int(len(hero["name"]), 4)
         io.write_str(hero["name"])
     else: io.write_int(0, 1)

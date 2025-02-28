@@ -68,7 +68,14 @@ def main() -> None:
                         case 3:
                             map_key = get_map_key()
                             success = scripts.print_data(map_data[map_key])
-                        case 4: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 4:
+                            map_key = get_map_key()
+                            success = scripts.reset_heroes(
+                                map_data[map_key]["player_specs"],
+                                map_data[map_key]["start_heroes"],
+                                map_data[map_key]["hero_data"],
+                                map_data[map_key]["object_data"]
+                            )
                         case 5:
                             map_key = get_map_key()
                             success = scripts.export_json(map_data[map_key])
