@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 import data.objects as objects
 from ..common import *
@@ -38,7 +39,7 @@ def export_json(map_key: dict) -> bool:
         else: return int(input)
 
     def get_hero_data(map_key: dict) -> dict:
-        player_specs = map_key['player_specs']
+        player_specs = deepcopy(map_key['player_specs'])
         player_specs[:] = [player for player in player_specs if len(player["available_heroes"]) > 0]
         for player in player_specs:
             del player["ai_behavior"]
@@ -57,12 +58,12 @@ def export_json(map_key: dict) -> bool:
             if "placeholder_heroes" in player:
                 del player["placeholder_heroes"]
 
-        custom_heroes = map_key['start_heroes']['custom_heroes']
+        custom_heroes = deepcopy(map_key['start_heroes']['custom_heroes'])
 
-        hero_data = map_key['hero_data']
+        hero_data = deepcopy(map_key['hero_data'])
         hero_data[:] = [hero for hero in hero_data if len(hero) > 3]
 
-        object_data = map_key['object_data']
+        object_data = deepcopy(map_key['object_data'])
         object_data[:] = [obj for obj in object_data if obj["type"] in (objects.ID.Hero, objects.ID.Prison)]
 
         final_hero_data = {

@@ -98,7 +98,7 @@ def parse_player_specs() -> list:
         info["starting_hero_id"] = heroes.ID(io.read_int(1))
 
         if info["starting_hero_id"] != heroes.ID.Default:
-            info["starting_hero_face"] = heroes.ID(io.read_int(1))
+            info["starting_hero_face"] = io.read_int(1)
             info["starting_hero_name"] = io.read_str(io.read_int(4))
             info["garbage_byte"]       = io.read_raw(1)
 

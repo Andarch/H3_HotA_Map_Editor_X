@@ -72,7 +72,7 @@ def main() -> None:
                             map_key = get_map_key()
                             success = scripts.reset_heroes(
                                 map_data[map_key]["player_specs"],
-                                map_data[map_key]["start_heroes"],
+                                map_data[map_key]["start_heroes"]["custom_heroes"],
                                 map_data[map_key]["hero_data"],
                                 map_data[map_key]["object_data"]
                             )
