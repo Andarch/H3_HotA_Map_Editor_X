@@ -39,6 +39,7 @@ def export_json(map_key: dict) -> bool:
 
     def get_hero_data(map_key: dict) -> dict:
         player_specs = map_key['player_specs']
+        player_specs[:] = [player for player in player_specs if len(player["available_heroes"]) > 0]
         for player in player_specs:
             del player["ai_behavior"]
             del player["alignments_customized"]
