@@ -78,15 +78,15 @@ def peek(length: int) -> None:
     print(s)
     in_file.seek(-length, 1)
 
-def map_io() -> bool:
-    while True:
-        input = xprint(menu=Menu.MAP_IO.value)
-        if input == KB.ESC.value: return False
-        match input:
-            case 1: success = load_maps()
-            case 2: success = save_maps()
-        if not success: continue
-        return True
+# def map_io() -> bool:
+#     while True:
+#         input = xprint(menu=Menu.MAP_IO.value)
+#         if input == KB.ESC.value: return False
+#         match input:
+#             case 1: success = load_maps()
+#             case 2: success = save_maps()
+#         if not success: continue
+#         return True
 
 def load_maps(input=-1) -> bool:
     def main(input: int) -> bool:
@@ -128,7 +128,7 @@ def load_maps(input=-1) -> bool:
             return True, True
 
         def get_filename(map_key: str, amount: int) -> str:
-            if amount == 1: prompt = "Enter the map filename"
+            if amount == 1: prompt = "Enter the map filename to load"
             elif amount == 2: prompt = f"Enter the filename for {map_key}"
             input = xprint(type=Text.PROMPT, text=prompt)
             if input: filename = append_h3m(input)

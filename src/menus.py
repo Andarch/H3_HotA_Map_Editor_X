@@ -1,17 +1,54 @@
 from enum import Enum
 
 class Menu(Enum):
-    START = {
-        1: "Load 1 map",
-        2: "Load 2 maps",
+    # START = {
+    #     1: "Load 1 map",
+    #     2: "Load 2 maps",
+    #    -1: "",
+    #    -2: "",
+    #     0: "Exit"
+    # }
+
+    MAIN  = {
+        1: "INFO",
+        2: "EDIT",
        -1: "",
+        3: "EXPORT JSON",
+        4: "EXPORT MINIMAP",
        -2: "",
-        0: "Exit"
+        5: "QUICK RELOAD",
+        6: "QUICK SAVE",
+        7: "LOAD",
+        8: "SAVE",
+       -3: "",
+        0: "EXIT"
     }
-    MAP_IO = {
-        1: "Load",
-        2: "Save"
+
+    INFO = {
+        1: "General",
+        2: "Players/Teams",
+        3: "Win/Loss Conditions",
+        4: "Heroes",
+        5: "Disabled Skills/Spells",
+        6: "Terrain",
+        7: "Object Defs",
+        8: "Object Data",
+        9: "Events & Rumors",
+        0: "Null Bytes"
     }
+
+    EDIT  = {
+        1: "Modify towns (buildings/spells)",
+        2: "Reset heroes",
+        3: "!!Swap layers",
+        4: "!!Update events (global/town)"
+    }
+
+    # MAP_IO = {
+    #     1: "Load",
+    #     2: "Save"
+    # }
+
     LOAD  = {
         1: "Load 1 map",
         2: "Load 2 maps"
@@ -24,39 +61,13 @@ class Menu(Enum):
         1: "Save",
         2: "Save as"
     }
-    MAIN  = {
-        1: "Load / Save",
-       -1: "",
-        2: "!!Display map data",
-        3: "!!Count objects",
-        4: "Reset heroes",
-        5: "Export .json file",
-       -2: "",
-        6: "!!Swap layers",
-        7: "Modify towns (buildings/spells)",
-        8: "Generate minimap",
-        9: "!!Update events (global/town)",
-       -3: "",
-       -4: "",
-        0: "Exit"
-    }
-    PRINT = {
-        1: "General",
-        2: "Players/Teams",
-        3: "Win/Loss Conditions",
-        4: "Heroes",
-        5: "Disabled Skills/Spells",
-        6: "Terrain",
-        7: "Object Defs",
-        8: "Object Data",
-        9: "Events & Rumors",
-        0: "Null Bytes"
-    }
+
     JSON  = {
         1: "All data",
         2: "Hero data",
         3: "Terrain data"
     }
+
     MINIMAP  = {
         1: "Normal",
         2: "Passability only"

@@ -26,13 +26,6 @@ def main() -> None:
         if not map_data["Map 2"]:
             return "Map 1"
 
-    #     print("Select a map:")
-    #     print_cyan(f"   1. {map_data["Map 1"]["filename"]}")
-    #     print_cyan(f"   2. {map_data["Map 2"]["filename"]}")
-    #     print()
-    #     choice = detect_key_press("Choose a map", "12")
-    #     return "Map 1" if choice == "1" else "Map 2"
-
     ##################
     # INITIALIZATION #
     ##################
@@ -46,16 +39,20 @@ def main() -> None:
 
     if(initialize()):
         try:
-            success = False
-            while not success:
-                input = xprint(menu=Menu.START.value)
-                if input == KB.ESC.value: continue
-                match input:
-                    case 1: success = io.load_maps(1)
-                    case 2: success = io.load_maps(2)
-                    case 0: exit()
-                time.sleep(Sleep.TIC.value)
+            # Initial menu
+            # success = False
+            # while not success:
+            #     input = xprint(menu=Menu.START.value)
+            #     if input == KB.ESC.value: continue
+            #     match input:
+            #         case 1: success = io.load_maps(1)
+            #         case 2: success = io.load_maps(2)
+            #         case 0: exit()
+            #     time.sleep(Sleep.TIC.value)
 
+            io.load_maps(1)
+
+            # Main menu
             while True:
                 success = False
                 while not success:
@@ -63,27 +60,16 @@ def main() -> None:
                     if input == KB.ESC.value: continue
                     xprint()
                     match input:
-                        case 1: success = io.map_io()
-                        case 2: xprint(type=Text.ERROR, text="Not yet functional.")
-                        case 3:
+                        case 1:
                             map_key = get_map_key()
                             success = scripts.print_data(map_data[map_key])
-                        case 4:
+                        case 2:
                             map_key = get_map_key()
-                            success = scripts.reset_heroes(
-                                map_data[map_key]["player_specs"],
-                                map_data[map_key]["start_heroes"]["custom_heroes"],
-                                map_data[map_key]["hero_data"],
-                                map_data[map_key]["object_data"]
-                            )
-                        case 5:
+                            success = scripts.edit_data(map_data[map_key])
+                        case 3:
                             map_key = get_map_key()
                             success = scripts.export_json(map_data[map_key])
-                        case 6: xprint(type=Text.ERROR, text="Not yet functional.")
-                        case 7:
-                            map_key = get_map_key()
-                            success = scripts.modify_towns(map_data[map_key]["object_data"])
-                        case 8:
+                        case 4:
                             map_key = get_map_key()
                             success = scripts.generate_minimap(
                                 map_data[map_key]["general"],
@@ -91,7 +77,10 @@ def main() -> None:
                                 map_data[map_key]["object_data"],
                                 map_data[map_key]["object_defs"]
                             )
-                        case 9: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 5: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 6: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 7: io.load_maps(1)
+                        case 8: io.save_maps()
                         case 0: exit()
                     time.sleep(Sleep.TIC.value)
         except KeyboardInterrupt:

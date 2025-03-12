@@ -1,3 +1,4 @@
+from .edit_data        import edit_data
 from .export_json      import export_json
 from .generate_minimap import generate_minimap
 from .modify_towns     import modify_towns

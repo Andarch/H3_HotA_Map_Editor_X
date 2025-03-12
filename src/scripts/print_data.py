@@ -3,11 +3,8 @@ from ..common import *
 from ..menus import *
 
 def print_data(map_key: dict) -> bool:
-    input = xprint(menu=Menu.PRINT.value)
+    input = xprint(menu=Menu.INFO.value)
     if input == KB.ESC.value: return False
-    draw_header()
-    xprint(type=Text.ACTION, text="Retrieving map data...")
-    xprint(type=Text.SPECIAL, text=DONE)
     draw_header()
 
     match input:
@@ -46,7 +43,9 @@ def print_data(map_key: dict) -> bool:
             xprint(type=Text.INFO, text=data)
 
     xprint()
-    input = ""
-    # while not input:
+
+    while True:
+        if msvcrt.getwch():
+            break
 
     return True
