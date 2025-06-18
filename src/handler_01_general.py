@@ -48,6 +48,10 @@ def parse_general() -> dict:
     info = {
         "map_format"               : 0,
         "hota_version"             : 0,
+        "hota_versionMajor"        : 0,
+        "hota_versionMinor"        : 0,
+        "hota_versionPatch"        : 0,
+        "hota_versionLocked"       : 0,
         "is_mirror"                : b'',
         "terrain_type_count"       : b'',
         "name"                     : "",
@@ -69,8 +73,12 @@ def parse_general() -> dict:
 
     info["hota_version"] = io.read_int(4)
 
-    if info["hota_version"] < 7:
+    if info["hota_version"] < 8:
         raise NotImplementedError(f"unsupported hota version: {info['hota_version']}")
+
+    info["hota_versionMajor"] = io.read_int(4)
+    info["hota_versionMinor"] = io.read_int(4)
+    info["hota_versionPatch"] = io.read_int(4)
 
     info["is_mirror"]                = bool(      io.read_int(1))
     info["is_arena"]                 = bool(      io.read_int(1))
@@ -78,6 +86,7 @@ def parse_general() -> dict:
     info["town_type_count"]          =            io.read_int(4)
     info["allowed_difficulties"]     =            io.read_bits(1)
     info["can_hire_defeated_heroes"] = bool(      io.read_int(1))
+    info["hota_versionLocked"]       = bool(      io.read_int(1))
     info["has_hero"]                 = bool(      io.read_int(1))
     info["map_size"]                 = MapSize(   io.read_int(4))
     info["is_two_level"]             = bool(      io.read_int(1))
