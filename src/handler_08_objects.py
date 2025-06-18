@@ -1072,6 +1072,7 @@ class Quest(IntEnum):
 class HotA_Q(IntEnum):
     BELONG_TO_SPECIFIC_CLASS = 0
     RETURN_NOT_BEFORE_DATE   = 1
+    PLAY_ON_DIFFICULTY       = 2
 
 def parse_quest() -> dict:
     quest = {
@@ -1137,6 +1138,9 @@ def parse_quest() -> dict:
             elif quest["hota_type"] == HotA_Q.RETURN_NOT_BEFORE_DATE:
                 quest["value"] = io.read_int(4)
 
+            elif quest["hota_type"] == HotA_Q.PLAY_ON_DIFFICULTY:
+                quest["value"] = io.read_int(4)
+
     quest["deadline"]           = io.read_int(4)
     quest["proposal_message"]   = io.read_str(io.read_int(4))
     quest["progress_message"]   = io.read_str(io.read_int(4))
@@ -1186,6 +1190,9 @@ def write_quest(info: dict) -> None:
                 io.write_bits(info["value"])
 
             elif info["hota_type"] == HotA_Q.RETURN_NOT_BEFORE_DATE:
+                io.write_int(info["value"], 4)
+
+            elif info["hota_type"] == HotA_Q.PLAY_ON_DIFFICULTY:
                 io.write_int(info["value"], 4)
 
     io.write_int(    info["deadline"], 4)
