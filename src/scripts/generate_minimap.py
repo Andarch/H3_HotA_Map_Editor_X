@@ -89,6 +89,8 @@ class OBJECTS(IntEnum):
     KM_BLACK = 1007
     GARRISON = 1999
     QUEST = 2000
+    INTERACTIVE = 9999
+    ALL_OTHERS = 10000
 
 terrain_colors = {
     # Terrain
@@ -192,7 +194,9 @@ object_colors = {
     OBJECTS.KM_WHITE: (0xf7, 0xf7, 0xf7),
     OBJECTS.KM_BLACK: (0x12, 0x12, 0x12),
     OBJECTS.GARRISON: (0x9c, 0x9a, 0x8b),
-    OBJECTS.QUEST: (0xff, 0xff, 0x00)
+    OBJECTS.QUEST: (0xff, 0xff, 0x00),
+    OBJECTS.INTERACTIVE: (0xff, 0x00, 0x00),
+    OBJECTS.ALL_OTHERS: (0xff, 0xff, 0xff)
 }
 
 ignored_owned_objects = {
@@ -200,6 +204,39 @@ ignored_owned_objects = {
     objects.ID.Prison,
     objects.ID.Random_Hero,
     objects.ID.Hero_Placeholder
+}
+
+ignored_pickups = {
+    objects.ID.Treasure_Chest,
+    objects.ID.Scholar,
+    objects.ID.Campfire,
+    objects.ID.Flotsam,
+    objects.ID.Sea_Chest,
+    objects.ID.Shipwreck_Survivor,
+    objects.ID.Ocean_Bottle,
+    objects.ID.Grail,
+    objects.ID.Monster,
+    objects.ID.Event,
+    objects.ID.Artifact,
+    objects.ID.Pandoras_Box,
+    objects.ID.Spell_Scroll,
+    objects.ID.HotA_Collectible,
+    objects.ID.Random_Artifact,
+    objects.ID.Random_Treasure_Artifact,
+    objects.ID.Random_Minor_Artifact,
+    objects.ID.Random_Major_Artifact,
+    objects.ID.Random_Relic,
+    objects.ID.Random_Monster,
+    objects.ID.Random_Monster_1,
+    objects.ID.Random_Monster_2,
+    objects.ID.Random_Monster_3,
+    objects.ID.Random_Monster_4,
+    objects.ID.Random_Monster_5,
+    objects.ID.Random_Monster_6,
+    objects.ID.Random_Monster_7,
+    objects.ID.Random_Resource,
+    objects.ID.Resource,
+    objects.ID.Boat
 }
 
 impassable_objects = {
@@ -328,6 +365,8 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
             filtered_objects = [obj for obj in object_data if obj["type"] in object_filter]
         # Iterate through objects
         for obj in filtered_objects:
+            if obj["type"] in ignored_pickups:
+                continue
             # Get object masks
             def_ = defs[obj["def_id"]]
             blockMask = def_["red_squares"]
@@ -337,7 +376,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
             owner = determine_owner(input, obj)
             if owner is None and should_skip_object(blockMask, interactiveMask):
                 continue
-            process_object(obj, blockMask, size, blocked_tiles, ownership, owner, input)
+            process_object(obj, blockMask, interactiveMask, size, blocked_tiles, ownership, owner, input)
         # Generate and save minimap images
         generate_images(input, layers, size, blocked_tiles, ownership, filename_suffix)
         xprint(type=Text.SPECIAL, text=DONE)
@@ -353,6 +392,8 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return (1999, obj["owner"])
             elif obj["type"] == objects.ID.Quest_Guard:
                 return 2000
+            elif obj["type"] not in impassable_objects:
+                return 10000
         else:
             return None
 
@@ -371,7 +412,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 break
         return isInteractive and yellowSquaresOnly
 
-    def process_object(obj: dict, blockMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], input) -> None:
+    def process_object(obj: dict, blockMask: list, interactiveMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], input) -> None:
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
         for r in range(ROWS):  # 6 rows y-axis, from top to bottom
             for c in range(COLUMNS):  # 8 columns x-axis, from left to right
@@ -383,7 +424,9 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                         if obj_z == OVERWORLD:
                             blocked_tiles[OVERWORLD].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
                             if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                if input == 2 and isinstance(owner, tuple):
+                                if interactiveMask[index] == 1:
+                                    ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
+                                elif input == 2 and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                         ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = owner[1]  # Set to owner color
                                     else:  # Outer tiles
@@ -393,7 +436,9 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                         elif obj_z == UNDERGROUND:
                             blocked_tiles[UNDERGROUND].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
                             if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                if input == 2 and isinstance(owner, tuple):
+                                if interactiveMask[index] == 1:
+                                    ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
+                                elif input == 2 and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                         ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner[1]  # Set to owner color
                                     else:  # Outer tiles
@@ -419,8 +464,10 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
                 elif input == 2 and is_base_layer:
-                    if owner is not None:
-                        color = object_colors[owner]
+                    if owner == OBJECTS.INTERACTIVE:
+                        color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
+                    elif owner is not None:
+                        color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                     elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
                         color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                     else:
@@ -444,6 +491,6 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     if(input == 1):
         main(general, terrain, object_data, defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, defs, input, impassable_objects, "_1_base")
+        main(general, terrain, object_data, defs, input, None, "_1_base")
         main(general, terrain, object_data, defs, input, border_objects, "_2_border")
     return True
