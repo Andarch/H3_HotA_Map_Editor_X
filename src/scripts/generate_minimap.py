@@ -202,12 +202,7 @@ ignored_owned_objects = {
     objects.ID.Hero_Placeholder
 }
 
-passability_objects = {
-    objects.ID.Border_Gate,
-    objects.ID.Border_Guard,
-    objects.ID.Quest_Guard,
-    objects.ID.Garrison,
-    objects.ID.Garrison_Vertical,
+impassable_objects = {
     objects.ID.Brush,
     objects.ID.Bush,
     objects.ID.Cactus,
@@ -300,15 +295,21 @@ passability_objects = {
     objects.ID.Swamp_Foliage
 }
 
-#################
-# MAIN FUNCTION #
-#################
+border_objects = {
+    objects.ID.Border_Gate,
+    objects.ID.Border_Guard,
+    objects.ID.Garrison,
+    objects.ID.Garrison_Vertical,
+    objects.ID.Quest_Guard
+}
+
+#############
+# FUNCTIONS #
+#############
 
 def generate_minimap(general, terrain, object_data, defs) -> bool:
-    def main(general, terrain, object_data, defs) -> bool:
-        input = xprint(menu=Menu.MINIMAP.value)
-        if input == KB.ESC.value: return False
-        xprint(type=Text.ACTION, text=f"Generating minimap...")
+    def main(general, terrain, object_data, defs, input, object_filter, filename_suffix) -> bool:
+        xprint(type=Text.ACTION, text=f"Generating minimap{filename_suffix}...")
         # Get map size
         size = general["map_size"]
         # Initialize layer list
@@ -321,10 +322,12 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         # Initialize tile dictionaries
         ownership = {layer: [[None for _ in range(size)] for _ in range(size)] for layer in [OVERWORLD, UNDERGROUND]}
         blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
+        # Filter objects if a filter is provided
+        filtered_objects = object_data
+        if object_filter is not None:
+            filtered_objects = [obj for obj in object_data if obj["type"] in object_filter]
         # Iterate through objects
-        for obj in object_data:
-            if input == 2 and obj["type"] not in passability_objects:
-                continue
+        for obj in filtered_objects:
             # Get object masks
             def_ = defs[obj["def_id"]]
             blockMask = def_["red_squares"]
@@ -336,7 +339,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 continue
             process_object(obj, blockMask, size, blocked_tiles, ownership, owner, input)
         # Generate and save minimap images
-        generate_images(input, layers, size, blocked_tiles, ownership)
+        generate_images(input, layers, size, blocked_tiles, ownership, filename_suffix)
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
@@ -398,24 +401,49 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                                 else:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
-    def generate_images(input: int, layers: list, size: int, blocked_tiles: dict, ownership: dict) -> None:
+    def generate_images(input: int, layers: list, size: int, blocked_tiles: dict, ownership: dict, filename_suffix="") -> None:
+        is_base_layer = filename_suffix == "_1_base"
+        mode = "RGB" if is_base_layer else "RGBA"
+        transparent = (0, 0, 0, 0)
         for layer_index, layer in enumerate(layers):  # Iterate through both layers
-            img = Image.new('RGB', (size, size))  # Initalize a new image the same dimensions as the map
+            img = Image.new(mode, (size, size), None if is_base_layer else transparent)  # Initalize a new image the same dimensions as the map
             for i, tile in enumerate(layer):  # Iterate through each tile on this layer
                 x = i % size
                 y = i // size
                 owner = ownership[layer_index][y][x]  # Check if this tile has an owner
-                if owner is not None:
-                    color = object_colors[owner]
-                elif input == 1 and (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
-                    color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                elif input == 2 and (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
-                    color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                elif input == 1:
-                    color = terrain_colors[tile[0]]  # Use the terrain color
-                elif input == 2:
-                    color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
+                if input == 1:
+                    if owner is not None:
+                        color = object_colors[owner]
+                    elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
+                        color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                    else:
+                        color = terrain_colors[tile[0]]  # Use the terrain color
+                elif input == 2 and is_base_layer:
+                    if owner is not None:
+                        color = object_colors[owner]
+                    elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
+                        color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                    else:
+                        color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
+                elif input == 2 and not is_base_layer:
+                    if owner is not None:
+                        color = object_colors[owner] + (255,)
+                    else:
+                        color = transparent
                 img.putpixel((x, y), color)  # Draw the pixel on the image
-            img.save(os.path.join("..", "images", f"{general.get('name')}_layer_{layer_index}.png"))  # Save this layer's image in PNG format to the .\images directory
 
-    return main(general, terrain, object_data, defs)
+            layer_letter = 'g' if layer_index == 0 else 'u'
+            img.save(os.path.join("..", "images", f"{general.get('name')}_{layer_letter}{filename_suffix}.png"))  # Save this layer's image in PNG format to the .\images directory
+
+    ########
+    # MAIN #
+    ########
+
+    input = xprint(menu=Menu.MINIMAP.value)
+    if input == KB.ESC.value: return False
+    if(input == 1):
+        main(general, terrain, object_data, defs, input, None, "")
+    elif(input == 2):
+        main(general, terrain, object_data, defs, input, impassable_objects, "_1_base")
+        main(general, terrain, object_data, defs, input, border_objects, "_2_border")
+    return True
