@@ -325,7 +325,7 @@ ignored_pickups = {
     objects.ID.Boat
 }
 
-impassable_objects = {
+decor_objects = {
     objects.ID.Brush,
     objects.ID.Bush,
     objects.ID.Cactus,
@@ -482,7 +482,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return obj["subtype"] + 3000
             elif obj["type"] == objects.ID.Two_Way_Monolith:
                 return obj["subtype"] + 3500
-            elif obj["type"] not in impassable_objects:
+            elif obj["type"] not in decor_objects:
                 return 10000
         else:
             return None
@@ -503,8 +503,8 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         return isInteractive and yellowSquaresOnly
 
     def process_object(obj: dict, blockMask: list, interactiveMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], input, filename_suffix="") -> None:
-        is_base_layer = filename_suffix == "_1_base"
-        is_border_layer = filename_suffix == "_2_border"
+        is_base2_layer = filename_suffix == "_2_base2"
+        is_border_layer = filename_suffix == "_3_border"
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
         for r in range(ROWS):  # 6 rows y-axis, from top to bottom
             for c in range(COLUMNS):  # 8 columns x-axis, from left to right
@@ -516,7 +516,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                         if obj_z == OVERWORLD:
                             blocked_tiles[OVERWORLD].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the overworld set
                             if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                if is_base_layer and interactiveMask[index] == 1:
+                                if is_base2_layer and interactiveMask[index] == 1:
                                     ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
                                 elif is_border_layer and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
@@ -528,7 +528,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                         elif obj_z == UNDERGROUND:
                             blocked_tiles[UNDERGROUND].add((blocked_tile_x, blocked_tile_y))  # Add the coordinates of the blocked tile to the underground set
                             if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
-                                if is_base_layer and interactiveMask[index] == 1:
+                                if is_base2_layer and interactiveMask[index] == 1:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
                                 elif is_border_layer and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
@@ -539,11 +539,12 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
     def generate_images(input: int, layers: list, size: int, blocked_tiles: dict, ownership: dict, filename_suffix="") -> None:
-        is_base_layer = filename_suffix == "_1_base"
-        mode = "RGB" if is_base_layer else "RGBA"
+        is_base1_layer = filename_suffix == "_1_base1"
+        is_base2_layer = filename_suffix == "_2_base2"
+        mode = "RGB" if is_base1_layer else "RGBA"
         transparent = (0, 0, 0, 0)
         for layer_index, layer in enumerate(layers):  # Iterate through both layers
-            img = Image.new(mode, (size, size), None if is_base_layer else transparent)  # Initalize a new image the same dimensions as the map
+            img = Image.new(mode, (size, size), None if is_base1_layer else transparent)  # Initalize a new image the same dimensions as the map
             for i, tile in enumerate(layer):  # Iterate through each tile on this layer
                 x = i % size
                 y = i // size
@@ -556,15 +557,16 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
                 elif input == 2:
-                    if is_base_layer:
-                        if owner == OBJECTS.INTERACTIVE:
-                            color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
-                        elif owner is not None:
-                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                        elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
+                    if is_base1_layer:
+                        if (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
                             color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                         else:
                             color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
+                    elif is_base2_layer:
+                        if owner == OBJECTS.ALL_OTHERS:
+                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                        else:
+                            color = transparent
                     else:
                         if owner is not None:
                             color = object_colors[owner] + (255,)
@@ -584,8 +586,9 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     if(input == 1):
         main(general, terrain, object_data, defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, defs, input, None, "_1_base")
-        main(general, terrain, object_data, defs, input, border_objects, "_2_border")
-        main(general, terrain, object_data, defs, input, one_way_portal_objects, "_3_portals1")
-        main(general, terrain, object_data, defs, input, two_way_portal_objects, "_4_portals2")
+        main(general, terrain, object_data, defs, input, decor_objects, "_1_base1")
+        main(general, terrain, object_data, defs, input, None, "_2_base2")
+        main(general, terrain, object_data, defs, input, border_objects, "_3_border")
+        main(general, terrain, object_data, defs, input, one_way_portal_objects, "_4_portals1")
+        main(general, terrain, object_data, defs, input, two_way_portal_objects, "_5_portals2")
     return True
