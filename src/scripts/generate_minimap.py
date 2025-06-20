@@ -89,114 +89,200 @@ class OBJECTS(IntEnum):
     KM_BLACK = 1007
     GARRISON = 1999
     QUEST = 2000
+    M1_BLUE = 3000
+    M1_PINK = 3001
+    M1_ORANGE = 3002
+    M1_YELLOW = 3003
+    P1_PURPLE = 3004
+    P1_ORANGE = 3005
+    P1_RED = 3006
+    P1_CYAN = 3007
+    M1_TURQUOISE = 3008
+    M1_VIOLET = 3009
+    M1_CHARTREUSE = 3010
+    M1_WHITE = 3011
+    M2_GREEN = 3500
+    M2_BROWN = 3501
+    M2_VIOLET = 3502
+    M2_ORANGE = 3503
+    P2_GREEN = 3504
+    P2_YELLOW = 3505
+    P2_RED = 3506
+    P2_CYAN = 3507
+    S2_WHITE = 3508
+    M2_PINK = 3509
+    M2_TURQUOISE = 3510
+    M2_YELLOW = 3511
+    M2_BLACK = 3512
+    P2_CHARTREUSE = 3513
+    P2_TURQUOISE = 3514
+    P2_VIOLET = 3515
+    P2_ORANGE = 3516
+    M2_BLUE = 3517
+    M2_RED = 3518
+    P2_PINK = 3519
+    P2_BLUE = 3520
+    S2_RED = 3521
+    S2_BLUE = 3522
+    S2_CHARTREUSE = 3523
+    S2_YELLOW = 3524
     INTERACTIVE = 9999
     ALL_OTHERS = 10000
 
 terrain_colors = {
     # Terrain
-    TERRAIN.DIRT: (0x52, 0x39, 0x08),
-    TERRAIN.SAND: (0xde, 0xce, 0x8c),
-    TERRAIN.GRASS: (0x00, 0x42, 0x00),
-    TERRAIN.SNOW: (0xb5, 0xc6, 0xc6),
-    TERRAIN.SWAMP: (0x4a, 0x84, 0x6b),
-    TERRAIN.ROUGH: (0x84, 0x73, 0x31),
-    TERRAIN.SUBTERRANEAN: (0x84, 0x31, 0x00),
-    TERRAIN.LAVA: (0x4a, 0x4a, 0x4a),
-    TERRAIN.WATER: (0x08, 0x52, 0x94),
-    TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS: (0x29, 0x73, 0x18),
-    TERRAIN.WASTELAND: (0xbd, 0x5a, 0x08),
+    TERRAIN.DIRT:          (0x52, 0x39, 0x08),
+    TERRAIN.SAND:          (0xde, 0xce, 0x8c),
+    TERRAIN.GRASS:         (0x00, 0x42, 0x00),
+    TERRAIN.SNOW:          (0xb5, 0xc6, 0xc6),
+    TERRAIN.SWAMP:         (0x4a, 0x84, 0x6b),
+    TERRAIN.ROUGH:         (0x84, 0x73, 0x31),
+    TERRAIN.SUBTERRANEAN:  (0x84, 0x31, 0x00),
+    TERRAIN.LAVA:          (0x4a, 0x4a, 0x4a),
+    TERRAIN.WATER:         (0x08, 0x52, 0x94),
+    TERRAIN.ROCK:          (0x00, 0x00, 0x00),
+    TERRAIN.HIGHLANDS:     (0x29, 0x73, 0x18),
+    TERRAIN.WASTELAND:     (0xbd, 0x5a, 0x08),
     # Blocked Terrain
-    TERRAIN.BDIRT: (0x39, 0x29, 0x08),
-    TERRAIN.BSAND: (0xa5, 0x9c, 0x6b),
-    TERRAIN.BGRASS: (0x00, 0x31, 0x00),
-    TERRAIN.BSNOW: (0x8c, 0x9c, 0x9c),
-    TERRAIN.BSWAMP: (0x21, 0x5a, 0x42),
-    TERRAIN.BROUGH: (0x63, 0x52, 0x21),
+    TERRAIN.BDIRT:         (0x39, 0x29, 0x08),
+    TERRAIN.BSAND:         (0xa5, 0x9c, 0x6b),
+    TERRAIN.BGRASS:        (0x00, 0x31, 0x00),
+    TERRAIN.BSNOW:         (0x8c, 0x9c, 0x9c),
+    TERRAIN.BSWAMP:        (0x21, 0x5a, 0x42),
+    TERRAIN.BROUGH:        (0x63, 0x52, 0x21),
     TERRAIN.BSUBTERRANEAN: (0x5a, 0x08, 0x00),
-    TERRAIN.BLAVA: (0x29, 0x29, 0x29),
-    TERRAIN.BWATER: (0x00, 0x29, 0x6b),
-    TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x21, 0x52, 0x10),
-    TERRAIN.BWASTELAND: (0x9c, 0x42, 0x08),
+    TERRAIN.BLAVA:         (0x29, 0x29, 0x29),
+    TERRAIN.BWATER:        (0x00, 0x29, 0x6b),
+    TERRAIN.BROCK:         (0x00, 0x00, 0x00),
+    TERRAIN.BHIGHLANDS:    (0x21, 0x52, 0x10),
+    TERRAIN.BWASTELAND:    (0x9c, 0x42, 0x08)
 }
 
 terrain_colors_alt = {
     # Terrain
-    TERRAIN.DIRT:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.SAND:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.GRASS:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.SNOW:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.SWAMP:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.ROUGH:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.DIRT:          (0x4d, 0x4d, 0x4d),
+    TERRAIN.SAND:          (0x4d, 0x4d, 0x4d),
+    TERRAIN.GRASS:         (0x4d, 0x4d, 0x4d),
+    TERRAIN.SNOW:          (0x4d, 0x4d, 0x4d),
+    TERRAIN.SWAMP:         (0x4d, 0x4d, 0x4d),
+    TERRAIN.ROUGH:         (0x4d, 0x4d, 0x4d),
     TERRAIN.SUBTERRANEAN:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.LAVA:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.WATER: (0x4b, 0x56, 0x5e),
-    TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS:  (0x4d, 0x4d, 0x4d),
-    TERRAIN.WASTELAND:  (0x4d, 0x4d, 0x4d),
+    TERRAIN.LAVA:          (0x4d, 0x4d, 0x4d),
+    TERRAIN.WATER:         (0x4b, 0x56, 0x5e),
+    TERRAIN.ROCK:          (0x00, 0x00, 0x00),
+    TERRAIN.HIGHLANDS:     (0x4d, 0x4d, 0x4d),
+    TERRAIN.WASTELAND:     (0x4d, 0x4d, 0x4d),
     # Blocked Terrain
-    TERRAIN.BDIRT: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BSAND: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BGRASS: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BSNOW: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BSWAMP: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BROUGH: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BDIRT:         (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSAND:         (0x3d, 0x3d, 0x3d),
+    TERRAIN.BGRASS:        (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSNOW:         (0x3d, 0x3d, 0x3d),
+    TERRAIN.BSWAMP:        (0x3d, 0x3d, 0x3d),
+    TERRAIN.BROUGH:        (0x3d, 0x3d, 0x3d),
     TERRAIN.BSUBTERRANEAN: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BLAVA: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BWATER: (0x3c, 0x45, 0x4d),
-    TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x3d, 0x3d, 0x3d),
-    TERRAIN.BWASTELAND: (0x3d, 0x3d, 0x3d),
+    TERRAIN.BLAVA:         (0x3d, 0x3d, 0x3d),
+    TERRAIN.BWATER:        (0x3c, 0x45, 0x4d),
+    TERRAIN.BROCK:         (0x00, 0x00, 0x00),
+    TERRAIN.BHIGHLANDS:    (0x3d, 0x3d, 0x3d),
+    TERRAIN.BWASTELAND:    (0x3d, 0x3d, 0x3d)
 }
 
 owner_colors = {
-    OWNER.RED: (0xff, 0x00, 0x00),
-    OWNER.BLUE: (0x31, 0x52, 0xff),
-    OWNER.TAN: (0x9c, 0x73, 0x52),
-    OWNER.GREEN: (0x42, 0x94, 0x29),
-    OWNER.ORANGE: (0xff, 0x84, 0x00),
-    OWNER.PURPLE: (0x8c, 0x29, 0xa5),
-    OWNER.TEAL: (0x08, 0x9c, 0xa5),
-    OWNER.PINK: (0xc6, 0x7b, 0x8c),
+    OWNER.RED:     (0xff, 0x00, 0x00),
+    OWNER.BLUE:    (0x31, 0x52, 0xff),
+    OWNER.TAN:     (0x9c, 0x73, 0x52),
+    OWNER.GREEN:   (0x42, 0x94, 0x29),
+    OWNER.ORANGE:  (0xff, 0x84, 0x00),
+    OWNER.PURPLE:  (0x8c, 0x29, 0xa5),
+    OWNER.TEAL:    (0x08, 0x9c, 0xa5),
+    OWNER.PINK:    (0xc6, 0x7b, 0x8c),
     OWNER.NEUTRAL: (0x84, 0x84, 0x84)
 }
 
 keymaster_colors = {
     KEYMASTER.LIGHTBLUE: (0x00, 0xb7, 0xff),
-    KEYMASTER.GREEN: (0x06, 0xc6, 0x2f),
-    KEYMASTER.RED: (0xCE, 0x19, 0x1A),
-    KEYMASTER.DARKBLUE: (0x14, 0x14, 0xfe),
-    KEYMASTER.BROWN: (0xc8, 0x82, 0x46),
-    KEYMASTER.PURPLE: (0xa8, 0x43, 0xe0),
-    KEYMASTER.WHITE: (0xf7, 0xf7, 0xf7),
-    KEYMASTER.BLACK: (0x12, 0x12, 0x12),
-    KEYMASTER.GARRISON: (0x9c, 0x9a, 0x8b),
-    KEYMASTER.QUEST: (0xff, 0xff, 0x00)
+    KEYMASTER.GREEN:     (0x06, 0xc6, 0x2f),
+    KEYMASTER.RED:       (0xCE, 0x19, 0x1A),
+    KEYMASTER.DARKBLUE:  (0x14, 0x14, 0xfe),
+    KEYMASTER.BROWN:     (0xc8, 0x82, 0x46),
+    KEYMASTER.PURPLE:    (0xa8, 0x43, 0xe0),
+    KEYMASTER.WHITE:     (0xf7, 0xf7, 0xf7),
+    KEYMASTER.BLACK:     (0x12, 0x12, 0x12),
+    KEYMASTER.GARRISON:  (0x9c, 0x9a, 0x8b),
+    KEYMASTER.QUEST:     (0xff, 0xff, 0x00)
 }
 
 object_colors = {
-    OBJECTS.RED: (0xff, 0x00, 0x00),
-    OBJECTS.BLUE: (0x31, 0x52, 0xff),
-    OBJECTS.TAN: (0x9c, 0x73, 0x52),
-    OBJECTS.GREEN: (0x42, 0x94, 0x29),
-    OBJECTS.ORANGE: (0xff, 0x84, 0x00),
-    OBJECTS.PURPLE: (0x8c, 0x29, 0xa5),
-    OBJECTS.TEAL: (0x08, 0x9c, 0xa5),
-    OBJECTS.PINK: (0xc6, 0x7b, 0x8c),
-    OBJECTS.NEUTRAL: (0x84, 0x84, 0x84),
+    OBJECTS.RED:          (0xff, 0x00, 0x00),
+    OBJECTS.BLUE:         (0x31, 0x52, 0xff),
+    OBJECTS.TAN:          (0x9c, 0x73, 0x52),
+    OBJECTS.GREEN:        (0x42, 0x94, 0x29),
+    OBJECTS.ORANGE:       (0xff, 0x84, 0x00),
+    OBJECTS.PURPLE:       (0x8c, 0x29, 0xa5),
+    OBJECTS.TEAL:         (0x08, 0x9c, 0xa5),
+    OBJECTS.PINK:         (0xc6, 0x7b, 0x8c),
+    OBJECTS.NEUTRAL:      (0x84, 0x84, 0x84),
+
     OBJECTS.KM_LIGHTBLUE: (0x00, 0xb7, 0xff),
-    OBJECTS.KM_GREEN: (0x06, 0xc6, 0x2f),
-    OBJECTS.KM_RED: (0xCE, 0x19, 0x1A),
-    OBJECTS.KM_DARKBLUE: (0x14, 0x14, 0xfe),
-    OBJECTS.KM_BROWN: (0xc8, 0x82, 0x46),
-    OBJECTS.KM_PURPLE: (0xa8, 0x43, 0xe0),
-    OBJECTS.KM_WHITE: (0xf7, 0xf7, 0xf7),
-    OBJECTS.KM_BLACK: (0x12, 0x12, 0x12),
-    OBJECTS.GARRISON: (0x9c, 0x9a, 0x8b),
-    OBJECTS.QUEST: (0xff, 0xff, 0x00),
+    OBJECTS.KM_GREEN:     (0x06, 0xc6, 0x2f),
+    OBJECTS.KM_RED:       (0xCE, 0x19, 0x1A),
+    OBJECTS.KM_DARKBLUE:  (0x14, 0x14, 0xfe),
+    OBJECTS.KM_BROWN:     (0xc8, 0x82, 0x46),
+    OBJECTS.KM_PURPLE:    (0xa8, 0x43, 0xe0),
+    OBJECTS.KM_WHITE:     (0xf7, 0xf7, 0xf7),
+    OBJECTS.KM_BLACK:     (0x12, 0x12, 0x12),
+    OBJECTS.GARRISON:     (0x9c, 0x9a, 0x8b),
+    OBJECTS.QUEST:        (0xff, 0xff, 0x00),
+
+    OBJECTS.M1_BLUE:       (0x1e, 0x40, 0xcf),
+    OBJECTS.M1_PINK:       (0xf7, 0x38, 0xa6),
+    OBJECTS.M1_ORANGE:     (0xff, 0x8c, 0x1a),
+    OBJECTS.M1_YELLOW:     (0xff, 0xf7, 0x1a),
+    OBJECTS.P1_PURPLE:     (0x8e, 0x44, 0xad),
+    OBJECTS.P1_ORANGE:     (0xff, 0xb3, 0x47),
+    OBJECTS.P1_RED:        (0xe7, 0x2b, 0x2b),
+    OBJECTS.P1_CYAN:       (0x1a, 0xe6, 0xe6),
+    OBJECTS.M1_TURQUOISE:  (0x1a, 0xc6, 0xb7),
+    OBJECTS.M1_VIOLET:     (0x7c, 0x3c, 0xbd),
+    OBJECTS.M1_CHARTREUSE: (0x7d, 0xff, 0x1a),
+    OBJECTS.M1_WHITE:      (0xf7, 0xf7, 0xf7),
+    OBJECTS.M2_GREEN:      (0x1a, 0xb5, 0x3b),
+    OBJECTS.M2_BROWN:      (0x8b, 0x5c, 0x2b),
+    OBJECTS.M2_VIOLET:     (0xb0, 0x5d, 0xe6),
+    OBJECTS.M2_ORANGE:     (0xff, 0x6f, 0x00),
+    OBJECTS.P2_GREEN:      (0x3b, 0xe6, 0x1a),
+    OBJECTS.P2_YELLOW:     (0xff, 0xe6, 0x1a),
+    OBJECTS.P2_RED:        (0xd9, 0x2b, 0x2b),
+    OBJECTS.P2_CYAN:       (0x1a, 0xb5, 0xe6),
+    OBJECTS.S2_WHITE:      (0xff, 0xff, 0xff),
+    OBJECTS.M2_PINK:       (0xff, 0x69, 0xb4),
+    OBJECTS.M2_TURQUOISE:  (0x40, 0xe0, 0xd0),
+    OBJECTS.M2_YELLOW:     (0xff, 0xff, 0x99),
+    OBJECTS.M2_BLACK:      (0x22, 0x22, 0x22),
+    OBJECTS.P2_CHARTREUSE: (0x7f, 0xff, 0x00),
+    OBJECTS.P2_TURQUOISE:  (0x00, 0xff, 0xff),
+    OBJECTS.P2_VIOLET:     (0xee, 0x82, 0xee),
+    OBJECTS.P2_ORANGE:     (0xff, 0xa5, 0x00),
+    OBJECTS.M2_BLUE:       (0x00, 0x7f, 0xff),
+    OBJECTS.M2_RED:        (0xff, 0x45, 0x00),
+    OBJECTS.P2_PINK:       (0xff, 0xc0, 0xcb),
+    OBJECTS.P2_BLUE:       (0x00, 0x00, 0xff),
+    OBJECTS.S2_RED:        (0xb2, 0x22, 0x22),
+    OBJECTS.S2_BLUE:       (0x41, 0x69, 0xe1),
+    OBJECTS.S2_CHARTREUSE: (0xad, 0xff, 0x2f),
+    OBJECTS.S2_YELLOW:     (0xff, 0xfa, 0xcd),
+
     OBJECTS.INTERACTIVE: (0xff, 0x00, 0x00),
-    OBJECTS.ALL_OTHERS: (0xff, 0xff, 0xff)
+    OBJECTS.ALL_OTHERS:  (0xff, 0xff, 0xff)
+}
+
+one_way_portal_objects = {
+    objects.ID.Monolith_One_Way_Entrance,
+    objects.ID.Monolith_One_Way_Exit
+}
+
+two_way_portal_objects = {
+    objects.ID.Two_Way_Monolith
 }
 
 ignored_owned_objects = {
@@ -392,6 +478,10 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return (1999, obj["owner"])
             elif obj["type"] == objects.ID.Quest_Guard:
                 return 2000
+            elif obj["type"] == objects.ID.Monolith_One_Way_Entrance or obj["type"] == objects.ID.Monolith_One_Way_Exit:
+                return obj["subtype"] + 3000
+            elif obj["type"] == objects.ID.Two_Way_Monolith:
+                return obj["subtype"] + 3500
             elif obj["type"] not in impassable_objects:
                 return 10000
         else:
@@ -414,6 +504,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
 
     def process_object(obj: dict, blockMask: list, interactiveMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], input, filename_suffix="") -> None:
         is_base_layer = filename_suffix == "_1_base"
+        is_border_layer = filename_suffix == "_2_border"
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
         for r in range(ROWS):  # 6 rows y-axis, from top to bottom
             for c in range(COLUMNS):  # 8 columns x-axis, from left to right
@@ -427,7 +518,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                             if ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] is None:
                                 if is_base_layer and interactiveMask[index] == 1:
                                     ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
-                                elif input == 2 and isinstance(owner, tuple):
+                                elif is_border_layer and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                         ownership[OVERWORLD][obj_y - 5 + r][obj_x - 7 + c] = owner[1]  # Set to owner color
                                     else:  # Outer tiles
@@ -439,7 +530,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                             if ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] is None:
                                 if is_base_layer and interactiveMask[index] == 1:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
-                                elif input == 2 and isinstance(owner, tuple):
+                                elif is_border_layer and isinstance(owner, tuple):
                                     if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                         ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner[1]  # Set to owner color
                                     else:  # Outer tiles
@@ -464,20 +555,21 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                         color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
-                elif input == 2 and is_base_layer:
-                    if owner == OBJECTS.INTERACTIVE:
-                        color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
-                    elif owner is not None:
-                        color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                    elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
-                        color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                elif input == 2:
+                    if is_base_layer:
+                        if owner == OBJECTS.INTERACTIVE:
+                            color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
+                        elif owner is not None:
+                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                        elif (x, y) in blocked_tiles[layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
+                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                        else:
+                            color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
                     else:
-                        color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
-                elif input == 2 and not is_base_layer:
-                    if owner is not None:
-                        color = object_colors[owner] + (255,)
-                    else:
-                        color = transparent
+                        if owner is not None:
+                            color = object_colors[owner] + (255,)
+                        else:
+                            color = transparent
                 img.putpixel((x, y), color)  # Draw the pixel on the image
 
             layer_letter = 'g' if layer_index == 0 else 'u'
@@ -494,4 +586,6 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     elif(input == 2):
         main(general, terrain, object_data, defs, input, None, "_1_base")
         main(general, terrain, object_data, defs, input, border_objects, "_2_border")
+        main(general, terrain, object_data, defs, input, one_way_portal_objects, "_3_portals1")
+        main(general, terrain, object_data, defs, input, two_way_portal_objects, "_4_portals2")
     return True
