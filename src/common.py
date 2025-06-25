@@ -55,7 +55,8 @@ class Color(Enum):
 
 class Sleep(Enum):
     TIC    = 0.01
-    SHORT  = 0.05
+    SHORTER  = 0.05
+    SHORT = 0.25
     NORMAL = 0.75
     LONG   = 1.5
 
@@ -110,7 +111,7 @@ def monitor_terminal_size() -> None:
             if not redraw_scheduled:
                 redraw_scheduled = True
                 threading.Timer(0, redraw_screen).start()
-        time.sleep(Sleep.SHORT.value)
+        time.sleep(Sleep.SHORTER.value)
 
 def get_terminal_width() -> int:
     return shutil.get_terminal_size().columns
@@ -235,7 +236,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_nu
         match type:
             case Text.NORMAL:
                 if overwrite:
-                    time.sleep(Sleep.SHORT.value)
+                    time.sleep(Sleep.SHORTER.value)
                     print("\033[F\033[K", end="")
                 print(align_text(text=text))
             case Text.INFO:
@@ -252,7 +253,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_nu
                 return input
             case Text.ACTION:
                 if overwrite:
-                    time.sleep(Sleep.SHORT.value)
+                    time.sleep(Sleep.SHORTER.value)
                     print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"), end = " ", flush = True)
                 time.sleep(Sleep.NORMAL.value)

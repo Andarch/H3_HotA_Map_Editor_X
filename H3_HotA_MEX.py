@@ -68,8 +68,11 @@ def main() -> None:
                             success = scripts.edit_data(map_data[map_key])
                         case 3:
                             map_key = get_map_key()
-                            success = scripts.export_json(map_data[map_key])
+                            success = scripts.export_excel(map_data[map_key])
                         case 4:
+                            map_key = get_map_key()
+                            success = scripts.export_json(map_data[map_key])
+                        case 5:
                             map_key = get_map_key()
                             success = scripts.generate_minimap(
                                 map_data[map_key]["general"],
@@ -77,10 +80,10 @@ def main() -> None:
                                 map_data[map_key]["object_data"],
                                 map_data[map_key]["object_defs"]
                             )
-                        case 5: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 6: xprint(type=Text.ERROR, text="Not yet functional.")
-                        case 7: io.load_maps(1)
-                        case 8: io.save_maps()
+                        case 7: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 8: io.load_maps(1)
+                        case 9: io.save_maps()
                         case 0: exit()
                     time.sleep(Sleep.TIC.value)
         except KeyboardInterrupt:

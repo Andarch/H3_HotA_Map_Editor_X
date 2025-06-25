@@ -18,7 +18,6 @@ def export_json(map_key: dict) -> bool:
         if not filename.endswith('.json'):
             filename += '.json'
 
-        #while True:
         type = get_export_type()
         if not type: return False
         match type:

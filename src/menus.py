@@ -13,13 +13,14 @@ class Menu(Enum):
         1: "INFO",
         2: "EDIT",
        -1: "",
-        3: "EXPORT JSON",
-        4: "EXPORT MINIMAP",
+        3: "EXPORT EXCEL",
+        4: "EXPORT JSON",
+        5: "EXPORT MINIMAP",
        -2: "",
-        5: "QUICK RELOAD",
-        6: "QUICK SAVE",
-        7: "LOAD",
-        8: "SAVE",
+        6: "QUICK RELOAD",
+        7: "QUICK SAVE",
+        8: "LOAD",
+        9: "SAVE",
        -3: "",
         0: "EXIT"
     }
@@ -60,6 +61,12 @@ class Menu(Enum):
     SAVE_B = {
         1: "Save",
         2: "Save as"
+    }
+
+    EXCEL  = {
+        1: "All data",
+        2: "Hero data",
+        3: "Terrain data"
     }
 
     JSON  = {
