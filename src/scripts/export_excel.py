@@ -71,25 +71,50 @@ def export_excel(map_key: dict) -> bool:
                 # Use section name as sheet name, capitalize first letter
                 sheet_name = section.replace('_', ' ').title()
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
+                
+                # Auto-fit column widths
+                worksheet = writer.sheets[sheet_name]
+                for column in worksheet.columns:
+                    max_length = 0
+                    column_letter = column[0].column_letter
+                    for cell in column:
+                        try:
+                            if len(str(cell.value)) > max_length:
+                                max_length = len(str(cell.value))
+                        except:
+                            pass
+                    adjusted_width = min(max_length + 2, 50)  # Add padding, cap at 50
+                    worksheet.column_dimensions[column_letter].width = adjusted_width
 
     def export_hero_data(map_key: dict, writer):
         hero_data = get_hero_data(map_key)
-        if hero_data['player_specs']: 
-            df = pd.DataFrame(hero_data['player_specs'])
-            df = sanitize_dataframe(df)
-            df.to_excel(writer, sheet_name='Player_Specs', index=False)        
-        if hero_data['custom_heroes']: 
-            df = pd.DataFrame(hero_data['custom_heroes'])
-            df = sanitize_dataframe(df)
-            df.to_excel(writer, sheet_name='Custom_Heroes', index=False)        
-        if hero_data['hero_data']: 
-            df = pd.DataFrame(hero_data['hero_data'])
-            df = sanitize_dataframe(df)
-            df.to_excel(writer, sheet_name='Hero_Data', index=False)        
-        if hero_data['object_data']: 
-            df = pd.DataFrame(hero_data['object_data'])
-            df = sanitize_dataframe(df)
-            df.to_excel(writer, sheet_name='Object_Data', index=False)
+        
+        sheets_data = [
+            ('player_specs', 'Player_Specs'),
+            ('custom_heroes', 'Custom_Heroes'), 
+            ('hero_data', 'Hero_Data'),
+            ('object_data', 'Object_Data')
+        ]
+        
+        for data_key, sheet_name in sheets_data:
+            if hero_data[data_key]: 
+                df = pd.DataFrame(hero_data[data_key])
+                df = sanitize_dataframe(df)
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+                
+                # Auto-fit column widths
+                worksheet = writer.sheets[sheet_name]
+                for column in worksheet.columns:
+                    max_length = 0
+                    column_letter = column[0].column_letter
+                    for cell in column:
+                        try:
+                            if len(str(cell.value)) > max_length:
+                                max_length = len(str(cell.value))
+                        except:
+                            pass
+                    adjusted_width = min(max_length + 2, 50)  # Add padding, cap at 50
+                    worksheet.column_dimensions[column_letter].width = adjusted_width
 
     def export_terrain_data(map_key: dict, writer):
         terrain = map_key['terrain']
@@ -99,6 +124,20 @@ def export_excel(map_key: dict) -> bool:
             df = pd.DataFrame([terrain])
         df = sanitize_dataframe(df)
         df.to_excel(writer, sheet_name='Terrain', index=False)
+        
+        # Auto-fit column widths
+        worksheet = writer.sheets['Terrain']
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = column[0].column_letter
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)  # Add padding, cap at 50
+            worksheet.column_dimensions[column_letter].width = adjusted_width
 
     def flatten_dict(d, parent_key='', sep='_'):
         items = []
