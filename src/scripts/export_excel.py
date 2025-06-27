@@ -40,6 +40,8 @@ def export_excel(map_key: dict) -> bool:
                 df.columns = ['Value']
                 df.index.name = 'Key'
                 df = df.reset_index()
+            else:
+                df = pd.DataFrame([{section: section_data}])
             df = sanitize_dataframe(df)
             df.to_excel(writer, sheet_name=section_name, index=False)
             worksheet = writer.sheets[section_name]
