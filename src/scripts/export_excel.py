@@ -4,7 +4,6 @@ import data.objects as objects
 from ..common import *
 from ..menus import *
 
-
 def export_excel(map_key: dict) -> bool:
     def main(map_key: dict) -> bool:
         filename = map_key['filename']
