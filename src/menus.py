@@ -60,7 +60,8 @@ class Menu(Enum):
     EXCEL  = {
         1: "All data",
         2: "Hero data",
-        3: "Terrain data"
+        3: "Terrain data",
+        4: "Object data"
     }
 
     JSON  = {
