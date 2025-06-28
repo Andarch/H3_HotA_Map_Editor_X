@@ -6,82 +6,87 @@ from ..menus import *
 
 def export_excel(map_key: dict) -> bool:
     def main(map_key: dict) -> bool:
-        filename = map_key['filename']
-        if filename.endswith('.h3m'): filename = filename[:-4]
-        if not filename.endswith('.xlsx'): filename += '.xlsx'
-        type = get_export_type()
-        if not type: return False
+        all_sections = ["general", "player_specs", "rumors", "hero_data", "terrain", "object_defs", "object_data", "events"]
+        hero_sections = ["player_specs", "custom_heroes", "hero_data", "object_data"]
+        terrain_sections = ["terrain"]
+        object_sections = ["object_data"]
+
+        filename = map_key["filename"]
+        if filename.endswith(".h3m"): filename = filename[:-4]
+
+        export_type = get_export_type()
+        if not export_type: return False
+
+        # Append export type suffix to filename
+        suffix_map = {1: "_all", 2: "_heros", 3: "_terrain", 4: "_objects"}
+        filename += suffix_map[export_type]
+
+        if not filename.endswith(".xlsx"): filename += ".xlsx"
+
         xprint()
-        with pd.ExcelWriter(filename, engine='openpyxl') as writer:
-            match type:
-                case 1: export_full_data(map_key, writer)
-                case 2: export_hero_data(map_key, writer)
-                case 3: export_terrain_data(map_key, writer)
-                case 4: export_object_data(map_key, writer)
+        with pd.ExcelWriter(filename, engine="openpyxl") as writer:
+            match export_type:
+                case 1: export_data(map_key, writer, all_sections)
+                case 2: export_data(map_key, writer, hero_sections, use_hero_data=True)
+                case 3: export_data(map_key, writer, terrain_sections)
+                case 4: export_data(map_key, writer, object_sections)
+
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
-    def export_full_data(map_key: dict, writer):
-        sections = ["general", "player_specs", "rumors", "hero_data", "terrain", "object_defs", "object_data", "events"]
-        for section in sections:
+    def export_data(map_key: dict, writer, sections, use_hero_data=False):
+        # Get the appropriate data source
+        data_source = get_hero_data(map_key) if use_hero_data else map_key
+
+        for section_idx, section in enumerate(sections):
             section_name = section.replace("_", " ").title()
-            section_data = map_key[section]
-            if section in ["terrain", "object_data", "events"]:
+            section_data = data_source[section]
+
+            # Handle progress tracking for large sections
+            if section in ["terrain", "object_data", "events"] and not use_hero_data:
                 total_items = len(section_data)
-                if section in ["terrain", "object_data"]: update_interval = 10000
-                elif section == "events": update_interval = 1
-                xprint(text=f"Exporting section... {Color.CYAN.value}{section_name} 0/{total_items}{Color.RESET.value}", overwrite=1)
+                if section in ["terrain", "object_data"]:
+                    update_interval = 10000
+                elif section == "events":
+                    update_interval = 1
+
+                xprint(text=f"Exporting... {Color.CYAN.value}{section_name} 0/{total_items}{Color.RESET.value}", overwrite=1)
                 processed_items = []
                 for i, item in enumerate(section_data, 1):
                     processed_items.append(item)
                     if i % update_interval == 0 or i == total_items:
-                        xprint(text=f"Exporting section... {Color.CYAN.value}{section_name} {i}/{total_items}{Color.RESET.value}", overwrite=1)
+                        xprint(text=f"Exporting... {Color.CYAN.value}{section_name} {i}/{total_items}{Color.RESET.value}", overwrite=1)
+
+                # Create DataFrame based on processed items
                 df = pd.DataFrame(processed_items)
-                if section in ["terrain", "object_data"]: xprint(text=f"Formatting...")
+                if section in ["terrain", "object_data"]:
+                    xprint(text="Formatting...")
             else:
-                xprint(text=f"Exporting section... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
+                # Handle regular sections
+                xprint(text=f"Exporting... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
                 time.sleep(Sleep.SHORT.value)
+
+                # Create DataFrame based on section data
                 if isinstance(section_data, list) and section_data:
                     df = pd.DataFrame(section_data)
                 elif section == "general":
                     df = create_general_dataframe(section_data)
                 else:
                     df = pd.DataFrame([{section: "No data"}])
-            df = sanitize_dataframe(df)
-            df.to_excel(writer, sheet_name=section_name, index=False)
-            worksheet = writer.sheets[section_name]
-            auto_fit_columns(worksheet)
-            if section in ["terrain", "object_data"]: xprint(text="", overwrite=2)
-            elif section == "events": xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
 
-    def export_hero_data(map_key: dict, writer):
-        hero_data = get_hero_data(map_key)
-        sections = ["player_specs", "custom_heroes", "hero_data", "object_data"]
-        for section in sections:
-            section_name = section.replace("_", " ").title()
-            xprint(type=Text.ACTION, text=f"Exporting Excel file... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
-            df = pd.DataFrame(hero_data[section])
+            # Common processing for all sections
             df = sanitize_dataframe(df)
             df.to_excel(writer, sheet_name=section_name, index=False)
             worksheet = writer.sheets[section_name]
             auto_fit_columns(worksheet)
 
-    def export_terrain_data(map_key: dict, writer):
-        terrain = map_key["terrain"]
-        if isinstance(terrain, list): df = pd.DataFrame(terrain)
-        else: df = pd.DataFrame([terrain])
-        df = sanitize_dataframe(df)
-        df.to_excel(writer, sheet_name="Terrain", index=False)
-        auto_fit_columns(writer.sheets["Terrain"])
+            # Progress cleanup for large sections
+            if section in ["terrain", "object_data"] and not use_hero_data:
+                xprint(text="", overwrite=2)
 
-    def export_object_data(map_key: dict, writer):
-        xprint(type=Text.ACTION, text=f"Exporting object data...", overwrite=1)
-        object_data = map_key["object_data"]
-        if isinstance(object_data, list): df = pd.DataFrame(object_data)
-        else: df = pd.DataFrame([object_data])
-        df = sanitize_dataframe(df)
-        df.to_excel(writer, sheet_name="Object Data", index=False)
-        auto_fit_columns(writer.sheets["Object Data"])
+            # Show "Writing Excel file to disk..." message for the last section
+            if section_idx == len(sections) - 1:
+                xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
 
     def flatten_dict(d, parent_key="", sep="_"):
         items = []
