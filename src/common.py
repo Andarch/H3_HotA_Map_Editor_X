@@ -227,6 +227,10 @@ def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.va
         text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
 
+def get_map_key() -> str:
+        if not map_data["Map 2"]:
+            return "Map 1"
+
 def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
