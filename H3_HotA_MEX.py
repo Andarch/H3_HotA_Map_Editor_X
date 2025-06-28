@@ -75,7 +75,7 @@ def main() -> None:
                         case 5:
                             map_key = get_map_key()
                             success = scripts.generate_minimap(
-                                map_data[map_key]["general"],
+                                map_data[map_key]["map_specs"],
                                 map_data[map_key]["terrain"],
                                 map_data[map_key]["object_data"],
                                 map_data[map_key]["object_defs"]
@@ -133,7 +133,7 @@ def main() -> None:
     #                         map_data[map_key]["terrain"],
     #                         map_data[map_key]["object_data"],
     #                         map_data[map_key]["player_specs"],
-    #                         map_data[map_key]["general"]["is_two_level"],
+    #                         map_data[map_key]["map_specs"]["is_two_level"],
     #                         map_data[map_key]["conditions"]
     #                     )
 
@@ -150,7 +150,7 @@ def main() -> None:
     #                 else:
     #                     map_key = get_map_key()
     #                     scripts.generate_minimap(
-    #                         map_data[map_key]["general"],
+    #                         map_data[map_key]["map_specs"],
     #                         map_data[map_key]["terrain"],
     #                         map_data[map_key]["object_data"],
     #                         map_data[map_key]["object_defs"]

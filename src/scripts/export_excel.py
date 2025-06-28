@@ -7,53 +7,60 @@ from ..menus import *
 def export_excel(map_key: dict) -> bool:
     def main(map_key: dict) -> bool:
         filename = map_key['filename']
-        if filename.endswith('.h3m'):
-            filename = filename[:-4]
-        if not filename.endswith('.xlsx'):
-            filename += '.xlsx'
+        if filename.endswith('.h3m'): filename = filename[:-4]
+        if not filename.endswith('.xlsx'): filename += '.xlsx'
         type = get_export_type()
         if not type: return False
         xprint()
-        xprint(text=f"Exporting Excel file...", overwrite=True)
+        # xprint(text=f"Exporting Excel file...", overwrite=1)
         with pd.ExcelWriter(filename, engine='openpyxl') as writer:
             match type:
                 case 1: export_full_data(map_key, writer)
                 case 2: export_hero_data(map_key, writer)
                 case 3: export_terrain_data(map_key, writer)
-        xprint(type=Text.ACTION, text=f"Exporting Excel file...", overwrite=True)
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
     def export_full_data(map_key: dict, writer):
-        sections = ["general", "player_specs", "conditions", "teams", "start_heroes", "ban_flags", "rumors", "hero_data", "terrain", "object_defs", "object_data", "events"]
+        sections = ["general", "player_specs", "rumors", "hero_data", "terrain", "object_defs", "object_data", "events"]
         for section in sections:
             section_name = section.replace('_', ' ').title()
-            xprint(text=f"Exporting Excel file... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=True)
-            time.sleep(Sleep.SHORT.value)
             section_data = map_key[section]
-            if isinstance(section_data, list) and section_data:
-                df = pd.DataFrame(section_data)
-            elif isinstance(section_data, dict):
-                flattened_data = flatten_dict(section_data)
-                df = pd.DataFrame([flattened_data])
-                df = df.transpose()
-                df.columns = ['Value']
-                df.index.name = 'Key'
-                df = df.reset_index()
+            if section in ["terrain", "object_data", "events"]:
+                total_items = len(section_data)
+                if section in ["terrain", "object_data"]: update_interval = 10000
+                elif section == "events": update_interval = 1
+                xprint(text=f"Exporting section... {Color.CYAN.value}{section_name} 0/{total_items}{Color.RESET.value}", overwrite=1)
+                processed_items = []
+                for i, item in enumerate(section_data, 1):
+                    processed_items.append(item)
+                    if i % update_interval == 0 or i == total_items:
+                        xprint(text=f"Exporting section... {Color.CYAN.value}{section_name} {i}/{total_items}{Color.RESET.value}", overwrite=1)
+                df = pd.DataFrame(processed_items)
+                if section in ["terrain", "object_data"]: xprint(text=f"Formatting...")
             else:
-                df = pd.DataFrame([{section: section_data}])
+                xprint(text=f"Exporting section... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
+                time.sleep(Sleep.SHORT.value)
+                if isinstance(section_data, list) and section_data:
+                    df = pd.DataFrame(section_data)
+                elif section == "general":
+                    df = create_general_dataframe(section_data)
+                else:
+                    df = pd.DataFrame([{section: "No data"}])
             df = sanitize_dataframe(df)
             df.to_excel(writer, sheet_name=section_name, index=False)
             worksheet = writer.sheets[section_name]
             auto_fit_columns(worksheet)
+            if section in ["terrain", "object_data"]: xprint(text="", overwrite=2)
+            elif section == "events": xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
 
     def export_hero_data(map_key: dict, writer):
         hero_data = get_hero_data(map_key)
         sections = ["player_specs", "custom_heroes", "hero_data", "object_data"]
         for section in sections:
             section_name = section.replace('_', ' ').title()
-            xprint(text=f"Exporting Excel file... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=True)
-            time.sleep(Sleep.SHORT.value)
+            xprint(text=f"Exporting Excel file... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
+            # time.sleep(Sleep.SHORT.value)
             df = pd.DataFrame(hero_data[section])
             df = sanitize_dataframe(df)
             df.to_excel(writer, sheet_name=section_name, index=False)
@@ -62,10 +69,8 @@ def export_excel(map_key: dict) -> bool:
 
     def export_terrain_data(map_key: dict, writer):
         terrain = map_key['terrain']
-        if isinstance(terrain, list):
-            df = pd.DataFrame(terrain)
-        else:
-            df = pd.DataFrame([terrain])
+        if isinstance(terrain, list): df = pd.DataFrame(terrain)
+        else: df = pd.DataFrame([terrain])
         df = sanitize_dataframe(df)
         df.to_excel(writer, sheet_name='Terrain', index=False)
         auto_fit_columns(writer.sheets['Terrain'])
@@ -74,13 +79,38 @@ def export_excel(map_key: dict) -> bool:
         items = []
         for k, v in d.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
-            if isinstance(v, dict):
-                items.extend(flatten_dict(v, new_key, sep=sep).items())
-            elif isinstance(v, bytes):
-                items.append((new_key, v.decode('latin-1')))
-            else:
-                items.append((new_key, str(v) if isinstance(v, (list, tuple)) else v))
+            if isinstance(v, dict): items.extend(flatten_dict(v, new_key, sep=sep).items())
+            elif isinstance(v, bytes): items.append((new_key, v.decode('latin-1')))
+            else: items.append((new_key, str(v) if isinstance(v, (list, tuple)) else v))
         return dict(items)
+
+    def create_general_dataframe(general_data):
+        rows = []
+        categories = ["map_specs", "teams", "conditions", "start_heroes", "ban_flags"]
+        for category in categories:
+            if category in general_data:
+                if category == "map_specs" and "filename" in general_data:
+                    rows.append({
+                        "Category": "map_specs",
+                        "Key": "filename",
+                        "Value": general_data["filename"]
+                    })
+                category_data = general_data[category]
+                if isinstance(category_data, dict):
+                    flattened = flatten_dict(category_data)
+                    for key, value in flattened.items():
+                        rows.append({
+                            "Category": category,
+                            "Key": key,
+                            "Value": value
+                        })
+                else:
+                    rows.append({
+                        "Category": category,
+                        "Key": category,
+                        "Value": category_data
+                    })
+        return pd.DataFrame(rows)
 
     def get_export_type() -> int:
         input = xprint(menu=Menu.JSON.value)
@@ -96,16 +126,11 @@ def export_excel(map_key: dict) -> bool:
             del player["alignments_allowed"]
             del player["alignment_is_random"]
             del player["has_main_town"]
-            if "generate_hero" in player:
-                del player["generate_hero"]
-            if "town_type" in player:
-                del player["town_type"]
-            if "town_coords" in player:
-                del player["town_coords"]
-            if "garbage_byte" in player:
-                del player["garbage_byte"]
-            if "placeholder_heroes" in player:
-                del player["placeholder_heroes"]
+            if "generate_hero" in player: del player["generate_hero"]
+            if "town_type" in player: del player["town_type"]
+            if "town_coords" in player: del player["town_coords"]
+            if "garbage_byte" in player: del player["garbage_byte"]
+            if "placeholder_heroes" in player: del player["placeholder_heroes"]
         custom_heroes = deepcopy(map_key['start_heroes']['custom_heroes'])
         hero_data = deepcopy(map_key['hero_data'])
         hero_data[:] = [hero for hero in hero_data if len(hero) > 3]
@@ -146,14 +171,21 @@ def export_excel(map_key: dict) -> bool:
     def auto_fit_columns(worksheet):
         for column in worksheet.columns:
             max_length = 0
+            header_length = 0
             column_letter = column[0].column_letter
-            for cell in column:
+            for i, cell in enumerate(column):
                 try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(str(cell.value))
+                    cell_length = len(str(cell.value))
+                    if i == 0:
+                        header_length = cell_length
+                    if cell_length > max_length:
+                        max_length = cell_length
                 except:
                     pass
-            adjusted_width = min(max_length + 2, 50)  # Add padding, cap at 50
+            if header_length == max_length:
+                adjusted_width = header_length + 6
+            else:
+                adjusted_width = min(max_length + 2, 50)
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
     return main(map_key)

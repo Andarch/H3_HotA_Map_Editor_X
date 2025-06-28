@@ -138,32 +138,40 @@ def load_maps(input=-1) -> bool:
             global map_data, in_file
             with gzopen(filename, "rb") as in_file:
                 map_data[map_key]["filename"]     = filename
-                xprint(text=f"Parsing 1/13: Map Specs...", overwrite=True)
-                map_data[map_key]["general"]      = h1.parse_general()
-                xprint(text=f"Parsing 2/13: Player Specs...", overwrite=True)
+                xprint(text=f"Parsing 1/13: Map Specs...", overwrite=1)
+                map_data[map_key]["map_specs"]      = h1.parse_general()
+                xprint(text=f"Parsing 2/13: Player Specs...", overwrite=1)
                 map_data[map_key]["player_specs"] = h2.parse_player_specs()
-                xprint(text=f"Parsing 3/13: Victory/Loss Conditions...", overwrite=True)
+                xprint(text=f"Parsing 3/13: Victory/Loss Conditions...", overwrite=1)
                 map_data[map_key]["conditions"]   = h3.parse_conditions()
-                xprint(text=f"Parsing 4/13: Teams...", overwrite=True)
+                xprint(text=f"Parsing 4/13: Teams...", overwrite=1)
                 map_data[map_key]["teams"]        = h2.parse_teams()
-                xprint(text=f"Parsing 5/13: Hero Availability...", overwrite=True)
-                map_data[map_key]["start_heroes"] = h4.parse_starting_heroes(map_data[map_key]["general"])
-                xprint(text=f"Parsing 6/13: Additional Specs...", overwrite=True)
+                xprint(text=f"Parsing 5/13: Hero Availability...", overwrite=1)
+                map_data[map_key]["start_heroes"] = h4.parse_starting_heroes(map_data[map_key]["map_specs"])
+                xprint(text=f"Parsing 6/13: Additional Specs...", overwrite=1)
                 map_data[map_key]["ban_flags"]    = h5.parse_flags()
-                xprint(text=f"Parsing 7/13: Rumors...", overwrite=True)
+                xprint(text=f"Parsing 7/13: Rumors...", overwrite=1)
                 map_data[map_key]["rumors"]       = h6.parse_rumors()
-                xprint(text=f"Parsing 8/13: Hero Templates...", overwrite=True)
+                xprint(text=f"Parsing 8/13: Hero Templates...", overwrite=1)
                 map_data[map_key]["hero_data"]    = h4.parse_hero_data()
-                xprint(text=f"Parsing 9/13: Terrain Data...", overwrite=True)
-                map_data[map_key]["terrain"]      = h7.parse_terrain(map_data[map_key]["general"])
-                xprint(text=f"Parsing 10/13: Object Defs...", overwrite=True)
+                xprint(text=f"Parsing 9/13: Terrain Data...", overwrite=1)
+                map_data[map_key]["terrain"]      = h7.parse_terrain(map_data[map_key]["map_specs"])
+                xprint(text=f"Parsing 10/13: Object Defs...", overwrite=1)
                 map_data[map_key]["object_defs"]  = h8.parse_object_defs()
-                xprint(text=f"Parsing 11/13: Object Data...", overwrite=True)
+                xprint(text=f"Parsing 11/13: Object Data...", overwrite=1)
                 map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
-                xprint(text=f"Parsing 12/13: Events...", overwrite=True)
+                xprint(text=f"Parsing 12/13: Events...", overwrite=1)
                 map_data[map_key]["events"]       = h6.parse_events()
-                xprint(type=Text.ACTION, text=f"Parsing 13/13: Null Bytes...", overwrite=True)
+                xprint(type=Text.ACTION, text=f"Parsing 13/13: Null Bytes...", overwrite=1)
                 map_data[map_key]["null_bytes"]   = in_file.read()
+            map_data[map_key]["general"] = {
+                "filename": map_data[map_key]["filename"],
+                "map_specs": map_data[map_key]["map_specs"],
+                "teams": map_data[map_key]["teams"],
+                "conditions": map_data[map_key]["conditions"],
+                "start_heroes": map_data[map_key]["start_heroes"],
+                "ban_flags": map_data[map_key]["ban_flags"]
+            }
             xprint(type=Text.SPECIAL, text=DONE)
 
         return main()
@@ -229,7 +237,7 @@ def save_maps() -> bool:
             xprint(type=Text.ACTION, text=f"Saving {filename}...")
             with open(filename, "wb") as f:
                 with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
-                    h1.write_general(        map_data[map_key]["general"])
+                    h1.write_general(        map_data[map_key]["map_specs"])
                     h2.write_player_specs(   map_data[map_key]["player_specs"])
                     h3.write_conditions(     map_data[map_key]["conditions"])
                     h2.write_teams(          map_data[map_key]["teams"])

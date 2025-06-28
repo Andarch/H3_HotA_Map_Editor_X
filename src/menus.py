@@ -27,15 +27,14 @@ class Menu(Enum):
 
     INFO = {
         1: "General",
-        2: "Players/Teams",
-        3: "Win/Loss Conditions",
-        4: "Heroes",
-        5: "Disabled Skills/Spells",
+        2: "Player Specs",
+        3: "Start Heroes",
+        4: "Rumors",
+        5: "Hero Data",
         6: "Terrain",
         7: "Object Defs",
         8: "Object Data",
-        9: "Events & Rumors",
-        0: "Null Bytes"
+        9: "Events",
     }
 
     EDIT  = {
@@ -44,11 +43,6 @@ class Menu(Enum):
         3: "!!Swap layers",
         4: "!!Update events (global/town)"
     }
-
-    # MAP_IO = {
-    #     1: "Load",
-    #     2: "Save"
-    # }
 
     LOAD  = {
         1: "Load 1 map",

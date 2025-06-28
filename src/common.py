@@ -143,13 +143,13 @@ def draw_header(new_screen: bool = True) -> None:
     fill2_row = create_filled_row(fill2_symbol, headerB_colors)
 
     if map1:
-        map1_row1 = f"{headerB1_color1A}{map1['general']['name']}{Color.RESET.value}"
+        map1_row1 = f"{headerB1_color1A}{map1['map_specs']['name']}{Color.RESET.value}"
         map1_row2 = f"{headerB1_color1B}{{{map1['filename']}}}{Color.RESET.value}"
         if not map2:
             map2_row1 = ""
             map2_row2 = ""
         else:
-            map2_row1 = f"{headerB1_color1A}{map2['general']['name']}{Color.RESET.value}"
+            map2_row1 = f"{headerB1_color1A}{map2['map_specs']['name']}{Color.RESET.value}"
             map2_row2 = f"{headerB1_color1B}{{{map2['filename']}}}{Color.RESET.value}"
             if terminal_width >= PRINT_WIDTH:
                 cell_width = PRINT_WIDTH // 2 + 6
@@ -227,7 +227,7 @@ def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.va
         text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
 
-def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
+def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
         if menu: return menu_prompt(menu)
@@ -235,9 +235,10 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_nu
             screen_content.append((type, text, align, menu_num, menu_width))
         match type:
             case Text.NORMAL:
-                if overwrite:
+                if overwrite > 0:
                     time.sleep(Sleep.SHORTER.value)
-                    print("\033[F\033[K", end="")
+                    for _ in range(overwrite):
+                        print("\033[F\033[K", end="")
                 print(align_text(text=text))
             case Text.INFO:
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
@@ -252,9 +253,10 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=False, menu_nu
                 input = string_prompt(align_text(text=f"{Color.YELLOW.value}[{text}] > {Color.WHITE.value}"))
                 return input
             case Text.ACTION:
-                if overwrite:
+                if overwrite > 0:
                     time.sleep(Sleep.SHORTER.value)
-                    print("\033[F\033[K", end="")
+                    for _ in range(overwrite):
+                        print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"), end = " ", flush = True)
                 time.sleep(Sleep.NORMAL.value)
             case Text.SPECIAL:
