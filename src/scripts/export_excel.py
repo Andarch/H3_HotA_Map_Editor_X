@@ -158,7 +158,7 @@ def export_excel(map_key: dict) -> bool:
         hero_data = deepcopy(map_key["hero_data"])
         hero_data[:] = [hero for hero in hero_data if len(hero) > 3]
         object_data = deepcopy(map_key["object_data"])
-        object_data[:] = [obj for obj in object_data if obj["type"] in (objects.ID.Hero, objects.ID.Prison)]
+        object_data[:] = [obj for obj in object_data if obj["id"] in (objects.ID.Hero, objects.ID.Prison)]
         final_hero_data = {
             "player_specs": player_specs,
             "custom_heroes": custom_heroes,

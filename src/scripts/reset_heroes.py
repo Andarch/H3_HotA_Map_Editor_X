@@ -23,7 +23,7 @@ def determine_skippable_heroes(custom_heroes: list, obj_data: list) -> list:
         if face_name.startswith("Extra"):
             skippable_heroes.append(hero.get("id"))
     for obj in obj_data:
-        if obj["type"] in (objects.ID.Hero, objects.ID.Prison):
+        if obj["id"] in (objects.ID.Hero, objects.ID.Prison):
             hero = obj["hero_data"]
             face_member = heroes.Portrait(hero["portrait"])
             face_name = face_member.name
@@ -60,7 +60,7 @@ def reset_hero_data(hero_data: list, skippable_heroes: list) -> None:
 
 def reset_object_data(obj_data: list, skippable_heroes: list) -> None:
     for obj in obj_data:
-        if obj["type"] in (objects.ID.Hero, objects.ID.Prison):
+        if obj["id"] in (objects.ID.Hero, objects.ID.Prison):
             hero = obj["hero_data"]
             if hero["id"] in skippable_heroes:
                 continue

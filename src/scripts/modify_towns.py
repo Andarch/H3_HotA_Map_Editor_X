@@ -5,7 +5,7 @@ def modify_towns(obj_data: dict) -> bool:
     xprint(type=Text.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
 
     for obj in obj_data:
-        if obj["type"] == objects.ID.Town or obj["type"] == objects.ID.Random_Town:
+        if obj["id"] == objects.ID.Town or obj["id"] == objects.ID.Random_Town:
             # Enable spell research
             obj["spell_research"] = True
 

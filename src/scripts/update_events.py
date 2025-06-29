@@ -21,7 +21,7 @@ def update_events(global_events: list, obj_data: list) -> None:
     town_events_resources = []
     town_events_creatures = []
     for obj in obj_data:
-        if obj["type"] is not objects.ID.Town and obj["type"] is not objects.ID.Random_Town:
+        if obj["id"] is not objects.ID.Town and obj["id"] is not objects.ID.Random_Town:
             continue
         if "events" not in obj or obj["events"] is None:
             continue

@@ -448,10 +448,10 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         # Filter objects if a filter is provided
         filtered_objects = object_data
         if object_filter is not None:
-            filtered_objects = [obj for obj in object_data if obj["type"] in object_filter]
+            filtered_objects = [obj for obj in object_data if obj["id"] in object_filter]
         # Iterate through objects
         for obj in filtered_objects:
-            if obj["type"] in ignored_pickups or (obj["type"] == objects.ID.Border_Gate and obj["subtype"] == 1001):
+            if obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
                 continue
             # Get object masks
             def_ = defs[obj["def_id"]]
@@ -469,20 +469,20 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
         return True
 
     def determine_owner(input: int, obj: dict) -> Union[int, tuple]:
-        if input == 1 and "owner" in obj and obj["type"] not in ignored_owned_objects:  # Check if object has "owner" key and should not be ignored
+        if input == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects:  # Check if object has "owner" key and should not be ignored
             return obj["owner"]
         elif input == 2:
-            if (obj["type"] == objects.ID.Border_Gate and obj["subtype"] != 1001) or obj["type"] == objects.ID.Border_Guard:
-                return obj["subtype"] + 1000
-            elif obj["type"] == objects.ID.Garrison or obj["type"] == objects.ID.Garrison_Vertical:
+            if (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001) or obj["id"] == objects.ID.Border_Guard:
+                return obj["sub_id"] + 1000
+            elif obj["id"] == objects.ID.Garrison or obj["id"] == objects.ID.Garrison_Vertical:
                 return (1999, obj["owner"])
-            elif obj["type"] == objects.ID.Quest_Guard:
+            elif obj["id"] == objects.ID.Quest_Guard:
                 return 2000
-            elif obj["type"] == objects.ID.Monolith_One_Way_Entrance or obj["type"] == objects.ID.Monolith_One_Way_Exit:
-                return obj["subtype"] + 3000
-            elif obj["type"] == objects.ID.Two_Way_Monolith:
-                return obj["subtype"] + 3500
-            elif obj["type"] not in decor_objects:
+            elif obj["id"] == objects.ID.Monolith_One_Way_Entrance or obj["id"] == objects.ID.Monolith_One_Way_Exit:
+                return obj["sub_id"] + 3000
+            elif obj["id"] == objects.ID.Two_Way_Monolith:
+                return obj["sub_id"] + 3500
+            elif obj["id"] not in decor_objects:
                 return 10000
         else:
             return None

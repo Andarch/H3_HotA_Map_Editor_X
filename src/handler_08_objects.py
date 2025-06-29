@@ -29,8 +29,10 @@ def parse_object_defs() -> list:
         obj["placeable_terrain"]  = io.read_bits(2)
         obj["editor_section"]     = io.read_bits(2)
 
-        obj["type"]    = objects.ID(io.read_int(4))
-        obj["subtype"] = get_subtype(obj["type"], io.read_int(4))
+        obj["id"]    = io.read_int(4)
+        obj["sub_id"] = io.read_int(4)
+        obj["type"]    = objects.ID(obj["id"])
+        obj["subtype"] = get_subtype(obj["id"], obj["sub_id"])
 
         obj["editor_group"] =      io.read_int(1)
         obj["below_ground"] = bool(io.read_int(1))
@@ -49,8 +51,8 @@ def write_object_defs(info: list) -> None:
         io.write_bits(   obj["yellow_squares"])
         io.write_bits(   obj["placeable_terrain"])
         io.write_bits(   obj["editor_section"])
-        io.write_int(    obj["type"], 4)
-        io.write_int(    obj["subtype"], 4)
+        io.write_int(    obj["id"], 4)
+        io.write_int(    obj["sub_id"], 4)
         io.write_int(    obj["editor_group"], 1)
         io.write_int(    obj["below_ground"], 1)
         io.write_raw(    obj["null_bytes"])
@@ -95,10 +97,12 @@ def parse_object_data(object_defs: list) -> list:
         obj["def_id"] = io.read_int(4)
         io.seek(5)
 
+        obj["id"]    = object_defs[obj["def_id"]]["id"]
+        obj["sub_id"] = object_defs[obj["def_id"]]["sub_id"]
         obj["type"]    = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
-        match obj["type"]:
+        match obj["id"]:
             case objects.ID.Pandoras_Box:       obj = parse_pandoras_box(obj)
             case objects.ID.Black_Market:       obj = parse_black_market(obj)
             case objects.ID.Campfire:           obj = parse_campfire(obj)
@@ -129,19 +133,19 @@ def parse_object_data(object_defs: list) -> list:
             case objects.ID.Abandoned_Mine:   obj = parse_abandoned_mine(obj)
 
             case objects.ID.Mine:
-                if obj["subtype"] == objects.Resource.Abandoned:
+                if obj["sub_id"] == objects.Resource.Abandoned:
                     obj = parse_abandoned_mine(obj)
                 else: obj["owner"] = io.read_int(4)
 
             case objects.ID.HotA_Visitable_2:
-                if obj["subtype"] == 0: # HotA Seafaring_Academy
+                if obj["sub_id"] == 0: # HotA Seafaring_Academy
                     obj = parse_university(obj)
 
             # Some of the HotA objects are implemented in a pretty hacky way.
             case objects.ID.Border_Gate:
-                if obj["subtype"] == 1000: # HotA Quest Gate
+                if obj["sub_id"] == 1000: # HotA Quest Gate
                     obj["quest"] = parse_quest()
-                elif obj["subtype"] == 1001: # HotA Grave
+                elif obj["sub_id"] == 1001: # HotA Grave
                     obj = parse_grave(obj)
 
             case objects.ID.Town:        obj = parse_town(obj)
@@ -207,7 +211,7 @@ def write_object_data(info: list) -> None:
         io.write_int(obj["def_id"], 4)
         io.write_int(0, 5)
 
-        match obj["type"]:
+        match obj["id"]:
             case objects.ID.Pandoras_Box:       write_pandoras_box(obj)
             case objects.ID.Black_Market:       write_black_market(obj)
             case objects.ID.Campfire:           write_campfire(obj)
@@ -238,17 +242,17 @@ def write_object_data(info: list) -> None:
             case objects.ID.Abandoned_Mine:   write_abandoned_mine(obj)
 
             case objects.ID.Mine:
-                if obj["subtype"] == objects.Resource.Abandoned:
+                if obj["sub_id"] == objects.Resource.Abandoned:
                     write_abandoned_mine(obj)
                 else: io.write_int(obj["owner"], 4)
 
             case objects.ID.HotA_Visitable_2:
-                if obj["subtype"] == 0: # HotA Seafaring_Academy
+                if obj["sub_id"] == 0: # HotA Seafaring_Academy
                     write_university(obj)
             case objects.ID.Border_Gate:
-                if obj["subtype"] == 1000: # HotA Quest Gate
+                if obj["sub_id"] == 1000: # HotA Quest Gate
                     write_quest(obj["quest"])
-                elif obj["subtype"] == 1001: # HotA Grave
+                elif obj["sub_id"] == 1001: # HotA Grave
                     write_grave(obj)
 
             case objects.ID.Town:        write_town(obj)
@@ -300,7 +304,7 @@ def write_object_data(info: list) -> None:
                 write_bank(obj)
 
 def parse_hota_collectible(obj: dict) -> dict:
-    match obj["subtype"]:
+    match obj["sub_id"]:
         case objects.HotA_Collectible.Ancient_Lamp: obj = parse_ancient_lamp(obj)
         case objects.HotA_Collectible.Sea_Barrel:   obj = parse_sea_barrel(obj)
         case objects.HotA_Collectible.Jetsam:       obj = parse_flotsam(obj)
@@ -308,7 +312,7 @@ def parse_hota_collectible(obj: dict) -> dict:
     return obj
 
 def write_hota_collectible(obj: dict) -> None:
-    match obj["subtype"]:
+    match obj["sub_id"]:
         case objects.HotA_Collectible.Ancient_Lamp: write_ancient_lamp(obj)
         case objects.HotA_Collectible.Sea_Barrel:   write_sea_barrel(obj)
         case objects.HotA_Collectible.Jetsam:       write_flotsam(obj)
