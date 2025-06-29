@@ -372,6 +372,52 @@ def is_file_writable(filepath: str) -> bool:
         return False
 
 
+def get_hero_data(map_key: dict) -> dict:
+    """
+    Extract and filter hero-related data from map data.
+
+    This function processes the map data to extract only hero-relevant information,
+    filtering out empty sections and removing unnecessary fields for cleaner exports.
+
+    Args:
+        map_key: Dictionary containing the full map data
+
+    Returns:
+        Dictionary with filtered hero data containing player_specs, custom_heroes,
+        hero_data, and object_data (heroes only)
+    """
+    from copy import deepcopy
+    import data.objects as objects
+
+    player_specs = deepcopy(map_key['player_specs'])
+    player_specs[:] = [player for player in player_specs if len(player["available_heroes"]) > 0]
+    for player in player_specs:
+        del player["ai_behavior"]
+        del player["alignments_customized"]
+        del player["alignments_allowed"]
+        del player["alignment_is_random"]
+        del player["has_main_town"]
+        if "generate_hero" in player: del player["generate_hero"]
+        if "town_type" in player: del player["town_type"]
+        if "town_coords" in player: del player["town_coords"]
+        if "garbage_byte" in player: del player["garbage_byte"]
+        if "placeholder_heroes" in player: del player["placeholder_heroes"]
+
+    custom_heroes = deepcopy(map_key["start_heroes"]["custom_heroes"])
+    hero_data = deepcopy(map_key["hero_data"])
+    hero_data[:] = [hero for hero in hero_data if len(hero) > 3]
+    object_data = deepcopy(map_key["object_data"])
+    object_data[:] = [obj for obj in object_data if obj["id"] in (objects.ID.Hero, objects.ID.Prison)]
+
+    final_hero_data = {
+        "player_specs": player_specs,
+        "custom_heroes": custom_heroes,
+        "hero_data": hero_data,
+        "object_data": object_data
+    }
+    return final_hero_data
+
+
 def process_section_with_progress(section_data, section_name, update_interval=10000):
     """
     Process large sections with progress tracking.
