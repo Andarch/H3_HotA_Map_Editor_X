@@ -82,6 +82,11 @@ def export_excel(map_key: dict) -> bool:
             # Common processing for all sections
             df = sanitize_dataframe(df)
 
+            # Clean up column headers: replace underscores with spaces and apply title case
+            # (except for the general section which has a custom structure)
+            if section != "general":
+                df.columns = [col.replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
+
             # Insert row numbering column for all sections except general
             if section != "general":
                 if len(df) > 0 and not (len(df) == 1 and section in df.columns):
@@ -217,11 +222,53 @@ def export_excel(map_key: dict) -> bool:
                 # Sort objects by ID first, then by sub_id
                 objects_list.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
 
+                # Special handling for Heroes sheet - flatten nested hero data
+                if category == "Heroes":
+                    flattened_objects = []
+                    for obj in objects_list:
+                        flattened_obj = {}
+                        for key, value in obj.items():
+                            if key == "hero_data" and isinstance(value, dict):
+                                # Flatten hero data dictionaries using just the sub-key names
+                                for sub_key, sub_value in value.items():
+                                    if isinstance(sub_value, dict):
+                                        # Flatten nested dictionaries (like primary_skills, artifacts_equipped)
+                                        for nested_key, nested_value in sub_value.items():
+                                            flattened_obj[nested_key] = nested_value
+                                    elif isinstance(sub_value, list):
+                                        # Special formatting for secondary_skills
+                                        if sub_key == "secondary_skills" and sub_value:
+                                            skill_lines = []
+                                            for skill in sub_value:
+                                                if isinstance(skill, dict):
+                                                    level_name = skill.get('level_name', '')
+                                                    skill_name = skill.get('name', '').replace('_', ' ')
+                                                    if level_name and skill_name:
+                                                        skill_lines.append(f"{level_name} {skill_name}")
+                                            flattened_obj[sub_key] = "\n".join(skill_lines) if skill_lines else ""
+                                        else:
+                                            # Convert other lists to strings
+                                            flattened_obj[sub_key] = str(sub_value) if sub_value else ""
+                                    else:
+                                        # Rename "id" to "hero_id" to avoid conflicts with object id
+                                        if sub_key == "id":
+                                            flattened_obj["hero_id"] = sub_value
+                                        else:
+                                            flattened_obj[sub_key] = sub_value
+                            else:
+                                # Keep non-hero_data fields as-is
+                                flattened_obj[key] = value
+                        flattened_objects.append(flattened_obj)
+                    objects_list = flattened_objects
+
                 df = pd.DataFrame(objects_list)
                 df = sanitize_dataframe(df)
 
                 # Remove columns ending with "_bytes"
                 df = df.loc[:, ~df.columns.str.endswith('_bytes')]
+
+                # Clean up column headers: replace underscores with spaces and apply title case
+                df.columns = [col.replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
 
                 df.insert(0, "#", range(1, len(df) + 1))
                 df.to_excel(writer, sheet_name=category, index=False)

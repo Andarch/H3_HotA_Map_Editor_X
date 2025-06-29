@@ -51,3 +51,8 @@ class Secondary(IntEnum):
     # UNUSED
     # UNUSED
     # UNUSED
+
+class SecondaryLevels(IntEnum):
+    Basic = 1
+    Advanced = 2
+    Expert = 3

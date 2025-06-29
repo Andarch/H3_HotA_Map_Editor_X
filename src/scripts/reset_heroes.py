@@ -39,7 +39,7 @@ def reset_player_specs(player_specs: list, skippable_heroes: list) -> None:
         if player["available_heroes"]:
             for hero in player["available_heroes"]:
                 if hero["id"] not in skippable_heroes:
-                    hero["name"] = ""
+                    hero["custom_name"] = ""
     return
 
 def reset_custom_heroes(custom_heroes: list, skippable_heroes: list) -> None:
@@ -65,7 +65,7 @@ def reset_object_data(obj_data: list, skippable_heroes: list) -> None:
             if hero["id"] in skippable_heroes:
                 continue
             hero["has_name"] = False
-            hero["name"] = ""
+            hero["custom_name"] = ""
             hero["has_portrait"] = False
             hero["portrait"] = 255
             hero["has_biography"] = False

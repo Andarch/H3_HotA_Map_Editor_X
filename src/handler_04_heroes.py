@@ -2,6 +2,7 @@ import src.file_io    as io
 import data.heroes    as heroes
 import data.spells    as spells
 import data.artifacts as artifacts
+import data.skills    as skills
 
 from src.handler_01_general import MapFormat
 
@@ -32,7 +33,7 @@ def parse_starting_heroes(general_info: dict) -> dict:
         hero = {}
         hero["id"] = io.read_int(1)
         hero["face"] = io.read_int(1)
-        hero["name"] = io.read_str(io.read_int(4))
+        hero["custom_name"] = io.read_str(io.read_int(4))
         hero["may_be_hired_by"] = io.read_int(1)
         info["custom_heroes"].append(hero)
 
@@ -55,8 +56,8 @@ def write_starting_heroes(info: dict) -> None:
     for hero in info["custom_heroes"]:
         io.write_int(    hero["id"], 1)
         io.write_int(    hero["face"], 1)
-        io.write_int(len(hero["name"]), 4)
-        io.write_str(    hero["name"])
+        io.write_int(len(hero["custom_name"]), 4)
+        io.write_str(    hero["custom_name"])
         io.write_int(    hero["may_be_hired_by"], 1)
 
     io.write_raw(info["unhandled_bytes"])
@@ -94,7 +95,9 @@ def parse_hero_data() -> list:
             for _ in range(io.read_int(4)):
                 skill = {}
                 skill["id"]    = io.read_int(1)
+                skill["name"]    = skills.Secondary(skill["id"]).name
                 skill["level"] = io.read_int(1)
+                skill["level_name"] = skills.SecondaryLevels(skill["level"]).name
                 hero["secondary_skills"].append(skill)
 
         if io.read_int(1): # Are artifacts set?

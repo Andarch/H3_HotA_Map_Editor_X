@@ -651,7 +651,7 @@ def parse_hero(obj: dict) -> dict:
 
     hero["has_name"] = io.read_int(1)
     if hero["has_name"]:
-        hero["name"] = io.read_str(io.read_int(4))
+        hero["custom_name"] = io.read_str(io.read_int(4))
 
     if io.read_int(1): # Is experience set?
         hero["experience"] = io.read_int(4)
@@ -664,7 +664,9 @@ def parse_hero(obj: dict) -> dict:
         for _ in range(io.read_int(4)):
             skill = {}
             skill["id"]    = io.read_int(1)
+            skill["name"]    = skills.Secondary(skill["id"]).name
             skill["level"] = io.read_int(1)
+            skill["level_name"] = skills.SecondaryLevels(skill["level"]).name
             hero["secondary_skills"].append(skill)
 
     if io.read_int(1): # Is the army set?
@@ -734,8 +736,8 @@ def write_hero(obj: dict) -> None:
     #
     if hero["has_name"]:
         io.write_int(hero["has_name"], 1)
-        io.write_int(len(hero["name"]), 4)
-        io.write_str(hero["name"])
+        io.write_int(len(hero["custom_name"]), 4)
+        io.write_str(hero["custom_name"])
     else: io.write_int(0, 1)
 
     #

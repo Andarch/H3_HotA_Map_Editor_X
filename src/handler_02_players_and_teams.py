@@ -105,7 +105,7 @@ def parse_player_specs() -> list:
             for _ in range(io.read_int(4)):
                 hero = {}
                 hero["id"]   = heroes.ID(io.read_int(1))
-                hero["name"] = io.read_str(io.read_int(4))
+                hero["custom_name"] = io.read_str(io.read_int(4))
                 info["available_heroes"].append(hero)
 
         else:
@@ -146,8 +146,8 @@ def write_player_specs(specs: list) -> None:
 
             for hero in info["available_heroes"]:
                 io.write_int(    hero["id"], 1)
-                io.write_int(len(hero["name"]), 4)
-                io.write_str(    hero["name"])
+                io.write_int(len(hero["custom_name"]), 4)
+                io.write_str(    hero["custom_name"])
         else:
             io.write_int(0, 1)
             io.write_int(len(info["placeholder_heroes"]), 4)
