@@ -19,6 +19,8 @@ def main() -> None:
                     input = xprint(menu=Menu.MAIN.value)
                     if input == KB.ESC.value: continue
                     xprint()
+
+                    success = False
                     match input:
                         case 1:
                             map_key = get_map_key()

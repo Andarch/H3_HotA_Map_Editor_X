@@ -1,4 +1,5 @@
 from copy import deepcopy
+import os
 import pandas as pd
 import data.objects as objects
 from ..common import *
@@ -22,6 +23,11 @@ def export_excel(map_key: dict) -> bool:
         filename += suffix_map[export_type]
 
         if not filename.endswith(".xlsx"): filename += ".xlsx"
+
+        # Check if Excel file is already open
+        if not is_file_writable(filename):
+            xprint(type=Text.ERROR, text="Excel file currently open.")
+            return False
 
         xprint()
         with pd.ExcelWriter(filename, engine="openpyxl") as writer:
@@ -210,5 +216,16 @@ def export_excel(map_key: dict) -> bool:
             else:
                 adjusted_width = min(max_length + 2, 50)
             worksheet.column_dimensions[column_letter].width = adjusted_width
+
+    def is_file_writable(filepath: str) -> bool:
+        """Check if a file can be written to (not currently open in another application)"""
+        try:
+            # Try to open the file in write mode
+            if os.path.exists(filepath):
+                with open(filepath, 'r+b') as f:
+                    pass
+            return True
+        except (IOError, OSError, PermissionError):
+            return False
 
     return main(map_key)

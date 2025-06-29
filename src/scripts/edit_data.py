@@ -8,6 +8,7 @@ def edit_data(map_key: dict) -> bool:
     if input == KB.ESC.value: return False
     draw_header()
 
+    success = False
     match input:
         case 1:
             success = scripts.modify_towns(map_key["object_data"])

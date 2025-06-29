@@ -231,7 +231,7 @@ def get_map_key() -> str:
         if not map_data["Map 2"]:
             return "Map 1"
 
-def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
+def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global screen_content, is_redrawing
         if menu: return menu_prompt(menu)
@@ -269,9 +269,14 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, menu_num=-1
             case Text.HEADER:
                 print(align_text(align=Align.CENTER, text=text))
             case Text.ERROR:
+                if overwrite > 0:
+                    time.sleep(Sleep.SHORTER.value)
+                    for _ in range(overwrite):
+                        print("\033[F\033[K", end="")
                 match align:
                     case Align.LEFT:
-                        xprint()
+                        if skipline:
+                            xprint()
                         print(align_text(text=f"{Color.RED.value}Error: {text}{Color.RESET.value}"))
                     case Align.FLUSH:
                         print(f"{Color.RED.value}Error: {text}{Color.RESET.value}")
