@@ -32,17 +32,21 @@ def export_excel(map_key: dict) -> bool:
         xprint()
         with pd.ExcelWriter(filename, engine="openpyxl") as writer:
             match export_type:
-                case 1: export_data(map_key, writer, all_sections)
-                case 2: export_data(map_key, writer, hero_sections, use_hero_data=True)
-                case 3: export_data(map_key, writer, terrain_sections)
-                case 4: export_object_data(map_key, writer)
+                case 1: export_sections(map_key, writer, all_sections)
+                case 2: export_sections(map_key, writer, hero_sections, use_hero_data=True)
+                case 3: export_sections(map_key, writer, terrain_sections)
+                case 4: export_categorized_objects(map_key, writer)
 
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
-    def export_data(map_key: dict, writer, sections, use_hero_data=False):
+    def export_sections(map_key: dict, writer, sections, use_hero_data=False):
+        """Unified function for exporting sequential sections to Excel"""
         # Get the appropriate data source
         data_source = get_hero_data(map_key) if use_hero_data else map_key
+
+        # Prepare sections data for export
+        sections_data = {}
 
         for section_idx, section in enumerate(sections):
             section_name = section.replace("_", " ").title()
@@ -57,8 +61,11 @@ def export_excel(map_key: dict) -> bool:
                 processed_items = process_section_with_progress(section_data, section_name, update_interval)
                 df = pd.DataFrame(processed_items)
 
-                if section in ["terrain", "object_data"]:
-                    xprint(text="Formatting...")
+                sections_data[section_name] = {
+                    'data': df,
+                    'section_key': section,
+                    'pre_processed': False
+                }
             else:
                 # Handle regular sections
                 xprint(text=f"Exporting... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
@@ -67,19 +74,17 @@ def export_excel(map_key: dict) -> bool:
                 # Create DataFrame based on section data
                 df = create_section_dataframe(section_data, section, section_name)
 
-            # Export section to worksheet using utility function
-            export_section_to_worksheet(writer, df, section, section_name)
+                sections_data[section_name] = {
+                    'data': df,
+                    'section_key': section,
+                    'pre_processed': False
+                }
 
-            # Progress cleanup for large sections
-            if section in ["terrain", "object_data"] and not use_hero_data:
-                xprint(text="", overwrite=2)
+        # Export all sections using unified function
+        export_sections_to_excel(writer, sections_data, use_progress=True, is_final_export=True)
 
-            # Show "Writing Excel file to disk..." message for the last section
-            if section_idx == len(sections) - 1:
-                xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
-
-    def export_object_data(map_key: dict, writer):
-        """Special export function for object data that categorizes objects into multiple sheets"""
+    def export_categorized_objects(map_key: dict, writer):
+        """Export function for categorized object data to multiple sheets"""
         object_data = map_key["object_data"]
         total_items = len(object_data)
 
@@ -92,9 +97,9 @@ def export_excel(map_key: dict) -> bool:
         # Categorize objects using utility function
         categorized_objects = categorize_objects(object_data, progress_callback)
 
-        xprint(text="Formatting...")
+        # Prepare categorized data for export
+        sections_data = {}
 
-        # Export each category to its own sheet
         for category, objects_list in categorized_objects.items():
             if objects_list:
                 # Sort objects by ID first, then by sub_id
@@ -107,15 +112,17 @@ def export_excel(map_key: dict) -> bool:
                 # Create DataFrame with specialized processing for object data
                 df = prepare_dataframe(objects_list, remove_bytes_columns=True, format_columns=True)
 
-                # Export using utility function (pre-processed since prepare_dataframe already formatted columns)
-                export_section_to_worksheet(writer, df, "object_category", category, add_row_numbers=True, pre_processed=True)
+                sections_data[category] = {
+                    'data': df,
+                    'section_key': "object_category",
+                    'pre_processed': True,
+                    'add_row_numbers': True
+                }
             else:
-                # Create empty sheet if no objects in this category
-                create_empty_worksheet(writer, category, "No data")
+                sections_data[category] = {'data': None}
 
-        # Clean up progress display
-        xprint(text="", overwrite=2)
-        xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
+        # Export all categories using unified function
+        export_sections_to_excel(writer, sections_data, use_progress=True, is_final_export=True)
 
     def get_export_type() -> int:
         input = xprint(menu=Menu.EXCEL.value)

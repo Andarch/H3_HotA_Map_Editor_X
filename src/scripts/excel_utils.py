@@ -502,3 +502,64 @@ def export_section_to_worksheet(writer, df, section, section_name, add_row_numbe
     auto_fit_columns(worksheet)
 
     return worksheet
+
+
+def export_sections_to_excel(writer, sections_data, use_progress=True, is_final_export=True):
+    """
+    Generic function to export multiple sections/categories to Excel worksheets.
+
+    This function can handle both sequential section exports and categorized object exports
+    by accepting a dictionary of section/category names mapped to their data.
+
+    Args:
+        writer: Excel writer object
+        sections_data: Dictionary mapping section/category names to their data
+        use_progress: Whether to show progress updates during export
+        is_final_export: Whether to show "Writing Excel file to disk..." message at the end
+
+    Returns:
+        None
+    """
+    total_sections = len(sections_data)
+
+    for section_idx, (section_name, section_info) in enumerate(sections_data.items()):
+        # Handle both simple data and complex section info
+        if isinstance(section_info, dict) and 'data' in section_info:
+            # Complex section info with additional parameters
+            data = section_info['data']
+            pre_processed = section_info.get('pre_processed', False)
+            add_row_numbers = section_info.get('add_row_numbers', True)
+            section_key = section_info.get('section_key', 'data')
+        else:
+            # Simple data
+            data = section_info
+            pre_processed = False
+            add_row_numbers = True
+            section_key = section_name.lower().replace(' ', '_')
+
+        if data is not None and len(data) > 0:
+            # Show formatting message for each section
+            if use_progress:
+                from ..common import xprint, Color
+                xprint(text=f"Formatting... {Color.CYAN.value}{section_name}{Color.RESET.value}", overwrite=1)
+
+            # Process non-empty data
+            if isinstance(data, pd.DataFrame):
+                df = data
+            else:
+                df = pd.DataFrame(data) if isinstance(data, list) else pd.DataFrame([data])
+
+            # Export to worksheet
+            export_section_to_worksheet(
+                writer, df, section_key, section_name,
+                add_row_numbers=add_row_numbers,
+                pre_processed=pre_processed
+            )
+        else:
+            # Create empty sheet for no data
+            create_empty_worksheet(writer, section_name, "No data")
+
+    # Show final completion message
+    if is_final_export:
+        from ..common import xprint, Text
+        xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
