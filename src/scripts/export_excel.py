@@ -50,21 +50,13 @@ def export_excel(map_key: dict) -> bool:
 
             # Handle progress tracking for large sections
             if section in ["terrain", "object_data", "events"] and not use_hero_data:
-                total_items = len(section_data)
-                if section in ["terrain", "object_data"]:
-                    update_interval = 10000
-                elif section == "events":
-                    update_interval = 1
+                # Determine update interval based on section type
+                update_interval = 1 if section == "events" else 10000
 
-                xprint(text=f"Exporting... {Color.CYAN.value}{section_name} 0/{total_items}{Color.RESET.value}", overwrite=1)
-                processed_items = []
-                for i, item in enumerate(section_data, 1):
-                    processed_items.append(item)
-                    if i % update_interval == 0 or i == total_items:
-                        xprint(text=f"Exporting... {Color.CYAN.value}{section_name} {i}/{total_items}{Color.RESET.value}", overwrite=1)
-
-                # Create DataFrame based on processed items
+                # Process with progress tracking
+                processed_items = process_section_with_progress(section_data, section_name, update_interval)
                 df = pd.DataFrame(processed_items)
+
                 if section in ["terrain", "object_data"]:
                     xprint(text="Formatting...")
             else:
@@ -73,33 +65,10 @@ def export_excel(map_key: dict) -> bool:
                 time.sleep(Sleep.SHORT.value)
 
                 # Create DataFrame based on section data
-                if isinstance(section_data, list) and section_data:
-                    df = pd.DataFrame(section_data)
-                elif section == "general":
-                    df = create_general_dataframe(section_data)
-                else:
-                    df = pd.DataFrame([{section: "No data"}])
+                df = create_section_dataframe(section_data, section, section_name)
 
-            # Common processing for all sections
-            df = sanitize_dataframe(df)
-
-            # Clean up column headers: replace underscores with spaces and apply title case
-            # (except for the general section which has a custom structure)
-            if section != "general":
-                df.columns = [format_column_name(col) for col in df.columns]
-
-            # Insert row numbering column for all sections except general
-            if section != "general":
-                if len(df) > 0 and not (len(df) == 1 and section in df.columns):
-                    # Add row numbers for actual data
-                    df.insert(0, "#", range(1, len(df) + 1))
-                else:
-                    # Add empty numbering column for "No data" cases
-                    df.insert(0, "#", "")
-
-            df.to_excel(writer, sheet_name=section_name, index=False)
-            worksheet = writer.sheets[section_name]
-            auto_fit_columns(worksheet)
+            # Export section to worksheet using utility function
+            export_section_to_worksheet(writer, df, section, section_name)
 
             # Progress cleanup for large sections
             if section in ["terrain", "object_data"] and not use_hero_data:
@@ -135,8 +104,11 @@ def export_excel(map_key: dict) -> bool:
                 if category == "Heroes":
                     objects_list = flatten_hero_data(objects_list)
 
+                # Create DataFrame with specialized processing for object data
                 df = prepare_dataframe(objects_list, remove_bytes_columns=True, format_columns=True)
-                create_worksheet(writer, df, category, add_row_numbers=True)
+
+                # Export using utility function (pre-processed since prepare_dataframe already formatted columns)
+                export_section_to_worksheet(writer, df, "object_category", category, add_row_numbers=True, pre_processed=True)
             else:
                 # Create empty sheet if no objects in this category
                 create_empty_worksheet(writer, category, "No data")
@@ -176,16 +148,5 @@ def export_excel(map_key: dict) -> bool:
             "object_data": object_data
         }
         return final_hero_data
-
-    def is_file_writable(filepath: str) -> bool:
-        """Check if a file can be written to (not currently open in another application)"""
-        try:
-            # Try to open the file in write mode
-            if os.path.exists(filepath):
-                with open(filepath, 'r+b') as f:
-                    pass
-            return True
-        except (IOError, OSError, PermissionError):
-            return False
 
     return main(map_key)

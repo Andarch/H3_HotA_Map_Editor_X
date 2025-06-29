@@ -348,3 +348,111 @@ def create_general_dataframe(general_data):
                 })
 
     return pd.DataFrame(rows)
+
+
+def is_file_writable(filepath: str) -> bool:
+    """
+    Check if a file can be written to (not currently open in another application).
+
+    Args:
+        filepath: Path to the file to check
+
+    Returns:
+        True if file can be written to, False otherwise
+    """
+    import os
+
+    try:
+        # Try to open the file in write mode
+        if os.path.exists(filepath):
+            with open(filepath, 'r+b') as f:
+                pass
+        return True
+    except (IOError, OSError, PermissionError):
+        return False
+
+
+def process_section_with_progress(section_data, section_name, update_interval=10000):
+    """
+    Process large sections with progress tracking.
+
+    Args:
+        section_data: List of items to process
+        section_name: Name of the section for progress display
+        update_interval: How often to update progress display
+
+    Returns:
+        List of processed items
+    """
+    from ..common import Color, xprint
+
+    total_items = len(section_data)
+    xprint(text=f"Exporting... {Color.CYAN.value}{section_name} 0/{total_items}{Color.RESET.value}", overwrite=1)
+
+    processed_items = []
+    for i, item in enumerate(section_data, 1):
+        processed_items.append(item)
+        if i % update_interval == 0 or i == total_items:
+            xprint(text=f"Exporting... {Color.CYAN.value}{section_name} {i}/{total_items}{Color.RESET.value}", overwrite=1)
+
+    return processed_items
+
+
+def create_section_dataframe(section_data, section, section_name):
+    """
+    Create a DataFrame for a section with appropriate handling for different data types.
+
+    Args:
+        section_data: The data for this section
+        section: The section identifier
+        section_name: The formatted section name
+
+    Returns:
+        pandas.DataFrame
+    """
+    if isinstance(section_data, list) and section_data:
+        return pd.DataFrame(section_data)
+    elif section == "general":
+        return create_general_dataframe(section_data)
+    else:
+        return pd.DataFrame([{section: "No data"}])
+
+
+def export_section_to_worksheet(writer, df, section, section_name, add_row_numbers=True, pre_processed=False):
+    """
+    Complete processing and export of a section to Excel worksheet.
+
+    Args:
+        writer: Excel writer object
+        df: DataFrame to export
+        section: Section identifier
+        section_name: Formatted section name
+        add_row_numbers: Whether to add row numbers
+        pre_processed: If True, skip sanitization and column formatting (for pre-processed DataFrames)
+
+    Returns:
+        The created worksheet
+    """
+    if not pre_processed:
+        # Sanitize the dataframe
+        df = sanitize_dataframe(df)
+
+        # Format column headers (except for general section)
+        if section != "general":
+            df.columns = [format_column_name(col) for col in df.columns]
+
+    # Add row numbers for non-general sections
+    if section != "general" and add_row_numbers:
+        if len(df) > 0 and not (len(df) == 1 and section in df.columns):
+            # Add row numbers for actual data
+            df.insert(0, "#", range(1, len(df) + 1))
+        else:
+            # Add empty numbering column for "No data" cases
+            df.insert(0, "#", "")
+
+    # Export to Excel and auto-fit columns
+    df.to_excel(writer, sheet_name=section_name, index=False)
+    worksheet = writer.sheets[section_name]
+    auto_fit_columns(worksheet)
+
+    return worksheet
