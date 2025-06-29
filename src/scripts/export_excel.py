@@ -104,58 +104,136 @@ def export_excel(map_key: dict) -> bool:
                 xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
 
     def export_object_data(map_key: dict, writer):
-        """Special export function for object data that separates decorative objects"""
+        """Special export function for object data that categorizes objects into multiple sheets"""
         object_data = map_key["object_data"]
         total_items = len(object_data)
 
-        # Separate objects into decorative and regular
-        regular_objects = []
-        decor_objects = []
+        # Define object categories
+        categories = {
+            "Heroes": {
+                objects.ID.Hero, objects.ID.Prison, objects.ID.Random_Hero, objects.ID.Hero_Placeholder
+            },
+            "Towns": {
+                objects.ID.Town, objects.ID.Random_Town
+            },
+            "Monsters": {
+                objects.ID.Monster, objects.ID.Random_Monster, objects.ID.Random_Monster_1,
+                objects.ID.Random_Monster_2, objects.ID.Random_Monster_3, objects.ID.Random_Monster_4,
+                objects.ID.Random_Monster_5, objects.ID.Random_Monster_6, objects.ID.Random_Monster_7
+            },
+            "Spells": {
+                objects.ID.Shrine_of_Magic_Incantation, objects.ID.Shrine_of_Magic_Gesture,
+                objects.ID.Shrine_of_Magic_Thought, objects.ID.Pyramid, objects.ID.Spell_Scroll
+            },
+            "Artifacts": {
+                objects.ID.Artifact, objects.ID.Random_Artifact, objects.ID.Random_Treasure_Artifact,
+                objects.ID.Random_Minor_Artifact, objects.ID.Random_Major_Artifact, objects.ID.Random_Relic
+            },
+            "Resources": {
+                objects.ID.Resource, objects.ID.Random_Resource
+            },
+            "Treasure": {
+                objects.ID.Treasure_Chest, objects.ID.Sea_Chest, objects.ID.Flotsam, objects.ID.Campfire,
+                objects.ID.Shipwreck_Survivor, objects.ID.HotA_Collectible
+            },
+            "Other Pickups": {
+                objects.ID.Scholar, objects.ID.Ocean_Bottle, objects.ID.Grail
+            },
+            "Creature Banks": {
+                objects.ID.Creature_Bank, objects.ID.Derelict_Ship, objects.ID.Dragon_Utopia,
+                objects.ID.Crypt, objects.ID.Shipwreck
+            },
+            "Garrisons": {
+                objects.ID.Garrison, objects.ID.Garrison_Vertical
+            },
+            "Seers Huts": {
+                objects.ID.Seers_Hut
+            },
+            "Quest Objects": {
+                objects.ID.Quest_Guard
+            },
+            "Event Pickups": {
+                objects.ID.Event, objects.ID.Pandoras_Box
+            },
+            "Border Objects": {
+                objects.ID.Border_Guard, objects.ID.Keymasters_Tent
+            },
+            "Dwellings": {
+                objects.ID.Creature_Generator_1, objects.ID.Creature_Generator_4, objects.ID.Random_Dwelling,
+                objects.ID.Random_Dwelling_Leveled, objects.ID.Random_Dwelling_Faction
+            },
+            "Mines & Warehouses": {
+                objects.ID.Mine, objects.ID.HotA_Warehouse, objects.ID.Abandoned_Mine
+            },
+            "Interactive": {
+                objects.ID.University, objects.ID.Witch_Hut, objects.ID.Black_Market,
+                objects.ID.HotA_Visitable_1, objects.ID.HotA_Visitable_2
+            },
+            "Simple Objects": {
+                objects.ID.Tree_of_Knowledge, objects.ID.Lean_To, objects.ID.Wagon, objects.ID.Warriors_Tomb,
+                objects.ID.Lighthouse, objects.ID.Shipyard
+            },
+            "Decor": objects.DECOR_OBJECTS
+        }
+
+        # Initialize category lists
+        categorized_objects = {category: [] for category in categories.keys()}
 
         xprint(text=f"Exporting... {Color.CYAN.value}Object Data 0/{total_items}{Color.RESET.value}", overwrite=1)
 
+        # Categorize objects
         for i, obj in enumerate(object_data, 1):
-            if obj["id"] in objects.DECOR_OBJECTS:
-                decor_objects.append(obj)
+            categorized = False
+
+            # Special handling for Border_Gate based on sub_id
+            if obj["id"] == objects.ID.Border_Gate:
+                if obj["sub_id"] == 1000:  # Quest Gate
+                    categorized_objects["Quest Objects"].append(obj)
+                elif obj["sub_id"] == 1001:  # Grave - reward giving object
+                    categorized_objects["Treasure"].append(obj)
+                else:  # Regular Border Gate
+                    categorized_objects["Border Objects"].append(obj)
+                categorized = True
             else:
-                regular_objects.append(obj)
+                # Check each category
+                for category, object_ids in categories.items():
+                    if obj["id"] in object_ids:
+                        categorized_objects[category].append(obj)
+                        categorized = True
+                        break
+
+            # If object doesn't fit any category, add to Simple Objects
+            if not categorized:
+                categorized_objects["Simple Objects"].append(obj)
 
             if i % 10000 == 0 or i == total_items:
                 xprint(text=f"Exporting... {Color.CYAN.value}Object Data {i}/{total_items}{Color.RESET.value}", overwrite=1)
 
         xprint(text="Formatting...")
 
-        # Export regular objects to "Objects" sheet
-        if regular_objects:
-            df_regular = pd.DataFrame(regular_objects)
-            df_regular = sanitize_dataframe(df_regular)
-            df_regular.insert(0, "#", range(1, len(df_regular) + 1))
-            df_regular.to_excel(writer, sheet_name="Objects", index=False)
-            worksheet_regular = writer.sheets["Objects"]
-            auto_fit_columns(worksheet_regular)
-        else:
-            # Create empty sheet if no regular objects
-            df_regular = pd.DataFrame([{"Objects": "No data"}])
-            df_regular.insert(0, "#", "")
-            df_regular.to_excel(writer, sheet_name="Objects", index=False)
-            worksheet_regular = writer.sheets["Objects"]
-            auto_fit_columns(worksheet_regular)
+        # Export each category to its own sheet
+        for category, objects_list in categorized_objects.items():
+            if objects_list:
+                # Sort objects by ID first, then by sub_id
+                objects_list.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
 
-        # Export decorative objects to "Decor" sheet
-        if decor_objects:
-            df_decor = pd.DataFrame(decor_objects)
-            df_decor = sanitize_dataframe(df_decor)
-            df_decor.insert(0, "#", range(1, len(df_decor) + 1))
-            df_decor.to_excel(writer, sheet_name="Decor", index=False)
-            worksheet_decor = writer.sheets["Decor"]
-            auto_fit_columns(worksheet_decor)
-        else:
-            # Create empty sheet if no decorative objects
-            df_decor = pd.DataFrame([{"Decor": "No data"}])
-            df_decor.insert(0, "#", "")
-            df_decor.to_excel(writer, sheet_name="Decor", index=False)
-            worksheet_decor = writer.sheets["Decor"]
-            auto_fit_columns(worksheet_decor)
+                df = pd.DataFrame(objects_list)
+                df = sanitize_dataframe(df)
+
+                # Remove columns ending with "_bytes"
+                df = df.loc[:, ~df.columns.str.endswith('_bytes')]
+
+                df.insert(0, "#", range(1, len(df) + 1))
+                df.to_excel(writer, sheet_name=category, index=False)
+                worksheet = writer.sheets[category]
+                auto_fit_columns(worksheet)
+            else:
+                # Create empty sheet if no objects in this category
+                df = pd.DataFrame([{category: "No data"}])
+                df.insert(0, "#", "")
+                df.to_excel(writer, sheet_name=category, index=False)
+                worksheet = writer.sheets[category]
+                auto_fit_columns(worksheet)
 
         # Clean up progress display
         xprint(text="", overwrite=2)
