@@ -179,14 +179,14 @@ def export_excel(map_key: dict) -> bool:
         def clean_value(value):
             if isinstance(value, str):
                 cleaned = illegal_chars.sub("", value)
-                if cleaned and cleaned[0] in ("=", "+", "-", "@"):
+                if cleaned and cleaned[0] in ("=", "+", "@"):
                     cleaned = "'" + cleaned
                 return cleaned
             elif isinstance(value, bytes):
                 try:
                     decoded = value.decode("latin-1", errors="ignore")
                     cleaned = illegal_chars.sub("", decoded)
-                    if cleaned and cleaned[0] in ("=", "+", "-", "@"):
+                    if cleaned and cleaned[0] in ("=", "+", "@"):
                         cleaned = "'" + cleaned
                     return cleaned
                 except:

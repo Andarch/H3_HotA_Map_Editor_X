@@ -29,10 +29,15 @@ def parse_object_defs() -> list:
         obj["placeable_terrain"]  = io.read_bits(2)
         obj["editor_section"]     = io.read_bits(2)
 
-        obj["id"]    = io.read_int(4)
-        obj["sub_id"] = io.read_int(4)
-        obj["type"]    = objects.ID(obj["id"])
-        obj["subtype"] = get_subtype(obj["id"], obj["sub_id"])
+        obj["id"]      = io.read_int(4)
+        obj["sub_id"]  = io.read_int(4)
+        obj["type"]    = objects.ID(obj["id"]).name.replace("_", " ")
+
+        subtype_result = get_subtype(obj["id"], obj["sub_id"])
+        if hasattr(subtype_result, 'name'):
+            obj["subtype"] = subtype_result.name.replace("_", " ")
+        else:
+            obj["subtype"] = "-"
 
         obj["editor_group"] =      io.read_int(1)
         obj["below_ground"] = bool(io.read_int(1))
