@@ -325,99 +325,6 @@ ignored_pickups = {
     objects.ID.Boat
 }
 
-decor_objects = {
-    objects.ID.Brush,
-    objects.ID.Bush,
-    objects.ID.Cactus,
-    objects.ID.Canyon,
-    objects.ID.Crater,
-    objects.ID.Dead_Vegetation,
-    objects.ID.Flowers,
-    objects.ID.Frozen_Lake,
-    objects.ID.Hedge,
-    objects.ID.Hill,
-    objects.ID.Hole,
-    objects.ID.Kelp,
-    objects.ID.Lake,
-    objects.ID.Lava_Flow,
-    objects.ID.Lava_Lake,
-    objects.ID.Mushrooms,
-    objects.ID.Log,
-    objects.ID.Mandrake,
-    objects.ID.Moss,
-    objects.ID.Mound,
-    objects.ID.Mountain,
-    objects.ID.Oak_Trees,
-    objects.ID.Outcropping,
-    objects.ID.Pine_Trees,
-    objects.ID.Plant,
-    objects.ID.HotA_Decoration_1,
-    objects.ID.HotA_Decoration_2,
-    objects.ID.River_Delta,
-    objects.ID.Rock,
-    objects.ID.Sand_Dune,
-    objects.ID.Sand_Pit,
-    objects.ID.Shrub,
-    objects.ID.Skull,
-    objects.ID.Stalagmite,
-    objects.ID.Stump,
-    objects.ID.Tar_Pit,
-    objects.ID.Trees,
-    objects.ID.Vine,
-    objects.ID.Volcanic_Vent,
-    objects.ID.Volcano,
-    objects.ID.Willow_Trees,
-    objects.ID.Yucca_Trees,
-    objects.ID.Reef,
-    objects.ID.Brush_2,
-    objects.ID.Bush_2,
-    objects.ID.Cactus_2,
-    objects.ID.Canyon_2,
-    objects.ID.Crater_2,
-    objects.ID.Dead_Vegetation_2,
-    objects.ID.Flowers_2,
-    objects.ID.Frozen_Lake_2,
-    objects.ID.Hedge_2,
-    objects.ID.Hill_2,
-    objects.ID.Hole_2,
-    objects.ID.Kelp_2,
-    objects.ID.Lake_2,
-    objects.ID.Lava_Flow_2,
-    objects.ID.Lava_Lake_2,
-    objects.ID.Mushrooms_2,
-    objects.ID.Log_2,
-    objects.ID.Mandrake_2,
-    objects.ID.Moss_2,
-    objects.ID.Mound_2,
-    objects.ID.Mountain_2,
-    objects.ID.Oak_Trees_2,
-    objects.ID.Outcropping_2,
-    objects.ID.Pine_Trees_2,
-    objects.ID.Plant_2,
-    objects.ID.River_Delta_2,
-    objects.ID.Rock_2,
-    objects.ID.Sand_Dune_2,
-    objects.ID.Sand_Pit_2,
-    objects.ID.Shrub_2,
-    objects.ID.Skull_2,
-    objects.ID.Stalagmite_2,
-    objects.ID.Stump_2,
-    objects.ID.Tar_Pit_2,
-    objects.ID.Trees_2,
-    objects.ID.Vine_2,
-    objects.ID.Volcanic_Vent_2,
-    objects.ID.Volcano_2,
-    objects.ID.Willow_Trees_2,
-    objects.ID.Yucca_Trees_2,
-    objects.ID.Reef_2,
-    objects.ID.Desert_Hills,
-    objects.ID.Dirt_Hills,
-    objects.ID.Grass_Hills,
-    objects.ID.Rough_Hills,
-    objects.ID.Subterranean_Rocks,
-    objects.ID.Swamp_Foliage
-}
-
 border_objects = {
     objects.ID.Border_Gate,
     objects.ID.Border_Guard,
@@ -482,7 +389,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return obj["sub_id"] + 3000
             elif obj["id"] == objects.ID.Two_Way_Monolith:
                 return obj["sub_id"] + 3500
-            elif obj["id"] not in decor_objects:
+            elif obj["id"] not in objects.DECOR_OBJECTS:
                 return 10000
         else:
             return None
@@ -586,7 +493,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     if(input == 1):
         main(general, terrain, object_data, defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, defs, input, decor_objects, "_1_base1")
+        main(general, terrain, object_data, defs, input, objects.DECOR_OBJECTS, "_1_base1")
         main(general, terrain, object_data, defs, input, None, "_2_base2")
         main(general, terrain, object_data, defs, input, border_objects, "_3_border")
         main(general, terrain, object_data, defs, input, one_way_portal_objects, "_4_portals1")
