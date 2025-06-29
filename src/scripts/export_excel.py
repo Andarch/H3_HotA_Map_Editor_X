@@ -76,6 +76,16 @@ def export_excel(map_key: dict) -> bool:
 
             # Common processing for all sections
             df = sanitize_dataframe(df)
+
+            # Insert row numbering column for all sections except general
+            if section != "general":
+                if len(df) > 0 and not (len(df) == 1 and section in df.columns):
+                    # Add row numbers for actual data
+                    df.insert(0, "#", range(1, len(df) + 1))
+                else:
+                    # Add empty numbering column for "No data" cases
+                    df.insert(0, "#", "")
+
             df.to_excel(writer, sheet_name=section_name, index=False)
             worksheet = writer.sheets[section_name]
             auto_fit_columns(worksheet)
