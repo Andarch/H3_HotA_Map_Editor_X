@@ -10,7 +10,6 @@ def export_excel(map_key: dict) -> bool:
         all_sections = ["general", "player_specs", "rumors", "hero_data", "terrain", "object_defs", "object_data", "events"]
         hero_sections = ["player_specs", "custom_heroes", "hero_data", "object_data"]
         terrain_sections = ["terrain"]
-        object_sections = ["object_data"]
 
         filename = map_key["filename"]
         if filename.endswith(".h3m"): filename = filename[:-4]
@@ -35,7 +34,7 @@ def export_excel(map_key: dict) -> bool:
                 case 1: export_data(map_key, writer, all_sections)
                 case 2: export_data(map_key, writer, hero_sections, use_hero_data=True)
                 case 3: export_data(map_key, writer, terrain_sections)
-                case 4: export_data(map_key, writer, object_sections)
+                case 4: export_object_data(map_key, writer)
 
         xprint(type=Text.SPECIAL, text=DONE)
         return True
@@ -103,6 +102,64 @@ def export_excel(map_key: dict) -> bool:
             # Show "Writing Excel file to disk..." message for the last section
             if section_idx == len(sections) - 1:
                 xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
+
+    def export_object_data(map_key: dict, writer):
+        """Special export function for object data that separates decorative objects"""
+        object_data = map_key["object_data"]
+        total_items = len(object_data)
+
+        # Separate objects into decorative and regular
+        regular_objects = []
+        decor_objects = []
+
+        xprint(text=f"Exporting... {Color.CYAN.value}Object Data 0/{total_items}{Color.RESET.value}", overwrite=1)
+
+        for i, obj in enumerate(object_data, 1):
+            if obj["id"] in objects.DECOR_OBJECTS:
+                decor_objects.append(obj)
+            else:
+                regular_objects.append(obj)
+
+            if i % 10000 == 0 or i == total_items:
+                xprint(text=f"Exporting... {Color.CYAN.value}Object Data {i}/{total_items}{Color.RESET.value}", overwrite=1)
+
+        xprint(text="Formatting...")
+
+        # Export regular objects to "Objects" sheet
+        if regular_objects:
+            df_regular = pd.DataFrame(regular_objects)
+            df_regular = sanitize_dataframe(df_regular)
+            df_regular.insert(0, "#", range(1, len(df_regular) + 1))
+            df_regular.to_excel(writer, sheet_name="Objects", index=False)
+            worksheet_regular = writer.sheets["Objects"]
+            auto_fit_columns(worksheet_regular)
+        else:
+            # Create empty sheet if no regular objects
+            df_regular = pd.DataFrame([{"Objects": "No data"}])
+            df_regular.insert(0, "#", "")
+            df_regular.to_excel(writer, sheet_name="Objects", index=False)
+            worksheet_regular = writer.sheets["Objects"]
+            auto_fit_columns(worksheet_regular)
+
+        # Export decorative objects to "Decor" sheet
+        if decor_objects:
+            df_decor = pd.DataFrame(decor_objects)
+            df_decor = sanitize_dataframe(df_decor)
+            df_decor.insert(0, "#", range(1, len(df_decor) + 1))
+            df_decor.to_excel(writer, sheet_name="Decor", index=False)
+            worksheet_decor = writer.sheets["Decor"]
+            auto_fit_columns(worksheet_decor)
+        else:
+            # Create empty sheet if no decorative objects
+            df_decor = pd.DataFrame([{"Decor": "No data"}])
+            df_decor.insert(0, "#", "")
+            df_decor.to_excel(writer, sheet_name="Decor", index=False)
+            worksheet_decor = writer.sheets["Decor"]
+            auto_fit_columns(worksheet_decor)
+
+        # Clean up progress display
+        xprint(text="", overwrite=2)
+        xprint(type=Text.ACTION, text="Writing Excel file to disk...", overwrite=1)
 
     def flatten_dict(d, parent_key="", sep="_"):
         items = []
