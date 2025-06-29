@@ -85,7 +85,7 @@ def export_excel(map_key: dict) -> bool:
             # Clean up column headers: replace underscores with spaces and apply title case
             # (except for the general section which has a custom structure)
             if section != "general":
-                df.columns = [col.replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
+                df.columns = [str(col).replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
 
             # Insert row numbering column for all sections except general
             if section != "general":
@@ -268,7 +268,7 @@ def export_excel(map_key: dict) -> bool:
                 df = df.loc[:, ~df.columns.str.endswith('_bytes')]
 
                 # Clean up column headers: replace underscores with spaces and apply title case
-                df.columns = [col.replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
+                df.columns = [str(col).replace('_', ' ').title().replace(' Id', ' ID') for col in df.columns]
 
                 df.insert(0, "#", range(1, len(df) + 1))
                 df.to_excel(writer, sheet_name=category, index=False)

@@ -1,5 +1,6 @@
 import src.file_io as io
 import data.heroes as heroes
+import data.players as players
 
 from data.objects import Town
 
@@ -58,8 +59,9 @@ from data.objects import Town
 def parse_player_specs() -> list:
     specs = []
 
-    for _ in range(8):
+    for p in range(8):
         info = {
+            "color"                : "",
             "playability_human"    : False,
             "playability_ai"       : False,
             "ai_behavior"          : 0,
@@ -79,6 +81,7 @@ def parse_player_specs() -> list:
             "placeholder_heroes"   : []
         }
 
+        info["color"] = players.Players(p).name
         info["playability_human"]     = bool(io.read_int(1))
         info["playability_ai"]        = bool(io.read_int(1))
         info["ai_behavior"]           =      io.read_int(1)

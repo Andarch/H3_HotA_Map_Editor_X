@@ -5,6 +5,7 @@ import data.heroes    as heroes
 import data.objects   as objects
 import data.skills    as skills
 import data.spells    as spells
+import data.players   as players
 from .common import *
 
 from src.handler_06_rumors_and_events import parse_events, write_events
@@ -623,11 +624,12 @@ def parse_hero(obj: dict) -> dict:
 
     obj["start_bytes"] = io.read_raw(4)
     obj["owner"]       = io.read_int(1)
+    obj["color"]       = players.Players(obj["owner"]).name
 
     hero = {
         "id"                : 255,
         "has_name"          : False,
-        "name"              : "",
+        "custom_name"              : "",
         "experience"        : -1,
         "has_portrait"      : False,
         "portrait"          : 255,
