@@ -1,7 +1,6 @@
 import os
 import re
 import pandas as pd
-from .data_utils import *
 
 
 def is_file_writable(filepath: str) -> bool:
@@ -13,43 +12,6 @@ def is_file_writable(filepath: str) -> bool:
         return True
     except (IOError, OSError, PermissionError):
         return False
-
-
-def create_dataframe(section_data, section, section_name) -> pd.DataFrame:
-    if isinstance(section_data, list) and section_data:
-        return pd.DataFrame(section_data)
-    elif section == "general":
-        # Create structured DataFrame for general map data
-        rows = []
-        categories = ["map_specs", "teams", "conditions", "start_heroes", "ban_flags"]
-
-        for category in categories:
-            if category in section_data:
-                if category == "map_specs" and "filename" in section_data:
-                    rows.append({
-                        "Category": "map_specs",
-                        "Key": "filename",
-                        "Value": section_data["filename"]
-                    })
-
-                category_data = section_data[category]
-                if isinstance(category_data, dict):
-                    flattened = flatten_dict(category_data)
-                    for key, value in flattened.items():
-                        rows.append({
-                            "Category": category,
-                            "Key": key,
-                            "Value": value
-                        })
-                else:
-                    rows.append({
-                        "Category": category,
-                        "Key": category,
-                        "Value": category_data
-                    })
-        return pd.DataFrame(rows)
-    else:
-        return pd.DataFrame()  # Return empty DataFrame for no data
 
 
 def export_dataframes(writer, sections_data, is_final_export=True) -> None:
