@@ -5,6 +5,7 @@ import data.objects as objects
 from ..common import *
 from ..menus import *
 from .excel_utils import *
+from .data_utils import *
 
 def export_excel(map_key: dict) -> bool:
     def main(map_key: dict) -> bool:
@@ -15,8 +16,8 @@ def export_excel(map_key: dict) -> bool:
         filename = map_key["filename"]
         if filename.endswith(".h3m"): filename = filename[:-4]
 
-        export_type = get_export_type()
-        if not export_type: return False
+        export_type = xprint(menu=Menu.EXCEL.value)
+        if export_type == KB.ESC.value: return False
 
         # Append export type suffix to filename
         suffix_map = {1: "_all", 2: "_heros", 3: "_terrain", 4: "_objects"}
@@ -43,7 +44,7 @@ def export_excel(map_key: dict) -> bool:
     def export_sections(map_key: dict, writer, sections, use_hero_data=False):
         """Unified function for exporting sequential sections to Excel"""
         # Get the appropriate data source
-        data_source = get_hero_data(map_key) if use_hero_data else map_key
+        data_source = get_all_hero_data(map_key) if use_hero_data else map_key
 
         # Prepare sections data for export
         sections_data = {}
@@ -107,7 +108,7 @@ def export_excel(map_key: dict) -> bool:
 
                 # Special handling for Heroes sheet - flatten nested hero data
                 if category == "Heroes":
-                    objects_list = flatten_hero_data(objects_list)
+                    objects_list = flatten_obj_hero_data(objects_list)
 
                 # Create DataFrame with specialized processing for object data
                 df = prepare_dataframe(objects_list, remove_bytes_columns=True, format_columns=True)
@@ -123,10 +124,5 @@ def export_excel(map_key: dict) -> bool:
 
         # Export all categories using unified function
         export_sections_to_excel(writer, sections_data, use_progress=True, is_final_export=True)
-
-    def get_export_type() -> int:
-        input = xprint(menu=Menu.EXCEL.value)
-        if input == KB.ESC.value: return False
-        else: return int(input)
 
     return main(map_key)
