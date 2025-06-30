@@ -2,78 +2,63 @@ import re
 import pandas as pd
 from ..common import *
 from ..file_io import is_file_writable
-from .data_utils import *
-
-
-# Compile regex once for Excel illegal characters
-ILLEGAL_CHARS = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
+from .process_objects import *
 
 
 def export_excel(map_key: dict) -> bool:
-    def main():
-        # Create Excel filename by replacing .h3m with _objects.xlsx
-        filename = map_key["filename"][:-4] + "_objects.xlsx"
+    # Create Excel filename by replacing .h3m with _objects.xlsx
+    filename = map_key["filename"][:-4] + "_objects.xlsx"
 
-        # Check if Excel file is already open
-        if not is_file_writable(filename):
-            return False
+    # Check if Excel file is already open
+    if not is_file_writable(filename):
+        return False
 
-        # Show initial export message
-        draw_header()
-        xprint(type=Text.ACTION, text=f"Exporting object data...")
+    # Show initial export message
+    draw_header()
+    xprint(type=Text.ACTION, text=f"Exporting object data...")
 
-        # Open Excel writer with openpyxl engine
-        with pd.ExcelWriter(filename, engine="openpyxl") as writer:
-            # Process objects (categorize and clean data)
-            processed_objects = process_objects(map_key["object_data"])
+    # Open Excel writer with openpyxl engine
+    with pd.ExcelWriter(filename, engine="openpyxl") as writer:
+        # Process objects (categorize and clean data)
+        processed_objects = process_objects(map_key["object_data"])
 
-            # Write each category to Excel
-            for category, objects in processed_objects.items():
-                # Create DataFrame
-                df = pd.DataFrame(objects) if objects else pd.DataFrame([{"": "No data"}])
+        # Compile regex for Excel illegal characters
+        illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
 
-                # Sanitize data for Excel compatibility
-                for col in df.columns:
-                    df[col] = df[col].apply(clean_value)
+        # Write each category to Excel
+        for category, objects in processed_objects.items():
+            # Create DataFrame
+            df = pd.DataFrame(objects) if objects else pd.DataFrame([{"": "No data"}])
 
-                # Format column headers
-                df.columns = [str(col).replace('_', ' ').title().replace('Id', 'ID') for col in df.columns]
+            # Sanitize data for Excel compatibility
+            for col in df.columns:
+                df[col] = df[col].apply(lambda value:
+                    illegal_chars.sub("", value) if isinstance(value, str) else
+                    illegal_chars.sub("", value.decode("latin-1", errors="ignore")) if isinstance(value, bytes) else
+                    value
+                ).apply(lambda value:
+                    "'" + value if isinstance(value, str) and value and value[0] == "=" else value
+                )
 
-                # Add row numbers (skip for "No data" sheets)
-                if not (len(df) == 1 and df.iloc[0, 0] == "No data"):
-                    df.insert(0, "#", range(1, len(df) + 1))
+            # Format column headers
+            df.columns = [str(col).replace('_', ' ').title().replace('Id', 'ID') for col in df.columns]
 
-                # Export to Excel and auto-fit columns
-                df.to_excel(writer, sheet_name=category, index=False)
-                worksheet = writer.sheets[category]
+            # Add row numbers (skip for "No data" sheets)
+            if not (len(df) == 1 and df.iloc[0, 0] == "No data"):
+                df.insert(0, "#", range(1, len(df) + 1))
 
-                # Auto-fit column widths
-                for column in worksheet.columns:
-                    column_letter = column[0].column_letter
-                    max_length = max(len(str(cell.value or "")) for cell in column)
-                    adjusted_width = min(max_length + 2, 50)
-                    worksheet.column_dimensions[column_letter].width = max(adjusted_width, 8)
+            # Export to Excel and auto-fit columns
+            df.to_excel(writer, sheet_name=category, index=False)
+            worksheet = writer.sheets[category]
 
-        # Show final completion message and return success
-        xprint(type=Text.SPECIAL, text=DONE)
-        return True
+            # Auto-fit column widths
+            for column in worksheet.columns:
+                column_letter = column[0].column_letter
+                max_length = max(len(str(cell.value or "")) for cell in column)
+                adjusted_width = min(max_length + 2, 50)
+                worksheet.column_dimensions[column_letter].width = max(adjusted_width, 8)
 
+    # Show completion message and return success
+    xprint(type=Text.SPECIAL, text=DONE)
 
-    def clean_value(value):
-        # Clean cell values to prevent Excel formula injection and handle special characters
-        if isinstance(value, str):
-            cleaned = ILLEGAL_CHARS.sub("", value)
-        elif isinstance(value, bytes):
-            try:
-                cleaned = ILLEGAL_CHARS.sub("", value.decode("latin-1", errors="ignore"))
-            except:
-                return str(value)
-        else:
-            return value
-
-        # Prevent formula injection (escape values starting with =)
-        if cleaned and cleaned[0] == "=":
-            cleaned = "'" + cleaned
-        return cleaned
-
-    return main()
+    return True
