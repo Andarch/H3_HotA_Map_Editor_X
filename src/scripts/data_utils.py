@@ -1,27 +1,13 @@
-"""
-Data manipulation utilities for Heroes 3 map editor.
-Contains functions for processing hero data, object categorization, and data structure manipulation.
-"""
+from copy import deepcopy
+import data.objects as objects
 
 
-def categorize_objects(object_data, progress_callback=None):
-    """
-    Categorize objects into predefined categories for export.
-
-    Args:
-        object_data: List of object dictionaries to categorize
-        progress_callback: Optional function to call for progress updates
-
-    Returns:
-        Dictionary mapping category names to lists of objects
-    """
-    import data.objects as objects
+def categorize_objects(object_data) -> dict:
 
     categories = get_obj_categories()
     categorized_objects = {category: [] for category in categories.keys()}
-    total_items = len(object_data)
 
-    for i, obj in enumerate(object_data, 1):
+    for obj in object_data:
         categorized = False
 
         # Special handling for Border_Gate based on sub_id
@@ -45,22 +31,10 @@ def categorize_objects(object_data, progress_callback=None):
         if not categorized:
             categorized_objects["Simple Objects"].append(obj)
 
-        # Call progress callback if provided
-        if progress_callback and (i % 10000 == 0 or i == total_items):
-            progress_callback(i, total_items)
-
     return categorized_objects
 
 
-def get_obj_categories():
-    """
-    Get the predefined object categories for export organization.
-
-    Returns:
-        Dictionary mapping category names to sets of object IDs
-    """
-    import data.objects as objects
-
+def get_obj_categories() -> dict:
     return {
         "Heroes": {
             objects.ID.Hero, objects.ID.Prison, objects.ID.Random_Hero, objects.ID.Hero_Placeholder
@@ -129,22 +103,7 @@ def get_obj_categories():
     }
 
 
-def flatten_obj_hero_data(objects_list):
-    """
-    Flatten nested hero data for Excel export.
-
-    This function processes objects with hero_data and flattens the nested dictionaries
-    into a flat structure suitable for Excel export, with special handling for:
-    - Primary skills and artifacts (nested dicts)
-    - Secondary skills (list of dicts formatted as text)
-    - Hero ID renaming to avoid conflicts
-
-    Args:
-        objects_list: List of object dictionaries that may contain hero_data
-
-    Returns:
-        List of flattened object dictionaries
-    """
+def flatten_obj_hero_data(objects_list) -> list:
     flattened_objects = []
 
     for obj in objects_list:
@@ -188,22 +147,6 @@ def flatten_obj_hero_data(objects_list):
 
 
 def get_all_hero_data(map_key: dict) -> dict:
-    """
-    Extract and filter hero-related data from map data.
-
-    This function processes the map data to extract only hero-relevant information,
-    filtering out empty sections and removing unnecessary fields for cleaner exports.
-
-    Args:
-        map_key: Dictionary containing the full map data
-
-    Returns:
-        Dictionary with filtered hero data containing player_specs, custom_heroes,
-        hero_data, and object_data (heroes only)
-    """
-    from copy import deepcopy
-    import data.objects as objects
-
     player_specs = deepcopy(map_key['player_specs'])
     player_specs[:] = [player for player in player_specs if len(player["available_heroes"]) > 0]
     for player in player_specs:
@@ -233,25 +176,13 @@ def get_all_hero_data(map_key: dict) -> dict:
     return final_hero_data
 
 
-def flatten_dict(d, parent_key="", sep="_"):
-    """
-    Recursively flatten a nested dictionary.
-
-    Args:
-        d: Dictionary to flatten
-        parent_key: Parent key for nested structure
-        sep: Separator to use between keys
-
-    Returns:
-        Flattened dictionary
-    """
+def flatten_dict(d) -> dict:
     items = []
     for k, v in d.items():
-        new_key = f"{parent_key}{sep}{k}" if parent_key else k
         if isinstance(v, dict):
-            items.extend(flatten_dict(v, new_key, sep=sep).items())
+            items.extend(flatten_dict(v).items())
         elif isinstance(v, bytes):
-            items.append((new_key, v.decode("latin-1")))
+            items.append((k, v.decode("latin-1")))
         else:
-            items.append((new_key, str(v) if isinstance(v, (list, tuple)) else v))
+            items.append((k, str(v) if isinstance(v, (list, tuple)) else v))
     return dict(items)
