@@ -1,9 +1,7 @@
-from copy import deepcopy
 import data.objects as objects
 
 
 def categorize_objects(object_data) -> dict:
-
     categories = get_obj_categories()
     categorized_objects = {category: [] for category in categories.keys()}
 
