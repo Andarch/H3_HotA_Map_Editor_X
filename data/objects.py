@@ -258,99 +258,6 @@ class ID(IntEnum):
     #                             254
     #                             255
 
-DECOR_OBJECTS = {
-    ID.Brush,
-    ID.Bush,
-    ID.Cactus,
-    ID.Canyon,
-    ID.Crater,
-    ID.Dead_Vegetation,
-    ID.Flowers,
-    ID.Frozen_Lake,
-    ID.Hedge,
-    ID.Hill,
-    ID.Hole,
-    ID.Kelp,
-    ID.Lake,
-    ID.Lava_Flow,
-    ID.Lava_Lake,
-    ID.Mushrooms,
-    ID.Log,
-    ID.Mandrake,
-    ID.Moss,
-    ID.Mound,
-    ID.Mountain,
-    ID.Oak_Trees,
-    ID.Outcropping,
-    ID.Pine_Trees,
-    ID.Plant,
-    ID.HotA_Decoration_1,
-    ID.HotA_Decoration_2,
-    ID.River_Delta,
-    ID.Rock,
-    ID.Sand_Dune,
-    ID.Sand_Pit,
-    ID.Shrub,
-    ID.Skull,
-    ID.Stalagmite,
-    ID.Stump,
-    ID.Tar_Pit,
-    ID.Trees,
-    ID.Vine,
-    ID.Volcanic_Vent,
-    ID.Volcano,
-    ID.Willow_Trees,
-    ID.Yucca_Trees,
-    ID.Reef,
-    ID.Brush_2,
-    ID.Bush_2,
-    ID.Cactus_2,
-    ID.Canyon_2,
-    ID.Crater_2,
-    ID.Dead_Vegetation_2,
-    ID.Flowers_2,
-    ID.Frozen_Lake_2,
-    ID.Hedge_2,
-    ID.Hill_2,
-    ID.Hole_2,
-    ID.Kelp_2,
-    ID.Lake_2,
-    ID.Lava_Flow_2,
-    ID.Lava_Lake_2,
-    ID.Mushrooms_2,
-    ID.Log_2,
-    ID.Mandrake_2,
-    ID.Moss_2,
-    ID.Mound_2,
-    ID.Mountain_2,
-    ID.Oak_Trees_2,
-    ID.Outcropping_2,
-    ID.Pine_Trees_2,
-    ID.Plant_2,
-    ID.River_Delta_2,
-    ID.Rock_2,
-    ID.Sand_Dune_2,
-    ID.Sand_Pit_2,
-    ID.Shrub_2,
-    ID.Skull_2,
-    ID.Stalagmite_2,
-    ID.Stump_2,
-    ID.Tar_Pit_2,
-    ID.Trees_2,
-    ID.Vine_2,
-    ID.Volcanic_Vent_2,
-    ID.Volcano_2,
-    ID.Willow_Trees_2,
-    ID.Yucca_Trees_2,
-    ID.Reef_2,
-    ID.Desert_Hills,
-    ID.Dirt_Hills,
-    ID.Grass_Hills,
-    ID.Rough_Hills,
-    ID.Subterranean_Rocks,
-    ID.Swamp_Foliage
-}
-
 class Boat(IntEnum): # ID 8
     Boat_0 = 0
     Boat_1 = 1
@@ -715,3 +622,163 @@ class HotA_Visitable_2(IntEnum): # ID 146
 #    Tier_5 = 4
 #    Tier_6 = 5
 #    Tier_7 = 6
+
+DECOR = {
+    ID.Brush,
+    ID.Bush,
+    ID.Cactus,
+    ID.Canyon,
+    ID.Crater,
+    ID.Dead_Vegetation,
+    ID.Flowers,
+    ID.Frozen_Lake,
+    ID.Hedge,
+    ID.Hill,
+    ID.Hole,
+    ID.Kelp,
+    ID.Lake,
+    ID.Lava_Flow,
+    ID.Lava_Lake,
+    ID.Mushrooms,
+    ID.Log,
+    ID.Mandrake,
+    ID.Moss,
+    ID.Mound,
+    ID.Mountain,
+    ID.Oak_Trees,
+    ID.Outcropping,
+    ID.Pine_Trees,
+    ID.Plant,
+    ID.HotA_Decoration_1,
+    ID.HotA_Decoration_2,
+    ID.River_Delta,
+    ID.Rock,
+    ID.Sand_Dune,
+    ID.Sand_Pit,
+    ID.Shrub,
+    ID.Skull,
+    ID.Stalagmite,
+    ID.Stump,
+    ID.Tar_Pit,
+    ID.Trees,
+    ID.Vine,
+    ID.Volcanic_Vent,
+    ID.Volcano,
+    ID.Willow_Trees,
+    ID.Yucca_Trees,
+    ID.Reef,
+    ID.Brush_2,
+    ID.Bush_2,
+    ID.Cactus_2,
+    ID.Canyon_2,
+    ID.Crater_2,
+    ID.Dead_Vegetation_2,
+    ID.Flowers_2,
+    ID.Frozen_Lake_2,
+    ID.Hedge_2,
+    ID.Hill_2,
+    ID.Hole_2,
+    ID.Kelp_2,
+    ID.Lake_2,
+    ID.Lava_Flow_2,
+    ID.Lava_Lake_2,
+    ID.Mushrooms_2,
+    ID.Log_2,
+    ID.Mandrake_2,
+    ID.Moss_2,
+    ID.Mound_2,
+    ID.Mountain_2,
+    ID.Oak_Trees_2,
+    ID.Outcropping_2,
+    ID.Pine_Trees_2,
+    ID.Plant_2,
+    ID.River_Delta_2,
+    ID.Rock_2,
+    ID.Sand_Dune_2,
+    ID.Sand_Pit_2,
+    ID.Shrub_2,
+    ID.Skull_2,
+    ID.Stalagmite_2,
+    ID.Stump_2,
+    ID.Tar_Pit_2,
+    ID.Trees_2,
+    ID.Vine_2,
+    ID.Volcanic_Vent_2,
+    ID.Volcano_2,
+    ID.Willow_Trees_2,
+    ID.Yucca_Trees_2,
+    ID.Reef_2,
+    ID.Desert_Hills,
+    ID.Dirt_Hills,
+    ID.Grass_Hills,
+    ID.Rough_Hills,
+    ID.Subterranean_Rocks,
+    ID.Swamp_Foliage
+}
+
+CATEGORIES = {
+    "Heroes": {
+        ID.Hero, ID.Prison, ID.Random_Hero, ID.Hero_Placeholder
+    },
+    "Towns": {
+        ID.Town, ID.Random_Town
+    },
+    "Monsters": {
+        ID.Monster, ID.Random_Monster, ID.Random_Monster_1,
+        ID.Random_Monster_2, ID.Random_Monster_3, ID.Random_Monster_4,
+        ID.Random_Monster_5, ID.Random_Monster_6, ID.Random_Monster_7
+    },
+    "Spells": {
+        ID.Shrine_of_Magic_Incantation, ID.Shrine_of_Magic_Gesture,
+        ID.Shrine_of_Magic_Thought, ID.Pyramid, ID.Spell_Scroll
+    },
+    "Artifacts": {
+        ID.Artifact, ID.Random_Artifact, ID.Random_Treasure_Artifact,
+        ID.Random_Minor_Artifact, ID.Random_Major_Artifact, ID.Random_Relic
+    },
+    "Resources": {
+        ID.Resource, ID.Random_Resource
+    },
+    "Treasure": {
+        ID.Treasure_Chest, ID.Sea_Chest, ID.Flotsam, ID.Campfire,
+        ID.Shipwreck_Survivor, ID.HotA_Collectible
+    },
+    "Other Pickups": {
+        ID.Scholar, ID.Ocean_Bottle, ID.Grail
+    },
+    "Creature Banks": {
+        ID.Creature_Bank, ID.Derelict_Ship, ID.Dragon_Utopia,
+        ID.Crypt, ID.Shipwreck
+    },
+    "Garrisons": {
+        ID.Garrison, ID.Garrison_Vertical
+    },
+    "Seers Huts": {
+        ID.Seers_Hut
+    },
+    "Quest Objects": {
+        ID.Quest_Guard
+    },
+    "Event Pickups": {
+        ID.Event, ID.Pandoras_Box
+    },
+    "Border Objects": {
+        ID.Border_Guard, ID.Keymasters_Tent
+    },
+    "Dwellings": {
+        ID.Creature_Generator_1, ID.Creature_Generator_4, ID.Random_Dwelling,
+        ID.Random_Dwelling_Leveled, ID.Random_Dwelling_Faction
+    },
+    "Mines & Warehouses": {
+        ID.Mine, ID.HotA_Warehouse, ID.Abandoned_Mine
+    },
+    "Interactive": {
+        ID.University, ID.Witch_Hut, ID.Black_Market,
+        ID.HotA_Visitable_1, ID.HotA_Visitable_2
+    },
+    "Simple Objects": {
+        ID.Tree_of_Knowledge, ID.Lean_To, ID.Wagon, ID.Warriors_Tomb,
+        ID.Lighthouse, ID.Shipyard
+    },
+    "Decor": DECOR
+}
