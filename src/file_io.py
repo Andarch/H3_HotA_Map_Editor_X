@@ -1,5 +1,6 @@
 from gzip import open as gzopen
 from gzip import GzipFile
+import os
 from typing import Tuple
 from .common  import *
 from .menus import *
@@ -234,6 +235,11 @@ def save_maps() -> bool:
 
         def save_parsed_data(filename: str, map_key: str) -> bool:
             global map_data, out_file
+
+            # Check if file is writable before attempting to save
+            if not is_file_writable(filename):
+                return False
+
             xprint(type=Text.ACTION, text=f"Saving {filename}...")
             with open(filename, "wb") as f:
                 with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
@@ -259,3 +265,14 @@ def append_h3m(input: str) -> str:
     if input[-4:] != ".h3m": filename = input + ".h3m"
     else: filename = input
     return filename
+
+def is_file_writable(filepath: str) -> bool:
+    try:
+        # Try to open the file in write mode
+        if os.path.exists(filepath):
+            with open(filepath, 'r+b') as f:
+                pass
+        return True
+    except (IOError, OSError, PermissionError):
+        xprint(type=Text.ERROR, text="File is open in another program.")
+        return False

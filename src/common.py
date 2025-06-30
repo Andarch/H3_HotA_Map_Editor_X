@@ -243,7 +243,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
                     time.sleep(Sleep.SHORTER.value)
                     for _ in range(overwrite):
                         print("\033[F\033[K", end="")
-                print(align_text(text=text))
+                print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
             case Text.MENU:

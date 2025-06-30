@@ -142,3 +142,58 @@ def flatten_obj_hero_data(objects_list) -> list:
         flattened_objects.append(flattened_obj)
 
     return flattened_objects
+
+
+def process_objects(object_data) -> dict:
+    # Categorize objects and apply all necessary data transformations.
+    categories = get_obj_categories()
+    processed_objects = {category: [] for category in categories.keys()}
+
+    # Step 1: Categorize objects
+    for obj in object_data:
+        categorized = False
+
+        # Special handling for Border_Gate based on sub_id
+        if obj["id"] == objects.ID.Border_Gate:
+            if obj["sub_id"] == 1000:  # Quest Gate
+                processed_objects["Quest Objects"].append(obj)
+            elif obj["sub_id"] == 1001:  # Grave - reward giving object
+                processed_objects["Treasure"].append(obj)
+            else:  # Regular Border Gate
+                processed_objects["Border Objects"].append(obj)
+            categorized = True
+        else:
+            # Check each category
+            for category, object_ids in categories.items():
+                if obj["id"] in object_ids:
+                    processed_objects[category].append(obj)
+                    categorized = True
+                    break
+
+        # If object doesn't fit any category, add to Simple Objects
+        if not categorized:
+            processed_objects["Simple Objects"].append(obj)
+
+    # Step 2: Process each category
+    for category, objects_list in processed_objects.items():
+        if objects_list:
+            # Sort objects by ID first, then by sub_id
+            objects_list.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
+
+            # Category-specific transformations
+            if category == "Heroes":
+                objects_list = flatten_obj_hero_data(objects_list)
+            # elif category == "Towns":
+            #     objects_list = flatten_obj_town_data(objects_list)  # future
+
+            # Remove unwanted columns (universal + category-specific)
+            cleaned_objects = []
+            for obj in objects_list:
+                # For now, just remove _bytes columns (universal)
+                # Future: add category-specific column removal here
+                cleaned_obj = {k: v for k, v in obj.items() if not k.endswith('_bytes')}
+                cleaned_objects.append(cleaned_obj)
+
+            processed_objects[category] = cleaned_objects
+
+    return processed_objects
