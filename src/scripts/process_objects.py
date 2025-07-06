@@ -81,6 +81,37 @@ def process_objects(object_data) -> dict:
                                         if level_name and skill_name:
                                             skill_lines.append(f"{level_name} {skill_name}")
                                 flattened_obj[sub_key] = "\n".join(skill_lines) if skill_lines else ""
+                            # Special formatting for creatures
+                            elif sub_key == "creatures" and sub_value:
+                                creature_lines = []
+                                for creature in sub_value:
+                                    if isinstance(creature, dict):
+                                        creature_id = creature.get('id', '')
+                                        amount = creature.get('amount', '')
+
+                                        # Skip creatures with 0 amount
+                                        if not amount or amount == 0:
+                                            continue
+
+                                        # Extract creature name from ID enum string representation
+                                        creature_name = ''
+                                        if creature_id:
+                                            id_str = str(creature_id)
+                                            # Handle different possible enum formats
+                                            if ':' in id_str and '.' in id_str:
+                                                # Format: "<ID.Arch_Devil: 55>" -> "Arch Devil"
+                                                creature_name = id_str.split('.')[1].split(':')[0].replace('_', ' ')
+                                            elif hasattr(creature_id, 'name'):
+                                                # Direct access to enum name
+                                                creature_name = creature_id.name.replace('_', ' ')
+                                            else:
+                                                # Fallback: use string representation
+                                                creature_name = str(creature_id).replace('_', ' ')
+
+                                        if creature_name and amount:
+                                            creature_lines.append(f"{creature_name}: {amount}")
+
+                                flattened_obj[sub_key] = "\n".join(creature_lines) if creature_lines else ""
                             else:
                                 # Convert other lists to strings
                                 flattened_obj[sub_key] = str(sub_value) if sub_value else ""
