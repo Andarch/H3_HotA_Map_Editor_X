@@ -614,6 +614,25 @@ class HotA_Visitable_2(IntEnum): # ID 146
     Town_Gate         = 3
     Ancient_Altar     = 4
 
+class Town_Alignment(IntEnum):
+    Same_as_Player_1        =   0
+    Same_as_Player_2        =   1
+    Same_as_Player_3        =   2
+    Same_as_Player_4        =   3
+    Same_as_Player_5        =   4
+    Same_as_Player_6        =   5
+    Same_as_Player_7        =   6
+    Same_as_Player_8        =   7
+    Not_as_Player_1         =   8
+    Not_as_Player_2         =   9
+    Not_as_Player_3         =  10
+    Not_as_Player_4         =  11
+    Not_as_Player_5         =  12
+    Not_as_Player_6         =  13
+    Not_as_Player_7         =  14
+    Not_as_Player_8         =  15
+    Same_as_Owner_or_Random = 255
+
 #class Random_Dwelling_Leveled(IntEnum): # ID 217
 #    Tier_1 = 0
 #    Tier_2 = 1

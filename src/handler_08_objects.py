@@ -37,6 +37,8 @@ def parse_object_defs() -> list:
         subtype_result = get_subtype(obj["id"], obj["sub_id"])
         if hasattr(subtype_result, 'name'):
             obj["subtype"] = subtype_result.name.replace("_", " ")
+        elif obj["id"] == objects.ID.Random_Town:
+            obj["subtype"] = "Random"
         else:
             obj["subtype"] = "-"
 
@@ -966,6 +968,7 @@ def write_pyramid(obj: dict) -> None:
 def parse_town(obj: dict, random: bool = False) -> dict:
     obj["start_bytes"] = io.read_raw(4)
     obj["owner"]       = io.read_int(1)
+    obj["color"]       = players.Players(obj["owner"]).name
 
     if io.read_int(1): # Is the name set?
         obj["name"] = io.read_str(io.read_int(4))
@@ -978,6 +981,7 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     if io.read_int(1): # Are the buildings customized?
         obj["buildings_built"]    =      io.read_bits(6)
         obj["buildings_disabled"] =      io.read_bits(6)
+        obj["has_fort"]           =      True
     else: obj["has_fort"]         = bool(io.read_int(1))
 
     obj["spells_must_appear"]  =      io.read_bits(9)

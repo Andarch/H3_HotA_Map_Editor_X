@@ -13,7 +13,7 @@ COLUMNS_TO_REMOVE = {
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    # Future: add other categories like "Towns": ["column1", "column2"]
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation"],
 }
 
 
@@ -56,8 +56,8 @@ def process_objects(object_data) -> dict:
                 # Category-specific transformations
                 if category == "Heroes":
                     objects_list = flatten_hero_data(objects_list)
-                # elif category == "Towns":
-                #     objects_list = flatten_town_data(objects_list)  # future
+                elif category == "Towns":
+                    objects_list = flatten_town_data(objects_list)
 
                 # Remove unwanted columns (universal + category-specific)
                 cleaned_objects = []
@@ -177,24 +177,7 @@ def process_objects(object_data) -> dict:
                                 flattened_obj["backpack"] = "\n".join(backpack_names) if backpack_names else ""
                             # Special formatting for spells
                             elif sub_key == "spells" and sub_value:
-                                spell_names = []
-                                # spells is a list of 1s and 0s where index corresponds to spell ID
-                                for spell_index, has_spell in enumerate(sub_value):
-                                    if has_spell == 1:  # Hero has this spell
-                                        try:
-                                            spell_enum = spells.ID(spell_index)
-                                            spell_name = spell_enum.name.replace('_', ' ')
-
-                                            # Special case for Titan's Lightning Bolt
-                                            if spell_name == "Titans Lightning Bolt":
-                                                spell_name = "Titan's Lightning Bolt"
-
-                                            spell_names.append(spell_name)
-                                        except ValueError:
-                                            # Invalid spell index, skip
-                                            pass
-
-                                flattened_obj["spells"] = ", ".join(spell_names) if spell_names else ""
+                                flattened_obj["spells"] = format_spell_list(sub_value)
                             else:
                                 # Convert other lists to strings
                                 flattened_obj[sub_key] = str(sub_value) if sub_value else ""
@@ -222,6 +205,31 @@ def process_objects(object_data) -> dict:
                                         flattened_obj["gender"] = str(sub_value)  # Fallback for unknown values
                 else:
                     # Keep non-hero_data fields as-is
+                    flattened_obj[key] = value
+
+            flattened_objects.append(flattened_obj)
+
+        return flattened_objects
+
+
+    def flatten_town_data(objects_list) -> list:
+        flattened_objects = []
+
+        for obj in objects_list:
+            flattened_obj = {}
+
+            for key, value in obj.items():
+                # Handle spells_must_appear and spells_cant_appear fields
+                if key == "spells_must_appear" and isinstance(value, list):
+                    flattened_obj["Spells - Always"] = format_spell_list(value)
+                elif key == "spells_cant_appear" and isinstance(value, list):
+                    flattened_obj["Spells - Disabled"] = format_spell_list(value)
+                # Handle alignment field
+                elif key == "alignment" and value is not None:
+                    alignment_enum = objects.Town_Alignment(value)
+                    flattened_obj[key] = alignment_enum.name.replace('_', ' ')
+                else:
+                    # Keep other fields as-is
                     flattened_obj[key] = value
 
             flattened_objects.append(flattened_obj)
@@ -277,6 +285,31 @@ def process_objects(object_data) -> dict:
         except (ValueError, AttributeError):
             # Invalid portrait ID or other error
             return ""
+
+
+    def format_spell_list(spell_list):
+        """Convert a list of 1s and 0s to readable spell names separated by commas"""
+        if not spell_list:
+            return ""
+
+        spell_names = []
+        # spells is a list of 1s and 0s where index corresponds to spell ID
+        for spell_index, has_spell in enumerate(spell_list):
+            if has_spell == 1:  # Spell is in the list
+                try:
+                    spell_enum = spells.ID(spell_index)
+                    spell_name = spell_enum.name.replace('_', ' ')
+
+                    # Special case for Titan's Lightning Bolt
+                    if spell_name == "Titans Lightning Bolt":
+                        spell_name = "Titan's Lightning Bolt"
+
+                    spell_names.append(spell_name)
+                except ValueError:
+                    # Invalid spell index, skip
+                    pass
+
+        return ", ".join(spell_names)
 
 
     return main()
