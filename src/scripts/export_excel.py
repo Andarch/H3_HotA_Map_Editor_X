@@ -1,5 +1,8 @@
 import re
+import os
 import pandas as pd
+from openpyxl.drawing.image import Image
+from openpyxl.utils import get_column_letter
 from ..common import *
 from ..file_io import is_file_writable
 from .process_objects import *
@@ -51,9 +54,51 @@ def export_excel(map_key: dict) -> bool:
             df.to_excel(writer, sheet_name=category, index=False)
             worksheet = writer.sheets[category]
 
-            # Auto-fit column widths
+            # Handle image embedding for portrait columns
+            if category == "Heroes" and "Portrait" in df.columns:
+                portrait_col_idx = df.columns.get_loc("Portrait")
+                portrait_col_letter = get_column_letter(portrait_col_idx + 1)
+
+                # Set row height for images and embed portraits
+                for row_idx, portrait_path in enumerate(df["Portrait"], start=2):  # Start at row 2 (after header)
+                    if portrait_path and os.path.exists(portrait_path):
+                        try:
+                            # Create image object
+                            img = Image(portrait_path)
+
+                            # Resize image to fit in cell (max 64x64 pixels)
+                            max_size = 64
+                            if img.width > max_size or img.height > max_size:
+                                scale = min(max_size / img.width, max_size / img.height)
+                                img.width = int(img.width * scale)
+                                img.height = int(img.height * scale)
+
+                            # Set cell position
+                            cell_ref = f"{portrait_col_letter}{row_idx}"
+                            img.anchor = cell_ref
+
+                            # Add image to worksheet
+                            worksheet.add_image(img)
+
+                            # Set row height to accommodate image
+                            worksheet.row_dimensions[row_idx].height = max(img.height + 5, 20)
+
+                            # Clear the cell text since we're showing the image
+                            worksheet[cell_ref].value = ""
+
+                        except Exception as e:
+                            # If image embedding fails, keep the path as text
+                            print(f"Warning: Could not embed image {portrait_path}: {e}")
+
+                # Set portrait column width
+                worksheet.column_dimensions[portrait_col_letter].width = 12
+
+            # Auto-fit other column widths
             for column in worksheet.columns:
                 column_letter = column[0].column_letter
+                if category == "Heroes" and column_letter == portrait_col_letter:
+                    continue  # Skip portrait column, already set
+
                 max_length = max(len(str(cell.value or "")) for cell in column)
                 adjusted_width = min(max_length + 2, 50)
                 worksheet.column_dimensions[column_letter].width = max(adjusted_width, 8)
