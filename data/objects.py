@@ -643,7 +643,60 @@ class Town_Alignment(IntEnum):
 #    Tier_7 = 6
 
 class Town_Buildings(IntEnum):
-    None = 0
+    # byte 0
+    Town_Hall = 0
+    City_Hall = 1
+    Capitol = 2
+    Fort = 3
+    Citadel = 4
+    Castle = 5
+    Tavern = 6
+    Blacksmith = 7
+    # byte 1
+    Marketplace = 8
+    Resource_Silo = 9
+    Artifact_Merchants = 10
+    Mage_Guild_Level_1 = 11
+    Mage_Guild_Level_2 = 12
+    Mage_Guild_Level_3 = 13
+    Mage_Guild_Level_4 = 14
+    Mage_Guild_Level_5 = 15
+    # byte 2
+    Shipyard = 16
+    Grail = 17
+    Special_1 = 18
+    Special_2 = 19
+    Special_3 = 20
+    Special_4 = 21
+    Dwelling_Level_1 = 22
+    Dwelling_Level_1_Upgrade = 23
+    # byte 3
+    Horde_Level_1 = 24
+    Dwelling_Level_2 = 25
+    Dwelling_Level_2_Upgrade = 26
+    Horde_Level_2 = 27
+    Dwelling_Level_3 = 28
+    Dwelling_Level_3_Upgrade = 29
+    Horde_Level_3 = 30
+    Dwelling_Level_4 = 31
+    # byte 4
+    Dwelling_Level_4_Upgrade = 32
+    Horde_Level_4 = 33
+    Dwelling_Level_5 = 34
+    Dwelling_Level_5_Upgrade = 35
+    Horde_Level_5 = 36
+    Dwelling_Level_6 = 37
+    Dwelling_Level_6_Upgrade = 38
+    Dwelling_Level_7 = 39
+    # byte 5
+    Dwelling_Level_7_Upgrade = 40
+    Building_41 = 41
+    Building_42 = 42
+    Building_43 = 43
+    Building_44 = 44
+    Building_45 = 45
+    Building_46 = 46
+    Building_47 = 47
 
 DECOR = {
     ID.Brush,

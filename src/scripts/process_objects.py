@@ -13,7 +13,7 @@ COLUMNS_TO_REMOVE = {
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings"],
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled", "spells_must_appear", "spells_cant_appear"],
 }
 
 
@@ -235,10 +235,15 @@ def process_objects(object_data) -> dict:
 
             for key, value in obj.items():
                 # Handle spells_must_appear and spells_cant_appear fields
-                if key == "spells_must_appear" and isinstance(value, list):
-                    flattened_obj["Spells - Always"] = format_spell_list(value)
-                elif key == "spells_cant_appear" and isinstance(value, list):
-                    flattened_obj["Spells - Disabled"] = format_spell_list(value)
+                if key == "spells_must_appear":
+                    flattened_obj["Spells – Always"] = format_spell_list(value)
+                elif key == "spells_cant_appear":
+                    flattened_obj["Spells – Disabled"] = format_spell_list(value)
+                # Handle buildings_built and buildings_disabled fields
+                elif key == "buildings_built":
+                    flattened_obj["Buildings – Built"] = format_building_list(value)
+                elif key == "buildings_disabled":
+                    flattened_obj["Buildings – Disabled"] = format_building_list(value)
                 # Handle alignment field
                 elif key == "alignment" and value is not None:
                     alignment_enum = objects.Town_Alignment(value)
@@ -304,13 +309,9 @@ def process_objects(object_data) -> dict:
 
     def format_spell_list(spell_list):
         """Convert a list of 1s and 0s to readable spell names separated by commas"""
-        if not spell_list:
-            return ""
-
         spell_names = []
-        # spells is a list of 1s and 0s where index corresponds to spell ID
         for spell_index, has_spell in enumerate(spell_list):
-            if has_spell == 1:  # Spell is in the list
+            if has_spell == 1:
                 try:
                     spell_enum = spells.ID(spell_index)
                     spell_name = spell_enum.name.replace('_', ' ')
@@ -321,10 +322,23 @@ def process_objects(object_data) -> dict:
 
                     spell_names.append(spell_name)
                 except ValueError:
-                    # Invalid spell index, skip
                     pass
 
         return ", ".join(spell_names)
 
+
+    def format_building_list(building_list):
+        """Convert a list of 1s and 0s to readable building names separated by commas"""
+        building_names = []
+        for building_index, has_building in enumerate(building_list):
+            if has_building == 1:
+                try:
+                    building_enum = objects.Town_Buildings(building_index)
+                    building_name = building_enum.name.replace('_', ' ')
+                    building_names.append(building_name)
+                except ValueError:
+                    pass
+
+        return ", ".join(building_names)
 
     return main()

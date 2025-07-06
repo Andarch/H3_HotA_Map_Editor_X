@@ -30,8 +30,15 @@ def export_excel(map_key: dict) -> bool:
 
         # Write each category to Excel
         for category, objects in processed_objects.items():
-            # Create DataFrame
-            df = pd.DataFrame(objects) if objects else pd.DataFrame([{"": "No data"}])
+            # Create DataFrame with preserved column order
+            if objects:
+                # Get column order from first object
+                column_order = list(objects[0].keys())
+                # Create DataFrame and reorder columns to match original key order
+                df = pd.DataFrame(objects)
+                df = df.reindex(columns=column_order)
+            else:
+                df = pd.DataFrame([{"": "No data"}])
 
             # Sanitize data for Excel compatibility
             for col in df.columns:
