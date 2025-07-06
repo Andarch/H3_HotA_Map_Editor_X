@@ -628,11 +628,13 @@ def parse_hero(obj: dict) -> dict:
 
     hero = {
         "id"                : 255,
-        "has_name"          : False,
-        "custom_name"              : "",
+        "default_name"      : "",
+        "has_custom_name"   : False,
+        "custom_name"       : "",
+        "name"              : "",
         "experience"        : -1,
         "has_portrait"      : False,
-        "portrait"          : 255,
+        "portrait_id"       : 255,
         "secondary_skills"  : [],
         "creatures"         : [],
         "formation"         : 0,
@@ -649,18 +651,21 @@ def parse_hero(obj: dict) -> dict:
         "level"             : 1
     }
 
-    hero["id"] = heroes.ID(io.read_int(1))
+    hero["id"] = io.read_int(1)
+    hero["default_name"] = heroes.ID(hero["id"]).name.replace("_", " ")
 
-    hero["has_name"] = io.read_int(1)
-    if hero["has_name"]:
+    hero["has_custom_name"] = bool(io.read_int(1))
+    if hero["has_custom_name"]:
         hero["custom_name"] = io.read_str(io.read_int(4))
+
+    hero["name"] = hero["custom_name"] if hero["has_custom_name"] else hero["default_name"]
 
     if io.read_int(1): # Is experience set?
         hero["experience"] = io.read_int(4)
 
-    hero["has_portrait"] = io.read_int(1)
+    hero["has_portrait"] = bool(io.read_int(1))
     if hero["has_portrait"]:
-        hero["portrait"] = io.read_int(1)
+        hero["portrait_id"] = io.read_int(1)
 
     if io.read_int(1): # Are secondary skills set?
         for _ in range(io.read_int(4)):
@@ -702,7 +707,7 @@ def parse_hero(obj: dict) -> dict:
 
     hero["patrol"] = io.read_int(1)
 
-    hero["has_biography"] = io.read_int(1)
+    hero["has_biography"] = bool(io.read_int(1))
     if hero["has_biography"]:
         hero["biography"] = io.read_str(io.read_int(4))
 
@@ -736,8 +741,8 @@ def write_hero(obj: dict) -> None:
     io.write_int(hero["id"], 1)
 
     #
-    if hero["has_name"]:
-        io.write_int(hero["has_name"], 1)
+    if hero["has_custom_name"]:
+        io.write_int(hero["has_custom_name"], 1)
         io.write_int(len(hero["custom_name"]), 4)
         io.write_str(hero["custom_name"])
     else: io.write_int(0, 1)
@@ -749,9 +754,9 @@ def write_hero(obj: dict) -> None:
     else: io.write_int(0, 1)
 
     #
-    if hero["portrait"] != 255:
+    if hero["portrait_id"] != 255:
         io.write_int(1, 1)
-        io.write_int(hero["portrait"], 1)
+        io.write_int(hero["portrait_id"], 1)
     else: io.write_int(0, 1)
 
     #

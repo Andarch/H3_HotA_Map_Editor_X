@@ -1,4 +1,12 @@
 import data.objects as objects
+import data.heroes as heroes
+
+
+# Define columns to remove per category
+COLUMNS_TO_REMOVE = {
+    "Heroes": ["def_id", "id", "sub_id", "type", "owner", "hero_id", "default_name", "has_custom_name", "custom_name", "formation"],
+    # Future: add other categories like "Towns": ["column1", "column2"]
+}
 
 
 def process_objects(object_data) -> dict:
@@ -45,10 +53,11 @@ def process_objects(object_data) -> dict:
 
                 # Remove unwanted columns (universal + category-specific)
                 cleaned_objects = []
+                columns_to_remove = COLUMNS_TO_REMOVE.get(category, [])
                 for obj in objects_list:
-                    # For now, just remove _bytes columns (universal)
-                    # Future: add category-specific column removal here
-                    cleaned_obj = {k: v for k, v in obj.items() if not k.endswith('_bytes')}
+                    # Remove _bytes columns (universal) and category-specific columns
+                    cleaned_obj = {k: v for k, v in obj.items()
+                                   if not k.endswith('_bytes') and k not in columns_to_remove}
                     cleaned_objects.append(cleaned_obj)
 
                 processed_objects[category] = cleaned_objects
