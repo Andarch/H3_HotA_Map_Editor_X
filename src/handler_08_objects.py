@@ -639,7 +639,7 @@ def parse_hero(obj: dict) -> dict:
         "creatures"         : [],
         "formation"         : 0,
         "artifacts_equipped": {},
-        "artifacts_backpack": [],
+        "backpack": [],
         "patrol"            : 255,
         "has_biography"     : False,
         "biography"         : "",
@@ -703,7 +703,7 @@ def parse_hero(obj: dict) -> dict:
         hero["artifacts_equipped"]["misc_5"]        = parse_hero_artifact()
 
         for _ in range(io.read_int(2)):
-            hero["artifacts_backpack"].append(parse_hero_artifact())
+            hero["backpack"].append(parse_hero_artifact())
 
     hero["patrol"] = io.read_int(1)
 
@@ -779,7 +779,7 @@ def write_hero(obj: dict) -> None:
     io.write_int(hero["formation"], 1)
 
     #
-    if hero["artifacts_equipped"] or hero["artifacts_backpack"]:
+    if hero["artifacts_equipped"] or hero["backpack"]:
         io.write_int(1, 1)
 
         write_hero_artifact(hero["artifacts_equipped"]["head"])
@@ -802,8 +802,8 @@ def write_hero(obj: dict) -> None:
         write_hero_artifact(hero["artifacts_equipped"]["spellbook"])
         write_hero_artifact(hero["artifacts_equipped"]["misc_5"])
 
-        io.write_int(len(hero["artifacts_backpack"]), 2)
-        for artifact in hero["artifacts_backpack"]:
+        io.write_int(len(hero["backpack"]), 2)
+        for artifact in hero["backpack"]:
             write_hero_artifact(artifact)
     else: io.write_int(0, 1)
 
