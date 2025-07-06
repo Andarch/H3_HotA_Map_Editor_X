@@ -13,7 +13,7 @@ COLUMNS_TO_REMOVE = {
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation"],
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings"],
 }
 
 
@@ -66,11 +66,26 @@ def process_objects(object_data) -> dict:
                     # Remove _bytes columns (universal) and category-specific columns
                     cleaned_obj = {k: v for k, v in obj.items()
                                    if not k.endswith('_bytes') and k not in columns_to_remove}
+
+                    # Clean empty list representations
+                    cleaned_obj = clean_empty_lists(cleaned_obj)
                     cleaned_objects.append(cleaned_obj)
 
                 processed_objects[category] = cleaned_objects
 
         return processed_objects
+
+
+    def clean_empty_lists(obj_dict):
+        cleaned_obj = {}
+        for key, value in obj_dict.items():
+            if isinstance(value, str) and value == "[]":
+                cleaned_obj[key] = ""
+            elif isinstance(value, list) and len(value) == 0:
+                cleaned_obj[key] = ""
+            else:
+                cleaned_obj[key] = value
+        return cleaned_obj
 
 
     def flatten_hero_data(objects_list) -> list:

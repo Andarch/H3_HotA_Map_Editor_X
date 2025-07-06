@@ -642,6 +642,9 @@ class Town_Alignment(IntEnum):
 #    Tier_6 = 5
 #    Tier_7 = 6
 
+class Town_Buildings(IntEnum):
+    None = 0
+
 DECOR = {
     ID.Brush,
     ID.Bush,

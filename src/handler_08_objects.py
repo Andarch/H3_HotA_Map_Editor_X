@@ -966,6 +966,23 @@ def write_pyramid(obj: dict) -> None:
     io.write_raw(obj["garbage_bytes"])
 
 def parse_town(obj: dict, random: bool = False) -> dict:
+    obj["start_bytes"]          = b''
+    obj["owner"]                = 255
+    obj["color"]                = ""
+    obj["name"]                 = ""
+    obj["garrison_guards"]      = []
+    obj["garrison_formation"]   = 0
+    obj["has_fort"]             = False
+    obj["has_custom_buildings"] = False
+    obj["buildings_built"]      = []
+    obj["buildings_disabled"]   = []
+    obj["buildings_special"]    = []
+    obj["spell_research"]       = False
+    obj["spells_must_appear"]   = []
+    obj["spells_cant_appear"]   = []
+    obj["events"]               = []
+    obj["alignment"]            = 255
+
     obj["start_bytes"] = io.read_raw(4)
     obj["owner"]       = io.read_int(1)
     obj["color"]       = players.Players(obj["owner"]).name
@@ -979,20 +996,19 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     obj["garrison_formation"] = io.read_int(1)
 
     obj["has_custom_buildings"] = bool(io.read_int(1))
-    if obj["has_custom_buildings"]: # Are the buildings customized?
-        obj["buildings_built"]    =      io.read_bits(6)
-        obj["buildings_disabled"] =      io.read_bits(6)
-        obj["has_fort"]           =      True
+    if obj["has_custom_buildings"]:
+        obj["buildings_built"]    = io.read_bits(6)
+        obj["buildings_disabled"] = io.read_bits(6)
+        obj["has_fort"]           = True
     else:
-        obj["buildings_built"]    =      ""
-        obj["buildings_disabled"] =      ""
+        obj["buildings_built"]    = ""
+        obj["buildings_disabled"] = ""
         obj["has_fort"]           = bool(io.read_int(1))
 
     obj["spells_must_appear"]  =      io.read_bits(9)
     obj["spells_cant_appear"]  =      io.read_bits(9)
     obj["spell_research"]      = bool(io.read_int(1))
 
-    obj["buildings_special"] = []
     for _ in range(io.read_int(4)): # Amount of special buildings.
         obj["buildings_special"].append(io.read_int(1))
 
@@ -1006,7 +1022,7 @@ def write_town(obj: dict, random: bool = False) -> None:
     io.write_raw(obj["start_bytes"])
     io.write_int(obj["owner"], 1)
 
-    if "name" in obj:
+    if "name" != "":
         io.write_int(1, 1)
         io.write_int(len(obj["name"]), 4)
         io.write_str(    obj["name"])
