@@ -1,11 +1,12 @@
 import data.objects as objects
 import data.heroes as heroes
+import data.spells as spells
 import os
 
 
 # Define columns to remove per category
 COLUMNS_TO_REMOVE = {
-    "Heroes": ["def_id", "id", "sub_id", "type", "owner", "hero_id", "default_name", "has_custom_name", "custom_name", "formation",
+    "Heroes": ["def_id", "id", "sub_id", "type", "subtype", "owner", "hero_id", "default_name", "has_custom_name", "custom_name", "formation",
                "has_portrait", "portrait_id", "patrol", "has_biography",
                # Remove individual artifact slot columns since we're creating combined "artifacts" and "backpack" columns
                "head", "shoulders", "neck", "right_hand", "left_hand", "torso", "right_ring", "left_ring", "feet",
@@ -174,6 +175,26 @@ def process_objects(object_data) -> dict:
                                                 backpack_names.append(artifact_name)
 
                                 flattened_obj["backpack"] = "\n".join(backpack_names) if backpack_names else ""
+                            # Special formatting for spells
+                            elif sub_key == "spells" and sub_value:
+                                spell_names = []
+                                # spells is a list of 1s and 0s where index corresponds to spell ID
+                                for spell_index, has_spell in enumerate(sub_value):
+                                    if has_spell == 1:  # Hero has this spell
+                                        try:
+                                            spell_enum = spells.ID(spell_index)
+                                            spell_name = spell_enum.name.replace('_', ' ')
+
+                                            # Special case for Titan's Lightning Bolt
+                                            if spell_name == "Titans Lightning Bolt":
+                                                spell_name = "Titan's Lightning Bolt"
+
+                                            spell_names.append(spell_name)
+                                        except ValueError:
+                                            # Invalid spell index, skip
+                                            pass
+
+                                flattened_obj["spells"] = ", ".join(spell_names) if spell_names else ""
                             else:
                                 # Convert other lists to strings
                                 flattened_obj[sub_key] = str(sub_value) if sub_value else ""

@@ -627,14 +627,19 @@ def parse_hero(obj: dict) -> dict:
     obj["color"]       = players.Players(obj["owner"]).name
 
     hero = {
+        "hero_type"         : "",
         "id"                : 255,
         "default_name"      : "",
         "has_custom_name"   : False,
         "custom_name"       : "",
         "name"              : "",
-        "experience"        : -1,
         "has_portrait"      : False,
         "portrait_id"       : 255,
+        "level"             : 1,
+        "experience"        : -1,
+        "add_skills"        : True,
+        "cannot_gain_xp"    : False,
+        "primary_skills"    : {},
         "secondary_skills"  : [],
         "creatures"         : [],
         "formation"         : 0,
@@ -644,12 +649,14 @@ def parse_hero(obj: dict) -> dict:
         "has_biography"     : False,
         "biography"         : "",
         "gender"            : 255,
-        "spells"            : b'',
-        "primary_skills"    : {},
-        "always_add_skills" : True,
-        "cannot_gain_xp"    : False,
-        "level"             : 1
+        "spells"            : b''
     }
+
+    # Set hero type as "Map" or "Prisoner"
+    match obj["id"]:
+        case objects.ID.Hero:        hero["hero_type"] = "Map"
+        case objects.ID.Random_Hero: hero["hero_type"] = "Map"
+        case objects.ID.Prison:      hero["hero_type"] = "Prison"
 
     hero["id"] = io.read_int(1)
     hero["default_name"] = heroes.ID(hero["id"]).name.replace("_", " ")
@@ -724,7 +731,7 @@ def parse_hero(obj: dict) -> dict:
 
     obj["end_bytes"] = io.read_raw(16)
 
-    hero["always_add_skills"] = bool(io.read_int(1))
+    hero["add_skills"] = bool(io.read_int(1))
     hero["cannot_gain_xp"]    = bool(io.read_int(1))
     hero["level"]             =      io.read_int(4)
 
@@ -839,7 +846,7 @@ def write_hero(obj: dict) -> None:
     io.write_raw(obj["end_bytes"])
 
     #
-    io.write_int(hero["always_add_skills"], 1)
+    io.write_int(hero["add_skills"], 1)
     io.write_int(hero["cannot_gain_xp"], 1)
     io.write_int(hero["level"], 4)
 

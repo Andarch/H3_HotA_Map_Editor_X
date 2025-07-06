@@ -82,7 +82,7 @@ def parse_hero_data() -> list:
             "gender"            : 255,
             "spells"            : b'',
             "primary_skills"    : {},
-            "always_add_skills" : True,
+            "add_skills" : True,
             "cannot_gain_xp"    : False,
             "level"             : 1
         }
@@ -149,7 +149,7 @@ def parse_hero_data() -> list:
     # For every hero.
 
     for i in range(hero_amount):
-        info[i]["always_add_skills"] = bool(io.read_int(1))
+        info[i]["add_skills"] = bool(io.read_int(1))
         info[i]["cannot_gain_xp"]    = bool(io.read_int(1))
         info[i]["level"]             =      io.read_int(4)
 
@@ -236,7 +236,7 @@ def write_hero_data(info: list) -> None:
 
     # HotA 1.7.0.
     for hero in info:
-        io.write_int(hero["always_add_skills"], 1)
+        io.write_int(hero["add_skills"], 1)
         io.write_int(hero["cannot_gain_xp"], 1)
         io.write_int(hero["level"], 4)
 

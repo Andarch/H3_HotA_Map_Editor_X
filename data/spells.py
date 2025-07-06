@@ -39,25 +39,25 @@ class ID(IntEnum):
 #
 # Byte 4 ... (24-31)
 #
-    Death_Ripple   = 24
-    Destroy_Undead = 25
-    Armageddon     = 26
-    Shield         = 27
-    Air_Shield     = 28
-    Fire_Shield    = 29
-    Prot_From_Air  = 30
-    Prot_From_Fire = 31
+    Death_Ripple         = 24
+    Destroy_Undead       = 25
+    Armageddon           = 26
+    Shield               = 27
+    Air_Shield           = 28
+    Fire_Shield          = 29
+    Protection_From_Air  = 30
+    Protection_From_Fire = 31
 #
 # Byte 5 ... (32-39)
 #
-    Prot_From_Water = 32
-    Prot_From_Earth = 33
-    Anti_Magic      = 34
-    Dispel          = 35
-    Magic_Mirror    = 36
-    Cure            = 37
-    Resurrection    = 38
-    Animate_Dead    = 39
+    Protection_From_Water = 32
+    Protection_From_Earth = 33
+    Anti_Magic           = 34
+    Dispel               = 35
+    Magic_Mirror         = 36
+    Cure                 = 37
+    Resurrection         = 38
+    Animate_Dead         = 39
 #
 # Byte 6 ... (40-47)
 #

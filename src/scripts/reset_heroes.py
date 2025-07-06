@@ -51,7 +51,7 @@ def reset_hero_data(hero_data: list, skippable_heroes: list) -> None:
         if len(hero) == 3 or i in skippable_heroes:
             continue
         modified_hero = {
-            "always_add_skills": hero.get("always_add_skills", True),
+            "add_skills": hero.get("add_skills", True),
             "cannot_gain_xp": hero.get("cannot_gain_xp", False),
             "level": hero.get("level", 1)
         }
