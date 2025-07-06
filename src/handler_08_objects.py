@@ -978,11 +978,15 @@ def parse_town(obj: dict, random: bool = False) -> dict:
 
     obj["garrison_formation"] = io.read_int(1)
 
-    if io.read_int(1): # Are the buildings customized?
+    obj["has_custom_buildings"] = bool(io.read_int(1))
+    if obj["has_custom_buildings"]: # Are the buildings customized?
         obj["buildings_built"]    =      io.read_bits(6)
         obj["buildings_disabled"] =      io.read_bits(6)
         obj["has_fort"]           =      True
-    else: obj["has_fort"]         = bool(io.read_int(1))
+    else:
+        obj["buildings_built"]    =      ""
+        obj["buildings_disabled"] =      ""
+        obj["has_fort"]           = bool(io.read_int(1))
 
     obj["spells_must_appear"]  =      io.read_bits(9)
     obj["spells_cant_appear"]  =      io.read_bits(9)
