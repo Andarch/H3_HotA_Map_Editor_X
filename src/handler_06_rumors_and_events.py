@@ -45,8 +45,8 @@ def parse_events(is_town: bool = False) -> list:
         event["allowed_difficulties"] =      io.read_int(4)
 
         if is_town:
-            event["hota_level_7b"]        =      io.read_int(4)
-            event["hota_amount"]          =      io.read_int(4)
+            event["hota_town_event_1"]    =      io.read_int(4)
+            event["hota_town_event_2"]    =      io.read_int(4)
             event["hota_special"]         =      io.read_bits(6)
             event["apply_neutral_towns"]  = bool(io.read_int(1))
             event["buildings"]            =      io.read_bits(6)

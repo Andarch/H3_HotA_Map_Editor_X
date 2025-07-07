@@ -51,7 +51,7 @@ def export_excel(map_key: dict) -> bool:
                 )
 
             # Format column headers
-            df.columns = [str(col).replace('_', ' ').title().replace('Id', 'ID').replace('Xp', 'XP') for col in df.columns]
+            df.columns = [str(col).replace('_', ' ').title().replace('Id', 'ID').replace('Xp', 'XP').replace('Ai', 'AI') for col in df.columns]
 
             # Add row numbers (skip for "No data" sheets)
             if not (len(df) == 1 and df.iloc[0, 0] == "No data"):

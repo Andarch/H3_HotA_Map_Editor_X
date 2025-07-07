@@ -13,7 +13,9 @@ COLUMNS_TO_REMOVE = {
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled", "spells_must_appear", "spells_cant_appear", "buildings_special"],
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
+              "spells_must_appear", "spells_cant_appear", "buildings_special", "events"],
+    "Town Events": ["hota_town_event_1", "hota_town_event_2"],
 }
 
 
@@ -21,6 +23,9 @@ def process_objects(object_data) -> dict:
     def main():
         # Categorize objects and apply all necessary data transformations.
         processed_objects = {category: [] for category in objects.CATEGORIES.keys()}
+
+        # Add Town Events category - will be populated separately
+        processed_objects["Town Events"] = []
 
         # Step 1: Categorize objects
         for obj in object_data:
@@ -49,6 +54,9 @@ def process_objects(object_data) -> dict:
 
         # Step 2: Process each category
         for category, objects_list in processed_objects.items():
+            if category == "Town Events":
+                continue  # Handle this separately after processing towns
+
             if objects_list:
                 # Sort objects by ID first, then by sub_id
                 objects_list.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
@@ -73,7 +81,27 @@ def process_objects(object_data) -> dict:
 
                 processed_objects[category] = cleaned_objects
 
-        return processed_objects
+        # Step 3: Extract and process town events
+        town_events = []
+        for obj in object_data:
+            if obj["id"] in [objects.ID.Town, objects.ID.Random_Town] and "events" in obj and obj["events"]:
+                for event in obj["events"]:
+                    # Create a flattened event object with town context
+                    flattened_event = flatten_town_event_data(event, obj)
+                    town_events.append(flattened_event)
+
+        processed_objects["Town Events"] = town_events
+
+        # Reorder to place Town Events right after Towns
+        ordered_objects = {}
+        for key in processed_objects.keys():
+            if key == "Towns":
+                ordered_objects[key] = processed_objects[key]
+                ordered_objects["Town Events"] = processed_objects["Town Events"]
+            elif key != "Town Events":
+                ordered_objects[key] = processed_objects[key]
+
+        return ordered_objects
 
 
     def clean_empty_lists(obj_dict):
@@ -442,5 +470,95 @@ def process_objects(object_data) -> dict:
 
         return ", ".join(building_names)
 
+
+    def flatten_town_event_data(event, town_obj):
+        """Flatten town event data into a readable format"""
+        flattened_event = {}
+
+        # Match the first 4 columns from Towns sheet
+        flattened_event["Coords"] = town_obj.get("coords", [0, 0, 0])
+        flattened_event["Subtype"] = town_obj.get("subtype", "")
+        flattened_event["Color"] = town_obj.get("color", "")
+        flattened_event["Town Name"] = town_obj.get("name", "")
+
+        # Event-specific information
+        flattened_event["Event Name"] = event.get("name", "")
+        flattened_event["Message"] = event.get("message", "")
+
+        # Resources
+        resources = event.get("resources", [])
+        if len(resources) >= 7:
+            resource_names = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"]
+            resource_lines = []
+            for i, amount in enumerate(resources):
+                if amount != 0 and i < len(resource_names):
+                    sign = "+" if amount > 0 else ""
+                    resource_lines.append(f"{sign}{amount} {resource_names[i]}")
+            flattened_event["Resources"] = "\n".join(resource_lines) if resource_lines else ""
+
+        # Player application
+        apply_to = event.get("apply_to", [])
+        if isinstance(apply_to, list) and len(apply_to) >= 8:
+            applied_players = []
+            for i, applies in enumerate(apply_to):
+                if applies == 1:
+                    applied_players.append(f"Player {i+1}")
+            flattened_event["Players"] = "\n".join(applied_players) if applied_players else "None"
+
+        # Event settings
+        flattened_event["Human"] = True if event.get("apply_human", False) else False
+        flattened_event["AI"] = True if event.get("apply_ai", False) else False
+
+        # Format First occurrence as "Day X" (add 1 since 0-based)
+        first_occurrence = event.get("first_occurence", "")
+        if first_occurrence != "" and first_occurrence is not None:
+            flattened_event["First"] = f"Day {first_occurrence + 1}"
+        else:
+            flattened_event["First"] = ""
+
+        # Format Repeat based on subsequent_occurences value
+        next_occurrence = event.get("subsequent_occurences", 0)
+        if next_occurrence == 0:
+            flattened_event["Repeat"] = ""
+        elif next_occurrence == 1:
+            flattened_event["Repeat"] = "Every day"
+        else:
+            flattened_event["Repeat"] = f"Every {next_occurrence} days"
+
+        # Town-specific event data (if available)
+        if event.get("isTown", False):
+            # Creatures for town events
+            creatures = event.get("creatures", [])
+            if creatures and len(creatures) >= 7:
+                creature_lines = []
+                creature_names = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7"]
+                for i, amount in enumerate(creatures):
+                    if amount != 0 and i < len(creature_names):
+                        creature_lines.append(f"{creature_names[i]}: {amount}")
+                flattened_event["Creatures"] = "\n".join(creature_lines) if creature_lines else ""
+
+            # HotA-specific fields
+            flattened_event["Neutral Towns"] = True if event.get("apply_neutral_towns", False) else False
+
+            # Buildings
+            buildings = event.get("buildings", [])
+            if buildings and isinstance(buildings, list):
+                # Get regular buildings from the event
+                regular_built = format_building_list(buildings)
+                # Get special buildings from the event's hota_special field
+                special_built = ""
+                if "hota_special" in event:
+                    special_built = format_special_buildings_array(event["hota_special"], state_filter=1)
+
+                # Combine regular and special buildings
+                all_built = []
+                if regular_built:
+                    all_built.append(regular_built)
+                if special_built:
+                    all_built.append(special_built)
+
+                flattened_event["Buildings"] = ", ".join(all_built) if all_built else ""
+
+        return flattened_event
 
     return main()
