@@ -7,3 +7,4 @@ from .print_data       import print_data
 from .reset_heroes     import reset_heroes
 from .swap_layers      import swap_layers
 from .update_events    import update_events
+from .excel            import *
