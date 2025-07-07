@@ -1,0 +1,69 @@
+import data.objects as objects
+
+
+def format_special_buildings_array(special_array, state_filter=None):
+    """Convert an array of special building states to readable building names
+
+    Args:
+        special_array: List of building states (0=enabled, 1=built, 2=disabled)
+        state_filter: If specified, only include buildings with this state value
+    """
+    if not special_array or not isinstance(special_array, list):
+        return ""
+
+    building_names = []
+
+    for building_index, building_state in enumerate(special_array):
+        # If state_filter is specified, only include buildings with that state
+        # If no filter, include enabled (0) and built (1), skip disabled (2)
+        if state_filter is not None:
+            if building_state != state_filter:
+                continue
+        else:
+            if building_state not in [0, 1]:
+                continue
+
+        try:
+            building_enum = objects.Town_Buildings_Special(building_index)
+            raw_name = building_enum.name
+
+            # Skip placeholder buildings
+            if raw_name.startswith("Special_Building_"):
+                continue
+
+            # Format the building name
+            formatted_name = raw_name.replace('_', ' ')
+
+            # Extract faction name and format nicely
+            if formatted_name.endswith(' Castle'):
+                building_name = formatted_name[:-7] + ' (Castle)'
+            elif formatted_name.endswith(' Rampart'):
+                building_name = formatted_name[:-8] + ' (Rampart)'
+            elif formatted_name.endswith(' Tower'):
+                building_name = formatted_name[:-6] + ' (Tower)'
+            elif formatted_name.endswith(' Inferno'):
+                building_name = formatted_name[:-8] + ' (Inferno)'
+            elif formatted_name.endswith(' Necropolis'):
+                building_name = formatted_name[:-11] + ' (Necropolis)'
+            elif formatted_name.endswith(' Dungeon'):
+                building_name = formatted_name[:-8] + ' (Dungeon)'
+            elif formatted_name.endswith(' Stronghold'):
+                building_name = formatted_name[:-11] + ' (Stronghold)'
+            elif formatted_name.endswith(' Fortress'):
+                building_name = formatted_name[:-9] + ' (Fortress)'
+            elif formatted_name.endswith(' Conflux'):
+                building_name = formatted_name[:-8] + ' (Conflux)'
+            elif formatted_name.endswith(' Cove'):
+                building_name = formatted_name[:-5] + ' (Cove)'
+            elif formatted_name.endswith(' Factory'):
+                building_name = formatted_name[:-8] + ' (Factory)'
+            else:
+                # No faction suffix or special case, keep as is
+                building_name = formatted_name
+
+            building_names.append(building_name)
+        except ValueError:
+            # Invalid building index, skip
+            pass
+
+    return ", ".join(building_names)
