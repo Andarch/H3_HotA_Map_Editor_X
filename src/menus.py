@@ -35,7 +35,6 @@ class Menu(Enum):
         7: "Object Defs",
         8: "Object Data",
         9: "Events",
-        0: "Watchfield Special Buildings"
     }
 
     EDIT  = {

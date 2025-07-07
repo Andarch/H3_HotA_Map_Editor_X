@@ -26,18 +26,6 @@ def print_data(map_key: dict) -> bool:
             data = pprint.pformat(map_key["object_data"], width=PRINT_WIDTH)
         case 9:
             data = pprint.pformat(map_key["events"], width=PRINT_WIDTH)
-        case 0:
-            # Find Watchfield town and print buildings_special data
-            data = "Town 'Watchfield' not found"
-            for obj in map_key["object_data"]:
-                if (obj.get("id") == 77 and  # Random Town ID
-                    obj.get("name") == "Watchfield"):
-                    buildings_special_data = {
-                        "buildings_special": obj.get("buildings_special")
-                    }
-                    data = buildings_special_data
-                    break
-
 
     xprint(type=Text.INFO, text=data)
 
