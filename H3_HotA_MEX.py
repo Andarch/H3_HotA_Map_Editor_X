@@ -42,7 +42,7 @@ def main() -> None:
                                 map_data[map_key]["object_data"],
                                 map_data[map_key]["object_defs"]
                             )
-                        case 6: xprint(type=Text.ERROR, text="Not yet functional.")
+                        case 6: io.load_maps(1)
                         case 7: xprint(type=Text.ERROR, text="Not yet functional.")
                         case 8: io.load_maps(1)
                         case 9: io.save_maps()

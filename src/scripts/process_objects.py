@@ -13,7 +13,7 @@ COLUMNS_TO_REMOVE = {
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled", "spells_must_appear", "spells_cant_appear"],
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled", "spells_must_appear", "spells_cant_appear", "buildings_special"],
 }
 
 
@@ -241,9 +241,42 @@ def process_objects(object_data) -> dict:
                     flattened_obj["Spells – Disabled"] = format_spell_list(value)
                 # Handle buildings_built and buildings_disabled fields
                 elif key == "buildings_built":
-                    flattened_obj["Buildings – Built"] = format_building_list(value)
+                    # Get regular buildings first
+                    regular_built = format_building_list(value)
+                    # Get special buildings that are built (state = 1)
+                    special_built = ""
+                    if "buildings_special" in obj:
+                        special_built = format_special_buildings_array(obj["buildings_special"], state_filter=1)
+
+                    # Combine regular and special buildings
+                    all_built = []
+                    if regular_built:
+                        all_built.append(regular_built)
+                    if special_built:
+                        all_built.append(special_built)
+
+                    flattened_obj["Buildings – Built"] = ", ".join(all_built)
+
                 elif key == "buildings_disabled":
-                    flattened_obj["Buildings – Disabled"] = format_building_list(value)
+                    # Get regular buildings first
+                    regular_disabled = format_building_list(value)
+                    # Get special buildings that are disabled (state = 2)
+                    special_disabled = ""
+                    if "buildings_special" in obj:
+                        special_disabled = format_special_buildings_array(obj["buildings_special"], state_filter=2)
+
+                    # Combine regular and special buildings
+                    all_disabled = []
+                    if regular_disabled:
+                        all_disabled.append(regular_disabled)
+                    if special_disabled:
+                        all_disabled.append(special_disabled)
+
+                    flattened_obj["Buildings – Disabled"] = ", ".join(all_disabled)
+                # Handle special buildings fields - skip the old ones since we process buildings_special separately
+                elif key.startswith("buildings_special_"):
+                    # Skip these old fields as they're replaced by buildings_special
+                    pass
                 # Handle alignment field
                 elif key == "alignment" and value is not None:
                     alignment_enum = objects.Town_Alignment(value)
@@ -338,6 +371,74 @@ def process_objects(object_data) -> dict:
                     building_names.append(building_name)
                 except ValueError:
                     pass
+
+        return ", ".join(building_names)
+
+
+    def format_special_buildings_array(special_array, state_filter=None):
+        """Convert an array of special building states to readable building names
+
+        Args:
+            special_array: List of building states (0=enabled, 1=built, 2=disabled)
+            state_filter: If specified, only include buildings with this state value
+        """
+        if not special_array or not isinstance(special_array, list):
+            return ""
+
+        building_names = []
+
+        for building_index, building_state in enumerate(special_array):
+            # If state_filter is specified, only include buildings with that state
+            # If no filter, include enabled (0) and built (1), skip disabled (2)
+            if state_filter is not None:
+                if building_state != state_filter:
+                    continue
+            else:
+                if building_state not in [0, 1]:
+                    continue
+
+            try:
+                building_enum = objects.Town_Buildings_Special(building_index)
+                raw_name = building_enum.name
+
+                # Skip placeholder buildings
+                if raw_name.startswith("Special_Building_"):
+                    continue
+
+                # Format the building name
+                formatted_name = raw_name.replace('_', ' ')
+
+                # Extract faction name and format nicely
+                if formatted_name.endswith(' Castle'):
+                    building_name = formatted_name[:-7] + ' (Castle)'
+                elif formatted_name.endswith(' Rampart'):
+                    building_name = formatted_name[:-8] + ' (Rampart)'
+                elif formatted_name.endswith(' Tower'):
+                    building_name = formatted_name[:-6] + ' (Tower)'
+                elif formatted_name.endswith(' Inferno'):
+                    building_name = formatted_name[:-8] + ' (Inferno)'
+                elif formatted_name.endswith(' Necropolis'):
+                    building_name = formatted_name[:-11] + ' (Necropolis)'
+                elif formatted_name.endswith(' Dungeon'):
+                    building_name = formatted_name[:-8] + ' (Dungeon)'
+                elif formatted_name.endswith(' Stronghold'):
+                    building_name = formatted_name[:-11] + ' (Stronghold)'
+                elif formatted_name.endswith(' Fortress'):
+                    building_name = formatted_name[:-9] + ' (Fortress)'
+                elif formatted_name.endswith(' Conflux'):
+                    building_name = formatted_name[:-8] + ' (Conflux)'
+                elif formatted_name.endswith(' Cove'):
+                    building_name = formatted_name[:-5] + ' (Cove)'
+                elif formatted_name.endswith(' Factory'):
+                    building_name = formatted_name[:-8] + ' (Factory)'
+                else:
+                    # No faction suffix or special case, keep as is
+                    building_name = formatted_name
+
+                building_names.append(building_name)
+            except ValueError:
+                # Invalid building index, skip
+                pass
 
         return ", ".join(building_names)
 

@@ -698,6 +698,52 @@ class Town_Buildings(IntEnum):
     Building_46 = 46
     Building_47 = 47
 
+class Town_Buildings_Special(IntEnum):
+    Lighthouse_Castle = 0
+    Brotherhood_of_the_Sword_Castle = 1
+    Stables_Castle = 2
+    Special_Building_3 = 3
+    Mystic_Pond_Rampart = 4
+    Fountain_of_Fortune_Rampart = 5
+    Treasury_Rampart = 6
+    Special_Building_7 = 7
+    Library_Tower = 8
+    Wall_of_Knowledge_Tower = 9
+    Lookout_Tower_Tower = 10
+    Special_Building_11 = 11
+    Brimstone_Stormclouds_Inferno = 12
+    Castle_Gate_Inferno = 13
+    Order_of_Fire_Inferno = 14
+    Special_Building_15 = 15
+    Cover_of_Darkness_Necropolis = 16
+    Necromancy_Amplifier_Necropolis = 17
+    Skeleton_Transformer_Necropolis = 18
+    Special_Building_19 = 19
+    Mana_Vortex_Dungeon = 20
+    Portal_of_Summoning_Dungeon = 21
+    Battle_Scholar_Academy_Dungeon = 22
+    Special_Building_23 = 23
+    Escape_Tunnel_Stronghold = 24
+    Freelancers_Guild_Stronghold = 25
+    Ballista_Yard_Stronghold = 26
+    Hall_of_Valhalla_Stronghold = 27
+    Cage_of_Warlords_Fortress = 28
+    Glyphs_of_Fear_Fortress = 29
+    Blood_Obelisk_Fortress = 30
+    Special_Building_31 = 31
+    Magic_University_Conflux = 32
+    Horde_Level_7 = 33
+    Special_Building_34 = 34
+    Special_Building_35 = 35
+    Thieves_Guild_Cove = 36
+    Grotto_Cove = 37
+    Gunpowder_Warehouse_Cove = 38
+    Special_Building_39 = 39
+    Bank_Factory = 40
+    Gantry_Factory = 41
+    Upg_Gantry_Factory = 42
+    Mana_Generator_Factory = 43
+
 DECOR = {
     ID.Brush,
     ID.Bush,
