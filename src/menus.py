@@ -34,7 +34,7 @@ class Menu(Enum):
         6: "Terrain",
         7: "Object Defs",
         8: "Object Data",
-        9: "Events",
+        9: "Events"
     }
 
     EDIT  = {

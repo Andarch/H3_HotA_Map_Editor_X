@@ -236,3 +236,20 @@ class ID(IntEnum):
     Sleepkeeper          = 165
     # UNUSED
     # UNUSED
+
+
+class Pickup_Mode(IntEnum):
+    Disabled = 0
+    Random   = 1
+    Custom   = 2
+
+
+class Pickup_Conditions(IntEnum):
+    Combat_with_Monsters = 0
+    Requires_Wisdom      = 1
+    Requires_Leadership  = 2
+    Gold                 = 3
+    Gold_and_3_Resources = 4
+    Gold_and_5_Resources = 5
+    Default              = 6
+    PickupCondition8     = 7

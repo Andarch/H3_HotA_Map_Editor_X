@@ -25,6 +25,7 @@ _COLUMNS_TO_REMOVE = {
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
     "Global Events": [],  # No columns to remove for global events
+    "Artifacts": ["def_id", "id", "sub_id", "type", "has_common"],
 }
 
 
@@ -188,6 +189,8 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_monsters(items)
             elif category == "Spells":
                 items = excel.flatten_spells(items)
+            elif category == "Artifacts":
+                items = excel.flatten_artifacts(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []
