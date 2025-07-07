@@ -7,6 +7,7 @@ from ..common import *
 from ..file_io import is_file_writable
 from . import excel
 import data.objects as objects
+import data.spells as spells
 
 
 # Define columns to remove per category
@@ -20,6 +21,8 @@ _COLUMNS_TO_REMOVE = {
                "artifacts_backpack", "artifact_backpack"],
     "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
               "spells_must_appear", "spells_cant_appear", "buildings_special", "events"],
+    "Monsters": ["def_id", "id", "sub_id", "type", "start_bytes", "middle_bytes", "is_value"],
+    "Spells": ["def_id", "id", "sub_id", "type", "contents"],
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
     "Global Events": [],  # No columns to remove for global events
 }
@@ -181,6 +184,10 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_heroes(items)
             elif category == "Towns":
                 items = excel.flatten_towns(items)
+            elif category == "Monsters":
+                items = excel.flatten_monsters(items)
+            elif category == "Spells":
+                items = excel.flatten_spells(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []
@@ -194,6 +201,8 @@ def _process_data(object_data, events) -> dict:
                 cleaned_item = {}
                 for key, value in cleaned_item_raw.items():
                     if isinstance(value, str) and value == "[]":
+                        cleaned_item[key] = ""
+                    elif isinstance(value, list) and len(value) == 0:
                         cleaned_item[key] = ""
                     else:
                         cleaned_item[key] = value

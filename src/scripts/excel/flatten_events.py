@@ -34,7 +34,7 @@ def flatten_events(events):
             for i, amount in enumerate(resources):
                 if amount != 0 and i < len(resource_names):
                     sign = "+" if amount > 0 else ""
-                    resource_lines.append(f"{sign}{amount} {resource_names[i]}")
+                    resource_lines.append(f"{sign}{amount:,} {resource_names[i]}")
             global_event["Resources"] = "\n".join(resource_lines) if resource_lines else ""
 
         # Player application

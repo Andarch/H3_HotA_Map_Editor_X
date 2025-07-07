@@ -40,7 +40,7 @@ def parse_object_defs() -> list:
         elif obj["id"] == objects.ID.Random_Town:
             obj["subtype"] = "Random"
         else:
-            obj["subtype"] = "-"
+            obj["subtype"] = obj["type"]
 
         obj["editor_group"] =      io.read_int(1)
         obj["below_ground"] = bool(io.read_int(1))

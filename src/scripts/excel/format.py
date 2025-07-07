@@ -8,7 +8,7 @@ SPELL_SPECIAL_CASES = {
 }
 
 ARTIFACT_SPECIAL_CASES = {
-    # Add artifact special cases here as needed
+    "Admirals Hat": "Admiral's Hat"
 }
 
 

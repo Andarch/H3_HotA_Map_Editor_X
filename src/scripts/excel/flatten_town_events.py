@@ -24,7 +24,7 @@ def flatten_town_events(event, town_obj):
         for i, amount in enumerate(resources):
             if amount != 0 and i < len(resource_names):
                 sign = "+" if amount > 0 else ""
-                resource_lines.append(f"{sign}{amount} {resource_names[i]}")
+                resource_lines.append(f"{sign}{amount:,} {resource_names[i]}")
         flattened_event["Resources"] = "\n".join(resource_lines) if resource_lines else ""
 
     # Player application
@@ -65,7 +65,8 @@ def flatten_town_events(event, town_obj):
             creature_names = ["Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7"]
             for i, amount in enumerate(creatures):
                 if amount != 0 and i < len(creature_names):
-                    creature_lines.append(f"{creature_names[i]}: {amount}")
+                    sign = "+" if amount > 0 else ""
+                    creature_lines.append(f"{sign}{amount:,} {creature_names[i]}")
             flattened_event["Creatures"] = "\n".join(creature_lines) if creature_lines else ""
 
         # HotA-specific fields
