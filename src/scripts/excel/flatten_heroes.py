@@ -1,8 +1,10 @@
-from .format_spell_list import format_spell_list
-from .get_portrait_path import get_portrait_path
+from src.scripts import excel
+import data.spells as spells
+import data.heroes as heroes
+import os
 
 
-def flatten_hero_data(objects_list) -> list:
+def flatten_heroes(objects_list) -> list:
     flattened_objects = []
 
     for obj in objects_list:
@@ -106,7 +108,7 @@ def flatten_hero_data(objects_list) -> list:
                             flattened_obj["backpack"] = "\n".join(backpack_names) if backpack_names else ""
                         # Special formatting for spells
                         elif sub_key == "spells" and sub_value:
-                            flattened_obj["spells"] = format_spell_list(sub_value)
+                            flattened_obj["spells"] = excel.format.format_enum_list(sub_value, spells.ID, excel.format.SPELL_SPECIAL_CASES)
                         else:
                             # Convert other lists to strings
                             flattened_obj[sub_key] = str(sub_value) if sub_value else ""
@@ -120,7 +122,7 @@ def flatten_hero_data(objects_list) -> list:
                             # Add Portrait column after portrait_id
                             if sub_key == "portrait_id":
                                 # Pass the entire object to get_portrait_path so it can access default_name
-                                flattened_obj["portrait"] = get_portrait_path(sub_value, flattened_obj)
+                                flattened_obj["portrait"] = _get_portrait_path(sub_value, flattened_obj)
 
                             # Convert gender numeric values to readable text
                             if sub_key == "gender":
@@ -139,3 +141,54 @@ def flatten_hero_data(objects_list) -> list:
         flattened_objects.append(flattened_obj)
 
     return flattened_objects
+
+
+def _get_portrait_path(portrait_id, hero_data=None):
+    """Get the file path for a hero's portrait image"""
+    # Handle default portrait case
+    if portrait_id is None or portrait_id == 255:  # Default portrait
+        if hero_data and "default_name" in hero_data:
+            default_name = hero_data["default_name"]
+            if default_name:
+                # Use the default name to find the portrait
+                filename = f"{default_name}.bmp"
+
+                # Get the full path to the portrait file
+                script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                portrait_path = os.path.join(script_dir, "portraits", filename)
+
+                # Only return path if file exists
+                if os.path.exists(portrait_path):
+                    return portrait_path
+        return ""
+
+    try:
+        # Get the portrait enum name
+        portrait_enum = heroes.Portrait(portrait_id)
+        portrait_name = portrait_enum.name
+
+        # Handle special cases
+        if portrait_name.endswith('_campaign'):
+            # Remove '_campaign' and add ' (campaign)'
+            base_name = portrait_name[:-9]  # Remove '_campaign'
+            filename = f"{base_name} (campaign).bmp"
+        elif portrait_name.startswith('Tarnum_'):
+            # Convert Tarnum_Barbarian to Tarnum (Barbarian)
+            class_name = portrait_name[7:]  # Remove 'Tarnum_'
+            filename = f"Tarnum ({class_name}).bmp"
+        else:
+            # Standard conversion: replace underscores with spaces
+            filename = portrait_name.replace('_', ' ') + '.bmp'
+
+        # Get the full path to the portrait file
+        script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        portrait_path = os.path.join(script_dir, "portraits", filename)
+
+        # Only return path if file exists
+        if os.path.exists(portrait_path):
+            return portrait_path
+        else:
+            return ""
+    except (ValueError, AttributeError):
+        # Invalid portrait ID or other error
+        return ""

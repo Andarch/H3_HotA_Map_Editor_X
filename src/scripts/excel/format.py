@@ -1,7 +1,47 @@
 import data.objects as objects
+import data.spells as spells
 
 
-def format_special_buildings_array(special_array, state_filter=None):
+# Define special case mappings for enum formatting
+SPELL_SPECIAL_CASES = {
+    "Titans Lightning Bolt": "Titan's Lightning Bolt"
+}
+
+ARTIFACT_SPECIAL_CASES = {
+    # Add artifact special cases here as needed
+}
+
+
+def format_enum_list(enum_list, enum_class, special_cases=None):
+    """Convert a list of 1s and 0s to readable enum names separated by commas
+
+    Args:
+        enum_list: List of 1s and 0s indicating which items are enabled
+        enum_class: The enum class to use for name lookup
+        special_cases: Dict of special case replacements for formatting
+    """
+    if special_cases is None:
+        special_cases = {}
+
+    names = []
+    for index, has_item in enumerate(enum_list):
+        if has_item == 1:
+            try:
+                enum_item = enum_class(index)
+                name = enum_item.name.replace('_', ' ')
+
+                # Apply special case formatting if specified
+                if name in special_cases:
+                    name = special_cases[name]
+
+                names.append(name)
+            except ValueError:
+                pass
+
+    return ", ".join(names)
+
+
+def format_special_buildings(special_array, state_filter=None):
     """Convert an array of special building states to readable building names
 
     Args:

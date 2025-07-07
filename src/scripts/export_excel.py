@@ -5,7 +5,23 @@ from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 from ..common import *
 from ..file_io import is_file_writable
-from .excel.process_objects import *
+from . import excel
+import data.objects as objects
+
+
+# Define columns to remove per category
+_COLUMNS_TO_REMOVE = {
+    "Heroes": ["def_id", "id", "sub_id", "type", "subtype", "owner", "hero_id", "default_name", "has_custom_name", "custom_name", "formation",
+               "has_portrait", "portrait_id", "patrol", "has_biography",
+               # Remove individual artifact slot columns since we're creating combined "artifacts" and "backpack" columns
+               "head", "shoulders", "neck", "right_hand", "left_hand", "torso", "right_ring", "left_ring", "feet",
+               "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
+               # Remove any existing backpack-related columns that might conflict
+               "artifacts_backpack", "artifact_backpack"],
+    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
+              "spells_must_appear", "spells_cant_appear", "buildings_special", "events"],
+    "Town Events": ["hota_town_event_1", "hota_town_event_2"],
+}
 
 
 def export_excel(map_key: dict) -> bool:
@@ -23,19 +39,19 @@ def export_excel(map_key: dict) -> bool:
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
         # Process objects (categorize and clean data)
-        processed_objects = process_objects(map_key["object_data"])
+        processed_data = _process_data(map_key["object_data"])
 
         # Compile regex for Excel illegal characters
         illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
 
         # Write each category to Excel
-        for category, objects in processed_objects.items():
+        for category, items in processed_data.items():
             # Create DataFrame with preserved column order
-            if objects:
+            if items:
                 # Get column order from first object
-                column_order = list(objects[0].keys())
+                column_order = list(items[0].keys())
                 # Create DataFrame and reorder columns to match original key order
-                df = pd.DataFrame(objects)
+                df = pd.DataFrame(items)
                 df = df.reindex(columns=column_order)
             else:
                 df = pd.DataFrame([{"": "No data"}])
@@ -114,3 +130,93 @@ def export_excel(map_key: dict) -> bool:
     xprint(type=Text.SPECIAL, text=DONE)
 
     return True
+
+
+def _process_data(object_data) -> dict:
+    """Categorize and process data for Excel export"""
+    # Categorize objects
+    processed_data = {category: [] for category in objects.CATEGORIES.keys()}
+
+    # Add Town Events category - will be populated separately
+    processed_data["Town Events"] = []
+
+    # Step 1: Categorize objects
+    for obj in object_data:
+        categorized = False
+
+        # Special handling for Border_Gate based on sub_id
+        if obj["id"] == objects.ID.Border_Gate:
+            if obj["sub_id"] == 1000:  # Quest Gate
+                processed_data["Quest Objects"].append(obj)
+            elif obj["sub_id"] == 1001:  # Grave - reward giving object
+                processed_data["Treasure"].append(obj)
+            else:  # Regular Border Gate
+                processed_data["Border Objects"].append(obj)
+            categorized = True
+        else:
+            # Check each category
+            for category, object_ids in objects.CATEGORIES.items():
+                if obj["id"] in object_ids:
+                    processed_data[category].append(obj)
+                    categorized = True
+                    break
+
+        # If object doesn't fit any category, add to Simple Objects
+        if not categorized:
+            processed_data["Simple Objects"].append(obj)
+
+    # Step 2: Process each category
+    for category, items in processed_data.items():
+        if category == "Town Events":
+            continue  # Handle this separately after processing towns
+
+        if items:
+            # Sort objects by ID first, then by sub_id
+            items.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
+
+            # Category-specific transformations
+            if category == "Heroes":
+                items = excel.flatten_heroes(items)
+            elif category == "Towns":
+                items = excel.flatten_towns(items)
+
+            # Remove unwanted columns (universal + category-specific)
+            cleaned_data = []
+            columns_to_remove = _COLUMNS_TO_REMOVE.get(category, [])
+            for item in items:
+                # Remove _bytes columns (universal) and category-specific columns
+                cleaned_item_raw = {k: v for k, v in item.items()
+                                   if not k.endswith('_bytes') and k not in columns_to_remove}
+
+                # Clean empty list representations
+                cleaned_item = {}
+                for key, value in cleaned_item_raw.items():
+                    if isinstance(value, str) and value == "[]":
+                        cleaned_item[key] = ""
+                    else:
+                        cleaned_item[key] = value
+                cleaned_data.append(cleaned_item)
+
+            processed_data[category] = cleaned_data
+
+    # Step 3: Extract and process town events
+    town_events = []
+    for obj in object_data:
+        if obj["id"] in [objects.ID.Town, objects.ID.Random_Town] and "events" in obj and obj["events"]:
+            for event in obj["events"]:
+                # Create a flattened event object with town context
+                flattened_event = excel.flatten_town_events(event, obj)
+                town_events.append(flattened_event)
+
+    processed_data["Town Events"] = town_events
+
+    # Reorder to place Town Events right after Towns
+    final_data = {}
+    for key in processed_data.keys():
+        if key == "Towns":
+            final_data[key] = processed_data[key]
+            final_data["Town Events"] = processed_data["Town Events"]
+        elif key != "Town Events":
+            final_data[key] = processed_data[key]
+
+    return final_data

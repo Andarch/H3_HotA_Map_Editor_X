@@ -1,8 +1,8 @@
-from .format_building_list import format_building_list
-from .format_special_buildings_array import format_special_buildings_array
+import data.objects as objects
+from src.scripts import excel
 
 
-def flatten_town_event_data(event, town_obj):
+def flatten_town_events(event, town_obj):
     """Flatten town event data into a readable format"""
     flattened_event = {}
 
@@ -75,11 +75,11 @@ def flatten_town_event_data(event, town_obj):
         buildings = event.get("buildings", [])
         if buildings and isinstance(buildings, list):
             # Get regular buildings from the event
-            regular_built = format_building_list(buildings)
+            regular_built = excel.format.format_enum_list(buildings, objects.Town_Buildings)
             # Get special buildings from the event's hota_special field
             special_built = ""
             if "hota_special" in event:
-                special_built = format_special_buildings_array(event["hota_special"], state_filter=1)
+                special_built = excel.format.format_special_buildings(event["hota_special"], state_filter=1)
 
             # Combine regular and special buildings
             all_built = []
