@@ -21,6 +21,7 @@ _COLUMNS_TO_REMOVE = {
     "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
               "spells_must_appear", "spells_cant_appear", "buildings_special", "events"],
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
+    "Global Events": [],  # No columns to remove for global events
 }
 
 
@@ -39,7 +40,7 @@ def export_excel(map_key: dict) -> bool:
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
         # Process objects (categorize and clean data)
-        processed_data = _process_data(map_key["object_data"])
+        processed_data = _process_data(map_key["object_data"], map_key["events"])
 
         # Compile regex for Excel illegal characters
         illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
@@ -132,13 +133,14 @@ def export_excel(map_key: dict) -> bool:
     return True
 
 
-def _process_data(object_data) -> dict:
+def _process_data(object_data, events) -> dict:
     """Categorize and process data for Excel export"""
     # Categorize objects
     processed_data = {category: [] for category in objects.CATEGORIES.keys()}
 
-    # Add Town Events category - will be populated separately
+    # Add Town Events and Global Events categories - will be populated separately
     processed_data["Town Events"] = []
+    processed_data["Global Events"] = []
 
     # Step 1: Categorize objects
     for obj in object_data:
@@ -167,8 +169,8 @@ def _process_data(object_data) -> dict:
 
     # Step 2: Process each category
     for category, items in processed_data.items():
-        if category == "Town Events":
-            continue  # Handle this separately after processing towns
+        if category in ["Town Events", "Global Events"]:
+            continue  # Handle these separately after processing towns and global events
 
         if items:
             # Sort objects by ID first, then by sub_id
@@ -210,13 +212,18 @@ def _process_data(object_data) -> dict:
 
     processed_data["Town Events"] = town_events
 
-    # Reorder to place Town Events right after Towns
+    # Step 4: Process global events
+    global_events = excel.flatten_events(events or [])
+    processed_data["Global Events"] = global_events
+
+    # Reorder to place Town Events and Global Events right after Towns
     final_data = {}
     for key in processed_data.keys():
         if key == "Towns":
             final_data[key] = processed_data[key]
             final_data["Town Events"] = processed_data["Town Events"]
-        elif key != "Town Events":
+            final_data["Global Events"] = processed_data["Global Events"]
+        elif key not in ["Town Events", "Global Events"]:
             final_data[key] = processed_data[key]
 
     return final_data
