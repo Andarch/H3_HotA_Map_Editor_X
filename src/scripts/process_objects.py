@@ -341,4 +341,5 @@ def process_objects(object_data) -> dict:
 
         return ", ".join(building_names)
 
+
     return main()
