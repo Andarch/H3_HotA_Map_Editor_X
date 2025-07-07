@@ -5,7 +5,7 @@ from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 from ..common import *
 from ..file_io import is_file_writable
-from .process_objects import *
+from .excel.process_objects import *
 
 
 def export_excel(map_key: dict) -> bool:
