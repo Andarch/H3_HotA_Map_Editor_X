@@ -510,7 +510,7 @@ def write_black_market(obj: dict) -> None:
         write_hero_artifact(artifact)
 
 def parse_campfire(obj: dict) -> dict:
-    obj["null_bytes"] = io.read_raw(8)
+    obj["mode"] = io.read_raw(8)
     obj["resources"] = {}
 
     for _ in range(2):
@@ -520,7 +520,7 @@ def parse_campfire(obj: dict) -> dict:
     return obj
 
 def write_campfire(obj: dict) -> None:
-    io.write_raw(obj["null_bytes"])
+    io.write_raw(obj["mode"])
     for k in obj["resources"].keys():
         io.write_int(obj["resources"][k], 4)
         io.write_int(k, 1)

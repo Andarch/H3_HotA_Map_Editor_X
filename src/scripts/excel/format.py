@@ -107,3 +107,11 @@ def format_special_buildings(special_array, state_filter=None):
             pass
 
     return ", ".join(building_names)
+
+
+def format_number(value, as_text=False):
+    """Format a number with commas. If as_text is True, return as string for Excel."""
+    if value is None:
+        return ""
+    s = f"{int(value):,}"
+    return s if not as_text else str(s)

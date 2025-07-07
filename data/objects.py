@@ -860,8 +860,11 @@ CATEGORIES = {
     "Resources": {
         ID.Resource, ID.Random_Resource
     },
+    "Campfires": {
+        ID.Campfire
+    },
     "Treasure": {
-        ID.Treasure_Chest, ID.Sea_Chest, ID.Flotsam, ID.Campfire,
+        ID.Treasure_Chest, ID.Sea_Chest, ID.Flotsam,
         ID.Shipwreck_Survivor, ID.HotA_Collectible
     },
     "Other Pickups": {

@@ -26,6 +26,8 @@ _COLUMNS_TO_REMOVE = {
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
     "Global Events": [],  # No columns to remove for global events
     "Artifacts": ["def_id", "id", "sub_id", "type", "has_common"],
+    "Resources": ["def_id", "id", "sub_id", "type", "has_common"],
+    "Treasure": ["def_id", "id", "sub_id", "type"],
 }
 
 
@@ -191,6 +193,12 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_spells(items)
             elif category == "Artifacts":
                 items = excel.flatten_artifacts(items)
+            elif category == "Resources":
+                items = excel.flatten_resources(items)
+            elif category == "Treasure":
+                items = excel.flatten_treasure(items)
+            elif category == "Campfires":
+                items = excel.flatten_campfires(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []
@@ -228,10 +236,16 @@ def _process_data(object_data, events) -> dict:
     global_events = excel.flatten_events(events or [])
     processed_data["Global Events"] = global_events
 
-    # Reorder to place Town Events and Global Events right after Towns
+    # Reorder to place Campfires after Resources and before Treasure
     final_data = {}
     for key in processed_data.keys():
-        if key == "Towns":
+        if key == "Resources":
+            final_data[key] = processed_data[key]
+            if "Campfires" in processed_data:
+                final_data["Campfires"] = processed_data["Campfires"]
+        elif key == "Campfires":
+            continue  # Already inserted after Resources
+        elif key == "Towns":
             final_data[key] = processed_data[key]
             final_data["Town Events"] = processed_data["Town Events"]
             final_data["Global Events"] = processed_data["Global Events"]
