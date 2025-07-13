@@ -3,7 +3,7 @@ from ...common import *
 import data.objects as objects
 import data.artifacts as artifacts
 
-def flatten_creature_bank(creature_banks):
+def flatten_creature_banks(creature_banks):
     rows = []
     for obj in creature_banks:
         row = {}

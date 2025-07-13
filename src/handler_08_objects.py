@@ -608,6 +608,7 @@ def write_flotsam(obj: dict) -> None:
 
 def parse_garrison(obj: dict) -> dict:
     obj["owner"]  = io.read_int(4)
+    obj["color"]  = players.Players(obj["owner"]).name
     obj["guards"] = parse_creatures()
     obj["troops_removable"] = io.read_int(1)
 

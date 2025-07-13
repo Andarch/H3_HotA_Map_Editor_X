@@ -2,15 +2,6 @@ from . import format
 import data.artifacts as artifacts
 
 def flatten_artifacts(artifact_objects):
-    """
-    Flatten artifact object data for Excel export.
-
-    Args:
-        artifact_objects: List of artifact object dictionaries
-
-    Returns:
-        List of flattened artifact dictionaries ready for Excel export
-    """
     flattened = []
     for obj in artifact_objects:
         flat = {}
@@ -26,7 +17,8 @@ def flatten_artifacts(artifact_objects):
                     # skip NONE (65535)
                     if guard_id == 65535:
                         continue
-                    guards_list.append(f"{guard['id'].name.replace('_', ' ').title()}: {guard['amount']}")
+                    amount_str = f"{guard['amount']:,}"
+                    guards_list.append(f"{guard['id'].name.replace('_', ' ').title()}: {amount_str}")
                 flat[k] = "\n".join(guards_list)
             elif k == "pickup_mode":
                 # pickup_mode is a single value, use artifacts.Pickup_Mode
