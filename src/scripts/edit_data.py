@@ -14,10 +14,6 @@ def edit_data(map_key: dict) -> bool:
             success = scripts.modify_towns(map_key["object_data"])
         case 2:
             success = scripts.reset_heroes(map_key["player_specs"], map_key["start_heroes"]["custom_heroes"], map_key["hero_data"], map_key["object_data"])
-        case 3:
-            xprint(type=Text.ERROR, text="Not yet functional.")
-        case 4:
-            xprint(type=Text.ERROR, text="Not yet functional.")
 
     xprint()
 

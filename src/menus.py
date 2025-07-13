@@ -39,10 +39,7 @@ class Menu(Enum):
 
     EDIT  = {
         1: "Modify towns (buildings/spells)",
-        2: "Reset heroes",
-       -1: "",
-        3: "!!Swap layers",
-        4: "!!Update events (global/town)"
+        2: "Reset heroes"
     }
 
     LOAD  = {
