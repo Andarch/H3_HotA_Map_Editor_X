@@ -531,7 +531,7 @@ def parse_bank(obj: dict) -> dict:
     obj["artifacts"]        = []
 
     for _ in range(io.read_int(4)):
-        obj["artifacts"].append(artifacts.ID(io.read_int(4)))
+        obj["artifacts"].append(io.read_int(4))
 
     return obj
 

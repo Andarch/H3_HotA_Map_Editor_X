@@ -2,9 +2,9 @@ from . import format
 import data.objects as objects
 import data.artifacts as artifacts
 
-def flatten_grave(treasure_objects):
+def flatten_grave(graves):
     rows = []
-    for obj in treasure_objects:
+    for obj in graves:
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")

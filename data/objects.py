@@ -794,6 +794,18 @@ class Grave_Reward(IntEnum):
     Random  = 4294967295
     Custom  = 0
 
+class Creature_Bank_Difficulty(IntEnum):
+    Random  = 4294967295
+    Level_1 = 0
+    Level_2 = 1
+    Level_3 = 2
+    Level_4 = 3
+
+class Creature_Bank_Stack(IntEnum):
+    Random  = 255
+    No      = 0
+    Yes     = 1
+
 DECOR = {
     ID.Brush,
     ID.Bush,

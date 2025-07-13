@@ -2,9 +2,9 @@ import data.objects as objects
 import data.skills as skills
 import data.spells as spells
 
-def flatten_scholar(treasure_objects):
+def flatten_scholar(scholars):
     rows = []
-    for obj in treasure_objects:
+    for obj in scholars:
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
