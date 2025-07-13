@@ -185,11 +185,11 @@ def _process_data(object_data, events) -> dict:
 
             if subtype_name == "Jetsam":
                 processed_data["Flotsam & Jetsam"].append(obj)
-            elif subtype_name == "Sea_Barrel":
+            elif subtype_name == "Sea Barrel":
                 processed_data["Sea Barrel"].append(obj)
-            elif subtype_name == "Vial_of_Mana":
+            elif subtype_name == "Vial of Mana":
                 processed_data["Vial of Mana"].append(obj)
-            elif subtype_name == "Ancient_Lamp":
+            elif subtype_name == "Ancient Lamp":
                 processed_data["Ancient Lamp"].append(obj)
             else:
                 # Fallback to Simple Objects if unknown subtype

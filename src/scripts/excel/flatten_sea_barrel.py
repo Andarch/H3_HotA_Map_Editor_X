@@ -1,6 +1,4 @@
-"""
-Flattens and formats sea barrel object data for Excel export.
-"""
+import data.objects as objects
 
 def flatten_sea_barrel(treasure_objects):
     rows = []
@@ -8,12 +6,12 @@ def flatten_sea_barrel(treasure_objects):
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
-        contents = obj.get("contents", "")
-        if contents == 4294967295:
-            row["Contents"] = "Random"
+        row["Contents"] = objects.Sea_Barrel_Reward(obj.get("contents", "")).name.replace('_', ' ')
+        if row["Contents"] == "Custom":
+            row["Resource"] = objects.Resource(obj.get("resource", "")).name
+            row["Amount"] = obj.get("amount", "")
         else:
-            row["Contents"] = contents
-        row["Resource"] = obj.get("resource", "")
-        row["Amount"] = obj.get("amount", "")
+            row["Resource"] = ""
+            row["Amount"] = ""
         rows.append(row)
     return rows

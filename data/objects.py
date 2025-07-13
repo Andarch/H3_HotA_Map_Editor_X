@@ -744,13 +744,6 @@ class Town_Buildings_Special(IntEnum):
     Upg_Gantry_Factory = 42
     Mana_Generator_Factory = 43
 
-class Flotsam_Jetsam(IntEnum):
-    Random = 4294967295
-    Nothing = 0
-    Level_1 = 1
-    Level_2 = 2
-    Level_3 = 3
-
 class Scholar_Reward(IntEnum):
     Random          = 255
     Primary_Skill   = 0
@@ -763,6 +756,24 @@ class Treasure_Chest_Reward(IntEnum):
     Level_2  = 1
     Level_3  = 2
     Artifact = 3
+
+class Sea_Chest_Reward(IntEnum):
+    Random            = 4294967295
+    Nothing           = 0
+    Gold              = 1
+    Gold_and_Artifact = 2
+
+class Flotsam_Jetsam_Reward(IntEnum):
+    Random  = 4294967295
+    Nothing = 0
+    Level_1 = 1
+    Level_2 = 2
+    Level_3 = 3
+
+class Sea_Barrel_Reward(IntEnum):
+    Random  = 4294967295
+    Custom  = 0
+    Nothing = 1
 
 DECOR = {
     ID.Brush,
