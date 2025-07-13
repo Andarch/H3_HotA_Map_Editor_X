@@ -528,10 +528,10 @@ def write_campfire(obj: dict) -> None:
 def parse_bank(obj: dict) -> dict:
     obj["difficulty"]     = io.read_int(4)
     obj["upgraded_stack"] = io.read_int(1)
-    obj["rewards"]        = []
+    obj["artifacts"]        = []
 
     for _ in range(io.read_int(4)):
-        obj["rewards"].append(artifacts.ID(io.read_int(4)))
+        obj["artifacts"].append(artifacts.ID(io.read_int(4)))
 
     return obj
 
@@ -539,9 +539,9 @@ def write_bank(obj: dict) -> None:
     io.write_int(obj["difficulty"], 4)
     io.write_int(obj["upgraded_stack"], 1)
 
-    io.write_int(len(obj["rewards"]), 4)
-    for reward in obj["rewards"]:
-        io.write_int(reward, 4)
+    io.write_int(len(obj["artifacts"]), 4)
+    for artifact in obj["artifacts"]:
+        io.write_int(artifact, 4)
 
 class Corpse(IntEnum):
     Random   = 4294967295 # 4 Bytes of 255
