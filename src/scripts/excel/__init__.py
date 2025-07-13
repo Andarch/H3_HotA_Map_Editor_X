@@ -15,5 +15,6 @@ from .flatten_flotsam_jetsam import flatten_flotsam_jetsam
 from .flatten_sea_barrel import flatten_sea_barrel
 from .flatten_vial_of_mana import flatten_vial_of_mana
 from .flatten_ancient_lamp import flatten_ancient_lamp
+from .flatten_grave import flatten_grave
 from . import format
 from .format import format_enum_list, format_special_buildings, SPELL_SPECIAL_CASES, ARTIFACT_SPECIAL_CASES

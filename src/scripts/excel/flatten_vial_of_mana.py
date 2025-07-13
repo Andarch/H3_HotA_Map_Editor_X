@@ -1,6 +1,4 @@
-"""
-Flattens and formats vial of mana object data for Excel export.
-"""
+import data.objects as objects
 
 def flatten_vial_of_mana(treasure_objects):
     rows = []
@@ -8,10 +6,6 @@ def flatten_vial_of_mana(treasure_objects):
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
-        contents = obj.get("contents", "")
-        if contents == 4294967295:
-            row["Contents"] = "Random"
-        else:
-            row["Contents"] = contents
+        row["Contents"] = objects.Vial_of_Mana_Reward(obj.get("contents", "")).name.replace('_', ' ')
         rows.append(row)
     return rows

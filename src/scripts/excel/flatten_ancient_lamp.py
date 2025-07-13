@@ -1,6 +1,4 @@
-"""
-Flattens and formats ancient lamp object data for Excel export.
-"""
+import data.objects as objects
 
 def flatten_ancient_lamp(treasure_objects):
     rows = []
@@ -8,11 +6,10 @@ def flatten_ancient_lamp(treasure_objects):
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
-        contents = obj.get("contents", "")
-        if contents == 4294967295:
-            row["Contents"] = "Random"
+        row["Contents"] = objects.Ancient_Lamp_Reward(obj.get("contents", "")).name.replace('_', ' ')
+        if row["Contents"] == "Custom":
+            row["Amount"] = obj.get("amount", "")
         else:
-            row["Contents"] = contents
-        row["Amount"] = obj.get("amount", "")
+            row["Amount"] = ""
         rows.append(row)
     return rows

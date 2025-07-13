@@ -36,6 +36,7 @@ _COLUMNS_TO_REMOVE = {
     "Sea Barrel": ["def_id", "id", "sub_id", "type"],
     "Vial of Mana": ["def_id", "id", "sub_id", "type"],
     "Ancient Lamp": ["def_id", "id", "sub_id", "type"],
+    "Grave": ["def_id", "id", "sub_id", "type", "resource"],
 }
 
 
@@ -250,6 +251,8 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_vial_of_mana(items)
             elif category == "Ancient Lamp":
                 items = excel.flatten_ancient_lamp(items)
+            elif category == "Grave":
+                items = excel.flatten_grave(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []

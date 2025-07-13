@@ -779,6 +779,21 @@ class Shipwreck_Survivor_Reward(IntEnum):
     Random  = 4294967295
     Custom  = 0
 
+class Vial_of_Mana_Reward(IntEnum):
+    Random  = 4294967295
+    Level_1 = 0
+    Level_2 = 1
+    Level_3 = 2
+    Level_4 = 3
+
+class Ancient_Lamp_Reward(IntEnum):
+    Random  = 4294967295
+    Custom  = 0
+
+class Grave_Reward(IntEnum):
+    Random  = 4294967295
+    Custom  = 0
+
 DECOR = {
     ID.Brush,
     ID.Bush,
