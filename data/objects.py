@@ -744,6 +744,13 @@ class Town_Buildings_Special(IntEnum):
     Upg_Gantry_Factory = 42
     Mana_Generator_Factory = 43
 
+class Flotsam_Jetsam(IntEnum):
+    Random = 4294967295
+    Nothing = 0
+    Level_1 = 1
+    Level_2 = 2
+    Level_3 = 3
+
 DECOR = {
     ID.Brush,
     ID.Bush,
@@ -863,13 +870,14 @@ CATEGORIES = {
     "Campfires": {
         ID.Campfire
     },
-    "Treasure": {
-        ID.Treasure_Chest, ID.Sea_Chest, ID.Flotsam,
-        ID.Shipwreck_Survivor, ID.HotA_Collectible
-    },
-    "Other Pickups": {
-        ID.Scholar, ID.Ocean_Bottle, ID.Grail
-    },
+    "Scholars": {ID.Scholar},
+    "Treasure Chest": {ID.Treasure_Chest},
+    "Sea Chest": {ID.Sea_Chest},
+    "Flotsam & Jetsam": {ID.Flotsam, ID.HotA_Collectible},
+    "Sea Barrel": {ID.HotA_Collectible},
+    "Shipwreck Survivor": {ID.Shipwreck_Survivor},
+    "Vial of Mana": {ID.HotA_Collectible},
+    "Ancient Lamp": {ID.HotA_Collectible},
     "Creature Banks": {
         ID.Creature_Bank, ID.Derelict_Ship, ID.Dragon_Utopia,
         ID.Crypt, ID.Shipwreck
@@ -903,6 +911,9 @@ CATEGORIES = {
     "Simple Objects": {
         ID.Tree_of_Knowledge, ID.Lean_To, ID.Wagon, ID.Warriors_Tomb,
         ID.Lighthouse, ID.Shipyard
+    },
+    "Text": {
+        ID.Sign, ID.Ocean_Bottle
     },
     "Decor": DECOR
 }

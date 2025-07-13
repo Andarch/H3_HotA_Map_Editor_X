@@ -8,5 +8,12 @@ from .flatten_artifacts import flatten_artifacts
 from .flatten_resources import flatten_resources
 from .flatten_treasure import flatten_treasure
 from .flatten_campfires import flatten_campfires
+from .flatten_treasure_chest import flatten_treasure_chest
+from .flatten_sea_chest import flatten_sea_chest
+from .flatten_shipwreck_survivor import flatten_shipwreck_survivor
+from .flatten_flotsam_jetsam import flatten_flotsam_jetsam
+from .flatten_sea_barrel import flatten_sea_barrel
+from .flatten_vial_of_mana import flatten_vial_of_mana
+from .flatten_ancient_lamp import flatten_ancient_lamp
 from . import format
 from .format import format_enum_list, format_special_buildings, SPELL_SPECIAL_CASES, ARTIFACT_SPECIAL_CASES

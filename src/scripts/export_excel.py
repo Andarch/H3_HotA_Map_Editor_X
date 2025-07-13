@@ -161,10 +161,39 @@ def _process_data(object_data, events) -> dict:
             else:  # Regular Border Gate
                 processed_data["Border Objects"].append(obj)
             categorized = True
+        # Special handling for HotA_Collectible based on subtype
+        elif obj["id"] == objects.ID.HotA_Collectible:
+            subtype = obj.get("subtype", "")
+            if hasattr(subtype, 'name'):
+                subtype_name = subtype.name
+            elif hasattr(subtype, 'value'):
+                # Map subtype value to name using HotA_Collectible enum
+                try:
+                    subtype_name = objects.HotA_Collectible(subtype.value).name
+                except (ValueError, AttributeError):
+                    subtype_name = str(subtype)
+            else:
+                subtype_name = str(subtype)
+
+            if subtype_name == "Jetsam":
+                processed_data["Flotsam & Jetsam"].append(obj)
+            elif subtype_name == "Sea_Barrel":
+                processed_data["Sea Barrel"].append(obj)
+            elif subtype_name == "Vial_of_Mana":
+                processed_data["Vial of Mana"].append(obj)
+            elif subtype_name == "Ancient_Lamp":
+                processed_data["Ancient Lamp"].append(obj)
+            else:
+                # Fallback to Simple Objects if unknown subtype
+                processed_data["Simple Objects"].append(obj)
+            categorized = True
         else:
             # Check each category
             for category, object_ids in objects.CATEGORIES.items():
                 if obj["id"] in object_ids:
+                    # Skip HotA_Collectible here since we handled it specially above
+                    if obj["id"] == objects.ID.HotA_Collectible:
+                        continue
                     processed_data[category].append(obj)
                     categorized = True
                     break
@@ -195,10 +224,22 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_artifacts(items)
             elif category == "Resources":
                 items = excel.flatten_resources(items)
-            elif category == "Treasure":
-                items = excel.flatten_treasure(items)
             elif category == "Campfires":
                 items = excel.flatten_campfires(items)
+            elif category == "Treasure Chest":
+                items = excel.flatten_treasure_chest(items)
+            elif category == "Sea Chest":
+                items = excel.flatten_sea_chest(items)
+            elif category == "Shipwreck Survivor":
+                items = excel.flatten_shipwreck_survivor(items)
+            elif category == "Flotsam & Jetsam":
+                items = excel.flatten_flotsam_jetsam(items)
+            elif category == "Sea Barrel":
+                items = excel.flatten_sea_barrel(items)
+            elif category == "Vial of Mana":
+                items = excel.flatten_vial_of_mana(items)
+            elif category == "Ancient Lamp":
+                items = excel.flatten_ancient_lamp(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []
