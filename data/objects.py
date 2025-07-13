@@ -775,6 +775,10 @@ class Sea_Barrel_Reward(IntEnum):
     Custom  = 0
     Nothing = 1
 
+class Shipwreck_Survivor_Reward(IntEnum):
+    Random  = 4294967295
+    Custom  = 0
+
 DECOR = {
     ID.Brush,
     ID.Bush,

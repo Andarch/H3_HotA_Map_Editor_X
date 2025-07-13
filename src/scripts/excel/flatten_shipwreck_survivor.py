@@ -1,6 +1,6 @@
-"""
-Flattens and formats shipwreck survivor object data for Excel export.
-"""
+from . import format
+import data.objects as objects
+import data.artifacts as artifacts
 
 def flatten_shipwreck_survivor(treasure_objects):
     rows = []
@@ -9,9 +9,11 @@ def flatten_shipwreck_survivor(treasure_objects):
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
         contents = obj.get("contents", "")
-        if contents == 4294967295:
-            row["Contents"] = "Random"
+        row["Contents"] = objects.Shipwreck_Survivor_Reward(contents).name
+        if contents == 0:
+            art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
+            row["Artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
         else:
-            row["Contents"] = contents
+            row["Artifact"] = ""
         rows.append(row)
     return rows

@@ -1356,15 +1356,17 @@ def write_seers_hut(obj: dict) -> None:
     io.write_int(0, 2)
 
 def parse_shipwreck_survivor(obj: dict) -> dict:
-    obj["contents"] =       io.read_int(4)
+    obj["contents"] = io.read_int(4)
     # obj["artifact"] = artifacts.ID(io.read_int(4))
-    obj["garbage_bytes"] = io.read_raw(4)
+    # obj["garbage_bytes"] = io.read_raw(4)
+    obj["artifact"] = io.read_int(4)
     return obj
 
 def write_shipwreck_survivor(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
     # io.write_int(obj["artifact"], 4)
-    io.write_raw(obj["garbage_bytes"])
+    # io.write_raw(obj["garbage_bytes"])
+    io.write_int(obj["artifact"], 4)
 
 def parse_spell_scroll(obj: dict) -> dict:
     obj["has_common"] = io.read_int(1)

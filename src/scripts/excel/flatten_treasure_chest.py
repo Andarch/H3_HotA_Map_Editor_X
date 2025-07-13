@@ -1,3 +1,4 @@
+from . import format
 import data.objects as objects
 import data.artifacts as artifacts
 
@@ -10,12 +11,10 @@ def flatten_treasure_chest(treasure_objects):
         contents = obj.get("contents", "")
         row["Contents"] = objects.Treasure_Chest_Reward(contents).name
         if contents == 3:
-            art = artifacts.ID(obj.get("artifact", "")).name
-            if art == "Empty_4_Bytes":
+            art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
+            if art == "Empty 4 Bytes":
                 art = "Random"
-            else:
-                art = art.replace('_', ' ')
-            row["Artifact"] = art
+            row["Artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
         else:
             row["Artifact"] = ""
         rows.append(row)

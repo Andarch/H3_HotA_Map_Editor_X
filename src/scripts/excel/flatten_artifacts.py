@@ -1,6 +1,4 @@
-"""
-Flattens and formats artifact object data for Excel export.
-"""
+from . import format
 import data.artifacts as artifacts
 
 def flatten_artifacts(artifact_objects):
@@ -65,6 +63,11 @@ def flatten_artifacts(artifact_objects):
                         flat[k] = v
                 else:
                     flat[k] = ""
+            elif k == "subtype":
+                # Ensure Subtype (artifact name) is processed through ARTIFACT_SPECIAL_CASES
+                name = str(v).replace('_', ' ')
+                name = format.ARTIFACT_SPECIAL_CASES.get(name, name)
+                flat[k] = name
             else:
                 flat[k] = v
         # Ensure 'message' column is always present

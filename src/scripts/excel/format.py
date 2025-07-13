@@ -8,7 +8,14 @@ SPELL_SPECIAL_CASES = {
 }
 
 ARTIFACT_SPECIAL_CASES = {
-    "Admirals Hat": "Admiral's Hat"
+    "Admirals Hat": "Admiral's Hat",
+    "Lions Shield of Courage": "Lion's Shield of Courage",
+    "Ogres Club of Havoc": "Ogre's Club of Havoc",
+    "Titans Gladius": "Titan's Gladius",
+    "Titans Cuirass": "Titan's Cuirass",
+    "Sea Captains Hat": "Sea Captain's Hat",
+    "Spellbinders Hat": "Spellbinder's Hat",
+    "Wayfarers Boots": "Wayfarer's Boots"
 }
 
 
