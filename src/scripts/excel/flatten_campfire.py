@@ -15,7 +15,7 @@ RESOURCE_IDS = [0, 1, 2, 3, 4, 5, 6]
 
 DEFAULT_SETTING = b'\x00\x00\x00\x00\xff\xff\xff\xff'
 
-def flatten_campfires(campfires):
+def flatten_campfire(campfires):
     """
     Flattens campfire objects for Excel export.
     Adds 'Coords', 'Subtype', 'Mode', and 'Resources' columns.

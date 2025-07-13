@@ -751,6 +751,19 @@ class Flotsam_Jetsam(IntEnum):
     Level_2 = 2
     Level_3 = 3
 
+class Scholar_Reward(IntEnum):
+    Random          = 255
+    Primary_Skill   = 0
+    Secondary_Skill = 1
+    Spell           = 2
+
+class Treasure_Chest_Reward(IntEnum):
+    Random   = 4294967295
+    Level_1  = 0
+    Level_2  = 1
+    Level_3  = 2
+    Artifact = 3
+
 DECOR = {
     ID.Brush,
     ID.Bush,
@@ -867,10 +880,10 @@ CATEGORIES = {
     "Resources": {
         ID.Resource, ID.Random_Resource
     },
-    "Campfires": {
+    "Campfire": {
         ID.Campfire
     },
-    "Scholars": {ID.Scholar},
+    "Scholar": {ID.Scholar},
     "Treasure Chest": {ID.Treasure_Chest},
     "Sea Chest": {ID.Sea_Chest},
     "Flotsam & Jetsam": {ID.Flotsam, ID.HotA_Collectible},
@@ -878,6 +891,7 @@ CATEGORIES = {
     "Shipwreck Survivor": {ID.Shipwreck_Survivor},
     "Vial of Mana": {ID.HotA_Collectible},
     "Ancient Lamp": {ID.HotA_Collectible},
+    "Grave": {ID.Border_Gate},
     "Creature Banks": {
         ID.Creature_Bank, ID.Derelict_Ship, ID.Dragon_Utopia,
         ID.Crypt, ID.Shipwreck

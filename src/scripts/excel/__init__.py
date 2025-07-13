@@ -6,8 +6,8 @@ from .flatten_monsters import flatten_monsters
 from .flatten_spells import flatten_spells
 from .flatten_artifacts import flatten_artifacts
 from .flatten_resources import flatten_resources
-from .flatten_treasure import flatten_treasure
-from .flatten_campfires import flatten_campfires
+from .flatten_campfire import flatten_campfire
+from .flatten_scholar import flatten_scholar
 from .flatten_treasure_chest import flatten_treasure_chest
 from .flatten_sea_chest import flatten_sea_chest
 from .flatten_shipwreck_survivor import flatten_shipwreck_survivor

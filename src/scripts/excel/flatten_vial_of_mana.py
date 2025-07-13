@@ -3,12 +3,6 @@ Flattens and formats vial of mana object data for Excel export.
 """
 
 def flatten_vial_of_mana(treasure_objects):
-    """
-    Flatten vial of mana object data for Excel export.
-    Columns: Coords, Subtype, Contents, Artifact, Resource, Amount (in this order).
-    Fills missing columns with empty strings for consistency.
-    Replaces 4294967295 in Contents with 'Random'.
-    """
     rows = []
     for obj in treasure_objects:
         row = {}
@@ -19,8 +13,5 @@ def flatten_vial_of_mana(treasure_objects):
             row["Contents"] = "Random"
         else:
             row["Contents"] = contents
-        row["Artifact"] = obj.get("artifact", "")
-        row["Resource"] = obj.get("resource", "")
-        row["Amount"] = obj.get("amount", "")
         rows.append(row)
     return rows

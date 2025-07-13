@@ -1,24 +1,22 @@
-"""
-Flattens and formats treasure chest object data for Excel export.
-"""
+import data.objects as objects
+import data.artifacts as artifacts
 
 def flatten_treasure_chest(treasure_objects):
-    """
-    Flatten treasure chest object data for Excel export.
-    Columns: Coords, Subtype, Contents, Artifact, Resource, Amount (in this order).
-    Fills missing columns with empty strings for consistency.
-    Replaces 4294967295 in Contents with 'Random'.
-    """
     rows = []
     for obj in treasure_objects:
         row = {}
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
         contents = obj.get("contents", "")
-        if contents == 4294967295:
-            row["Contents"] = "Random"
+        row["Contents"] = objects.Treasure_Chest_Reward(contents).name
+        if contents == 3:
+            art = artifacts.ID(obj.get("artifact", "")).name
+            if art == "Empty_4_Bytes":
+                art = "Random"
+            else:
+                art = art.replace('_', ' ')
+            row["Artifact"] = art
         else:
-            row["Contents"] = contents
-        row["Artifact"] = obj.get("artifact", "")
+            row["Artifact"] = ""
         rows.append(row)
     return rows

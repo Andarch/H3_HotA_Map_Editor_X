@@ -57,7 +57,7 @@ def flatten_artifacts(artifact_objects):
                             if val:
                                 try:
                                     cond = list(artifacts.Pickup_Conditions)[i]
-                                    names.append(cond.name.replace('_', ' ').title())
+                                    names.append(cond.name.replace('_', ' '))
                                 except IndexError:
                                     pass
                         flat[k] = "\n".join(names)

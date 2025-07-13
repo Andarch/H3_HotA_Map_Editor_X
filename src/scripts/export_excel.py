@@ -27,7 +27,15 @@ _COLUMNS_TO_REMOVE = {
     "Global Events": [],  # No columns to remove for global events
     "Artifacts": ["def_id", "id", "sub_id", "type", "has_common"],
     "Resources": ["def_id", "id", "sub_id", "type", "has_common"],
-    "Treasure": ["def_id", "id", "sub_id", "type"],
+    "Campfire": ["def_id", "id", "sub_id", "type"],
+    "Scholar": ["def_id", "id", "sub_id", "type"],
+    "Treasure Chest": ["def_id", "id", "sub_id", "type"],
+    "Sea Chest": ["def_id", "id", "sub_id", "type"],
+    "Shipwreck Survivor": ["def_id", "id", "sub_id", "type"],
+    "Flotsam & Jetsam": ["def_id", "id", "sub_id", "type"],
+    "Sea Barrel": ["def_id", "id", "sub_id", "type"],
+    "Vial of Mana": ["def_id", "id", "sub_id", "type"],
+    "Ancient Lamp": ["def_id", "id", "sub_id", "type"],
 }
 
 
@@ -157,7 +165,7 @@ def _process_data(object_data, events) -> dict:
             if obj["sub_id"] == 1000:  # Quest Gate
                 processed_data["Quest Objects"].append(obj)
             elif obj["sub_id"] == 1001:  # Grave - reward giving object
-                processed_data["Treasure"].append(obj)
+                processed_data["Grave"].append(obj)
             else:  # Regular Border Gate
                 processed_data["Border Objects"].append(obj)
             categorized = True
@@ -224,8 +232,10 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_artifacts(items)
             elif category == "Resources":
                 items = excel.flatten_resources(items)
-            elif category == "Campfires":
-                items = excel.flatten_campfires(items)
+            elif category == "Campfire":
+                items = excel.flatten_campfire(items)
+            elif category == "Scholar":
+                items = excel.flatten_scholar(items)
             elif category == "Treasure Chest":
                 items = excel.flatten_treasure_chest(items)
             elif category == "Sea Chest":
