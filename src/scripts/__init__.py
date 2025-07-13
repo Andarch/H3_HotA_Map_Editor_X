@@ -2,7 +2,6 @@ from .edit_data        import edit_data
 from .export_excel     import export_excel
 from .export_json      import export_json
 from .generate_minimap import generate_minimap
-from .list_unreachable_cells import list_unreachable_cells
 from .modify_towns     import modify_towns
 from .print_data       import print_data
 from .reset_heroes     import reset_heroes
