@@ -87,4 +87,8 @@ def flatten_monsters(monsters):
 
         flattened_monsters.append(flattened_monster)
 
+    # Sort flattened monsters by zone in this order: Player -> Normal -> Treasure -> Red
+    zone_order = {"Player": 1, "Normal": 2, "Treasure": 3, "Red": 4}
+    flattened_monsters.sort(key=lambda x: zone_order.get(x.get("zone", ""), 5))
+
     return flattened_monsters

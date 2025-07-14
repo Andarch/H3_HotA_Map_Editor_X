@@ -21,7 +21,7 @@ _COLUMNS_TO_REMOVE = {
                "artifacts_backpack", "artifact_backpack"],
     "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
               "spells_must_appear", "spells_cant_appear", "buildings_special", "events", "coords_offset"],
-    "Monsters": ["type", "start_bytes", "middle_bytes", "is_value"],
+    "Monsters": ["type", "start_bytes", "middle_bytes"],
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
     "Global Events": [],  # No columns to remove for global events
