@@ -973,3 +973,18 @@ CATEGORIES = {
     },
     "Decor": DECOR
 }
+
+
+# Zone color definitions (RGB)
+ZONE_TYPE = {
+    (77, 77, 77):    "Normal",      # gray
+    (89, 110, 184):  "Player",      # blue
+    (129, 108, 88):  "Player",      # tan
+    (71, 109, 54):   "Player",      # green
+    (179, 129, 76):  "Player",      # orange
+    (109, 59, 120):  "Player",      # purple
+    (50, 112, 116):  "Player",      # teal
+    (171, 129, 140): "Player",      # pink
+    (179, 76, 76):   "Red",         # red
+    (179, 170, 76):  "Treasure",    # gold
+}

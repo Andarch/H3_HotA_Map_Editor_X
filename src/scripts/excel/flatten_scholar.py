@@ -6,10 +6,8 @@ def flatten_scholar(scholars):
     rows = []
     for obj in scholars:
         row = {}
-
-        row["Zone"] = ""
-
         row["Coords"] = obj.get("coords", "")
+        row["Zone"] = obj.get("zone", "")
         row["Subtype"] = obj.get("subtype", "")
         reward_type = obj.get("reward_type", "")
         match reward_type:

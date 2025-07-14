@@ -55,11 +55,6 @@ class Menu(Enum):
         2: "Save as"
     }
 
-    EXCEL  = {
-        1: "No zoning",
-        2: "With zoning"
-    }
-
     JSON  = {
         1: "All data",
         2: "Hero data",

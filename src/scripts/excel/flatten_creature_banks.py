@@ -8,6 +8,7 @@ def flatten_creature_banks(creature_banks):
     for obj in creature_banks:
         row = {}
         row["Coords"] = obj.get("coords", "")
+        row["Zone"] = obj.get("zone", "")
         row["Subtype"] = obj.get("subtype", "")
         row["Difficulty"] = objects.Creature_Bank_Difficulty(obj.get("difficulty", "")).name.replace('_', ' ')
 

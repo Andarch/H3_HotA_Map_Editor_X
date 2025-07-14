@@ -9,10 +9,9 @@ def flatten_monsters(monsters):
     for monster in monsters:
         flattened_monster = {}
 
-        flattened_monster["zone"] = ""
-
         # Basic monster information
         flattened_monster["coords"] = monster.get("coords", [])
+        flattened_monster["zone"] = monster.get("zone", "")
 
         # Monster type and subtype
         flattened_monster["id"] = monster.get("id", "")

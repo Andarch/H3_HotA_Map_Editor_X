@@ -4,10 +4,8 @@ def flatten_sea_barrel(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
-
-        row["Zone"] = ""
-
         row["Coords"] = obj.get("coords", "")
+        row["Zone"] = obj.get("zone", "")
         row["Subtype"] = obj.get("subtype", "")
         row["Contents"] = objects.Sea_Barrel_Reward(obj.get("contents", "")).name.replace('_', ' ')
         if row["Contents"] == "Custom":

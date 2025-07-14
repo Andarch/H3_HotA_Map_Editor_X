@@ -6,9 +6,8 @@ def flatten_spells(spell_objects):
     for obj in spell_objects:
         flat = {}
 
-        flat["zone"] = ""
-
         flat["coords"] = obj.get("coords", "")
+        flat["zone"] = obj.get("zone", "")
         flat["subtype"] = obj.get("subtype", "")
         # Merge 'spell' and 'contents' into 'spell' column
         spell_val = ""

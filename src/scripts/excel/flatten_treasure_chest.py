@@ -6,10 +6,8 @@ def flatten_treasure_chest(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
-
-        row["Zone"] = ""
-
         row["Coords"] = obj.get("coords", "")
+        row["Zone"] = obj.get("zone", "")
         row["Subtype"] = obj.get("subtype", "")
         contents = obj.get("contents", "")
         row["Contents"] = objects.Treasure_Chest_Reward(contents).name

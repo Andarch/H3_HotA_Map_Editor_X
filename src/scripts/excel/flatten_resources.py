@@ -1,23 +1,9 @@
-"""
-Flattens and formats resource object data for Excel export.
-"""
 import data.objects as objects
 
 def flatten_resources(resource_objects):
-    """
-    Flatten resource object data for Excel export.
-
-    Args:
-        resource_objects: List of resource object dictionaries
-
-    Returns:
-        List of flattened resource dictionaries ready for Excel export
-    """
     flattened = []
     for obj in resource_objects:
         flat = {}
-
-        flat["zone"] = ""
 
         for k, v in obj.items():
             if k == "has_common":

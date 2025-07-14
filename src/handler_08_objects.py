@@ -7,17 +7,15 @@ import data.skills    as skills
 import data.spells    as spells
 import data.players   as players
 from .common import *
-
+from PIL import Image
 from src.handler_06_rumors_and_events import parse_events, write_events
-
 from enum import IntEnum
-# The object definitions of a map are stored as follows:
-#
-# TODO
 
-# The object data of a map is stored as follows:
-#
-# TODO
+
+zone_img_g = None
+zone_img_u = None
+has_zone_images = False
+
 
 def parse_object_defs() -> list:
     info = []
@@ -49,6 +47,7 @@ def parse_object_defs() -> list:
 
     return info
 
+
 def write_object_defs(info: list) -> None:
     io.write_int(len(info), 4)
 
@@ -64,6 +63,7 @@ def write_object_defs(info: list) -> None:
         io.write_int(    obj["editor_group"], 1)
         io.write_int(    obj["below_ground"], 1)
         io.write_raw(    obj["null_bytes"])
+
 
 def get_subtype(obj_type: int, i: int) -> int:
     match obj_type:
@@ -93,7 +93,16 @@ def get_subtype(obj_type: int, i: int) -> int:
         case objects.ID.Border_Gate:               return objects.Border_Color(i)
     return i
 
-def parse_object_data(object_defs: list) -> list:
+
+def parse_object_data(object_defs: list, filename: str) -> list:
+    global zone_img_g, zone_img_u, has_zone_images
+    filename = filename[:-4]
+    zone_img_g_path = os.path.join("..", "maps", f"{filename}_zones_g.png")
+    zone_img_u_path = os.path.join("..", "maps", f"{filename}_zones_u.png")
+    zone_img_g = Image.open(zone_img_g_path).convert("RGBA") if os.path.exists(zone_img_g_path) else None
+    zone_img_u = Image.open(zone_img_u_path).convert("RGBA") if os.path.exists(zone_img_u_path) else None
+    has_zone_images = True if zone_img_g and zone_img_u else False
+
     info = []
 
     for _ in range(io.read_int(4)): # Amount of objects
@@ -102,13 +111,33 @@ def parse_object_data(object_defs: list) -> list:
         obj["coords"][1] = io.read_int(1)
         obj["coords"][2] = io.read_int(1)
 
+        obj["coords_offset"] = ""
+        obj["zone"] = ""
+
         obj["def_id"] = io.read_int(4)
+
         io.seek(5)
 
         obj["id"]    = object_defs[obj["def_id"]]["id"]
         obj["sub_id"] = object_defs[obj["def_id"]]["sub_id"]
         obj["type"]    = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
+
+        ZONE_CATEGORIES = [
+            "Monsters", "Spells", "Artifacts", "Resources", "Campfire", "Scholar",
+            "Treasure Chest", "Sea Chest", "Flotsam & Jetsam", "Sea Barrel",
+            "Shipwreck Survivor", "Vial of Mana", "Ancient Lamp", "Grave", "Creature Banks"
+        ]
+
+        zone_ids = set()
+        for cat in ZONE_CATEGORIES:
+            zone_ids.update(objects.CATEGORIES.get(cat, []))
+
+        if obj["id"] in zone_ids:
+            obj["coords_offset"] = get_coords_offset(obj)
+            if has_zone_images:
+                is_shipwreck = obj["id"] == objects.ID.Shipwreck
+                obj["zone"] = get_zone_type(obj["coords_offset"], is_shipwreck)
 
         match obj["id"]:
             case objects.ID.Pandoras_Box:       obj = parse_pandoras_box(obj)
@@ -1559,3 +1588,62 @@ def write_grave(obj: dict) -> None:
     io.write_int(obj["amount"], 4)
     io.write_int(obj["resource"], 1)
     io.write_raw(obj["mystery_bytes"])
+
+
+def get_zone_type(coords: list, is_shipwreck: bool) -> str:
+    global zone_img_g, zone_img_u
+    x, y, z = coords
+    img = zone_img_g if z == 0 else zone_img_u
+    width, height = img.size
+    if not (0 <= x < width and 0 <= y < height):
+        return "Out of Bounds"
+    pixel = img.getpixel((x, y))
+    if len(pixel) == 4 and pixel[3] == 0:
+        if is_shipwreck:
+            pixel = img.getpixel((x + 1, y))
+            if len(pixel) == 4 and pixel[3] == 0:
+                return "Void"
+        else:
+            return "Void"
+    rgb = pixel[:3]
+    return objects.ZONE_TYPE.get(rgb, "Unknown")
+
+
+def get_coords_offset(obj: dict) -> list:
+    OBJS_X_OFFSET_MINUS_1 = [
+        objects.ID.Monster,
+        objects.ID.Random_Monster,
+        objects.ID.Random_Monster_1,
+        objects.ID.Random_Monster_2,
+        objects.ID.Random_Monster_3,
+        objects.ID.Random_Monster_4,
+        objects.ID.Random_Monster_5,
+        objects.ID.Random_Monster_6,
+        objects.ID.Random_Monster_7,
+        objects.ID.Dragon_Utopia,
+        objects.ID.HotA_Collectible,
+        objects.ID.HotA_Visitable_2,
+        objects.ID.Creature_Bank,
+        objects.ID.Crypt,
+        objects.ID.Derelict_Ship,
+        objects.ID.Shipwreck
+    ]
+
+    x, y, z = obj["coords"]
+
+    if obj["id"] in OBJS_X_OFFSET_MINUS_1:
+        if obj["id"] == objects.ID.HotA_Collectible:
+            if obj["sub_id"] == objects.HotA_Collectible.Ancient_Lamp:
+                x -= 1
+        elif obj["id"] == objects.ID.HotA_Visitable_2:
+            if obj["sub_id"] == objects.HotA_Visitable_2.Ancient_Altar:
+                x -= 1
+        elif obj["id"] == objects.ID.Creature_Bank:
+            if obj["sub_id"] == objects.Creature_Bank.Temple_of_the_Sea or obj["sub_id"] == objects.Creature_Bank.Red_Tower:
+                x -= 2
+            elif obj["sub_id"] != objects.Creature_Bank.Griffin_Conservatory and obj["sub_id"] != objects.Creature_Bank.Imp_Cache and obj["sub_id"] != objects.Creature_Bank.Ivory_Tower and obj["sub_id"] != objects.Creature_Bank.Experimental_Shop:
+                x -= 1
+        else:
+            x -= 1
+
+    return [x, y, z]

@@ -161,7 +161,7 @@ def load_maps(input=-1) -> bool:
                 xprint(text=f"Parsing 10/13: Object Defs...", overwrite=1)
                 map_data[map_key]["object_defs"]  = h8.parse_object_defs()
                 xprint(text=f"Parsing 11/13: Object Data...", overwrite=1)
-                map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"])
+                map_data[map_key]["object_data"]  = h8.parse_object_data(map_data[map_key]["object_defs"], map_data[map_key]["filename"])
                 xprint(text=f"Parsing 12/13: Events...", overwrite=1)
                 map_data[map_key]["events"]       = h6.parse_events()
                 xprint(type=Text.ACTION, text=f"Parsing 13/13: Null Bytes...", overwrite=1)
