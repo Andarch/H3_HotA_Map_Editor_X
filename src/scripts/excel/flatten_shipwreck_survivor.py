@@ -6,6 +6,9 @@ def flatten_shipwreck_survivor(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
+
+        row["Zone"] = ""
+
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
         contents = obj.get("contents", "")

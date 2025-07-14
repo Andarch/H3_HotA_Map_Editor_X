@@ -1,22 +1,13 @@
-"""
-Flattens and formats spell object data for Excel export.
-"""
 import data.spells as spells
 
 
 def flatten_spells(spell_objects):
-    """
-    Flatten spell object data for Excel export.
-
-    Args:
-        spell_objects: List of spell object dictionaries
-
-    Returns:
-        List of flattened spell dictionaries ready for Excel export
-    """
     flattened = []
     for obj in spell_objects:
         flat = {}
+
+        flat["zone"] = ""
+
         flat["coords"] = obj.get("coords", "")
         flat["subtype"] = obj.get("subtype", "")
         # Merge 'spell' and 'contents' into 'spell' column

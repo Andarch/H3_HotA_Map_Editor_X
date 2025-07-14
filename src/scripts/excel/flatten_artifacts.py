@@ -5,6 +5,9 @@ def flatten_artifacts(artifact_objects):
     flattened = []
     for obj in artifact_objects:
         flat = {}
+
+        flat["zone"] = ""
+
         # Copy all fields except those we want to transform
         for k, v in obj.items():
             if k == "has_common":

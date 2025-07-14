@@ -16,6 +16,9 @@ def flatten_resources(resource_objects):
     flattened = []
     for obj in resource_objects:
         flat = {}
+
+        flat["zone"] = ""
+
         for k, v in obj.items():
             if k == "has_common":
                 flat[k] = bool(v)

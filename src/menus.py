@@ -13,7 +13,7 @@ class Menu(Enum):
         1: "INFO",
         2: "EDIT",
        -1: "",
-        3: "EXPORT EXCEL (OBJ)",
+        3: "EXPORT EXCEL",
         4: "EXPORT JSON",
         5: "EXPORT MINIMAP",
        -2: "",
@@ -53,6 +53,11 @@ class Menu(Enum):
     SAVE_B = {
         1: "Save",
         2: "Save as"
+    }
+
+    EXCEL  = {
+        1: "No zoning",
+        2: "With zoning"
     }
 
     JSON  = {

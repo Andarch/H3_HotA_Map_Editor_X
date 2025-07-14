@@ -1,25 +1,15 @@
-"""
-Flattens and formats monster data for Excel export.
-"""
 from . import format
 import data.creatures as creatures
 import data.artifacts as artifacts
 
 
 def flatten_monsters(monsters):
-    """
-    Flatten monster data for Excel export.
-
-    Args:
-        monsters: List of monster dictionaries containing monster data
-
-    Returns:
-        List of flattened monster dictionaries ready for Excel export
-    """
     flattened_monsters = []
 
     for monster in monsters:
         flattened_monster = {}
+
+        flattened_monster["zone"] = ""
 
         # Basic monster information
         flattened_monster["coords"] = monster.get("coords", [])

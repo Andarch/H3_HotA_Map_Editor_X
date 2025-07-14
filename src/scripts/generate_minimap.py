@@ -389,7 +389,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
                 return obj["sub_id"] + 3000
             elif obj["id"] == objects.ID.Two_Way_Monolith:
                 return obj["sub_id"] + 3500
-            elif obj["id"] not in objects.DECOR_OBJECTS:
+            elif obj["id"] not in objects.DECOR:
                 return 10000
         else:
             return None
@@ -493,7 +493,7 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     if(input == 1):
         main(general, terrain, object_data, defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, defs, input, objects.DECOR_OBJECTS, "_1_base1")
+        main(general, terrain, object_data, defs, input, objects.DECOR, "_1_base1")
         main(general, terrain, object_data, defs, input, None, "_2_base2")
         main(general, terrain, object_data, defs, input, border_objects, "_3_border")
         main(general, terrain, object_data, defs, input, one_way_portal_objects, "_4_portals1")

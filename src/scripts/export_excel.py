@@ -6,6 +6,7 @@ from openpyxl.utils import get_column_letter
 from ..common import *
 from ..file_io import is_file_writable
 from . import excel
+from ..menus import *
 import data.objects as objects
 import data.spells as spells
 
@@ -42,7 +43,26 @@ _COLUMNS_TO_REMOVE = {
 }
 
 
+# Zone color definitions (RGB)
+ZONE_COLORS = {
+    (77, 77, 77):    "Normal",      # gray
+    (89, 110, 184):  "Player",      # blue
+    (129, 108, 88):  "Player",      # tan
+    (71, 109, 54):   "Player",      # green
+    (179, 129, 76):  "Player",      # orange
+    (109, 59, 120):  "Player",      # purple
+    (50, 112, 116):  "Player",      # teal
+    (171, 129, 140): "Player",      # pink
+    (179, 76, 76):   "Red",         # red
+    (179, 170, 76):  "Treasure",    # gold
+}
+
+
 def export_excel(map_key: dict) -> bool:
+    # Get export type
+    keypress = xprint(menu=Menu.EXCEL.value)
+    if keypress == KB.ESC.value: return False
+
     # Create Excel filename by replacing .h3m with _objects.xlsx
     filename = map_key["filename"][:-4] + "_objects.xlsx"
 
@@ -57,7 +77,7 @@ def export_excel(map_key: dict) -> bool:
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
         # Process objects (categorize and clean data)
-        processed_data = _process_data(map_key["object_data"], map_key["events"])
+        processed_data = _process_data(map_key["object_data"], map_key["events"], keypress, map_key["filename"][:-4])
 
         # Compile regex for Excel illegal characters
         illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
@@ -150,8 +170,18 @@ def export_excel(map_key: dict) -> bool:
     return True
 
 
-def _process_data(object_data, events) -> dict:
-    """Categorize and process data for Excel export"""
+def _process_data(object_data, events, keypress, filename) -> dict:
+    zone_img_g = None
+    zone_img_u = None
+    if keypress == 2:
+        from PIL import Image
+        zone_img_g_path = os.path.join("..", "maps", f"{filename}_zones_g.png")
+        zone_img_u_path = os.path.join("..", "maps", f"{filename}_zones_u.png")
+        if os.path.exists(zone_img_g_path):
+            zone_img_g = Image.open(zone_img_g_path).convert("RGBA")
+        if os.path.exists(zone_img_u_path):
+            zone_img_u = Image.open(zone_img_u_path).convert("RGBA")
+
     # Categorize objects
     processed_data = {category: [] for category in objects.CATEGORIES.keys()}
 
@@ -185,7 +215,6 @@ def _process_data(object_data, events) -> dict:
                     subtype_name = str(subtype)
             else:
                 subtype_name = str(subtype)
-
             if subtype_name == "Jetsam":
                 processed_data["Flotsam & Jetsam"].append(obj)
             elif subtype_name == "Sea Barrel":
@@ -229,32 +258,88 @@ def _process_data(object_data, events) -> dict:
                 items = excel.flatten_towns(items)
             elif category == "Monsters":
                 items = excel.flatten_monsters(items)
+                if keypress == 2:
+                    for monster in items:
+                        x, y, z = monster.get("coords", [None, None, None])
+                        monster["zone"] = _get_zone_type(x - 1, y, z, zone_img_g, zone_img_u)
             elif category == "Spells":
                 items = excel.flatten_spells(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("coords", [None, None, None])
+                        item["zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Artifacts":
                 items = excel.flatten_artifacts(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("coords", [None, None, None])
+                        item["zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Resources":
                 items = excel.flatten_resources(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("coords", [None, None, None])
+                        item["zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Campfire":
                 items = excel.flatten_campfire(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Scholar":
                 items = excel.flatten_scholar(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Treasure Chest":
                 items = excel.flatten_treasure_chest(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Sea Chest":
                 items = excel.flatten_sea_chest(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Shipwreck Survivor":
                 items = excel.flatten_shipwreck_survivor(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Flotsam & Jetsam":
                 items = excel.flatten_flotsam_jetsam(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Sea Barrel":
                 items = excel.flatten_sea_barrel(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Vial of Mana":
                 items = excel.flatten_vial_of_mana(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Ancient Lamp":
                 items = excel.flatten_ancient_lamp(items)
+                if keypress == 2:
+                    for lamp in items:
+                        x, y, z = lamp.get("Coords", [None, None, None])
+                        lamp["Zone"] = _get_zone_type(x - 1, y, z, zone_img_g, zone_img_u)
             elif category == "Grave":
                 items = excel.flatten_grave(items)
+                if keypress == 2:
+                    for item in items:
+                        x, y, z = item.get("Coords", [None, None, None])
+                        item["Zone"] = _get_zone_type(x, y, z, zone_img_g, zone_img_u)
             elif category == "Creature Banks":
                 items = excel.flatten_creature_banks(items)
             elif category == "Garrisons":
@@ -313,3 +398,22 @@ def _process_data(object_data, events) -> dict:
             final_data[key] = processed_data[key]
 
     return final_data
+
+
+def _get_zone_type(x, y, z, zone_img_g, zone_img_u):
+    img = None
+    if z == 0:
+        img = zone_img_g
+    elif z == 1:
+        img = zone_img_u
+    if img is None:
+        return ""
+    width, height = img.size
+    if not (0 <= x < width and 0 <= y < height):
+        return "Out of Bounds"
+    pixel = img.getpixel((x, y))
+    # Always check for RGBA transparency first
+    if len(pixel) == 4 and pixel[3] == 0:
+        return "Void"
+    rgb = pixel[:3]
+    return ZONE_COLORS.get(rgb, "Unknown")

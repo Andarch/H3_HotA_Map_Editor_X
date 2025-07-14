@@ -23,6 +23,9 @@ def flatten_campfire(campfires):
     rows = []
     for obj in campfires:
         row = {}
+
+        row["Zone"] = ""
+
         # Add Coords and Subtype columns
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")

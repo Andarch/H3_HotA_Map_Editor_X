@@ -4,6 +4,9 @@ def flatten_ancient_lamp(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
+
+        row["Zone"] = ""
+
         row["Coords"] = obj.get("coords", "")
         row["Subtype"] = obj.get("subtype", "")
         row["Contents"] = objects.Ancient_Lamp_Reward(obj.get("contents", "")).name.replace('_', ' ')
