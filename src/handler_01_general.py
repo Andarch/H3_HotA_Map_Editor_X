@@ -100,6 +100,9 @@ def parse_general() -> dict:
 def write_general(info: dict) -> None:
     io.write_int(    info["map_format"], 4)
     io.write_int(    info["hota_version"], 4)
+    io.write_int(    info["hota_versionMajor"], 4)
+    io.write_int(    info["hota_versionMinor"], 4)
+    io.write_int(    info["hota_versionPatch"], 4)
 
     io.write_int(    info["is_mirror"], 1)
     io.write_int(    info["is_arena"], 1)
@@ -107,6 +110,7 @@ def write_general(info: dict) -> None:
     io.write_int(    info["town_type_count"], 4)
     io.write_bits(   info["allowed_difficulties"])
     io.write_int(    info["can_hire_defeated_heroes"], 1)
+    io.write_int(    info["hota_versionLocked"], 1)
     io.write_int(    info["has_hero"], 1)
     io.write_int(    info["map_size"], 4)
     io.write_int(    info["is_two_level"], 1)

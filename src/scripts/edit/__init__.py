@@ -1,0 +1,1 @@
+from .random_monsters import set_random_monsters

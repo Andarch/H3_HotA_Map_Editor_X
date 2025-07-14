@@ -1058,14 +1058,14 @@ def write_town(obj: dict, random: bool = False) -> None:
         io.write_str(    obj["name"])
     else: io.write_int(0, 1)
 
-    if "garrison_guards" in obj:
+    if obj["garrison_guards"]:
         io.write_int(1, 1)
         write_creatures(obj["garrison_guards"])
     else: io.write_int(0, 1)
 
     io.write_int(obj["garrison_formation"], 1)
 
-    if "buildings_built" in obj:
+    if obj["buildings_built"]:
         io.write_int(1, 1)
         io.write_bits(obj["buildings_built"])
         io.write_bits(obj["buildings_disabled"])

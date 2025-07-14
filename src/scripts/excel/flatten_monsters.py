@@ -14,6 +14,7 @@ def flatten_monsters(monsters):
         flattened_monster["zone"] = monster.get("zone", "")
 
         # Monster type and subtype
+        flattened_monster["def_id"] = monster.get("def_id", "")
         flattened_monster["id"] = monster.get("id", "")
         flattened_monster["sub_id"] = monster.get("sub_id", "")
         flattened_monster["type"] = monster.get("type", "")
