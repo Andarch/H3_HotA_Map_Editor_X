@@ -37,6 +37,8 @@ def set_random_monsters(obj_data: list) -> bool:
             obj["def_id"] = target_def_id
             obj["id"] = target_id
             obj["sub_id"] = target_sub_id
+            obj["type"] = "Random Monster"
+            obj["subtype"] = "Random Monster"
 
     xprint(type=Text.SPECIAL, text=DONE)
     return True
