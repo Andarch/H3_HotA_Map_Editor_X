@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 # Custom
-*.h3m
 .vs/
 /vendor/
 .vscode/
