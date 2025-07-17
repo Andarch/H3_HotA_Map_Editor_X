@@ -89,7 +89,7 @@ class ID(IntEnum):
     Shipwreck                   =  85
     Shipwreck_Survivor          =  86
     Shipyard                    =  87
-    Shrine_of_Magic_Incantation =  88
+    Shrine_1_and_4              =  88
     Shrine_of_Magic_Gesture     =  89
     Shrine_of_Magic_Thought     =  90
     Sign                        =  91
@@ -806,6 +806,10 @@ class Creature_Bank_Stack(IntEnum):
     No      = 0
     Yes     = 1
 
+class Shrine_1_and_4_Sub(IntEnum): # ID 88
+    Shrine_of_Magic_Incantation = 0
+    Shrine_of_Magic_Mystery     = 3
+
 DECOR = {
     ID.Brush,
     ID.Bush,
@@ -912,7 +916,7 @@ CATEGORIES = {
         ID.Random_Monster_5, ID.Random_Monster_6, ID.Random_Monster_7
     },
     "Spells": {
-        ID.Shrine_of_Magic_Incantation, ID.Shrine_of_Magic_Gesture,
+        ID.Shrine_1_and_4, ID.Shrine_of_Magic_Gesture,
         ID.Shrine_of_Magic_Thought, ID.Pyramid, ID.Spell_Scroll
     },
     "Artifacts": {

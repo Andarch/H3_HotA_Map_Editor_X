@@ -345,12 +345,9 @@ monster_objects = {
     objects.ID.Random_Monster_7
 }
 
-spell_objects = {
-    objects.ID.Spell_Scroll,
-    objects.ID.Shrine_of_Magic_Gesture,
-    objects.ID.Shrine_of_Magic_Incantation,
-    objects.ID.Shrine_of_Magic_Thought,
-    objects.ID.Pyramid
+resource_objects = {
+    objects.ID.Resource,
+    objects.ID.Random_Resource
 }
 
 png_layer_number = 0
@@ -364,20 +361,32 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         input = xprint(menu=Menu.MINIMAP.value)
         if input == KB.ESC.value: return False
         if(input == 1):
-            process_png_layer(input, None, "")
+            process_png_layer(input, None, None, "")
         elif(input == 2):
-            process_png_layer(input, objects.DECOR, "base1")
-            process_png_layer(input, None, "base2")
-            process_png_layer(input, border_objects, "border")
-            process_png_layer(input, one_way_portal_objects, "portals1")
-            process_png_layer(input, two_way_portal_objects, "portals2")
-            process_png_layer(input, {objects.ID.Prison}, "prisons")
-            process_png_layer(input, monster_objects, "monsters")
-            process_png_layer(input, spell_objects, "spells")
-            process_png_layer(input, {objects.ID.Treasure_Chest}, "treasurechests")
+            process_png_layer(input, objects.DECOR, None, "base1")
+            process_png_layer(input, None, None, "base2")
+            process_png_layer(input, border_objects, None, "border")
+            process_png_layer(input, one_way_portal_objects, None, "portals1")
+            process_png_layer(input, two_way_portal_objects, None, "portals2")
+            process_png_layer(input, {objects.ID.Prison}, None, "prisons")
+            process_png_layer(input, monster_objects, None, "monsters")
+            process_png_layer(input, {objects.ID.Spell_Scroll}, None, "spellscrolls")
+            process_png_layer(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4_Sub.Shrine_of_Magic_Incantation}, "spellshrine1")
+            process_png_layer(input, {objects.ID.Shrine_of_Magic_Gesture}, None, "spellshrine2")
+            process_png_layer(input, {objects.ID.Shrine_of_Magic_Thought}, None, "spellshrine3")
+            process_png_layer(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4_Sub.Shrine_of_Magic_Mystery}, "spellshrine4")
+            process_png_layer(input, {objects.ID.Pyramid}, None, "pyramids")
+            process_png_layer(input, {objects.ID.Artifact}, None, "artifacts")
+            process_png_layer(input, {objects.ID.Random_Artifact}, None, "randomartifacts")
+            process_png_layer(input, {objects.ID.Random_Treasure_Artifact}, None, "randomtreasureartifacts")
+            process_png_layer(input, {objects.ID.Random_Minor_Artifact}, None, "randomminorartifacts")
+            process_png_layer(input, {objects.ID.Random_Major_Artifact}, None, "randommajorartifacts")
+            process_png_layer(input, {objects.ID.Random_Relic}, None, "randomrelics")
+            process_png_layer(input, resource_objects, None, "resources")
+            process_png_layer(input, {objects.ID.Treasure_Chest}, None, "treasurechests")
         return True
 
-    def process_png_layer(input, filter, png_layer) -> bool:
+    def process_png_layer(input, filter, subfilter, png_layer) -> bool:
         global png_layer_number
         png_layer_number += 1
         xprint(type=Text.ACTION, text=f"Generating minimap_{png_layer_number:02d}_{png_layer}...")
@@ -397,6 +406,9 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         filtered_objects = object_data
         if filter is not None:
             filtered_objects = [obj for obj in object_data if obj["id"] in filter]
+        # Apply subfilter if provided
+        if subfilter is not None:
+            filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
         # Iterate through objects
         for obj in filtered_objects:
             if png_layer == "base2" and (obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)):
@@ -504,7 +516,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
                 elif input == 2:
-                    if png_layer == "base2":
+                    if png_layer == "base1":
                         if (x, y) in blocked_tiles[map_layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
                             color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                         else:

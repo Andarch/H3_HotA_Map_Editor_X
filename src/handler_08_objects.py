@@ -218,7 +218,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj = parse_garrison(obj)
 
             # The level 4 HotA Shrine is just a subtype of the level 1 Shrine.
-            case (objects.ID.Shrine_of_Magic_Incantation |
+            case (objects.ID.Shrine_1_and_4 |
                   objects.ID.Shrine_of_Magic_Gesture     |
                   objects.ID.Shrine_of_Magic_Thought):
                 obj["spell"] = spells.ID(io.read_int(4))
@@ -325,7 +325,7 @@ def write_object_data(info: list) -> None:
             case (objects.ID.Garrison | objects.ID.Garrison_Vertical):
                 write_garrison(obj)
 
-            case (objects.ID.Shrine_of_Magic_Incantation |
+            case (objects.ID.Shrine_1_and_4 |
                   objects.ID.Shrine_of_Magic_Gesture     |
                   objects.ID.Shrine_of_Magic_Thought):
                 io.write_int(obj["spell"], 4)
