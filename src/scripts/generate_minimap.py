@@ -412,10 +412,10 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             process_png_layer(input, {objects.ID.Treasure_Chest}, None, "treasurechests")
         return True
 
-    def process_png_layer(input, filter, subfilter, png_layer) -> bool:
+    def process_png_layer(input, filter, subfilter, png_layer_name) -> bool:
         global png_layer_number
         png_layer_number += 1
-        xprint(type=Text.ACTION, text=f"Generating minimap_{png_layer_number:02d}_{png_layer}...")
+        xprint(type=Text.ACTION, text=f"Generating minimap_{png_layer_number:02d}_{png_layer_name}...")
         # Get map size
         size = map_specs["map_size"]
         # Initialize map layer list
@@ -437,9 +437,9 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
         # Iterate through objects
         for obj in filtered_objects:
-            if png_layer == "base2" and (obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)):
+            if png_layer_name == "base2" and (obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)):
                 continue
-            elif png_layer == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
+            elif png_layer_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
                 continue
             # Get object masks
             def_ = object_defs[obj["def_id"]]
@@ -450,9 +450,9 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             owner = determine_owner(input, obj)
             if owner is None and should_skip_object(blockMask, interactiveMask):
                 continue
-            process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_layer)
+            process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_layer_name)
         # Generate and save minimap images
-        generate_images(input, map_layers, blocked_tiles, ownership, png_layer)
+        generate_images(input, map_layers, blocked_tiles, ownership, png_layer_name)
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
