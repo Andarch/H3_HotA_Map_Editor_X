@@ -806,7 +806,7 @@ class Creature_Bank_Stack(IntEnum):
     No      = 0
     Yes     = 1
 
-class Shrine_1_and_4_Sub(IntEnum): # ID 88
+class Shrine_1_and_4(IntEnum): # ID 88
     Shrine_of_Magic_Incantation = 0
     Shrine_of_Magic_Mystery     = 3
 

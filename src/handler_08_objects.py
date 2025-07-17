@@ -91,7 +91,7 @@ def get_subtype(obj_type: int, i: int) -> int:
         case objects.ID.HotA_Collectible:          return objects.HotA_Collectible(i)
         case objects.ID.HotA_Visitable_2:          return objects.HotA_Visitable_2(i)
         case objects.ID.Border_Gate:               return objects.Border_Color(i)
-        case objects.ID.Shrine_1_and_4:            return objects.Shrine_1_and_4_Sub(i)
+        case objects.ID.Shrine_1_and_4:            return objects.Shrine_1_and_4(i)
     return i
 
 
