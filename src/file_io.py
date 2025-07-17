@@ -1,6 +1,7 @@
 from gzip import open as gzopen
 from gzip import GzipFile
 import os
+import shutil
 from typing import Tuple
 from .common  import *
 from .menus import *
@@ -175,18 +176,13 @@ def load_maps(input=-1) -> bool:
                 "ban_flags": map_data[map_key]["ban_flags"]
             }
             xprint(type=Text.SPECIAL, text=DONE)
-            xprint()
-            save_maps(backup=True)
 
         return main()
     return main(input)
 
-def save_maps(backup=False) -> bool:
+def save_maps() -> bool:
     def main() -> bool:
         global map_data
-        if backup:
-            save_map(MAP1, 1, 1, backup=True)
-            return True
         while True:
             if map_data["Map 2"]:
                 amount = get_map_amount()
@@ -222,27 +218,14 @@ def save_maps(backup=False) -> bool:
         if input == KB.ESC.value: return False
         else: return int(input)
 
-    def save_map(map_key: str, amount: int, type: int, new_screen=True, backup=False) -> Tuple[bool, bool]:
+    def save_map(map_key: str, amount: int, type: int, new_screen=True) -> Tuple[bool, bool]:
         def main() -> Tuple[bool, bool]:
-            if not backup:
-                draw_header(new_screen=new_screen)
-                if type is 1: filename = map_data[map_key]["filename"]
-                if type is 2: filename = get_filename(map_key, amount)
-                if not filename: return False, False
-                save_parsed_data(filename, map_key)
-            else:
-                filename = map_data[map_key]["filename"][:-4]
-                backup_dir = "backups"
-                if not os.path.exists(backup_dir):
-                    os.makedirs(backup_dir)
-                base_name = os.path.basename(filename)
-                backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith('.h3m')]
-                next_suffix = 0
-                if backup_files:
-                    suffixes = [int(f.split('_')[-1].split('.')[0]) for f in backup_files]
-                    next_suffix = max(suffixes) + 1
-                backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")
-                save_parsed_data(backup_filename, map_key)
+            draw_header(new_screen=new_screen)
+            if type is 1: filename = map_data[map_key]["filename"]
+            if type is 2: filename = get_filename(map_key, amount)
+            if not filename: return False, False
+            if type is 1: create_backup(map_data[map_key]["filename"])
+            save_parsed_data(filename, map_key)
             return True, True
 
         def get_filename(map_key: str, amount: int) -> str:
@@ -252,6 +235,23 @@ def save_maps(backup=False) -> bool:
             if input: filename = append_h3m(input)
             else: return False
             return filename
+
+        def create_backup(filename):
+            backup_dir = "backups"
+            base_name = os.path.basename(filename[:-4])
+            backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith('.h3m')]
+            next_suffix = 0
+            if backup_files:
+                suffixes = [int(f.split('_')[-1].split('.')[0]) for f in backup_files]
+                next_suffix = max(suffixes) + 1
+            backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")
+            try:
+                xprint(type=Text.ACTION, text=f"Creating {backup_filename}...")
+                shutil.copy2(filename, backup_filename)
+                xprint(type=Text.SPECIAL, text=DONE)
+                xprint()
+            except Exception as e:
+                xprint(type=Text.ERROR, text=f"Failed to create backup: {e}")
 
         def save_parsed_data(filename: str, map_key: str) -> bool:
             global map_data, out_file
