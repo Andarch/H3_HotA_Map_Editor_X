@@ -111,8 +111,8 @@ def load_maps(input=-1) -> bool:
     def load_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
         def main() -> Tuple[bool, bool]:
             draw_header(new_screen=new_screen)
-            filename = get_filename(map_key, amount)
-            # filename = "tbd.h3m"
+            # filename = get_filename(map_key, amount)
+            filename = "tbd.h3m"
             if not filename: return False, False
             success = test_load(filename)
             if not success: return True, False
@@ -175,13 +175,18 @@ def load_maps(input=-1) -> bool:
                 "ban_flags": map_data[map_key]["ban_flags"]
             }
             xprint(type=Text.SPECIAL, text=DONE)
+            xprint()
+            save_maps(backup=True)
 
         return main()
     return main(input)
 
-def save_maps() -> bool:
+def save_maps(backup=False) -> bool:
     def main() -> bool:
         global map_data
+        if backup:
+            save_map(MAP1, 1, 1, backup=True)
+            return True
         while True:
             if map_data["Map 2"]:
                 amount = get_map_amount()
@@ -217,13 +222,27 @@ def save_maps() -> bool:
         if input == KB.ESC.value: return False
         else: return int(input)
 
-    def save_map(map_key: str, amount: int, type: int, new_screen=True) -> Tuple[bool, bool]:
+    def save_map(map_key: str, amount: int, type: int, new_screen=True, backup=False) -> Tuple[bool, bool]:
         def main() -> Tuple[bool, bool]:
-            draw_header(new_screen=new_screen)
-            if type is 1: filename = map_data[map_key]["filename"]
-            if type is 2: filename = get_filename(map_key, amount)
-            if not filename: return False, False
-            save_parsed_data(filename, map_key)
+            if not backup:
+                draw_header(new_screen=new_screen)
+                if type is 1: filename = map_data[map_key]["filename"]
+                if type is 2: filename = get_filename(map_key, amount)
+                if not filename: return False, False
+                save_parsed_data(filename, map_key)
+            else:
+                filename = map_data[map_key]["filename"][:-4]
+                backup_dir = "backups"
+                if not os.path.exists(backup_dir):
+                    os.makedirs(backup_dir)
+                base_name = os.path.basename(filename)
+                backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith('.h3m')]
+                next_suffix = 0
+                if backup_files:
+                    suffixes = [int(f.split('_')[-1].split('.')[0]) for f in backup_files]
+                    next_suffix = max(suffixes) + 1
+                backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")
+                save_parsed_data(backup_filename, map_key)
             return True, True
 
         def get_filename(map_key: str, amount: int) -> str:
