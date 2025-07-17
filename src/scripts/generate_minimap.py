@@ -276,15 +276,6 @@ object_colors = {
     OBJECTS.ALL_OTHERS:  (0xff, 0xff, 0xff)
 }
 
-one_way_portal_objects = {
-    objects.ID.Monolith_One_Way_Entrance,
-    objects.ID.Monolith_One_Way_Exit
-}
-
-two_way_portal_objects = {
-    objects.ID.Two_Way_Monolith
-}
-
 ignored_owned_objects = {
     objects.ID.Hero,
     objects.ID.Prison,
@@ -333,6 +324,37 @@ border_objects = {
     objects.ID.Quest_Guard
 }
 
+two_way_land_portals = {
+    objects.Two_Way_Monolith.Small_Green,
+    objects.Two_Way_Monolith.Small_Brown,
+    objects.Two_Way_Monolith.Small_Violet,
+    objects.Two_Way_Monolith.Small_Orange,
+    objects.Two_Way_Monolith.Big_Green,
+    objects.Two_Way_Monolith.Big_Yellow,
+    objects.Two_Way_Monolith.Big_Red,
+    objects.Two_Way_Monolith.Big_Cyan,
+    objects.Two_Way_Monolith.Small_Pink,
+    objects.Two_Way_Monolith.Small_Turquoise,
+    objects.Two_Way_Monolith.Small_Yellow,
+    objects.Two_Way_Monolith.Small_Black,
+    objects.Two_Way_Monolith.Big_Chartreuse,
+    objects.Two_Way_Monolith.Big_Turquoise,
+    objects.Two_Way_Monolith.Big_Violet,
+    objects.Two_Way_Monolith.Big_Orange,
+    objects.Two_Way_Monolith.Small_Blue,
+    objects.Two_Way_Monolith.Small_Red,
+    objects.Two_Way_Monolith.Big_Pink,
+    objects.Two_Way_Monolith.Big_Blue
+}
+
+two_way_water_portals = {
+    objects.Two_Way_Monolith.Water_White,
+    objects.Two_Way_Monolith.Water_Red,
+    objects.Two_Way_Monolith.Water_Blue,
+    objects.Two_Way_Monolith.Water_Chartreuse,
+    objects.Two_Way_Monolith.Water_Yellow
+}
+
 monster_objects = {
     objects.ID.Monster,
     objects.ID.Random_Monster,
@@ -366,8 +388,12 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             process_png_layer(input, objects.DECOR, None, "base1")
             process_png_layer(input, None, None, "base2")
             process_png_layer(input, border_objects, None, "border")
-            process_png_layer(input, one_way_portal_objects, None, "portals1")
-            process_png_layer(input, two_way_portal_objects, None, "portals2")
+            process_png_layer(input, {objects.ID.Keymasters_Tent}, None, "tents")
+            process_png_layer(input, {objects.ID.Monolith_One_Way_Entrance}, None, "portals1en")
+            process_png_layer(input, {objects.ID.Monolith_One_Way_Exit}, None, "portals1ex")
+            process_png_layer(input, two_way_land_portals, None, "portals2land")
+            process_png_layer(input, two_way_water_portals, None, "portals2water")
+            process_png_layer(input, {objects.ID.Whirlpool}, None, "whirlpools")
             process_png_layer(input, {objects.ID.Prison}, None, "prisons")
             process_png_layer(input, monster_objects, None, "monsters")
             process_png_layer(input, {objects.ID.Spell_Scroll}, None, "spellscrolls")
