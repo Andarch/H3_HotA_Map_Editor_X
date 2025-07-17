@@ -18,6 +18,24 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
     blocked_tiles = {OVERWORLD: set(), UNDERGROUND: set()}
     interactive_tiles = {OVERWORLD: set(), UNDERGROUND: set()}
 
+    # First, add ROCK terrain tiles as blocked tiles
+    layers = [OVERWORLD]
+    if general["is_two_level"]:
+        layers.append(UNDERGROUND)
+
+    for layer_index, layer in enumerate(layers):
+        if layer == OVERWORLD:
+            terrain_layer = terrain[:size * size] if general["is_two_level"] else terrain
+        else:  # UNDERGROUND
+            terrain_layer = terrain[size * size:]
+
+        for i, tile in enumerate(terrain_layer):
+            x = i % size
+            y = i // size
+            # Terrain type 9 is ROCK, which is impassable
+            if tile[0] == 9:  # ROCK terrain type
+                blocked_tiles[layer].add((x, y))
+
     # Process objects to find blocked tiles and interactive tiles
     for obj in object_data:
         # Get object definition and both block mask and interactive mask
@@ -103,7 +121,7 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
                         xprint(type=Text.INFO, text=coords)
 
     if not unreachable_tiles:
-        xprint(type=Text.INFO, text="No unreachable tiles found")
+        xprint(type=Text.INFO, text="No unreachable tiles found.")
 
     while True:
         if msvcrt.getwch():
