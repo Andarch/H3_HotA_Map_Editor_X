@@ -13,6 +13,7 @@ ARTIFACT_SPECIAL_CASES = {
     "Ogres Club of Havoc": "Ogre's Club of Havoc",
     "Titans Gladius": "Titan's Gladius",
     "Titans Cuirass": "Titan's Cuirass",
+    "Titans Thunder": "Titan's Thunder",
     "Sea Captains Hat": "Sea Captain's Hat",
     "Spellbinders Hat": "Spellbinder's Hat",
     "Wayfarers Boots": "Wayfarer's Boots"
