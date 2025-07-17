@@ -372,16 +372,13 @@ resource_objects = {
     objects.ID.Random_Resource
 }
 
-#############
-# FUNCTIONS #
-#############
 
 def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> bool:
     def main():
         input = xprint(menu=Menu.MINIMAP.value)
         if input == KB.ESC.value: return False
         if(input == 1):
-            process_image(input, None, None, "")
+            process_image(input, None, None, None, None)
         elif(input == 2):
             process_image(input, objects.DECOR, None, 1, "base1")
             process_image(input, None, None, 2, "base2")
@@ -410,8 +407,12 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             process_image(input, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
         return True
 
+
     def process_image(input, filter, subfilter, png_number, png_name) -> bool:
-        xprint(type=Text.ACTION, text=f"Generating minimap_{png_number:02d}_{png_name}...")
+        if input == 1:
+            xprint(type=Text.ACTION, text=f"Generating minimap...")
+        elif input == 2:
+            xprint(type=Text.ACTION, text=f"Generating minimap_{png_number:02d}_{png_name}...")
         # Get map size
         size = map_specs["map_size"]
         # Initialize map layer list
@@ -452,6 +453,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
+
     def determine_owner(input: int, obj: dict) -> Union[int, tuple]:
         if input == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects:  # Check if object has "owner" key and should not be ignored
             return obj["owner"]
@@ -471,6 +473,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         else:
             return None
 
+
     def should_skip_object(blockMask: list, interactiveMask: list) -> bool:
         isInteractive = False
         yellowSquaresOnly = True
@@ -485,6 +488,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             if not yellowSquaresOnly and isInteractive and not allPassable:
                 break
         return isInteractive and yellowSquaresOnly
+
 
     def process_object(obj: dict, blockMask: list, interactiveMask: list, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], png_layer="") -> None:
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
@@ -520,45 +524,76 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                                 else:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
+
     def generate_images(input: int, map_layers: list, blocked_tiles: dict, ownership: dict, png_number: int, png_name: str) -> None:
         mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
-        for map_layer_index, map_layer in enumerate(map_layers):  # Iterate through both layers
-            img = Image.new(mode, (map_specs["map_size"], map_specs["map_size"]), None if png_name == "base1" else transparent)  # Initalize a new image the same dimensions as the map
-            for i, tile in enumerate(map_layer):  # Iterate through each tile on this map layer
+        map_name = filename[:-4] if filename.endswith('.h3m') else filename
+
+        # Determine if we're creating a combined image
+        is_combined = input == 2 and len(map_layers) > 1
+
+        if is_combined:
+            # Create single combined image for multiple layers
+            combined_width = map_specs["map_size"] * 2 + 2
+            img = Image.new(mode, (combined_width, map_specs["map_size"]), None if png_name == "base1" else transparent)
+
+        for map_layer_index, map_layer in enumerate(map_layers):
+            if not is_combined:
+                # Create separate image for each layer
+                img = Image.new(mode, (map_specs["map_size"], map_specs["map_size"]), None if png_name == "base1" else transparent)
+
+            # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
+            x_offset = (map_specs["map_size"] + 2) * map_layer_index if is_combined else 0
+
+            # Process each pixel in the layer
+            for i, tile in enumerate(map_layer):
                 x = i % map_specs["map_size"]
                 y = i // map_specs["map_size"]
-                owner = ownership[map_layer_index][y][x]  # Check if this tile has an owner
-                if input == 1:
-                    if owner is not None:
-                        color = object_colors[owner]
-                    elif (x, y) in blocked_tiles[map_layer_index]:  # If tile coordinates are in the blocked_tiles set, use the blocked terrain color
-                        color = terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                    else:
-                        color = terrain_colors[tile[0]]  # Use the terrain color
-                elif input == 2:
-                    if png_name == "base1":
-                        if (x, y) in blocked_tiles[map_layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
-                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                        else:
-                            color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
-                    elif png_name == "base2":
-                        if owner == OBJECTS.ALL_OTHERS:
-                            color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
-                            if color == TERRAIN.BROCK:
-                                color = transparent
-                        else:
-                            color = transparent
-                    else:
-                        if owner is not None:
-                            color = object_colors[owner] + (255,)
-                        else:
-                            color = transparent
-                img.putpixel((x, y), color)  # Draw the pixel on the image
+                owner = ownership[map_layer_index][y][x]
+                color = get_pixel_color(input, png_name, tile, owner, blocked_tiles, map_layer_index, x, y, transparent)
+                img.putpixel((x + x_offset, y), color)
 
-            layer_letter = 'g' if map_layer_index == 0 else 'u'
-            # Extract filename without extension for image naming
-            map_name = filename[:-4] if filename.endswith('.h3m') else filename
-            img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png"))  # Save this layer's image in PNG format to the .\images directory
+            if not is_combined:
+                # Save individual layer image
+                layer_letter = 'g' if map_layer_index == 0 else 'u'
+                if input == 1:
+                    img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}.png"))
+                elif input == 2:
+                    img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png"))
+
+        if is_combined:
+            # Save combined image
+            img.save(os.path.join("..", "images", f"{map_name}_{png_number:02d}_{png_name}.png"))
+
+
+    def get_pixel_color(input: int, png_name: str, tile: tuple, owner: int, blocked_tiles: dict, map_layer_index: int, x: int, y: int, transparent: tuple) -> tuple:
+        if input == 1:
+            if owner is not None:
+                return object_colors[owner]
+            elif (x, y) in blocked_tiles[map_layer_index]:
+                return terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+            else:
+                return terrain_colors[tile[0]]
+        elif input == 2:
+            if png_name == "base1":
+                if (x, y) in blocked_tiles[map_layer_index]:
+                    return terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                else:
+                    return terrain_colors_alt[tile[0]]
+            elif png_name == "base2":
+                if owner == OBJECTS.ALL_OTHERS:
+                    color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                    if color == TERRAIN.BROCK:
+                        return transparent
+                    return color
+                else:
+                    return transparent
+            else:
+                if owner is not None:
+                    return object_colors[owner] + (255,)
+                else:
+                    return transparent
+
 
     return main()
