@@ -333,12 +333,33 @@ border_objects = {
     objects.ID.Quest_Guard
 }
 
+monster_objects = {
+    objects.ID.Monster,
+    objects.ID.Random_Monster,
+    objects.ID.Random_Monster_1,
+    objects.ID.Random_Monster_2,
+    objects.ID.Random_Monster_3,
+    objects.ID.Random_Monster_4,
+    objects.ID.Random_Monster_5,
+    objects.ID.Random_Monster_6,
+    objects.ID.Random_Monster_7
+}
+
+spell_objects = {
+    objects.ID.Spell_Scroll,
+    objects.ID.Shrine_of_Magic_Gesture,
+    objects.ID.Shrine_of_Magic_Incantation,
+    objects.ID.Shrine_of_Magic_Thought,
+    objects.ID.Pyramid
+}
+
 #############
 # FUNCTIONS #
 #############
 
 def generate_minimap(general, terrain, object_data, object_defs) -> bool:
     def main(general, terrain, object_data, defs, input, object_filter, filename_suffix) -> bool:
+        is_base2_layer = filename_suffix == "_2_base2"
         xprint(type=Text.ACTION, text=f"Generating minimap{filename_suffix}...")
         # Get map size
         size = general["map_size"]
@@ -358,7 +379,7 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
             filtered_objects = [obj for obj in object_data if obj["id"] in object_filter]
         # Iterate through objects
         for obj in filtered_objects:
-            if obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
+            if is_base2_layer and (obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)):
                 continue
             # Get object masks
             def_ = defs[obj["def_id"]]
@@ -498,4 +519,7 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
         main(general, terrain, object_data, object_defs, input, border_objects, "_3_border")
         main(general, terrain, object_data, object_defs, input, one_way_portal_objects, "_4_portals1")
         main(general, terrain, object_data, object_defs, input, two_way_portal_objects, "_5_portals2")
+        main(general, terrain, object_data, object_defs, input, monster_objects, "_6_monsters")
+        main(general, terrain, object_data, object_defs, input, spell_objects, "_7_spells")
+        main(general, terrain, object_data, object_defs, input, {objects.ID.Treasure_Chest}, "_8_treasurechests")
     return True
