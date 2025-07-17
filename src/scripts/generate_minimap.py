@@ -363,7 +363,7 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
     def main(general, terrain, object_data, defs, input, object_filter, layer) -> bool:
         global layer_number
         layer_number += 1
-        xprint(type=Text.ACTION, text=f"Generating minimap_{layer_number}_{layer}...")
+        xprint(type=Text.ACTION, text=f"Generating minimap_{layer_number:02d}_{layer}...")
         # Get map size
         size = general["map_size"]
         # Initialize layer list
@@ -505,7 +505,7 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
                 img.putpixel((x, y), color)  # Draw the pixel on the image
 
             layer_letter = 'g' if layer_index == 0 else 'u'
-            img.save(os.path.join("..", "images", f"{general.get('name')}_{layer_letter}_{layer_number}_{layer}.png"))  # Save this layer's image in PNG format to the .\images directory
+            img.save(os.path.join("..", "images", f"{general.get('name')}_{layer_letter}_{layer_number:02d}_{layer}.png"))  # Save this layer's image in PNG format to the .\images directory
 
     ########
     # MAIN #
