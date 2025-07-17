@@ -524,6 +524,8 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                     elif png_layer == "base2":
                         if owner == OBJECTS.ALL_OTHERS:
                             color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                            if color == TERRAIN.BROCK:
+                                color = transparent
                         else:
                             color = transparent
                     else:
