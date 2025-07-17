@@ -372,8 +372,6 @@ resource_objects = {
     objects.ID.Random_Resource
 }
 
-png_number = 0
-
 #############
 # FUNCTIONS #
 #############
@@ -385,36 +383,34 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         if(input == 1):
             process_image(input, None, None, "")
         elif(input == 2):
-            process_image(input, objects.DECOR, None, "base1")
-            process_image(input, None, None, "base2")
-            process_image(input, border_objects, None, "border")
-            process_image(input, {objects.ID.Keymasters_Tent}, None, "tents")
-            process_image(input, {objects.ID.Monolith_One_Way_Entrance}, None, "portals1en")
-            process_image(input, {objects.ID.Monolith_One_Way_Exit}, None, "portals1ex")
-            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_land_portals, "portals2land")
-            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_water_portals, "portals2water")
-            process_image(input, {objects.ID.Whirlpool}, None, "whirlpools")
-            process_image(input, {objects.ID.Prison}, None, "prisons")
-            process_image(input, monster_objects, None, "monsters")
-            process_image(input, {objects.ID.Spell_Scroll}, None, "spellscrolls")
-            process_image(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4.Shrine_of_Magic_Incantation}, "spellshrine1")
-            process_image(input, {objects.ID.Shrine_of_Magic_Gesture}, None, "spellshrine2")
-            process_image(input, {objects.ID.Shrine_of_Magic_Thought}, None, "spellshrine3")
-            process_image(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4.Shrine_of_Magic_Mystery}, "spellshrine4")
-            process_image(input, {objects.ID.Pyramid}, None, "pyramids")
-            process_image(input, {objects.ID.Artifact}, None, "artifacts")
-            process_image(input, {objects.ID.Random_Artifact}, None, "randomartifacts")
-            process_image(input, {objects.ID.Random_Treasure_Artifact}, None, "randomtreasureartifacts")
-            process_image(input, {objects.ID.Random_Minor_Artifact}, None, "randomminorartifacts")
-            process_image(input, {objects.ID.Random_Major_Artifact}, None, "randommajorartifacts")
-            process_image(input, {objects.ID.Random_Relic}, None, "randomrelics")
-            process_image(input, resource_objects, None, "resources")
-            process_image(input, {objects.ID.Treasure_Chest}, None, "treasurechests")
+            process_image(input, objects.DECOR, None, 1, "base1")
+            process_image(input, None, None, 2, "base2")
+            process_image(input, border_objects, None, 3, "border")
+            process_image(input, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+            process_image(input, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
+            process_image(input, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
+            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
+            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_water_portals, 8, "portals2water")
+            process_image(input, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+            process_image(input, {objects.ID.Prison}, None, 10, "prisons")
+            process_image(input, monster_objects, None, 11, "monsters")
+            process_image(input, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+            process_image(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4.Shrine_of_Magic_Incantation}, 13, "spellshrine1")
+            process_image(input, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "spellshrine2")
+            process_image(input, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "spellshrine3")
+            process_image(input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4.Shrine_of_Magic_Mystery}, 16, "spellshrine4")
+            process_image(input, {objects.ID.Pyramid}, None, 17, "pyramids")
+            process_image(input, {objects.ID.Artifact}, None, 18, "artifacts")
+            process_image(input, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+            process_image(input, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
+            process_image(input, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
+            process_image(input, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
+            process_image(input, {objects.ID.Random_Relic}, None, 23, "randomrelics")
+            process_image(input, resource_objects, None, 24, "resources")
+            process_image(input, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
         return True
 
-    def process_image(input, filter, subfilter, png_name) -> bool:
-        global png_number
-        png_number += 1
+    def process_image(input, filter, subfilter, png_number, png_name) -> bool:
         xprint(type=Text.ACTION, text=f"Generating minimap_{png_number:02d}_{png_name}...")
         # Get map size
         size = map_specs["map_size"]
@@ -452,7 +448,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 continue
             process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_name)
         # Generate and save minimap images
-        generate_images(input, map_layers, blocked_tiles, ownership, png_name)
+        generate_images(input, map_layers, blocked_tiles, ownership, png_number, png_name)
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
@@ -524,12 +520,11 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                                 else:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
-    def generate_images(input: int, map_layers: list, blocked_tiles: dict, ownership: dict, png_layer="") -> None:
-        global png_number
-        mode = "RGB" if png_layer == "base1" else "RGBA"
+    def generate_images(input: int, map_layers: list, blocked_tiles: dict, ownership: dict, png_number: int, png_name: str) -> None:
+        mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
         for map_layer_index, map_layer in enumerate(map_layers):  # Iterate through both layers
-            img = Image.new(mode, (map_specs["map_size"], map_specs["map_size"]), None if png_layer == "base1" else transparent)  # Initalize a new image the same dimensions as the map
+            img = Image.new(mode, (map_specs["map_size"], map_specs["map_size"]), None if png_name == "base1" else transparent)  # Initalize a new image the same dimensions as the map
             for i, tile in enumerate(map_layer):  # Iterate through each tile on this map layer
                 x = i % map_specs["map_size"]
                 y = i // map_specs["map_size"]
@@ -542,12 +537,12 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                     else:
                         color = terrain_colors[tile[0]]  # Use the terrain color
                 elif input == 2:
-                    if png_layer == "base1":
+                    if png_name == "base1":
                         if (x, y) in blocked_tiles[map_layer_index]:  # If tile coordinates are in the blocked_tiles set, use the alternate blocked terrain color
                             color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                         else:
                             color = terrain_colors_alt[tile[0]]  # Use the alternate terrain color
-                    elif png_layer == "base2":
+                    elif png_name == "base2":
                         if owner == OBJECTS.ALL_OTHERS:
                             color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
                             if color == TERRAIN.BROCK:
@@ -564,6 +559,6 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             layer_letter = 'g' if map_layer_index == 0 else 'u'
             # Extract filename without extension for image naming
             map_name = filename[:-4] if filename.endswith('.h3m') else filename
-            img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}_{png_number:02d}_{png_layer}.png"))  # Save this layer's image in PNG format to the .\images directory
+            img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png"))  # Save this layer's image in PNG format to the .\images directory
 
     return main()
