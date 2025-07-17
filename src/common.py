@@ -361,6 +361,14 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
 
     return main()
 
+def press_any_key() -> None:
+    xprint()
+    xprint()
+    xprint(text=f"{Color.YELLOW.value}Press any key to return to the menu...{Color.RESET.value}")
+    while True:
+        if msvcrt.getwch():
+            break
+
 def exit() -> None:
     xprint()
     xprint(text="Exiting...")

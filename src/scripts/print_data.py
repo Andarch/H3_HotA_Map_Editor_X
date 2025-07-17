@@ -31,8 +31,6 @@ def print_data(map_key: dict) -> bool:
 
     xprint()
 
-    while True:
-        if msvcrt.getwch():
-            break
+    press_any_key()
 
     return True

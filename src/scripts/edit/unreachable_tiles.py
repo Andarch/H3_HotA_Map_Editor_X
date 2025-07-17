@@ -123,8 +123,6 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
     if not unreachable_tiles:
         xprint(type=Text.INFO, text="No unreachable tiles found.")
 
-    while True:
-        if msvcrt.getwch():
-            break
+    press_any_key()
 
     return True
