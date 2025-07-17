@@ -41,7 +41,8 @@ class Menu(Enum):
         1: "Modify towns (buildings/spells)",
         2: "Reset heroes",
        -1: "",
-        3: "Change random monster 1-7 to any level"
+        3: "List unreachable tiles",
+        4: "Change random monster 1-7 to any level"
     }
 
     LOAD  = {

@@ -337,7 +337,7 @@ border_objects = {
 # FUNCTIONS #
 #############
 
-def generate_minimap(general, terrain, object_data, defs) -> bool:
+def generate_minimap(general, terrain, object_data, object_defs) -> bool:
     def main(general, terrain, object_data, defs, input, object_filter, filename_suffix) -> bool:
         xprint(type=Text.ACTION, text=f"Generating minimap{filename_suffix}...")
         # Get map size
@@ -491,11 +491,11 @@ def generate_minimap(general, terrain, object_data, defs) -> bool:
     input = xprint(menu=Menu.MINIMAP.value)
     if input == KB.ESC.value: return False
     if(input == 1):
-        main(general, terrain, object_data, defs, input, None, "")
+        main(general, terrain, object_data, object_defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, defs, input, objects.DECOR, "_1_base1")
-        main(general, terrain, object_data, defs, input, None, "_2_base2")
-        main(general, terrain, object_data, defs, input, border_objects, "_3_border")
-        main(general, terrain, object_data, defs, input, one_way_portal_objects, "_4_portals1")
-        main(general, terrain, object_data, defs, input, two_way_portal_objects, "_5_portals2")
+        main(general, terrain, object_data, object_defs, input, objects.DECOR, "_1_base1")
+        main(general, terrain, object_data, object_defs, input, None, "_2_base2")
+        main(general, terrain, object_data, object_defs, input, border_objects, "_3_border")
+        main(general, terrain, object_data, object_defs, input, one_way_portal_objects, "_4_portals1")
+        main(general, terrain, object_data, object_defs, input, two_way_portal_objects, "_5_portals2")
     return True

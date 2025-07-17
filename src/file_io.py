@@ -111,8 +111,8 @@ def load_maps(input=-1) -> bool:
     def load_map(map_key: str, amount: int, new_screen=True) -> Tuple[bool, bool]:
         def main() -> Tuple[bool, bool]:
             draw_header(new_screen=new_screen)
-            # filename = get_filename(map_key, amount)
-            filename = "tbd.h3m"
+            filename = get_filename(map_key, amount)
+            # filename = "tbd.h3m"
             if not filename: return False, False
             success = test_load(filename)
             if not success: return True, False
