@@ -359,7 +359,8 @@ spell_objects = {
 
 def generate_minimap(general, terrain, object_data, object_defs) -> bool:
     def main(general, terrain, object_data, defs, input, object_filter, filename_suffix) -> bool:
-        is_base2_layer = filename_suffix == "_2_base2"
+        is_base2_layer = filename_suffix == "_02_base2"
+        is_border_layer = filename_suffix == "_03_border"
         xprint(type=Text.ACTION, text=f"Generating minimap{filename_suffix}...")
         # Get map size
         size = general["map_size"]
@@ -380,6 +381,8 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
         # Iterate through objects
         for obj in filtered_objects:
             if is_base2_layer and (obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)):
+                continue
+            elif is_border_layer and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
                 continue
             # Get object masks
             def_ = defs[obj["def_id"]]
@@ -431,8 +434,8 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
         return isInteractive and yellowSquaresOnly
 
     def process_object(obj: dict, blockMask: list, interactiveMask: list, size: int, blocked_tiles: dict, ownership: dict, owner: Union[int, tuple], input, filename_suffix="") -> None:
-        is_base2_layer = filename_suffix == "_2_base2"
-        is_border_layer = filename_suffix == "_3_border"
+        is_base2_layer = filename_suffix == "_02_base2"
+        is_border_layer = filename_suffix == "_03_border"
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
         for r in range(ROWS):  # 6 rows y-axis, from top to bottom
             for c in range(COLUMNS):  # 8 columns x-axis, from left to right
@@ -467,8 +470,8 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
                                     ownership[UNDERGROUND][obj_y - 5 + r][obj_x - 7 + c] = owner if owner is not None else None
 
     def generate_images(input: int, layers: list, size: int, blocked_tiles: dict, ownership: dict, filename_suffix="") -> None:
-        is_base1_layer = filename_suffix == "_1_base1"
-        is_base2_layer = filename_suffix == "_2_base2"
+        is_base1_layer = filename_suffix == "_01_base1"
+        is_base2_layer = filename_suffix == "_02_base2"
         mode = "RGB" if is_base1_layer else "RGBA"
         transparent = (0, 0, 0, 0)
         for layer_index, layer in enumerate(layers):  # Iterate through both layers
@@ -514,12 +517,13 @@ def generate_minimap(general, terrain, object_data, object_defs) -> bool:
     if(input == 1):
         main(general, terrain, object_data, object_defs, input, None, "")
     elif(input == 2):
-        main(general, terrain, object_data, object_defs, input, objects.DECOR, "_1_base1")
-        main(general, terrain, object_data, object_defs, input, None, "_2_base2")
-        main(general, terrain, object_data, object_defs, input, border_objects, "_3_border")
-        main(general, terrain, object_data, object_defs, input, one_way_portal_objects, "_4_portals1")
-        main(general, terrain, object_data, object_defs, input, two_way_portal_objects, "_5_portals2")
-        main(general, terrain, object_data, object_defs, input, monster_objects, "_6_monsters")
-        main(general, terrain, object_data, object_defs, input, spell_objects, "_7_spells")
-        main(general, terrain, object_data, object_defs, input, {objects.ID.Treasure_Chest}, "_8_treasurechests")
+        main(general, terrain, object_data, object_defs, input, objects.DECOR, "_01_base1")
+        main(general, terrain, object_data, object_defs, input, None, "_02_base2")
+        main(general, terrain, object_data, object_defs, input, border_objects, "_03_border")
+        main(general, terrain, object_data, object_defs, input, one_way_portal_objects, "_04_portals1")
+        main(general, terrain, object_data, object_defs, input, two_way_portal_objects, "_05_portals2")
+        main(general, terrain, object_data, object_defs, input, {objects.ID.Prison}, "_06_prisons")
+        # main(general, terrain, object_data, object_defs, input, monster_objects, "_07_monsters")
+        # main(general, terrain, object_data, object_defs, input, spell_objects, "_08_spells")
+        # main(general, terrain, object_data, object_defs, input, {objects.ID.Treasure_Chest}, "_09_treasurechests")
     return True

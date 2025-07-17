@@ -66,5 +66,5 @@ class Menu(Enum):
 
     MINIMAP  = {
         1: "Normal",
-        2: "Passability only"
+        2: "All layers"
     }
