@@ -1,21 +1,20 @@
-
 import os
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent / 'data'))
-
 from enum import IntEnum
 from PIL  import Image
-
 from ..common import *
 from ..menus import *
 from data import objects
+
 
 OVERWORLD = 0
 UNDERGROUND = 1
 ROWS = 6
 COLUMNS = 8
 BLOCKED_OFFSET = 20
+
 
 class TERRAIN(IntEnum):
     # normal
@@ -46,6 +45,7 @@ class TERRAIN(IntEnum):
     BHIGHLANDS = 30
     BWASTELAND = 31
 
+
 class OWNER(IntEnum):
     RED = 0
     BLUE = 1
@@ -56,6 +56,7 @@ class OWNER(IntEnum):
     TEAL = 6
     PINK = 7
     NEUTRAL = 255
+
 
 class KEYMASTER(IntEnum):
     LIGHTBLUE = 0
@@ -69,6 +70,7 @@ class KEYMASTER(IntEnum):
     GARRISON = 255
     QUEST = 1000
 
+
 class OBJECTS(IntEnum):
     RED = 0
     BLUE = 1
@@ -79,6 +81,7 @@ class OBJECTS(IntEnum):
     TEAL = 6
     PINK = 7
     NEUTRAL = 255
+
     KM_LIGHTBLUE = 1000
     KM_GREEN = 1001
     KM_RED = 1002
@@ -89,6 +92,7 @@ class OBJECTS(IntEnum):
     KM_BLACK = 1007
     GARRISON = 1999
     QUEST = 2000
+
     M1_BLUE = 3000
     M1_PINK = 3001
     M1_ORANGE = 3002
@@ -126,8 +130,10 @@ class OBJECTS(IntEnum):
     S2_BLUE = 3522
     S2_CHARTREUSE = 3523
     S2_YELLOW = 3524
+
     INTERACTIVE = 9999
     ALL_OTHERS = 10000
+
 
 terrain_colors = {
     # Terrain
@@ -158,6 +164,7 @@ terrain_colors = {
     TERRAIN.BWASTELAND:    (0x9c, 0x42, 0x08)
 }
 
+
 terrain_colors_alt = {
     # Terrain
     TERRAIN.DIRT:          (0x4d, 0x4d, 0x4d),
@@ -187,30 +194,33 @@ terrain_colors_alt = {
     TERRAIN.BWASTELAND:    (0x3d, 0x3d, 0x3d)
 }
 
-owner_colors = {
-    OWNER.RED:     (0xff, 0x00, 0x00),
-    OWNER.BLUE:    (0x31, 0x52, 0xff),
-    OWNER.TAN:     (0x9c, 0x73, 0x52),
-    OWNER.GREEN:   (0x42, 0x94, 0x29),
-    OWNER.ORANGE:  (0xff, 0x84, 0x00),
-    OWNER.PURPLE:  (0x8c, 0x29, 0xa5),
-    OWNER.TEAL:    (0x08, 0x9c, 0xa5),
-    OWNER.PINK:    (0xc6, 0x7b, 0x8c),
-    OWNER.NEUTRAL: (0x84, 0x84, 0x84)
-}
 
-keymaster_colors = {
-    KEYMASTER.LIGHTBLUE: (0x00, 0xb7, 0xff),
-    KEYMASTER.GREEN:     (0x06, 0xc6, 0x2f),
-    KEYMASTER.RED:       (0xCE, 0x19, 0x1A),
-    KEYMASTER.DARKBLUE:  (0x14, 0x14, 0xfe),
-    KEYMASTER.BROWN:     (0xc8, 0x82, 0x46),
-    KEYMASTER.PURPLE:    (0xa8, 0x43, 0xe0),
-    KEYMASTER.WHITE:     (0xf7, 0xf7, 0xf7),
-    KEYMASTER.BLACK:     (0x12, 0x12, 0x12),
-    KEYMASTER.GARRISON:  (0x9c, 0x9a, 0x8b),
-    KEYMASTER.QUEST:     (0xff, 0xff, 0x00)
-}
+# owner_colors = {
+#     OWNER.RED:     (0xff, 0x00, 0x00),
+#     OWNER.BLUE:    (0x31, 0x52, 0xff),
+#     OWNER.TAN:     (0x9c, 0x73, 0x52),
+#     OWNER.GREEN:   (0x42, 0x94, 0x29),
+#     OWNER.ORANGE:  (0xff, 0x84, 0x00),
+#     OWNER.PURPLE:  (0x8c, 0x29, 0xa5),
+#     OWNER.TEAL:    (0x08, 0x9c, 0xa5),
+#     OWNER.PINK:    (0xc6, 0x7b, 0x8c),
+#     OWNER.NEUTRAL: (0x84, 0x84, 0x84)
+# }
+
+
+# keymaster_colors = {
+#     KEYMASTER.LIGHTBLUE: (0x00, 0xb7, 0xff),
+#     KEYMASTER.GREEN:     (0x06, 0xc6, 0x2f),
+#     KEYMASTER.RED:       (0xCE, 0x19, 0x1A),
+#     KEYMASTER.DARKBLUE:  (0x14, 0x14, 0xfe),
+#     KEYMASTER.BROWN:     (0xc8, 0x82, 0x46),
+#     KEYMASTER.PURPLE:    (0xa8, 0x43, 0xe0),
+#     KEYMASTER.WHITE:     (0xf7, 0xf7, 0xf7),
+#     KEYMASTER.BLACK:     (0x12, 0x12, 0x12),
+#     KEYMASTER.GARRISON:  (0x9c, 0x9a, 0x8b),
+#     KEYMASTER.QUEST:     (0xff, 0xff, 0x00)
+# }
+
 
 object_colors = {
     OBJECTS.RED:          (0xff, 0x00, 0x00),
@@ -276,12 +286,14 @@ object_colors = {
     OBJECTS.ALL_OTHERS:  (0xff, 0xff, 0xff)
 }
 
+
 ignored_owned_objects = {
     objects.ID.Hero,
     objects.ID.Prison,
     objects.ID.Random_Hero,
     objects.ID.Hero_Placeholder
 }
+
 
 ignored_pickups = {
     objects.ID.Treasure_Chest,
@@ -316,6 +328,7 @@ ignored_pickups = {
     objects.ID.Boat
 }
 
+
 border_objects = {
     objects.ID.Border_Gate,
     objects.ID.Border_Guard,
@@ -323,6 +336,7 @@ border_objects = {
     objects.ID.Garrison_Vertical,
     objects.ID.Quest_Guard
 }
+
 
 two_way_land_portals = {
     objects.Two_Way_Monolith.Small_Green,
@@ -347,6 +361,7 @@ two_way_land_portals = {
     objects.Two_Way_Monolith.Big_Blue
 }
 
+
 two_way_water_portals = {
     objects.Two_Way_Monolith.Water_White,
     objects.Two_Way_Monolith.Water_Red,
@@ -354,6 +369,7 @@ two_way_water_portals = {
     objects.Two_Way_Monolith.Water_Chartreuse,
     objects.Two_Way_Monolith.Water_Yellow
 }
+
 
 monster_objects = {
     objects.ID.Monster,
@@ -366,6 +382,7 @@ monster_objects = {
     objects.ID.Random_Monster_6,
     objects.ID.Random_Monster_7
 }
+
 
 resource_objects = {
     objects.ID.Resource,
@@ -458,7 +475,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         if input == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects:  # Check if object has "owner" key and should not be ignored
             return obj["owner"]
         elif input == 2:
-            if (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001) or obj["id"] == objects.ID.Border_Guard:
+            if (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001) or obj["id"] == objects.ID.Border_Guard or obj["id"] == objects.ID.Keymasters_Tent:
                 return obj["sub_id"] + 1000
             elif obj["id"] == objects.ID.Garrison or obj["id"] == objects.ID.Garrison_Vertical:
                 return (1999, obj["owner"])
