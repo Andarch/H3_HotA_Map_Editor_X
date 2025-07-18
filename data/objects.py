@@ -979,7 +979,7 @@ CATEGORIES = {
 }
 
 
-# Zone color definitions (RGB)
+# Zone type definitions (RGB)
 ZONE_TYPE = {
     (77, 77, 77):    "Normal",      # gray
     (89, 110, 184):  "Player",      # blue
@@ -989,6 +989,21 @@ ZONE_TYPE = {
     (109, 59, 120):  "Player",      # purple
     (50, 112, 116):  "Player",      # teal
     (171, 129, 140): "Player",      # pink
+    (179, 76, 76):   "Red",         # red
+    (179, 170, 76):  "Treasure",    # gold
+}
+
+
+# Zone color definitions (RGB)
+ZONE_COLOR = {
+    (77, 77, 77):    "Normal",      # gray
+    (89, 110, 184):  "Blue",        # blue
+    (129, 108, 88):  "Tan",         # tan
+    (71, 109, 54):   "Green",       # green
+    (179, 129, 76):  "Orange",      # orange
+    (109, 59, 120):  "Purple",      # purple
+    (50, 112, 116):  "Teal",        # teal
+    (171, 129, 140): "Pink",        # pink
     (179, 76, 76):   "Red",         # red
     (179, 170, 76):  "Treasure",    # gold
 }

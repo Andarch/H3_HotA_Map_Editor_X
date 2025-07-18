@@ -2,23 +2,25 @@ from . import format
 from ...common import *
 import data.objects as objects
 import data.artifacts as artifacts
+from . import sort
 
 def flatten_creature_banks(creature_banks):
     rows = []
     for obj in creature_banks:
         row = {}
-        row["Coords"] = obj.get("coords", "")
-        row["Zone"] = obj.get("zone", "")
-        row["Subtype"] = obj.get("subtype", "")
-        row["Difficulty"] = objects.Creature_Bank_Difficulty(obj.get("difficulty", "")).name.replace('_', ' ')
+        row["coords"] = obj.get("coords", "")
+        row["zone_type"] = obj.get("zone_type", "")
+        row["zone_color"] = obj.get("zone_color", "")
+        row["subtype"] = obj.get("subtype", "")
+        row["difficulty"] = objects.Creature_Bank_Difficulty(obj.get("difficulty", "")).name.replace('_', ' ')
 
-        if obj.get("id") != objects.ID.Dragon_Utopia and row["Difficulty"] == "Random" or obj.get("id") == objects.ID.Dragon_Utopia:
-            row["Upgraded Stack"] = ""
+        if obj.get("id") != objects.ID.Dragon_Utopia and row["difficulty"] == "Random" or obj.get("id") == objects.ID.Dragon_Utopia:
+            row["upgraded_stack"] = ""
         else:
-            row["Upgraded Stack"] = objects.Creature_Bank_Stack(obj.get("upgraded_stack", "")).name.replace('_', ' ')
+            row["upgraded_stack"] = objects.Creature_Bank_Stack(obj.get("upgraded_stack", "")).name.replace('_', ' ')
 
-        if obj.get("id") == objects.ID.Dragon_Utopia and row["Difficulty"] == "Random":
-            row["Artifacts"] = ""
+        if obj.get("id") == objects.ID.Dragon_Utopia and row["difficulty"] == "Random":
+            row["artifacts"] = ""
         else:
             arts = obj.get("artifacts", [])
             art_names = []
@@ -27,6 +29,8 @@ def flatten_creature_banks(creature_banks):
                 if art_name == "Empty 4 Bytes":
                     art_name = "Random"
                 art_names.append(art_name)
-            row["Artifacts"] = "\n".join(art_names)
+            row["artifacts"] = "\n".join(art_names)
         rows.append(row)
+
+    rows = sort.sort_by_zone(rows)
     return rows

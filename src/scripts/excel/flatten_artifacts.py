@@ -1,5 +1,6 @@
 from . import format
 import data.artifacts as artifacts
+from . import sort
 
 def flatten_artifacts(artifact_objects):
     flattened = []
@@ -68,8 +69,5 @@ def flatten_artifacts(artifact_objects):
             flat["message"] = obj.get("message", "")
         flattened.append(flat)
 
-    # Sort by zone in this order: Player -> Normal -> Treasure -> Red
-    zone_order = {"Player": 1, "Normal": 2, "Treasure": 3, "Red": 4}
-    flattened.sort(key=lambda x: zone_order.get(x.get("zone", ""), 5))
-
+    flattened = sort.sort_by_zone(flattened)
     return flattened

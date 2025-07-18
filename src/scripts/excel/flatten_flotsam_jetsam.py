@@ -1,12 +1,16 @@
 import data.objects as objects
+from . import sort
 
 def flatten_flotsam_jetsam(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
-        row["Coords"] = obj.get("coords", "")
-        row["Zone"] = obj.get("zone", "")
-        row["Subtype"] = obj.get("subtype", "")
-        row["Contents"] = objects.Flotsam_Jetsam_Reward(obj.get("contents", "")).name.replace('_', ' ')
+        row["coords"] = obj.get("coords", "")
+        row["zone_type"] = obj.get("zone_type", "")
+        row["zone_color"] = obj.get("zone_color", "")
+        row["subtype"] = obj.get("subtype", "")
+        row["contents"] = objects.Flotsam_Jetsam_Reward(obj.get("contents", "")).name.replace('_', ' ')
         rows.append(row)
+
+    rows = sort.sort_by_zone(rows)
     return rows

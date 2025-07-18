@@ -12,14 +12,14 @@ import data.spells as spells
 
 # Define columns to remove per category
 _COLUMNS_TO_REMOVE = {
-    "Heroes": ["def_id", "id", "sub_id", "type", "subtype", "owner", "hero_id", "default_name", "has_custom_name", "custom_name", "formation",
-               "has_portrait", "portrait_id", "patrol", "has_biography", "coords_offset",
+    "Heroes": ["zone_type", "zone_color", "def_id", "id", "sub_id", "type", "subtype", "owner", "hero_id",
+               "default_name", "has_custom_name", "custom_name", "formation", "has_portrait", "portrait_id", "patrol", "has_biography", "coords_offset",
                # Remove individual artifact slot columns since we're creating combined "artifacts" and "backpack" columns
                "head", "shoulders", "neck", "right_hand", "left_hand", "torso", "right_ring", "left_ring", "feet",
                "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
                # Remove any existing backpack-related columns that might conflict
                "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
+    "Towns": ["zone_type", "zone_color", "def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
               "spells_must_appear", "spells_cant_appear", "buildings_special", "events", "coords_offset"],
     "Monsters": ["type", "start_bytes", "middle_bytes"],
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
@@ -38,13 +38,13 @@ _COLUMNS_TO_REMOVE = {
     "Ancient Lamp": ["def_id", "id", "sub_id", "type"],
     "Grave": ["def_id", "id", "sub_id", "type", "resource"],
     "Creature Banks": ["def_id", "id", "sub_id", "type", "rewards"],
-    "Garrisons": ["def_id", "id", "sub_id", "type", "owner", "coords_offset"],
+    "Garrisons": ["zone_type", "zone_color", "def_id", "id", "sub_id", "type", "owner", "coords_offset"],
 }
 
 
 def export_excel(map_key: dict) -> bool:
     # Create Excel filename by replacing .h3m with _objects.xlsx
-    filename = map_key["filename"][:-4] + "_objects.xlsx"
+    filename = map_key["filename"][:-4] + ".xlsx"
 
     # Check if Excel file is already open
     if not is_file_writable(filename):
@@ -64,6 +64,10 @@ def export_excel(map_key: dict) -> bool:
 
         # Write each category to Excel
         for category, items in processed_data.items():
+            # Skip Decor category from Excel export
+            if category == "Decor":
+                continue
+
             # Create DataFrame with preserved column order
             if items:
                 # Get column order from first object

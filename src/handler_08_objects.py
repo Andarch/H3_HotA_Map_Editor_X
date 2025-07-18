@@ -113,7 +113,8 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         obj["coords"][2] = io.read_int(1)
 
         obj["coords_offset"] = ""
-        obj["zone"] = ""
+        obj["zone_type"] = ""
+        obj["zone_color"] = ""
 
         obj["def_id"] = io.read_int(4)
 
@@ -138,7 +139,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
             obj["coords_offset"] = get_coords_offset(obj)
             if has_zone_images:
                 is_shipwreck = obj["id"] == objects.ID.Shipwreck
-                obj["zone"] = get_zone_type(obj["coords_offset"], is_shipwreck)
+                obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"], is_shipwreck)
 
         match obj["id"]:
             case objects.ID.Pandoras_Box:       obj = parse_pandoras_box(obj)
@@ -1591,23 +1592,25 @@ def write_grave(obj: dict) -> None:
     io.write_raw(obj["mystery_bytes"])
 
 
-def get_zone_type(coords: list, is_shipwreck: bool) -> str:
+def get_zone(coords: list, is_shipwreck: bool) -> str:
     global zone_img_g, zone_img_u
     x, y, z = coords
     img = zone_img_g if z == 0 else zone_img_u
     width, height = img.size
     if not (0 <= x < width and 0 <= y < height):
-        return "Out of Bounds"
+        return "Out of Bounds", "Out of Bounds"
     pixel = img.getpixel((x, y))
     if len(pixel) == 4 and pixel[3] == 0:
         if is_shipwreck:
             pixel = img.getpixel((x + 1, y))
             if len(pixel) == 4 and pixel[3] == 0:
-                return "Void"
+                return "Void", "Void"
         else:
-            return "Void"
+            return "Void", "Void"
     rgb = pixel[:3]
-    return objects.ZONE_TYPE.get(rgb, "Unknown")
+    zone_type = objects.ZONE_TYPE.get(rgb, "Unknown")
+    zone_color = objects.ZONE_COLOR.get(rgb, "Unknown")
+    return zone_type, zone_color
 
 
 def get_coords_offset(obj: dict) -> list:

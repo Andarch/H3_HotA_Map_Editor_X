@@ -1,23 +1,27 @@
 from . import format
 import data.objects as objects
 import data.artifacts as artifacts
+from . import sort
 
 def flatten_grave(graves):
     rows = []
     for obj in graves:
         row = {}
-        row["Coords"] = obj.get("coords", "")
-        row["Zone"] = obj.get("zone", "")
-        row["Subtype"] = obj.get("subtype", "")
-        row["Contents"] = objects.Grave_Reward(obj.get("contents", "")).name.replace('_', ' ')
-        if row["Contents"] == "Custom":
+        row["coords"] = obj.get("coords", "")
+        row["zone_type"] = obj.get("zone_type", "")
+        row["zone_color"] = obj.get("zone_color", "")
+        row["subtype"] = obj.get("subtype", "")
+        row["contents"] = objects.Grave_Reward(obj.get("contents", "")).name.replace('_', ' ')
+        if row["contents"] == "Custom":
             amount = obj.get("amount", "")
             amount_str = f"{int(amount):,}"
-            row["Amount"] = f"+{amount_str} Gold"
+            row["amount"] = f"+{amount_str} Gold"
             art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
-            row["Artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
+            row["artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
         else:
-            row["Amount"] = ""
-            row["Artifact"] = ""
+            row["amount"] = ""
+            row["artifact"] = ""
         rows.append(row)
+
+    rows = sort.sort_by_zone(rows)
     return rows

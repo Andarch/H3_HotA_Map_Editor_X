@@ -1,22 +1,26 @@
 from . import format
 import data.objects as objects
 import data.artifacts as artifacts
+from . import sort
 
 def flatten_treasure_chest(treasure_objects):
     rows = []
     for obj in treasure_objects:
         row = {}
-        row["Coords"] = obj.get("coords", "")
-        row["Zone"] = obj.get("zone", "")
-        row["Subtype"] = obj.get("subtype", "")
+        row["coords"] = obj.get("coords", "")
+        row["zone_type"] = obj.get("zone_type", "")
+        row["zone_color"] = obj.get("zone_color", "")
+        row["subtype"] = obj.get("subtype", "")
         contents = obj.get("contents", "")
-        row["Contents"] = objects.Treasure_Chest_Reward(contents).name
+        row["contents"] = objects.Treasure_Chest_Reward(contents).name
         if contents == 3:
             art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
             if art == "Empty 4 Bytes":
                 art = "Random"
-            row["Artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
+            row["artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
         else:
-            row["Artifact"] = ""
+            row["artifact"] = ""
         rows.append(row)
+
+    rows = sort.sort_by_zone(rows)
     return rows

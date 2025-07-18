@@ -19,4 +19,5 @@ from .flatten_grave import flatten_grave
 from .flatten_creature_banks import flatten_creature_banks
 from .flatten_garrisons import flatten_garrisons
 from . import format
+from . import sort
 from .format import format_enum_list, format_special_buildings, SPELL_SPECIAL_CASES, ARTIFACT_SPECIAL_CASES

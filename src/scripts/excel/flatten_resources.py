@@ -1,4 +1,5 @@
 import data.objects as objects
+from . import sort
 
 def flatten_resources(resource_objects):
     flattened = []
@@ -38,4 +39,6 @@ def flatten_resources(resource_objects):
         if "amount" not in flat:
             flat["amount"] = obj.get("amount", "")
         flattened.append(flat)
+
+    flattened = sort.sort_by_zone(flattened)
     return flattened
