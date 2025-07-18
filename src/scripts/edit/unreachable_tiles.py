@@ -1,4 +1,3 @@
-import data.objects as objects
 from ...common import *
 
 def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, object_data: list) -> bool:
