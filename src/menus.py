@@ -42,7 +42,8 @@ class Menu(Enum):
         2: "Reset heroes",
        -1: "",
         3: "List unreachable tiles",
-        4: "Change random monster 1-7 to any level"
+        4: "Change random monster 1-7 to any level",
+        5: "Set compliant monster values"
     }
 
     LOAD  = {

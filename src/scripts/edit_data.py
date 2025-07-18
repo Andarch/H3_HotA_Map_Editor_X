@@ -19,6 +19,8 @@ def edit_data(map_key: dict) -> bool:
             success = scripts.edit.list_unreachable_tiles(map_key["map_specs"], map_key["terrain"], map_key["object_defs"], map_key["object_data"])
         case 4:
             success = scripts.edit.set_random_monsters(map_key["object_data"])
+        case 5:
+            success = scripts.edit.set_compliant_monster_values(map_key["object_data"])
 
     xprint()
 
