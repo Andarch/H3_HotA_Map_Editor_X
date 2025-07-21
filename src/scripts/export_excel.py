@@ -42,9 +42,9 @@ _COLUMNS_TO_REMOVE = {
 }
 
 
-def export_excel(map_key: dict) -> bool:
+def export_excel() -> bool:
     # Create Excel filename by replacing .h3m with _objects.xlsx
-    filename = map_key["filename"][:-4] + ".xlsx"
+    filename = map_data["filename"][:-4] + ".xlsx"
 
     # Check if Excel file is already open
     if not is_file_writable(filename):
@@ -57,7 +57,7 @@ def export_excel(map_key: dict) -> bool:
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
         # Process objects (categorize and clean data)
-        processed_data = _process_data(map_key["object_data"], map_key["events"])
+        processed_data = _process_data()
 
         # Compile regex for Excel illegal characters
         illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')

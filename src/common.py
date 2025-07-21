@@ -1,5 +1,3 @@
-# region Imports
-
 import ctypes
 from enum import Enum
 import msvcrt
@@ -11,28 +9,27 @@ import threading
 import time
 from typing import Union
 
-# endregion
-
-# region Constants/Enums
 
 TITLE = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
 PRINT_WIDTH = 75
 DONE = "DONE"
-# MAP1 = "Map 1"
-# MAP2 = "Map 2"
+HIDE_CURSOR = "\033[?25l"
+
 
 class KB(Enum):
     BACKSPACE = 8
     ENTER = "\r"
     ESC = 27
 
+
 class Align(Enum):
     LEFT   = 1
     CENTER = 2
     MENU   = 3
     FLUSH  = 4
+
 
 class Color(Enum):
     RESET     = "\033[0m"
@@ -53,12 +50,14 @@ class Color(Enum):
     WHITE     = "\033[97m"
     GREY      = "\033[90m"
 
+
 class Sleep(Enum):
     TIC    = 0.01
     SHORTER  = 0.05
     SHORT = 0.25
     NORMAL = 0.75
     LONG   = 1.5
+
 
 class Text(Enum):
     NORMAL  = 1
@@ -70,9 +69,6 @@ class Text(Enum):
     HEADER  = 7
     ERROR   = 8
 
-# endregion
-
-# region Global Variables
 
 map_data = {}
 screen_content = []
@@ -81,12 +77,14 @@ old_terminal_width = 0
 redraw_scheduled = False
 is_redrawing = False
 
-# endregion
 
 def initialize():
     global terminal_width, old_terminal_width
-    terminal_width = old_terminal_width = get_terminal_width()
-    hide_cursor(True)
+
+    print(HIDE_CURSOR, end = "", flush = True)
+
+    terminal_width = old_terminal_width = shutil.get_terminal_size().columns
+
     mutex_name = TITLE.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     last_error = ctypes.windll.kernel32.GetLastError()
@@ -94,18 +92,18 @@ def initialize():
         draw_header()
         xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
         return False
+
     monitor_thread1 = threading.Thread(target = monitor_terminal_size, daemon = True)
     monitor_thread1.start()
+
     return True
 
-def hide_cursor(hide: bool) -> None:
-    if hide: print("\033[?25l", end = "", flush = True)
-    else: print("\033[?25h", end = "", flush = True)
 
 def monitor_terminal_size() -> None:
     global terminal_width, old_terminal_width, redraw_scheduled
+
     while True:
-        terminal_width = get_terminal_width()
+        terminal_width = shutil.get_terminal_size().columns
         if terminal_width != old_terminal_width:
             old_terminal_width = terminal_width
             if not redraw_scheduled:
@@ -113,13 +111,13 @@ def monitor_terminal_size() -> None:
                 threading.Timer(0, redraw_screen).start()
         time.sleep(Sleep.SHORTER.value)
 
-def get_terminal_width() -> int:
-    return shutil.get_terminal_size().columns
 
 def draw_header(new_screen: bool = True) -> None:
     global screen_content, terminal_width
+
     if new_screen:
         screen_content = []
+
     clear_screen()
 
     # Set up header
@@ -226,10 +224,6 @@ def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.va
             row_right += f"{colors[0]}{symbol}" + Color.RESET.value
         text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
-
-# def get_map_key() -> str:
-#     if not map_data["Map 2"]:
-#         return "Map 1"
 
 def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:

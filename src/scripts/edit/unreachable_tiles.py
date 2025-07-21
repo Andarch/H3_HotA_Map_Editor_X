@@ -1,17 +1,17 @@
 from ...common import *
 
-def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, object_data: list) -> bool:
-    xprint(text="Calculating unreachable tiles...")
-    xprint()
 
-    # Constants from generate_minimap
+def list_unreachable_tiles() -> None:
+    xprint(text="Calculating unreachable tiles...\n")
+
     OVERWORLD = 0
     UNDERGROUND = 1
-    ROWS = 6
-    COLUMNS = 8
 
-    # Get map size
-    size = map_specs["map_size"]
+    map_size        = map_data["map_specs"]["map_size"]
+    has_underground = map_data["map_specs"]["has_underground"]
+    terrain         = map_data["terrain"]
+    object_defs     = map_data["object_defs"]
+    object_data     = map_data["object_data"]
 
     # Initialize blocked tiles and interactive tiles sets for each layer
     blocked_tiles = {OVERWORLD: set(), UNDERGROUND: set()}
@@ -19,18 +19,18 @@ def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, ob
 
     # First, add ROCK terrain tiles as blocked tiles
     layers = [OVERWORLD]
-    if map_specs["is_two_level"]:
+    if has_underground:
         layers.append(UNDERGROUND)
 
-    for layer_index, layer in enumerate(layers):
+    for layer in layers:
         if layer == OVERWORLD:
-            terrain_layer = terrain[:size * size] if map_specs["is_two_level"] else terrain
-        else:  # UNDERGROUND
-            terrain_layer = terrain[size * size:]
+            terrain_layer = terrain[:map_size * map_size] if has_underground else terrain
+        elif layer == UNDERGROUND:
+            terrain_layer = terrain[map_size * map_size:]
 
         for i, tile in enumerate(terrain_layer):
-            x = i % size
-            y = i // size
+            x = i % map_size
+            y = i // map_size
             # Terrain type 9 is ROCK, which is impassable
             if tile[0] == 9:  # ROCK terrain type
                 blocked_tiles[layer].add((x, y))
@@ -45,14 +45,14 @@ def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, ob
         obj_x, obj_y, obj_z = obj["coords"]
 
         # Process each tile in the object's 6x8 mask
-        for r in range(ROWS):  # 6 rows y-axis, from top to bottom
-            for c in range(COLUMNS):  # 8 columns x-axis, from left to right
+        for r in range(6):  # 6 rows y-axis, from top to bottom
+            for c in range(8):  # 8 columns x-axis, from left to right
                 index = r * 8 + c  # Calculate the index into blockMask
                 blocked_tile_x = obj_x - 7 + c
                 blocked_tile_y = obj_y - 5 + r
 
                 # Check if the tile is within the map
-                if 0 <= blocked_tile_x < size and 0 <= blocked_tile_y < size:
+                if 0 <= blocked_tile_x < map_size and 0 <= blocked_tile_y < map_size:
                     # Track interactive tiles (yellow squares) - these need to be reachable
                     if interactiveMask[index] == 1:
                         if obj_z == OVERWORLD:
@@ -72,12 +72,12 @@ def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, ob
     unreachable_tiles = []
 
     layers = [OVERWORLD]
-    if map_specs["is_two_level"]:
+    if has_underground:
         layers.append(UNDERGROUND)
 
     for layer in layers:
-        for y in range(size):
-            for x in range(size):
+        for y in range(map_size):
+            for x in range(map_size):
                 # Check both empty tiles and interactive tiles for reachability
                 # Skip if this tile is blocked (but not if it's interactive)
                 if (x, y) in blocked_tiles[layer]:
@@ -100,7 +100,7 @@ def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, ob
                             neighbor_y = y + dy
 
                             # If neighbor is out of bounds, treat as blocked
-                            if neighbor_x < 0 or neighbor_x >= size or neighbor_y < 0 or neighbor_y >= size:
+                            if neighbor_x < 0 or neighbor_x >= map_size or neighbor_y < 0 or neighbor_y >= map_size:
                                 continue
 
                             # If any neighbor is not blocked, this tile is not surrounded
@@ -123,5 +123,3 @@ def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, ob
         xprint(type=Text.INFO, text="No unreachable tiles found.")
 
     press_any_key()
-
-    return True

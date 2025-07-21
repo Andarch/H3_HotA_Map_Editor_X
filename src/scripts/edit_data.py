@@ -1,27 +1,22 @@
-import pprint
 from ..common import *
 from ..menus import *
 from src import scripts
 from .edit import *
 
-def edit_data(map_key: dict) -> bool:
-    input = xprint(menu=Menu.EDIT.value)
-    if input == KB.ESC.value: return False
+
+def edit_data() -> None:
+    user_input = xprint(menu=Menu.EDIT.value)
+
+    if user_input == KB.ESC.value:
+        return
+
     draw_header()
 
-    success = False
-    match input:
-        case 1:
-            success = scripts.modify_towns(map_key["object_data"])
-        case 2:
-            success = scripts.reset_heroes(map_key["player_specs"], map_key["start_heroes"]["custom_heroes"], map_key["hero_data"], map_key["object_data"])
-        case 3:
-            success = scripts.edit.list_unreachable_tiles(map_key["map_specs"], map_key["terrain"], map_key["object_defs"], map_key["object_data"])
-        case 4:
-            success = scripts.edit.set_random_monsters(map_key["object_data"])
-        case 5:
-            success = scripts.edit.set_compliant_monster_values(map_key["object_data"])
+    match user_input:
+        case 1: scripts.modify_towns()
+        case 2: scripts.reset_heroes()
+        case 3: scripts.edit.list_unreachable_tiles()
+        case 4: scripts.edit.set_random_monsters()
+        case 5: scripts.edit.set_compliant_monster_values()
 
     xprint()
-
-    return success

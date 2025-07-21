@@ -46,8 +46,8 @@ def parse_terrain(map_specs: dict) -> list:
     info = []
 
     size         = map_specs["map_size"]
-    is_two_level = map_specs["is_two_level"]
-    tile_amount  = size*size*2 if is_two_level else size*size
+    has_underground = map_specs["has_underground"]
+    tile_amount  = size*size*2 if has_underground else size*size
 
     for _ in range(tile_amount):         # 7 bytes per tile:
         info.append([

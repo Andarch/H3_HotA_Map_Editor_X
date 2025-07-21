@@ -43,7 +43,7 @@ def parse_map_specs() -> dict:
         "description"              : "",
         "map_size"                 : 0,
         "has_hero"                 : False,
-        "is_two_level"             : False,
+        "has_underground"             : False,
         "is_arena"                 : False,
         "difficulty"               : 0,
         "allowed_difficulties"     : [],
@@ -74,7 +74,7 @@ def parse_map_specs() -> dict:
     info["hota_versionLocked"]       = bool(      io.read_int(1))
     info["has_hero"]                 = bool(      io.read_int(1))
     info["map_size"]                 = MapSize(   io.read_int(4))
-    info["is_two_level"]             = bool(      io.read_int(1))
+    info["has_underground"]             = bool(      io.read_int(1))
     info["name"]                     =            io.read_str(io.read_int(4))
     info["description"]              =            io.read_str(io.read_int(4))
     info["difficulty"]               = Difficulty(io.read_int(1))
@@ -99,7 +99,7 @@ def write_map_specs(info: dict) -> None:
     io.write_int(    info["hota_versionLocked"], 1)
     io.write_int(    info["has_hero"], 1)
     io.write_int(    info["map_size"], 4)
-    io.write_int(    info["is_two_level"], 1)
+    io.write_int(    info["has_underground"], 1)
     io.write_int(len(info["name"]), 4)
     io.write_str(    info["name"])
     io.write_int(len(info["description"]), 4)

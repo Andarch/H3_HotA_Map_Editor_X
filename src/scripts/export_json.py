@@ -57,7 +57,7 @@ def export_json(map_key: dict) -> bool:
             if "placeholder_heroes" in player:
                 del player["placeholder_heroes"]
 
-        custom_heroes = deepcopy(map_key['start_heroes']['custom_heroes'])
+        custom_heroes = deepcopy(map_key['starting_heroes']['custom_heroes'])
 
         hero_data = deepcopy(map_key['hero_data'])
         hero_data[:] = [hero for hero in hero_data if len(hero) > 3]

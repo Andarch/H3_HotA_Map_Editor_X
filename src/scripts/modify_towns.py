@@ -1,10 +1,11 @@
 import data.objects as objects
 from ..common import *
 
-def modify_towns(obj_data: dict) -> bool:
+
+def modify_towns() -> None:
     xprint(type=Text.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
 
-    for obj in obj_data:
+    for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Town or obj["id"] == objects.ID.Random_Town:
             # Enable spell research
             obj["spell_research"] = True
@@ -23,4 +24,3 @@ def modify_towns(obj_data: dict) -> bool:
                 obj["has_fort"] = True
 
     xprint(type=Text.SPECIAL, text=DONE)
-    return True

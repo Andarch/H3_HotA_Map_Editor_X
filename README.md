@@ -84,7 +84,7 @@ The following data keys can be used with the `print <key>` command (replace `<ke
 `player_specs`
 `conditions`
 `teams`
-`start_heroes`
+`starting_heroes`
 `ban_flags`
 `rumors`
 `hero_data`

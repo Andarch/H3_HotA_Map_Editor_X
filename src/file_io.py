@@ -96,6 +96,7 @@ def load_map(quickload: bool = False) -> bool:
 
     draw_header(new_screen=False)
 
+    # Reload the current map or load a new one
     if quickload:
         filename = map_data["filename"]
     else:
@@ -124,7 +125,7 @@ def load_map(quickload: bool = False) -> bool:
             map_data["teams"] = h2.parse_teams()
 
             xprint(text=f"Parsing 5/13: Hero Availability...", overwrite=1)
-            map_data["start_heroes"] = h4.parse_starting_heroes(map_data["map_specs"])
+            map_data["starting_heroes"] = h4.parse_starting_heroes(map_data["map_specs"])
 
             xprint(text=f"Parsing 6/13: Additional Specs...", overwrite=1)
             map_data["ban_flags"] = h5.parse_flags()
@@ -158,7 +159,7 @@ def load_map(quickload: bool = False) -> bool:
 
 
 def save_map(quicksave: bool = False) -> bool:
-    global map_data, out_file
+    global out_file
 
     draw_header(new_screen=False)
 
@@ -201,7 +202,7 @@ def save_map(quicksave: bool = False) -> bool:
             h2.write_player_specs(   map_data["player_specs"])
             h3.write_conditions(     map_data["conditions"])
             h2.write_teams(          map_data["teams"])
-            h4.write_starting_heroes(map_data["start_heroes"])
+            h4.write_starting_heroes(map_data["starting_heroes"])
             h5.write_flags(          map_data["ban_flags"])
             h6.write_rumors(         map_data["rumors"])
             h4.write_hero_data(      map_data["hero_data"])

@@ -433,7 +433,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         # Get map size
         size = map_specs["map_size"]
         # Initialize map layer list
-        if map_specs["is_two_level"]:
+        if map_specs["has_underground"]:
             half = size * size
             map_layers = [terrain[:half]]  # overworld
             map_layers.append(terrain[half:])  # underground

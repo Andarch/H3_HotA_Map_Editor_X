@@ -61,7 +61,7 @@ def parse_hero_data() -> list:
 
     hero_amount = io.read_int(4)
 
-    for i in range(hero_amount):
+    for _ in range(hero_amount):
         if not io.read_int(1):
             info.append({})
             continue
@@ -134,18 +134,10 @@ def parse_hero_data() -> list:
 
         info.append(hero)
 
-    # Added by HotA 1.7.0 at the end of normal hero data:
-    #
-    # 1 byte  - Always add skills.
-    # 1 byte  - Cannot gain XP.
-    # 4 bytes - Level.
-    #
-    # For every hero.
-
     for i in range(hero_amount):
-        info[i]["add_skills"] = bool(io.read_int(1))
-        info[i]["cannot_gain_xp"]    = bool(io.read_int(1))
-        info[i]["level"]             =      io.read_int(4)
+        info[i]["add_skills"]    = bool(io.read_int(1))
+        info[i]["cannot_gain_xp"]= bool(io.read_int(1))
+        info[i]["level"]         =      io.read_int(4)
 
     return info
 

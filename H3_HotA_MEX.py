@@ -14,32 +14,31 @@ def main() -> None:
 
             # Main menu
             while True:
-                success = False
-                while not success:
-                    input = xprint(menu=Menu.MAIN.value)
-                    if input == KB.ESC.value: continue
-                    xprint()
+                user_input = xprint(menu=Menu.MAIN.value)
 
-                    success = False
+                if user_input == KB.ESC.value:
+                    continue
 
-                    match input:
-                        case 1: success = scripts.print_data(map_data)
-                        case 2: success = scripts.edit_data(map_data)
-                        case 3: success = scripts.export_excel(map_data)
-                        case 4: success = scripts.export_json(map_data)
-                        case 5: success = scripts.generate_minimap(
-                                    map_data["filename"],
-                                    map_data["map_specs"],
-                                    map_data["terrain"],
-                                    map_data["object_data"],
-                                    map_data["object_defs"]
-                                )
-                        case 6: io.load_map(quickload=True)
-                        case 7: io.save_map(quicksave=True)
-                        case 8: io.load_map()
-                        case 9: io.save_map()
-                        case 0: exit()
-                    time.sleep(Sleep.TIC.value)
+                xprint()
+
+                match user_input:
+                    case 1: scripts.print_data()
+                    case 2: scripts.edit_data()
+                    case 3: scripts.export_excel(map_data)
+                    case 4: scripts.export_json(map_data)
+                    case 5: scripts.generate_minimap(
+                                map_data["filename"],
+                                map_data["map_specs"],
+                                map_data["terrain"],
+                                map_data["object_data"],
+                                map_data["object_defs"]
+                            )
+                    case 6: io.load_map(quickload=True)
+                    case 7: io.save_map(quicksave=True)
+                    case 8: io.load_map()
+                    case 9: io.save_map()
+                    case 0: exit()
+                time.sleep(Sleep.TIC.value)
         except KeyboardInterrupt:
             exit()
     else:

@@ -15,7 +15,7 @@ def print_data() -> bool:
     match user_input:
         case 1: data = pprint.pformat(map_data["map_specs"], width=PRINT_WIDTH)
         case 2: data = pprint.pformat(map_data["player_specs"], width=PRINT_WIDTH)
-        case 3: data = pprint.pformat(map_data["start_heroes"], width=PRINT_WIDTH)
+        case 3: data = pprint.pformat(map_data["starting_heroes"], width=PRINT_WIDTH)
         case 4: data = pprint.pformat(map_data["rumors"], width=PRINT_WIDTH)
         case 5: data = pprint.pformat(map_data["hero_data"], width=PRINT_WIDTH)
         case 6: data = pprint.pformat(map_data["terrain"], width=PRINT_WIDTH)
