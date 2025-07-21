@@ -4,7 +4,7 @@ from .scripts import *
 
 from . import file_io as io
 
-from . import handler_01_general           as h1
+from . import handler_01_map_specs         as h1
 from . import handler_02_players_and_teams as h2
 from . import handler_03_conditions        as h3
 from . import handler_04_heroes            as h4

@@ -1,24 +1,6 @@
 from enum import IntEnum
-
 import src.file_io as io
 
-# The general information of a map is stored as follows:
-#
-# - Map format           | 4 bytes int
-# - HotA version         | 4 bytes int
-# - unknown data         | 1 byte ???
-# - is_arena             | 1 byte bool
-# - unknown data         | 8 bytes ???
-# - allowed difficulties | 1 byte (bits)
-# - has_hero             | 1 byte bool
-# - map_size             | 4 bytes int
-# - is_two_level         | 1 byte bool
-# - name length          | 4 bytes int
-# - name                 | X bytes str
-# - description length   | 4 bytes int
-# - description          | X bytes str
-# - difficulty           | 1 byte int
-# - level_cap            | 1 byte int
 
 class MapFormat(IntEnum):
     RoE  = 14
@@ -27,6 +9,7 @@ class MapFormat(IntEnum):
     CHR  = 29
     HotA = 32
     WoG  = 51
+
 
 class MapSize(IntEnum):
     S  =  36
@@ -37,6 +20,7 @@ class MapSize(IntEnum):
     XH = 216
     G  = 252
 
+
 class Difficulty(IntEnum):
     Easy       = 0
     Normal     = 1
@@ -44,7 +28,8 @@ class Difficulty(IntEnum):
     Expert     = 3
     Impossible = 4
 
-def parse_general() -> dict:
+
+def parse_map_specs() -> dict:
     info = {
         "map_format"               : 0,
         "hota_version"             : 0,
@@ -97,7 +82,8 @@ def parse_general() -> dict:
 
     return info
 
-def write_general(info: dict) -> None:
+
+def write_map_specs(info: dict) -> None:
     io.write_int(    info["map_format"], 4)
     io.write_int(    info["hota_version"], 4)
     io.write_int(    info["hota_versionMajor"], 4)

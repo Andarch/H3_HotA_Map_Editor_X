@@ -1,10 +1,6 @@
 from enum import IntEnum
-
 import src.file_io as io
 
-# The terrain of a map is stored as follows:
-#
-# TODO
 
 class Tile(IntEnum):
     TerrainType    = 0
@@ -14,6 +10,7 @@ class Tile(IntEnum):
     RoadType       = 4
     RoadPicture    = 5
     Mirroring      = 6
+
 
 class TerrainType(IntEnum):
     Dirt         =  0
@@ -29,6 +26,7 @@ class TerrainType(IntEnum):
     Highlands    = 10
     Wasteland    = 11
 
+
 class RiverType(IntEnum):
     Empty = 0
     Clear = 1
@@ -36,17 +34,19 @@ class RiverType(IntEnum):
     Muddy = 3
     Lava  = 4
 
+
 class RoadType(IntEnum):
     Empty       = 0
     Dirt        = 1
     Gravel      = 2
     Cobblestone = 3
 
-def parse_terrain(general_info: dict) -> list:
+
+def parse_terrain(map_specs: dict) -> list:
     info = []
 
-    size         = general_info["map_size"]
-    is_two_level = general_info["is_two_level"]
+    size         = map_specs["map_size"]
+    is_two_level = map_specs["is_two_level"]
     tile_amount  = size*size*2 if is_two_level else size*size
 
     for _ in range(tile_amount):         # 7 bytes per tile:
@@ -61,6 +61,7 @@ def parse_terrain(general_info: dict) -> list:
         ])
 
     return info
+
 
 def write_terrain(info: list) -> None:
     for tile in info:

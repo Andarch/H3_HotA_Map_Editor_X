@@ -3,14 +3,14 @@
 import os
 from src import *
 
+
 os.chdir('maps')
 
-def main() -> None:
-    map_key = "Map 1"
 
+def main() -> None:
     if(initialize()):
         try:
-            io.load_maps(1)
+            io.load_map()
 
             # Main menu
             while True:
@@ -21,38 +21,30 @@ def main() -> None:
                     xprint()
 
                     success = False
+
                     match input:
-                        case 1:
-                            map_key = get_map_key()
-                            success = scripts.print_data(map_data[map_key])
-                        case 2:
-                            map_key = get_map_key()
-                            success = scripts.edit_data(map_data[map_key])
-                        case 3:
-                            map_key = get_map_key()
-                            success = scripts.export_excel(map_data[map_key])
-                        case 4:
-                            map_key = get_map_key()
-                            success = scripts.export_json(map_data[map_key])
-                        case 5:
-                            map_key = get_map_key()
-                            success = scripts.generate_minimap(
-                                map_data[map_key]["filename"],
-                                map_data[map_key]["map_specs"],
-                                map_data[map_key]["terrain"],
-                                map_data[map_key]["object_data"],
-                                map_data[map_key]["object_defs"]
-                            )
-                        case 6: io.load_maps(1)
-                        case 7: xprint(type=Text.ERROR, text="Not yet functional.")
-                        case 8: io.load_maps(1)
-                        case 9: io.save_maps()
+                        case 1: success = scripts.print_data(map_data)
+                        case 2: success = scripts.edit_data(map_data)
+                        case 3: success = scripts.export_excel(map_data)
+                        case 4: success = scripts.export_json(map_data)
+                        case 5: success = scripts.generate_minimap(
+                                    map_data["filename"],
+                                    map_data["map_specs"],
+                                    map_data["terrain"],
+                                    map_data["object_data"],
+                                    map_data["object_defs"]
+                                )
+                        case 6: io.load_map(quickload=True)
+                        case 7: io.save_map(quicksave=True)
+                        case 8: io.load_map()
+                        case 9: io.save_map()
                         case 0: exit()
                     time.sleep(Sleep.TIC.value)
         except KeyboardInterrupt:
             exit()
     else:
         exit()
+
 
 if __name__ == "__main__":
     main()

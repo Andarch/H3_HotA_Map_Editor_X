@@ -3,18 +3,10 @@ import data.heroes    as heroes
 import data.spells    as spells
 import data.artifacts as artifacts
 import data.skills    as skills
+from src.handler_01_map_specs import MapFormat
 
-from src.handler_01_general import MapFormat
 
-# The starting heroes of a map are stored as follows:
-#
-# TODO
-
-# The custom heroes of a map are stored as follows:
-#
-# TODO
-
-def parse_starting_heroes(general_info: dict) -> dict:
+def parse_starting_heroes() -> dict:
     info = {
         "total_heroes"   : 0,
         "hero_flags"     : [],
@@ -41,6 +33,7 @@ def parse_starting_heroes(general_info: dict) -> dict:
 
     return info
 
+
 def write_starting_heroes(info: dict) -> None:
     if info["total_heroes"] != 0:
         io.write_int(info["total_heroes"], 4)
@@ -61,6 +54,7 @@ def write_starting_heroes(info: dict) -> None:
         io.write_int(    hero["may_be_hired_by"], 1)
 
     io.write_raw(info["unhandled_bytes"])
+
 
 def parse_hero_data() -> list:
     info = []
@@ -155,6 +149,7 @@ def parse_hero_data() -> list:
 
     return info
 
+
 def write_hero_data(info: list) -> None:
     io.write_int(len(info), 4)
 
@@ -240,6 +235,7 @@ def write_hero_data(info: list) -> None:
         io.write_int(hero["cannot_gain_xp"], 1)
         io.write_int(hero["level"], 4)
 
+
 def parse_artifact() -> list:
     artifact = [
         artifacts.ID(io.read_int(2)),
@@ -248,6 +244,7 @@ def parse_artifact() -> list:
     if artifact[0] == artifacts.ID.Spell_Scroll:
         artifact[1] = spells.ID(artifact[1])
     return artifact
+
 
 def write_artifact(artifact: list) -> None:
     io.write_int(artifact[0], 2)

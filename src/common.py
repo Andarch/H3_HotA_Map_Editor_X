@@ -20,8 +20,8 @@ VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
 PRINT_WIDTH = 75
 DONE = "DONE"
-MAP1 = "Map 1"
-MAP2 = "Map 2"
+# MAP1 = "Map 1"
+# MAP2 = "Map 2"
 
 class KB(Enum):
     BACKSPACE = 8
@@ -74,7 +74,7 @@ class Text(Enum):
 
 # region Global Variables
 
-map_data = {MAP1:{}, MAP2:{}}
+map_data = {}
 screen_content = []
 terminal_width = 0
 old_terminal_width = 0
@@ -227,9 +227,9 @@ def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.va
         text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
         return text_row
 
-def get_map_key() -> str:
-        if not map_data["Map 2"]:
-            return "Map 1"
+# def get_map_key() -> str:
+#     if not map_data["Map 2"]:
+#         return "Map 1"
 
 def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
@@ -361,6 +361,19 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
 
     return main()
 
+
+def is_file_writable(filepath: str) -> bool:
+    try:
+        # Try to open the file in write mode
+        if os.path.exists(filepath):
+            with open(filepath, 'r+b') as f:
+                pass
+        return True
+    except (IOError, OSError, PermissionError):
+        xprint(type=Text.ERROR, text="File is open in another program.")
+        return False
+
+
 def press_any_key() -> None:
     xprint()
     xprint()
@@ -368,6 +381,7 @@ def press_any_key() -> None:
     while True:
         if msvcrt.getwch():
             break
+
 
 def exit() -> None:
     xprint()

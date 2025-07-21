@@ -1,6 +1,6 @@
 from ...common import *
 
-def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, object_data: list) -> bool:
+def list_unreachable_tiles(map_specs: dict, terrain: list, object_defs: list, object_data: list) -> bool:
     xprint(text="Calculating unreachable tiles...")
     xprint()
 
@@ -11,7 +11,7 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
     COLUMNS = 8
 
     # Get map size
-    size = general["map_size"]
+    size = map_specs["map_size"]
 
     # Initialize blocked tiles and interactive tiles sets for each layer
     blocked_tiles = {OVERWORLD: set(), UNDERGROUND: set()}
@@ -19,12 +19,12 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
 
     # First, add ROCK terrain tiles as blocked tiles
     layers = [OVERWORLD]
-    if general["is_two_level"]:
+    if map_specs["is_two_level"]:
         layers.append(UNDERGROUND)
 
     for layer_index, layer in enumerate(layers):
         if layer == OVERWORLD:
-            terrain_layer = terrain[:size * size] if general["is_two_level"] else terrain
+            terrain_layer = terrain[:size * size] if map_specs["is_two_level"] else terrain
         else:  # UNDERGROUND
             terrain_layer = terrain[size * size:]
 
@@ -72,7 +72,7 @@ def list_unreachable_tiles(general: dict, terrain: list, object_defs: list, obje
     unreachable_tiles = []
 
     layers = [OVERWORLD]
-    if general["is_two_level"]:
+    if map_specs["is_two_level"]:
         layers.append(UNDERGROUND)
 
     for layer in layers:
