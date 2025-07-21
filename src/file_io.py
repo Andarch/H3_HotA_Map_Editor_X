@@ -197,7 +197,7 @@ def save_map(quicksave: bool = False) -> bool:
     # Save the map data to the specified filename
     with open(filename, "wb") as f:
         with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
-            h1.write_map_specs(        map_data["map_specs"])
+            h1.write_map_specs(      map_data["map_specs"])
             h2.write_player_specs(   map_data["player_specs"])
             h3.write_conditions(     map_data["conditions"])
             h2.write_teams(          map_data["teams"])
