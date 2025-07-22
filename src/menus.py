@@ -1,14 +1,6 @@
 from enum import Enum
 
 class Menu(Enum):
-    # START = {
-    #     1: "Load 1 map",
-    #     2: "Load 2 maps",
-    #    -1: "",
-    #    -2: "",
-    #     0: "Exit"
-    # }
-
     MAIN  = {
         1: "INFO",
         2: "EDIT",

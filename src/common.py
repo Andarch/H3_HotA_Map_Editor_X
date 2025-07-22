@@ -13,9 +13,8 @@ from typing import Union
 TITLE = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{TITLE} {VERSION}"
-PRINT_WIDTH = 75
+MAX_PRINT_WIDTH = 75
 DONE = "DONE"
-HIDE_CURSOR = "\033[?25l"
 
 
 class KB(Enum):
@@ -81,6 +80,7 @@ is_redrawing = False
 def initialize():
     global terminal_width, old_terminal_width
 
+    HIDE_CURSOR = "\033[?25l"
     print(HIDE_CURSOR, end = "", flush = True)
 
     terminal_width = old_terminal_width = shutil.get_terminal_size().columns
@@ -115,80 +115,50 @@ def monitor_terminal_size() -> None:
 def draw_header(new_screen: bool = True) -> None:
     global screen_content, terminal_width
 
+    HEADER_SYMBOL = "#"
+    SUBHEADER_SYMBOL = "-"
+
     if new_screen:
         screen_content = []
 
     clear_screen()
 
     # Set up header
-    fill1_symbol = "#"
-    fill1_color = Color.GREY.value + Color.FAINT.value
-    title_color = Color.CYAN.value
-    headerA_colors = (fill1_color, title_color)
-    fill1_row = create_filled_row(fill1_symbol, headerA_colors)
-    title_row = create_filled_row(fill1_symbol, headerA_colors, TITLE)
-    version_row = create_filled_row(fill1_symbol, headerA_colors, VERSION)
+    fill_row    = create_header_row(text="", fill_symbol=HEADER_SYMBOL)
+    title_row   = create_header_row(text=TITLE, fill_symbol=HEADER_SYMBOL)
+    version_row = create_header_row(text=VERSION, fill_symbol=HEADER_SYMBOL)
 
-    # Set up subheader
-    map1 = map_data["Map 1"]
-    map2 = map_data["Map 2"]
-    headerB1_color1A = Color.MAGENTA.value
-    headerB1_color1B = Color.MAGENTA2.value
-    headerB2_color1 = Color.YELLOW.value
-    fill2_symbol = "-"
     fill2_color = Color.GREY.value
-    headerB_colors = (fill2_color, fill2_color)
-    fill2_row = create_filled_row(fill2_symbol, headerB_colors)
+    subheader_colors = (fill2_color, fill2_color)
+    subheader_fill = create_header_row(SUBHEADER_SYMBOL, subheader_colors)
 
-    if map1:
-        map1_row1 = f"{headerB1_color1A}{map1['map_specs']['name']}{Color.RESET.value}"
-        map1_row2 = f"{headerB1_color1B}{{{map1['filename']}}}{Color.RESET.value}"
-        if not map2:
-            map2_row1 = ""
-            map2_row2 = ""
-        else:
-            map2_row1 = f"{headerB1_color1A}{map2['map_specs']['name']}{Color.RESET.value}"
-            map2_row2 = f"{headerB1_color1B}{{{map2['filename']}}}{Color.RESET.value}"
-            if terminal_width >= PRINT_WIDTH:
-                cell_width = PRINT_WIDTH // 2 + 6
-            else:
-                cell_width = terminal_width // 2 + 6
-            map1_row1 = map1_row1.center(cell_width)
-            map1_row2 = map1_row2.center(cell_width)
-            map2_row1 = map2_row1.center(cell_width)
-            map2_row2 = map2_row2.center(cell_width)
-            final_row1 = f"{map1_row1} | {map2_row1}"
-            final_row2 = f"{map1_row2} | {map2_row2}"
-    else:
-        map1_row1 = f"{headerB2_color1}Use the number keys on{Color.RESET.value}"
-        map1_row2 = f"{headerB2_color1}your keyboard to navigate{Color.RESET.value}"
-        map2_row1 = ""
-        map2_row2 = ""
+    name = map_data['map_specs']['name']
+    file = map_data['filename']
 
-    if not map2:
-        final_row1 = map1_row1
-        final_row2 = map1_row2
+    if map_data:
+        name_formatted = f"{Color.MAGENTA.value}{name}{Color.RESET.value}"
+        file_formatted = f"{Color.MAGENTA2.value}{file}{Color.RESET.value}"
     else:
-        final_row1 = f"{map1_row1}{fill2_color} | {map2_row1}"
-        final_row2 = f"{map1_row2}{fill2_color} | {map2_row2}"
+        name_formatted = f"{name_color}No map{Color.RESET.value}"
+        file_formatted = f"{file_color}loaded{Color.RESET.value}"
 
     # Print header
     xprint(type=Text.HEADER, text="")
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=fill1_row)
-    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=fill_row)
+    xprint(type=Text.HEADER, text=fill_row)
     xprint(type=Text.HEADER, text=title_row)
-    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=fill_row)
     xprint(type=Text.HEADER, text=version_row)
-    xprint(type=Text.HEADER, text=fill1_row)
-    xprint(type=Text.HEADER, text=fill1_row)
+    xprint(type=Text.HEADER, text=fill_row)
+    xprint(type=Text.HEADER, text=fill_row)
 
     # Print subheader
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=fill2_row)
-    xprint(type=Text.HEADER, text=final_row1)
-    xprint(type=Text.HEADER, text=final_row2)
-    xprint(type=Text.HEADER, text=fill2_row)
+    xprint(type=Text.HEADER, text=subheader_fill)
+    xprint(type=Text.HEADER, text=name_formatted)
+    xprint(type=Text.HEADER, text=file_formatted)
+    xprint(type=Text.HEADER, text=subheader_fill)
     xprint(type=Text.HEADER, text="")
 
 def redraw_screen() -> None:
@@ -204,26 +174,20 @@ def clear_screen() -> None:
     global screen_content
     os.system("cls" if os.name == "nt" else "clear")
 
-def create_filled_row(symbol: str, colors=(Color.DEFAULT.value, Color.DEFAULT.value), text="") -> str:
-    global terminal_width
+def create_header_row(text: str, fill_symbol: str, fill_color: str) -> str:
+    print_width = MAX_PRINT_WIDTH if terminal_width >= MAX_PRINT_WIDTH else terminal_width
+
     if not text:
-        if terminal_width >= PRINT_WIDTH:
-            filler_row = f"{colors[0]}{symbol}" * PRINT_WIDTH + Color.RESET.value
-        else:
-            filler_row = f"{colors[0]}{symbol}" * terminal_width + Color.RESET.value
-        return filler_row
+        row = f"{fill_color}{fill_symbol}" * print_width + Color.RESET.value
     else:
-        text_length = len(text)
-        if terminal_width >= PRINT_WIDTH:
-            fill_length = PRINT_WIDTH - (text_length + 2)
-        else:
-            fill_length = terminal_width - (text_length + 2)
-        row_left = f"{colors[0]}{symbol}" * (fill_length // 2) + Color.RESET.value
-        row_right = f"{colors[0]}{symbol}" * (fill_length // 2) + Color.RESET.value
+        fill_length = print_width - (len(text) + 2)
+        row_left = f"{fill_color}{fill_symbol}" * (fill_length // 2) + Color.RESET.value
+        row_right = f"{fill_color}{fill_symbol}" * (fill_length // 2) + Color.RESET.value
         if fill_length % 2 != 0:
-            row_right += f"{colors[0]}{symbol}" + Color.RESET.value
-        text_row = f"{row_left} {colors[1]}{text}{Color.RESET.value} {row_right}"
-        return text_row
+            row_right += f"{fill_color}{fill_symbol}" + Color.RESET.value
+        row = f"{row_left} {Color.CYAN.value}{text}{Color.RESET.value} {row_right}"
+
+    return row
 
 def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
@@ -282,7 +246,7 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
         stripped_text = strip_ansi_codes(str(text))
         text_length = len(stripped_text)
         if align == Align.LEFT:
-            padding = (terminal_width // 2) - (PRINT_WIDTH // 2)
+            padding = (terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
             return " " * padding + str(text)
         elif align == Align.CENTER:
             padding = terminal_width // 2 - text_length // 2
