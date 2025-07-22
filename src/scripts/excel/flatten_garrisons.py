@@ -1,9 +1,9 @@
-from . import format
-
 def flatten_garrisons(garrison_objects):
     flattened = []
+
     for obj in garrison_objects:
         flat = {}
+
         # Copy all fields except those we want to transform
         for k, v in obj.items():
             if k == "guards":
@@ -21,5 +21,7 @@ def flatten_garrisons(garrison_objects):
                 flat[k] = bool(v)
             else:
                 flat[k] = v
+
         flattened.append(flat)
+
     return flattened

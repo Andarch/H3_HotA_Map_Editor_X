@@ -1,11 +1,7 @@
 import data.objects as objects
-import data.spells as spells
-
 
 # Define special case mappings for enum formatting
-SPELL_SPECIAL_CASES = {
-    "Titans Lightning Bolt": "Titan's Lightning Bolt"
-}
+SPELL_SPECIAL_CASES = {"Titans Lightning Bolt": "Titan's Lightning Bolt"}
 
 ARTIFACT_SPECIAL_CASES = {
     "Admirals Hat": "Admiral's Hat",
@@ -16,18 +12,11 @@ ARTIFACT_SPECIAL_CASES = {
     "Titans Thunder": "Titan's Thunder",
     "Sea Captains Hat": "Sea Captain's Hat",
     "Spellbinders Hat": "Spellbinder's Hat",
-    "Wayfarers Boots": "Wayfarer's Boots"
+    "Wayfarers Boots": "Wayfarer's Boots",
 }
 
 
 def format_enum_list(enum_list, enum_class, special_cases=None):
-    """Convert a list of 1s and 0s to readable enum names separated by commas
-
-    Args:
-        enum_list: List of 1s and 0s indicating which items are enabled
-        enum_class: The enum class to use for name lookup
-        special_cases: Dict of special case replacements for formatting
-    """
     if special_cases is None:
         special_cases = {}
 
@@ -50,12 +39,6 @@ def format_enum_list(enum_list, enum_class, special_cases=None):
 
 
 def format_special_buildings(special_array, state_filter=None):
-    """Convert an array of special building states to readable building names
-
-    Args:
-        special_array: List of building states (0=enabled, 1=built, 2=disabled)
-        state_filter: If specified, only include buildings with this state value
-    """
     if not special_array or not isinstance(special_array, list):
         return ""
 

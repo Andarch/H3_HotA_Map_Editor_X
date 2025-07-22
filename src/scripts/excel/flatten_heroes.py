@@ -1,7 +1,8 @@
-from src.scripts import excel
-import data.spells as spells
-import data.heroes as heroes
 import os
+
+import data.heroes as heroes
+import data.spells as spells
+from src.scripts import excel
 
 
 def flatten_heroes(objects_list) -> list:
@@ -19,18 +20,23 @@ def flatten_heroes(objects_list) -> list:
                         if sub_key == "artifacts_equipped":
                             # Extract artifact names, ignoring empty slots
                             artifact_names = []
-                            for slot_name, artifact_data in sub_value.items():
+
+                            for _, artifact_data in sub_value.items():
                                 if isinstance(artifact_data, list) and len(artifact_data) >= 2:
                                     artifact_id = artifact_data[0]
+
                                     # Skip empty artifacts (ID 65535)
                                     if artifact_id != 65535 and str(artifact_id) != "<ID.Empty_2_Bytes: 65535>":
                                         # Extract artifact name from enum
                                         artifact_name = ""
+
                                         if hasattr(artifact_id, "name"):
                                             artifact_name = artifact_id.name.replace("_", " ")
                                         elif ":" in str(artifact_id) and "." in str(artifact_id):
                                             # Handle format like "<ID.Pendant_of_Reflection: 123>"
-                                            artifact_name = str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
+                                            artifact_name = (
+                                                str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
+                                            )
                                         else:
                                             artifact_name = str(artifact_id).replace("_", " ")
 
@@ -46,16 +52,20 @@ def flatten_heroes(objects_list) -> list:
                         # Special formatting for secondary_skills
                         if sub_key == "secondary_skills" and sub_value:
                             skill_lines = []
+
                             for skill in sub_value:
                                 if isinstance(skill, dict):
                                     level_name = skill.get("level_name", "")
                                     skill_name = skill.get("name", "").replace("_", " ")
+
                                     if level_name and skill_name:
                                         skill_lines.append(f"{level_name} {skill_name}")
+
                             flattened_obj[sub_key] = "\n".join(skill_lines) if skill_lines else ""
                         # Special formatting for creatures
                         elif sub_key == "creatures" and sub_value:
                             creature_lines = []
+
                             for creature in sub_value:
                                 if isinstance(creature, dict):
                                     creature_id = creature.get("id", "")
@@ -67,8 +77,10 @@ def flatten_heroes(objects_list) -> list:
 
                                     # Extract creature name from ID enum string representation
                                     creature_name = ""
+
                                     if creature_id:
                                         id_str = str(creature_id)
+
                                         # Handle different possible enum formats
                                         if ":" in id_str and "." in id_str:
                                             # Format: "<ID.Arch_Devil: 55>" -> "Arch Devil"
@@ -87,18 +99,23 @@ def flatten_heroes(objects_list) -> list:
                         # Special formatting for backpack artifacts
                         elif sub_key == "backpack" and sub_value:
                             backpack_names = []
+
                             for artifact_data in sub_value:
                                 if isinstance(artifact_data, list) and len(artifact_data) >= 2:
                                     artifact_id = artifact_data[0]
+
                                     # Skip empty artifacts (ID 65535)
                                     if artifact_id != 65535 and str(artifact_id) != "<ID.Empty_2_Bytes: 65535>":
-                                        # Extract artifact name from enum
                                         artifact_name = ""
+
+                                        # Extract artifact name from enum
                                         if hasattr(artifact_id, "name"):
                                             artifact_name = artifact_id.name.replace("_", " ")
                                         elif ":" in str(artifact_id) and "." in str(artifact_id):
                                             # Handle format like "<ID.Pendant_of_Reflection: 123>"
-                                            artifact_name = str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
+                                            artifact_name = (
+                                                str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
+                                            )
                                         else:
                                             artifact_name = str(artifact_id).replace("_", " ")
 
@@ -108,7 +125,9 @@ def flatten_heroes(objects_list) -> list:
                             flattened_obj["backpack"] = "\n".join(backpack_names) if backpack_names else ""
                         # Special formatting for spells
                         elif sub_key == "spells" and sub_value:
-                            flattened_obj["spells"] = excel.format.format_enum_list(sub_value, spells.ID, excel.format.SPELL_SPECIAL_CASES)
+                            flattened_obj["spells"] = excel.format.format_enum_list(
+                                sub_value, spells.ID, excel.format.SPELL_SPECIAL_CASES
+                            )
                         else:
                             # Convert other lists to strings
                             flattened_obj[sub_key] = str(sub_value) if sub_value else ""
@@ -144,22 +163,26 @@ def flatten_heroes(objects_list) -> list:
 
 
 def _get_portrait_path(portrait_id, hero_data=None):
-    """Get the file path for a hero's portrait image"""
     # Handle default portrait case
     if portrait_id is None or portrait_id == 255:  # Default portrait
         if hero_data and "default_name" in hero_data:
             default_name = hero_data["default_name"]
+
             if default_name:
                 # Use the default name to find the portrait
                 filename = f"{default_name}.bmp"
 
                 # Get the full path to the portrait file
-                script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+                script_dir = os.path.dirname(
+                    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+                )
+
                 portrait_path = os.path.join(script_dir, "portraits", filename)
 
                 # Only return path if file exists
                 if os.path.exists(portrait_path):
                     return portrait_path
+
         return ""
 
     try:

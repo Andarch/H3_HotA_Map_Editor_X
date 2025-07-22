@@ -1,7 +1,11 @@
-from ..common import *
-from ..menus import *
-from src import scripts
-from .edit import *
+from edit.modify_towns import modify_towns
+from edit.monster_values import set_compliant_monster_values
+from edit.random_monsters import set_random_monsters
+from edit.reset_heroes import reset_heroes
+from edit.unreachable_tiles import list_unreachable_tiles
+
+from ..common import KB, draw_header, xprint
+from ..menus import Menu
 
 
 def edit_data() -> None:
@@ -13,10 +17,15 @@ def edit_data() -> None:
     draw_header()
 
     match user_input:
-        case 1: scripts.modify_towns()
-        case 2: scripts.reset_heroes()
-        case 3: scripts.edit.list_unreachable_tiles()
-        case 4: scripts.edit.set_random_monsters()
-        case 5: scripts.edit.set_compliant_monster_values()
+        case 1:
+            modify_towns()
+        case 2:
+            reset_heroes()
+        case 3:
+            list_unreachable_tiles()
+        case 4:
+            set_random_monsters()
+        case 5:
+            set_compliant_monster_values()
 
     xprint()

@@ -1,5 +1,5 @@
-from .format import format_number
 from . import sort
+from .format import format_number
 
 RESOURCE_NAMES = {
     0: "Wood",
@@ -13,10 +13,12 @@ RESOURCE_NAMES = {
 
 RESOURCE_IDS = [0, 1, 2, 3, 4, 5, 6]
 
-DEFAULT_SETTING = b'\x00\x00\x00\x00\xff\xff\xff\xff'
+DEFAULT_SETTING = b"\x00\x00\x00\x00\xff\xff\xff\xff"
+
 
 def flatten_campfire(campfires):
     rows = []
+
     for obj in campfires:
         row = {}
         row["coords"] = obj.get("coords", "")
@@ -40,4 +42,5 @@ def flatten_campfire(campfires):
         rows.append(row)
 
     rows = sort.sort_by_zone(rows)
+
     return rows

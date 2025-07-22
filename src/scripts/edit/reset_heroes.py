@@ -1,6 +1,7 @@
-import data.objects as objects
 import data.heroes as heroes
-from ..common import *
+import data.objects as objects
+
+from ...common import DONE, Text, map_data, xprint
 
 
 def reset_heroes() -> None:
@@ -51,7 +52,9 @@ def _reset_player_specs(special_heroes: list) -> None:
 
 
 def _reset_custom_heroes(special_heroes: list) -> None:
-    map_data["starting_heroes"]["custom_heroes"][:] = [hero for hero in map_data["starting_heroes"]["custom_heroes"] if hero["id"] in special_heroes]
+    map_data["starting_heroes"]["custom_heroes"][:] = [
+        hero for hero in map_data["starting_heroes"]["custom_heroes"] if hero["id"] in special_heroes
+    ]
 
 
 def _reset_hero_data(special_heroes: list) -> None:
@@ -62,7 +65,7 @@ def _reset_hero_data(special_heroes: list) -> None:
         modified_hero = {
             "add_skills": hero.get("add_skills", True),
             "cannot_gain_xp": hero.get("cannot_gain_xp", False),
-            "level": hero.get("level", 1)
+            "level": hero.get("level", 1),
         }
 
         map_data["hero_data"][i] = modified_hero

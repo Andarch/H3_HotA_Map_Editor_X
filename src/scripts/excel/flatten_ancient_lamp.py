@@ -1,8 +1,11 @@
 import data.objects as objects
+
 from . import sort
+
 
 def flatten_ancient_lamp(treasure_objects):
     rows = []
+
     for obj in treasure_objects:
         row = {}
         row["coords"] = obj.get("coords", "")
@@ -17,4 +20,5 @@ def flatten_ancient_lamp(treasure_objects):
         rows.append(row)
 
     rows = sort.sort_by_zone(rows)
+
     return rows

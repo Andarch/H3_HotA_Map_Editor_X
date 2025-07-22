@@ -1,26 +1,79 @@
-import re
 import os
+import re
+
 import pandas as pd
 from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
-from ..common import *
+
+import data.objects as objects
+
+from ..common import DONE, Text, draw_header, map_data, xprint
 from ..file_io import is_file_writable
 from . import excel
-import data.objects as objects
-import data.spells as spells
-
 
 # Define columns to remove per category
 _COLUMNS_TO_REMOVE = {
-    "Heroes": ["zone_type", "zone_color", "def_id", "id", "sub_id", "type", "subtype", "owner", "hero_id",
-               "default_name", "has_custom_name", "custom_name", "formation", "has_portrait", "portrait_id", "patrol", "has_biography", "coords_offset",
-               # Remove individual artifact slot columns since we're creating combined "artifacts" and "backpack" columns
-               "head", "shoulders", "neck", "right_hand", "left_hand", "torso", "right_ring", "left_ring", "feet",
-               "misc1", "misc2", "misc3", "misc4", "misc5", "ballista", "ammo_cart", "first_aid_tent", "catapult", "spell_book",
-               # Remove any existing backpack-related columns that might conflict
-               "artifacts_backpack", "artifact_backpack"],
-    "Towns": ["zone_type", "zone_color", "def_id", "id", "sub_id", "type", "owner", "garrison_formation", "has_custom_buildings", "buildings_built", "buildings_disabled",
-              "spells_must_appear", "spells_cant_appear", "buildings_special", "events", "coords_offset"],
+    "Heroes": [
+        "zone_type",
+        "zone_color",
+        "def_id",
+        "id",
+        "sub_id",
+        "type",
+        "subtype",
+        "owner",
+        "hero_id",
+        "default_name",
+        "has_custom_name",
+        "custom_name",
+        "formation",
+        "has_portrait",
+        "portrait_id",
+        "patrol",
+        "has_biography",
+        "coords_offset",
+        # Remove individual artifact slot columns since we're creating combined "artifacts" and "backpack" columns
+        "head",
+        "shoulders",
+        "neck",
+        "right_hand",
+        "left_hand",
+        "torso",
+        "right_ring",
+        "left_ring",
+        "feet",
+        "misc1",
+        "misc2",
+        "misc3",
+        "misc4",
+        "misc5",
+        "ballista",
+        "ammo_cart",
+        "first_aid_tent",
+        "catapult",
+        "spell_book",
+        # Remove any existing backpack-related columns that might conflict
+        "artifacts_backpack",
+        "artifact_backpack",
+    ],
+    "Towns": [
+        "zone_type",
+        "zone_color",
+        "def_id",
+        "id",
+        "sub_id",
+        "type",
+        "owner",
+        "garrison_formation",
+        "has_custom_buildings",
+        "buildings_built",
+        "buildings_disabled",
+        "spells_must_appear",
+        "spells_cant_appear",
+        "buildings_special",
+        "events",
+        "coords_offset",
+    ],
     "Monsters": ["type", "start_bytes", "middle_bytes"],
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
     "Town Events": ["hota_town_event_1", "hota_town_event_2"],
@@ -52,7 +105,7 @@ def export_excel() -> bool:
 
     # Show initial export message
     draw_header()
-    xprint(type=Text.ACTION, text=f"Exporting object data...")
+    xprint(type=Text.ACTION, text="Exporting object data...")
 
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
@@ -80,16 +133,27 @@ def export_excel() -> bool:
 
             # Sanitize data for Excel compatibility
             for col in df.columns:
-                df[col] = df[col].apply(lambda value:
-                    illegal_chars.sub("", value) if isinstance(value, str) else
-                    illegal_chars.sub("", value.decode("latin-1", errors="ignore")) if isinstance(value, bytes) else
-                    value
-                ).apply(lambda value:
-                    "'" + value if isinstance(value, str) and value and value[0] == "=" else value
+                df[col] = (
+                    df[col]
+                    .apply(
+                        lambda value: (
+                            illegal_chars.sub("", value)
+                            if isinstance(value, str)
+                            else (
+                                illegal_chars.sub("", value.decode("latin-1", errors="ignore"))
+                                if isinstance(value, bytes)
+                                else value
+                            )
+                        )
+                    )
+                    .apply(lambda value: "'" + value if isinstance(value, str) and value and value[0] == "=" else value)
                 )
 
             # Format column headers
-            df.columns = [str(col).replace("_", " ").title().replace("Id", "ID").replace("Xp", "XP").replace("Ai", "AI") for col in df.columns]
+            df.columns = [
+                str(col).replace("_", " ").title().replace("Id", "ID").replace("Xp", "XP").replace("Ai", "AI")
+                for col in df.columns
+            ]
 
             # Add row numbers (skip for "No data" sheets)
             if not (len(df) == 1 and df.iloc[0, 0] == "No data"):
@@ -267,8 +331,9 @@ def _process_data(object_data, events) -> dict:
             columns_to_remove = _COLUMNS_TO_REMOVE.get(category, [])
             for item in items:
                 # Remove _bytes columns (universal) and category-specific columns
-                cleaned_item_raw = {k: v for k, v in item.items()
-                                   if not k.endswith("_bytes") and k not in columns_to_remove}
+                cleaned_item_raw = {
+                    k: v for k, v in item.items() if not k.endswith("_bytes") and k not in columns_to_remove
+                }
 
                 # Clean empty list representations
                 cleaned_item = {}

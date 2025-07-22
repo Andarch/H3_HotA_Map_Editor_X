@@ -1,8 +1,11 @@
 import data.objects as objects
+
 from . import sort
+
 
 def flatten_resources(resource_objects):
     flattened = []
+
     for obj in resource_objects:
         flat = {}
 
@@ -12,19 +15,22 @@ def flatten_resources(resource_objects):
             elif k == "amount":
                 subtype = obj.get("subtype", "")
                 is_gold = False
+
                 if hasattr(objects, "Resource") and hasattr(objects.Resource, "Gold"):
                     gold_val = getattr(objects.Resource, "Gold")
                     is_gold = (
-                        subtype == gold_val or
-                        (hasattr(subtype, "name") and subtype.name == "Gold") or
-                        subtype == "Gold"
+                        subtype == gold_val
+                        or (hasattr(subtype, "name") and subtype.name == "Gold")
+                        or subtype == "Gold"
                     )
                 else:
-                    is_gold = (subtype == "Gold")
+                    is_gold = subtype == "Gold"
+
                 try:
                     amount_int = int(v)
                 except Exception:
                     amount_int = None
+
                 if amount_int == 0:
                     flat[k] = "Default"
                 elif is_gold and amount_int is not None:
@@ -38,7 +44,9 @@ def flatten_resources(resource_objects):
         # Ensure "amount" is always present
         if "amount" not in flat:
             flat["amount"] = obj.get("amount", "")
+
         flattened.append(flat)
 
     flattened = sort.sort_by_zone(flattened)
+
     return flattened

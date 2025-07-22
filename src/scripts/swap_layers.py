@@ -1,3 +1,4 @@
+"""
 from ..common import *
 
 def swap_layers(terrain, object_data, player_specs, has_underground, conditions):
@@ -35,3 +36,4 @@ def swap_layers(terrain, object_data, player_specs, has_underground, conditions)
             1 if conditions["loss_coords"][2] == 0 else 0
 
     print_done()
+"""

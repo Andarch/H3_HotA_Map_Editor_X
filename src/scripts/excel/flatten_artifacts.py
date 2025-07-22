@@ -1,9 +1,11 @@
-from . import format
 import data.artifacts as artifacts
-from . import sort
+
+from . import format, sort
+
 
 def flatten_artifacts(artifact_objects):
     flattened = []
+
     for obj in artifact_objects:
         flat = {}
 
@@ -70,4 +72,5 @@ def flatten_artifacts(artifact_objects):
         flattened.append(flat)
 
     flattened = sort.sort_by_zone(flattened)
+
     return flattened

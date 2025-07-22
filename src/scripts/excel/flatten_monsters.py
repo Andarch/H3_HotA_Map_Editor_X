@@ -1,7 +1,6 @@
-from . import format
-from . import sort
-import data.creatures as creatures
 import data.artifacts as artifacts
+
+from . import format, sort
 
 
 def flatten_monsters(monsters):
@@ -31,6 +30,7 @@ def flatten_monsters(monsters):
 
         # Format disposition
         disposition = monster.get("disposition", "")
+
         if hasattr(disposition, "name"):
             flat["disposition"] = disposition.name.replace("_", " ").title()
         else:
@@ -58,19 +58,23 @@ def flatten_monsters(monsters):
 
             # Format resources
             resources = monster.get("resources", [])
+
             if resources and len(resources) >= 7:
                 resource_names = ["Wood", "Mercury", "Ore", "Sulfur", "Crystal", "Gems", "Gold"]
                 resource_lines = []
+
                 for i, amount in enumerate(resources):
                     if amount != 0 and i < len(resource_names):
                         sign = "+" if amount > 0 else ""
                         resource_lines.append(f"{sign}{amount:,} {resource_names[i]}")
+
                 flat["resources"] = "\n".join(resource_lines) if resource_lines else ""
             else:
                 flat["resources"] = ""
 
             # Format artifact reward
             artifact_id = monster.get("artifact", "")
+
             if artifact_id and artifact_id != artifacts.ID.Empty_2_Bytes:
                 try:
                     # Try to get artifact name from ID
@@ -90,4 +94,5 @@ def flatten_monsters(monsters):
         flattened.append(flat)
 
     flattened = sort.sort_by_zone(flattened)
+
     return flattened

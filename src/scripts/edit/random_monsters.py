@@ -1,5 +1,6 @@
 import data.objects as objects
-from ...common import *
+
+from ...common import DONE, Text, map_data, xprint
 
 
 def set_random_monsters() -> None:
@@ -29,7 +30,7 @@ def set_random_monsters() -> None:
         objects.ID.Random_Monster_4,
         objects.ID.Random_Monster_5,
         objects.ID.Random_Monster_6,
-        objects.ID.Random_Monster_7
+        objects.ID.Random_Monster_7,
     ]
 
     # Update Random Monster 1-7 objects

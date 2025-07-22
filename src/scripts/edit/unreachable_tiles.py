@@ -1,4 +1,4 @@
-from ...common import *
+from ...common import Text, map_data, press_any_key, xprint
 
 
 def list_unreachable_tiles() -> None:
@@ -7,11 +7,11 @@ def list_unreachable_tiles() -> None:
     OVERWORLD = 0
     UNDERGROUND = 1
 
-    map_size        = map_data["map_specs"]["map_size"]
+    map_size = map_data["map_specs"]["map_size"]
     has_underground = map_data["map_specs"]["has_underground"]
-    terrain         = map_data["terrain"]
-    object_defs     = map_data["object_defs"]
-    object_data     = map_data["object_data"]
+    terrain = map_data["terrain"]
+    object_defs = map_data["object_defs"]
+    object_data = map_data["object_data"]
 
     # Initialize blocked tiles and interactive tiles sets for each layer
     blocked_tiles = {OVERWORLD: set(), UNDERGROUND: set()}
@@ -24,9 +24,9 @@ def list_unreachable_tiles() -> None:
 
     for layer in layers:
         if layer == OVERWORLD:
-            terrain_layer = terrain[:map_size * map_size] if has_underground else terrain
+            terrain_layer = terrain[: map_size * map_size] if has_underground else terrain
         elif layer == UNDERGROUND:
-            terrain_layer = terrain[map_size * map_size:]
+            terrain_layer = terrain[map_size * map_size :]
 
         for i, tile in enumerate(terrain_layer):
             x = i % map_size

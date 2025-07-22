@@ -1,5 +1,6 @@
 import data.objects as objects
-from ..common import *
+
+from ...common import DONE, Text, map_data, xprint
 
 
 def modify_towns() -> None:
