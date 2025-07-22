@@ -94,7 +94,7 @@ def peek(length: int) -> None:
 def load_map(quickload: bool = False) -> bool:
     global map_data, in_file
 
-    draw_header(dump_screen=False)
+    draw_header()
 
     # Reload the current map or load a new one
     if quickload:
@@ -161,7 +161,7 @@ def load_map(quickload: bool = False) -> bool:
 def save_map(quicksave: bool = False) -> bool:
     global out_file
 
-    draw_header(dump_screen=False)
+    draw_header()
 
     if quicksave:
         filename = map_data["filename"]
