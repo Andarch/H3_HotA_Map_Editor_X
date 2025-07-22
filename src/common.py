@@ -1,5 +1,4 @@
 import ctypes
-from enum import Enum
 import msvcrt
 import os
 import re
@@ -7,8 +6,8 @@ import shutil
 import sys
 import threading
 import time
+from enum import Enum
 from typing import Union
-
 
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
@@ -338,7 +337,7 @@ def xprint(
 def is_file_writable(filepath: str) -> bool:
     try:
         if os.path.exists(filepath):
-            with open(filepath, "r+b") as f:
+            with open(filepath, "r+b"):
                 pass
         return True
     except (IOError, OSError, PermissionError):

@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 
 import os
+import time
 
-from src import *
+import src.file_io as io
+from src.common import KB, Sleep, initialize, map_data, xprint
+from src.menus import Menu
+from src.scripts.edit_data import edit_data
+from src.scripts.export_excel import export_excel
+from src.scripts.export_json import export_json
+from src.scripts.generate_minimap import generate_minimap
+from src.scripts.print_data import print_data
 
 os.chdir("maps")
 
@@ -19,19 +27,17 @@ def main() -> None:
                 if user_input == KB.ESC.value:
                     continue
 
-                # xprint()
-
                 match user_input:
                     case 1:
-                        scripts.print_data()
+                        print_data()
                     case 2:
-                        scripts.edit_data()
+                        edit_data()
                     case 3:
-                        scripts.export_excel(map_data)
+                        export_excel(map_data)
                     case 4:
-                        scripts.export_json(map_data)
+                        export_json(map_data)
                     case 5:
-                        scripts.generate_minimap(
+                        generate_minimap(
                             map_data["filename"],
                             map_data["map_specs"],
                             map_data["terrain"],

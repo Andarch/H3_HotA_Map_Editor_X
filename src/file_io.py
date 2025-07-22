@@ -1,20 +1,19 @@
-from gzip import open as gzopen
-from gzip import GzipFile
 import os
 import shutil
-from .common import *
-from .menus import *
-from . import handler_01_map_specs         as h1
+from gzip import GzipFile
+from gzip import open as gzopen
+
+from . import handler_01_map_specs as h1
 from . import handler_02_players_and_teams as h2
-from . import handler_03_conditions        as h3
-from . import handler_04_heroes            as h4
-from . import handler_05_additional_flags  as h5
+from . import handler_03_conditions as h3
+from . import handler_04_heroes as h4
+from . import handler_05_additional_flags as h5
 from . import handler_06_rumors_and_events as h6
-from . import handler_07_terrain           as h7
-from . import handler_08_objects           as h8
+from . import handler_07_terrain as h7
+from . import handler_08_objects as h8
+from .common import DONE, Text, draw_header, is_file_writable, map_data, xprint
 
-
-in_file  = None
+in_file = None
 out_file = None
 
 
@@ -35,7 +34,7 @@ def read_str(length: int) -> str:
 
 def read_bits(length: int) -> list:
     temp_bits = []
-    raw_data  = read_raw(length)
+    raw_data = read_raw(length)
 
     for c in raw_data:
         bits = format(int(c), "#010b").removeprefix("0b")[::-1]
@@ -82,7 +81,7 @@ def peek(length: int) -> None:
     for b in data:
         n = str(b)
         s += ("  " if i < 10 else " ") + str(i) + ": "
-        s += " " * (3-len(n))  + n + " "
+        s += " " * (3 - len(n)) + n + " "
         s += format(int(n), "#010b").removeprefix("0b")
         s += "\n"
         i += 1
@@ -112,43 +111,43 @@ def load_map(quickload: bool = False) -> bool:
         with gzopen(filename, "rb") as in_file:
             map_data["filename"] = filename
 
-            xprint(text=f"Parsing 1/13: Map Specs...", overwrite=1)
+            xprint(text="Parsing 1/13: Map Specs...", overwrite=1)
             map_data["map_specs"] = h1.parse_map_specs()
 
-            xprint(text=f"Parsing 2/13: Player Specs...", overwrite=1)
+            xprint(text="Parsing 2/13: Player Specs...", overwrite=1)
             map_data["player_specs"] = h2.parse_player_specs()
 
-            xprint(text=f"Parsing 3/13: Victory/Loss Conditions...", overwrite=1)
+            xprint(text="Parsing 3/13: Victory/Loss Conditions...", overwrite=1)
             map_data["conditions"] = h3.parse_conditions()
 
-            xprint(text=f"Parsing 4/13: Teams...", overwrite=1)
+            xprint(text="Parsing 4/13: Teams...", overwrite=1)
             map_data["teams"] = h2.parse_teams()
 
-            xprint(text=f"Parsing 5/13: Hero Availability...", overwrite=1)
+            xprint(text="Parsing 5/13: Hero Availability...", overwrite=1)
             map_data["starting_heroes"] = h4.parse_starting_heroes()
 
-            xprint(text=f"Parsing 6/13: Additional Specs...", overwrite=1)
+            xprint(text="Parsing 6/13: Additional Specs...", overwrite=1)
             map_data["ban_flags"] = h5.parse_flags()
 
-            xprint(text=f"Parsing 7/13: Rumors...", overwrite=1)
+            xprint(text="Parsing 7/13: Rumors...", overwrite=1)
             map_data["rumors"] = h6.parse_rumors()
 
-            xprint(text=f"Parsing 8/13: Hero Templates...", overwrite=1)
+            xprint(text="Parsing 8/13: Hero Templates...", overwrite=1)
             map_data["hero_data"] = h4.parse_hero_data()
 
-            xprint(text=f"Parsing 9/13: Terrain Data...", overwrite=1)
+            xprint(text="Parsing 9/13: Terrain Data...", overwrite=1)
             map_data["terrain"] = h7.parse_terrain(map_data["map_specs"])
 
-            xprint(text=f"Parsing 10/13: Object Defs...", overwrite=1)
+            xprint(text="Parsing 10/13: Object Defs...", overwrite=1)
             map_data["object_defs"] = h8.parse_object_defs()
 
-            xprint(text=f"Parsing 11/13: Object Data...", overwrite=1)
+            xprint(text="Parsing 11/13: Object Data...", overwrite=1)
             map_data["object_data"] = h8.parse_object_data(map_data["object_defs"], map_data["filename"])
 
-            xprint(text=f"Parsing 12/13: Events...", overwrite=1)
+            xprint(text="Parsing 12/13: Events...", overwrite=1)
             map_data["events"] = h6.parse_events()
 
-            xprint(type=Text.ACTION, text=f"Parsing 13/13: Null Bytes...", overwrite=1)
+            xprint(type=Text.ACTION, text="Parsing 13/13: Null Bytes...", overwrite=1)
             map_data["null_bytes"] = in_file.read()
     except FileNotFoundError:
         xprint(type=Text.ERROR, text=f"Could not find {filename}.")
@@ -198,19 +197,19 @@ def save_map(quicksave: bool = False) -> bool:
     # Save the map data to the specified filename
     with open(filename, "wb") as f:
         with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
-            h1.write_map_specs(      map_data["map_specs"])
-            h2.write_player_specs(   map_data["player_specs"])
-            h3.write_conditions(     map_data["conditions"])
-            h2.write_teams(          map_data["teams"])
+            h1.write_map_specs(map_data["map_specs"])
+            h2.write_player_specs(map_data["player_specs"])
+            h3.write_conditions(map_data["conditions"])
+            h2.write_teams(map_data["teams"])
             h4.write_starting_heroes(map_data["starting_heroes"])
-            h5.write_flags(          map_data["ban_flags"])
-            h6.write_rumors(         map_data["rumors"])
-            h4.write_hero_data(      map_data["hero_data"])
-            h7.write_terrain(        map_data["terrain"])
-            h8.write_object_defs(    map_data["object_defs"])
-            h8.write_object_data(    map_data["object_data"])
-            h6.write_events(         map_data["events"])
-            out_file.write(          map_data["null_bytes"])
+            h5.write_flags(map_data["ban_flags"])
+            h6.write_rumors(map_data["rumors"])
+            h4.write_hero_data(map_data["hero_data"])
+            h7.write_terrain(map_data["terrain"])
+            h8.write_object_defs(map_data["object_defs"])
+            h8.write_object_data(map_data["object_data"])
+            h6.write_events(map_data["events"])
+            out_file.write(map_data["null_bytes"])
 
     xprint(type=Text.SPECIAL, text=DONE)
 
