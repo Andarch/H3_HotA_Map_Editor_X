@@ -91,7 +91,7 @@ def peek(length: int) -> None:
     in_file.seek(-length, 1)
 
 
-def load_map(quickload: bool = False) -> bool:
+def load_map(quickload: bool = False) -> None:
     global map_data, in_file
 
     draw_header()
@@ -150,12 +150,10 @@ def load_map(quickload: bool = False) -> bool:
 
             xprint(type=Text.ACTION, text="Parsing 13/13: Null Bytes...", overwrite=1)
             map_data["null_bytes"] = in_file.read()
+
+            xprint(type=Text.SPECIAL, text=DONE)
     except FileNotFoundError:
         xprint(type=Text.ERROR, text=f"Could not find {filename}.")
-
-    xprint(type=Text.SPECIAL, text=DONE)
-
-    return True
 
 
 def save_map(quicksave: bool = False) -> bool:

@@ -1,8 +1,8 @@
-from edit.modify_towns import modify_towns
-from edit.monster_values import set_compliant_monster_values
-from edit.random_monsters import set_random_monsters
-from edit.reset_heroes import reset_heroes
-from edit.unreachable_tiles import list_unreachable_tiles
+from src.scripts.edit.modify_towns import modify_towns
+from src.scripts.edit.monster_values import set_compliant_monster_values
+from src.scripts.edit.random_monsters import set_random_monsters
+from src.scripts.edit.reset_heroes import reset_heroes
+from src.scripts.edit.unreachable_tiles import list_unreachable_tiles
 
 from ..common import KB, draw_header, xprint
 from ..menus import Menu

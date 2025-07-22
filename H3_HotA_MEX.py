@@ -4,7 +4,7 @@ import os
 import time
 
 import src.file_io as io
-from src.common import KB, Sleep, initialize, map_data, xprint
+from src.common import KB, Sleep, exit, initialize, map_data, xprint
 from src.menus import Menu
 from src.scripts.edit_data import edit_data
 from src.scripts.export_excel import export_excel
