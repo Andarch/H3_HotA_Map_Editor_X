@@ -12,9 +12,7 @@ from ..common import (
 from ..menus import Menu
 
 
-def print_data() -> bool:
-    global map_data
-
+def print_data() -> None:
     user_input = xprint(menu=Menu.INFO.value)
 
     if user_input == KB.ESC.value:
@@ -46,5 +44,3 @@ def print_data() -> bool:
     xprint()
 
     press_any_key()
-
-    return True
