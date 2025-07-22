@@ -14,12 +14,14 @@ VERSION = "v0.3.1"
 TITLE_VERSION = f"{APPNAME} {VERSION}"
 MAX_PRINT_WIDTH = 75
 DONE = "DONE"
+HIDE_CURSOR = "\033[?25l"
+SHOW_CURSOR = "\033[?25h"
 
 
 class KB(Enum):
-    BACKSPACE = 8
+    BACKSPACE = "\x08"
     ENTER = "\r"
-    ESC = 27
+    ESC = "\x1b"
 
 
 class Align(Enum):
@@ -80,7 +82,6 @@ _screen_cache = []
 def initialize():
     global _terminal_width, _old_terminal_width
 
-    HIDE_CURSOR = "\033[?25l"
     print(HIDE_CURSOR, end="", flush=True)
 
     _terminal_width = _old_terminal_width = shutil.get_terminal_size().columns
@@ -314,22 +315,47 @@ def xprint(
 
     def string_prompt(prompt: str) -> str:
         print(prompt, end="", flush=True)
+        print(SHOW_CURSOR, end="", flush=True)
         input_chars = []
         while True:
             char = msvcrt.getwch()
-            if char == KB.ENTER.value:
-                xprint()
-                xprint()
-                return "".join(input_chars)
-            elif ord(char) == KB.BACKSPACE.value:
-                if input_chars:
-                    input_chars.pop()
-                    print("\b \b", end="", flush=True)
-            elif ord(char) == KB.ESC.value:
-                return ""
-            else:
-                input_chars.append(char)
-                print(char, end="", flush=True)
+            match char:
+                case KB.ENTER.value:
+                    if input_chars:
+                        print(HIDE_CURSOR, end="", flush=True)
+                        xprint()
+                        xprint()
+                        return "".join(input_chars)
+                    continue
+                case KB.BACKSPACE.value:
+                    if input_chars:
+                        input_chars.pop()
+                        print("\b \b", end="", flush=True)
+                    continue
+                case KB.ESC.value:
+                    print(HIDE_CURSOR, end="", flush=True)
+                    if map_data:
+                        return ""
+                    print("\r\033[K", end="", flush=True)
+                    exit()
+                case _:
+                    input_chars.append(char)
+                    print(char, end="", flush=True)
+
+            # if char == KB.ENTER.value:
+            #     if input_chars:
+            #         xprint()
+            #         xprint()
+            #         return "".join(input_chars)
+            # elif ord(char) == KB.BACKSPACE.value:
+            #     if input_chars:
+            #         input_chars.pop()
+            #         print("\b \b", end="", flush=True)
+            # elif ord(char) == KB.ESC.value:
+            #     return ""
+            # else:
+            #     input_chars.append(char)
+            #     print(char, end="", flush=True)
 
     return main()
 
@@ -358,5 +384,6 @@ def exit() -> None:
     xprint(text="Exiting...")
     xprint()
     time.sleep(Sleep.NORMAL.value)
-    xprint(text=Color.RESET.value)
+    os.system("cls" if os.name == "nt" else "clear")
+    print(SHOW_CURSOR, end="", flush=True)
     sys.exit(0)
