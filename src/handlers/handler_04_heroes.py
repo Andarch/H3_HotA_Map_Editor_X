@@ -1,27 +1,20 @@
-import src.file_io    as io
-import data.heroes    as heroes
-import data.spells    as spells
 import data.artifacts as artifacts
-import data.skills    as skills
-from src.handler_01_map_specs import MapFormat
+import data.heroes as heroes
+import data.skills as skills
+import data.spells as spells
+import src.file_io as io
 
 
 def parse_starting_heroes() -> dict:
-    info = {
-        "total_heroes"   : 0,
-        "hero_flags"     : [],
-        "placeholders"   : [],
-        "custom_heroes"  : [],
-        "unhandled_bytes": b''
-    }
+    info = {"total_heroes": 0, "hero_flags": [], "placeholders": [], "custom_heroes": [], "unhandled_bytes": b""}
 
     info["total_heroes"] = io.read_int(4)
-    info["hero_flags"]   = io.read_bits(25)
+    info["hero_flags"] = io.read_bits(25)
 
-    for _ in range(io.read_int(4)): # Amount of placeholder heroes
+    for _ in range(io.read_int(4)):  # Amount of placeholder heroes
         info["placeholders"].append(heroes.ID(io.read_int(1)))
 
-    for _ in range(io.read_int(1)): # Amount of custom heroes
+    for _ in range(io.read_int(1)):  # Amount of custom heroes
         hero = {}
         hero["id"] = io.read_int(1)
         hero["face"] = io.read_int(1)
@@ -47,11 +40,11 @@ def write_starting_heroes(info: dict) -> None:
     io.write_int(len(info["custom_heroes"]), 1)
 
     for hero in info["custom_heroes"]:
-        io.write_int(    hero["id"], 1)
-        io.write_int(    hero["face"], 1)
+        io.write_int(hero["id"], 1)
+        io.write_int(hero["face"], 1)
         io.write_int(len(hero["custom_name"]), 4)
-        io.write_str(    hero["custom_name"])
-        io.write_int(    hero["may_be_hired_by"], 1)
+        io.write_str(hero["custom_name"])
+        io.write_int(hero["may_be_hired_by"], 1)
 
     io.write_raw(info["unhandled_bytes"])
 
@@ -67,77 +60,77 @@ def parse_hero_data() -> list:
             continue
 
         hero = {
-            "experience"        : -1,
-            "secondary_custom"  : False,
-            "secondary_skills"  : [],
+            "experience": -1,
+            "secondary_custom": False,
+            "secondary_skills": [],
             "artifacts_equipped": {},
             "artifacts_backpack": [],
-            "biography"         : "",
-            "gender"            : 255,
-            "spells"            : b'',
-            "primary_skills"    : {},
-            "add_skills" : True,
-            "cannot_gain_xp"    : False,
-            "level"             : 1
+            "biography": "",
+            "gender": 255,
+            "spells": b"",
+            "primary_skills": {},
+            "add_skills": True,
+            "cannot_gain_xp": False,
+            "level": 1,
         }
 
-        if io.read_int(1): # Is experience set?
+        if io.read_int(1):  # Is experience set?
             hero["experience"] = io.read_int(4)
 
-        if io.read_int(1): # Are secondary skills set?
+        if io.read_int(1):  # Are secondary skills set?
             hero["secondary_custom"] = True
             for _ in range(io.read_int(4)):
                 skill = {}
-                skill["id"]    = io.read_int(1)
-                skill["name"]    = skills.Secondary(skill["id"]).name
+                skill["id"] = io.read_int(1)
+                skill["name"] = skills.Secondary(skill["id"]).name
                 skill["level"] = io.read_int(1)
                 skill["level_name"] = skills.SecondaryLevels(skill["level"]).name
                 hero["secondary_skills"].append(skill)
 
-        if io.read_int(1): # Are artifacts set?
-            hero["artifacts_equipped"]["head"]          = parse_artifact()
-            hero["artifacts_equipped"]["shoulders"]     = parse_artifact()
-            hero["artifacts_equipped"]["neck"]          = parse_artifact()
-            hero["artifacts_equipped"]["right_hand"]    = parse_artifact()
-            hero["artifacts_equipped"]["left_hand"]     = parse_artifact()
-            hero["artifacts_equipped"]["torso"]         = parse_artifact()
-            hero["artifacts_equipped"]["right_ring"]    = parse_artifact()
-            hero["artifacts_equipped"]["left_ring"]     = parse_artifact()
-            hero["artifacts_equipped"]["feet"]          = parse_artifact()
-            hero["artifacts_equipped"]["misc_1"]        = parse_artifact()
-            hero["artifacts_equipped"]["misc_2"]        = parse_artifact()
-            hero["artifacts_equipped"]["misc_3"]        = parse_artifact()
-            hero["artifacts_equipped"]["misc_4"]        = parse_artifact()
+        if io.read_int(1):  # Are artifacts set?
+            hero["artifacts_equipped"]["head"] = parse_artifact()
+            hero["artifacts_equipped"]["shoulders"] = parse_artifact()
+            hero["artifacts_equipped"]["neck"] = parse_artifact()
+            hero["artifacts_equipped"]["right_hand"] = parse_artifact()
+            hero["artifacts_equipped"]["left_hand"] = parse_artifact()
+            hero["artifacts_equipped"]["torso"] = parse_artifact()
+            hero["artifacts_equipped"]["right_ring"] = parse_artifact()
+            hero["artifacts_equipped"]["left_ring"] = parse_artifact()
+            hero["artifacts_equipped"]["feet"] = parse_artifact()
+            hero["artifacts_equipped"]["misc_1"] = parse_artifact()
+            hero["artifacts_equipped"]["misc_2"] = parse_artifact()
+            hero["artifacts_equipped"]["misc_3"] = parse_artifact()
+            hero["artifacts_equipped"]["misc_4"] = parse_artifact()
             hero["artifacts_equipped"]["war_machine_1"] = parse_artifact()
             hero["artifacts_equipped"]["war_machine_2"] = parse_artifact()
             hero["artifacts_equipped"]["war_machine_3"] = parse_artifact()
             hero["artifacts_equipped"]["war_machine_4"] = parse_artifact()
-            hero["artifacts_equipped"]["spellbook"]     = parse_artifact()
-            hero["artifacts_equipped"]["misc_5"]        = parse_artifact()
+            hero["artifacts_equipped"]["spellbook"] = parse_artifact()
+            hero["artifacts_equipped"]["misc_5"] = parse_artifact()
 
             for _ in range(io.read_int(2)):
                 hero["artifacts_backpack"].append(parse_artifact())
 
-        if io.read_int(1): # Is biography set?
+        if io.read_int(1):  # Is biography set?
             hero["biography"] = io.read_str(io.read_int(4))
 
         hero["gender"] = io.read_int(1)
 
-        if io.read_int(1): # Are spells set?
+        if io.read_int(1):  # Are spells set?
             hero["spells"] = io.read_bits(9)
 
-        if io.read_int(1): # Are primary skills set?
-            hero["primary_skills"]["attack"]      = io.read_int(1)
-            hero["primary_skills"]["defense"]     = io.read_int(1)
+        if io.read_int(1):  # Are primary skills set?
+            hero["primary_skills"]["attack"] = io.read_int(1)
+            hero["primary_skills"]["defense"] = io.read_int(1)
             hero["primary_skills"]["spell_power"] = io.read_int(1)
-            hero["primary_skills"]["knowledge"]   = io.read_int(1)
+            hero["primary_skills"]["knowledge"] = io.read_int(1)
 
         info.append(hero)
 
     for i in range(hero_amount):
-        info[i]["add_skills"]    = bool(io.read_int(1))
-        info[i]["cannot_gain_xp"]= bool(io.read_int(1))
-        info[i]["level"]         =      io.read_int(4)
+        info[i]["add_skills"] = bool(io.read_int(1))
+        info[i]["cannot_gain_xp"] = bool(io.read_int(1))
+        info[i]["level"] = io.read_int(4)
 
     return info
 
@@ -155,7 +148,8 @@ def write_hero_data(info: list) -> None:
         if hero["experience"] >= 0:
             io.write_int(1, 1)
             io.write_int(hero["experience"], 4)
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
         #
         if hero["secondary_custom"]:
@@ -165,7 +159,8 @@ def write_hero_data(info: list) -> None:
             for skill in hero["secondary_skills"]:
                 io.write_int(skill["id"], 1)
                 io.write_int(skill["level"], 1)
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
         #
         if hero["artifacts_equipped"] or hero["artifacts_backpack"]:
@@ -194,23 +189,26 @@ def write_hero_data(info: list) -> None:
             io.write_int(len(hero["artifacts_backpack"]), 2)
             for artifact in hero["artifacts_backpack"]:
                 write_artifact(artifact)
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
         #
         if hero["biography"]:
             io.write_int(1, 1)
             io.write_int(len(hero["biography"]), 4)
             io.write_str(hero["biography"])
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
         #
         io.write_int(hero["gender"], 1)
 
         #
-        if hero["spells"] != b'':
+        if hero["spells"] != b"":
             io.write_int(1, 1)
             io.write_bits(hero["spells"])
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
         #
         if hero["primary_skills"]:
@@ -219,7 +217,8 @@ def write_hero_data(info: list) -> None:
             io.write_int(hero["primary_skills"]["defense"], 1)
             io.write_int(hero["primary_skills"]["spell_power"], 1)
             io.write_int(hero["primary_skills"]["knowledge"], 1)
-        else: io.write_int(0, 1)
+        else:
+            io.write_int(0, 1)
 
     # HotA 1.7.0.
     for hero in info:
@@ -229,10 +228,7 @@ def write_hero_data(info: list) -> None:
 
 
 def parse_artifact() -> list:
-    artifact = [
-        artifacts.ID(io.read_int(2)),
-        io.read_int(2)
-    ]
+    artifact = [artifacts.ID(io.read_int(2)), io.read_int(2)]
     if artifact[0] == artifacts.ID.Spell_Scroll:
         artifact[1] = spells.ID(artifact[1])
     return artifact

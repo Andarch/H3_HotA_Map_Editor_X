@@ -1,58 +1,52 @@
 from enum import IntEnum
 
-import src.file_io    as io
 import data.artifacts as artifacts
-
+import src.file_io as io
 from data.objects import Resource
 
-# The victory conditions of a map are stored as follows:
-#
-# TODO
-
-# The loss conditions of a map are stored as follows:
-#
-# TODO
 
 class VictoryType(IntEnum):
-    NONE                 = 255
-    ACQUIRE_ARTIFACT     = 0
+    NONE = 255
+    ACQUIRE_ARTIFACT = 0
     ACCUMULATE_CREATURES = 1
     ACCUMULATE_RESOURCES = 2
-    UPGRADE_TOWN         = 3
-    BUILD_THE_GRAIL      = 4
-    DEFEAT_HERO          = 5
-    CAPTURE_TOWN         = 6
-    DEFEAT_MONSTER       = 7
-    FLAG_DWELLINGS       = 8
-    FLAG_MINES           = 9
-    TRANSPORT_ARTIFACT   = 10
-    ELIMINATE_MONSTERS   = 11
-    SURVIVE              = 12
+    UPGRADE_TOWN = 3
+    BUILD_THE_GRAIL = 4
+    DEFEAT_HERO = 5
+    CAPTURE_TOWN = 6
+    DEFEAT_MONSTER = 7
+    FLAG_DWELLINGS = 8
+    FLAG_MINES = 9
+    TRANSPORT_ARTIFACT = 10
+    ELIMINATE_MONSTERS = 11
+    SURVIVE = 12
+
 
 class LossType(IntEnum):
-    NONE         = 255
-    LOSE_TOWN    = 0
-    LOSE_HERO    = 1
+    NONE = 255
+    LOSE_TOWN = 0
+    LOSE_HERO = 1
     TIME_EXPIRES = 2
+
 
 def parse_conditions() -> dict:
     info = {
-        "victory_condition"   : VictoryType.NONE,
-        "allow_normal_win"    : False,
+        "victory_condition": VictoryType.NONE,
+        "allow_normal_win": False,
         "allow_ai_special_win": False,
-        "objective_value_1"   : 0,
-        "objective_value_2"   : 0,
-        "objective_coords"    : [0, 0, 0],
-        "loss_condition"      : LossType.NONE,
-        "loss_coords"         : [0, 0, 0],
-        "loss_timer"          : 0
+        "objective_value_1": 0,
+        "objective_value_2": 0,
+        "objective_coords": [0, 0, 0],
+        "loss_condition": LossType.NONE,
+        "loss_coords": [0, 0, 0],
+        "loss_timer": 0,
     }
 
     vc = VictoryType(io.read_int(1))
     info["victory_condition"] = vc
 
     if vc != VictoryType.NONE:
-        info["allow_normal_win"]     = bool(io.read_int(1))
+        info["allow_normal_win"] = bool(io.read_int(1))
         info["allow_ai_special_win"] = bool(io.read_int(1))
 
         match vc:
@@ -68,15 +62,19 @@ def parse_conditions() -> dict:
                 info["objective_coords"][0] = io.read_int(1)
                 info["objective_coords"][1] = io.read_int(1)
                 info["objective_coords"][2] = io.read_int(1)
-                info["objective_value_1"]   = io.read_int(1)
-                info["objective_value_2"]   = io.read_int(1)
-            case (VictoryType.BUILD_THE_GRAIL | VictoryType.DEFEAT_HERO |
-                  VictoryType.CAPTURE_TOWN    | VictoryType.DEFEAT_MONSTER):
+                info["objective_value_1"] = io.read_int(1)
+                info["objective_value_2"] = io.read_int(1)
+            case (
+                VictoryType.BUILD_THE_GRAIL
+                | VictoryType.DEFEAT_HERO
+                | VictoryType.CAPTURE_TOWN
+                | VictoryType.DEFEAT_MONSTER
+            ):
                 info["objective_coords"][0] = io.read_int(1)
                 info["objective_coords"][1] = io.read_int(1)
                 info["objective_coords"][2] = io.read_int(1)
             case VictoryType.TRANSPORT_ARTIFACT:
-                info["objective_value_1"]   = artifacts.ID(io.read_int(1))
+                info["objective_value_1"] = artifacts.ID(io.read_int(1))
                 info["objective_coords"][0] = io.read_int(1)
                 info["objective_coords"][1] = io.read_int(1)
                 info["objective_coords"][2] = io.read_int(1)
@@ -94,6 +92,7 @@ def parse_conditions() -> dict:
         info["loss_coords"][2] = io.read_int(1)
 
     return info
+
 
 def write_conditions(info: dict) -> None:
     vc = info["victory_condition"]
@@ -118,8 +117,12 @@ def write_conditions(info: dict) -> None:
                 io.write_int(info["objective_coords"][2], 1)
                 io.write_int(info["objective_value_1"], 1)
                 io.write_int(info["objective_value_2"], 1)
-            case (VictoryType.BUILD_THE_GRAIL | VictoryType.DEFEAT_HERO |
-                  VictoryType.CAPTURE_TOWN    | VictoryType.DEFEAT_MONSTER):
+            case (
+                VictoryType.BUILD_THE_GRAIL
+                | VictoryType.DEFEAT_HERO
+                | VictoryType.CAPTURE_TOWN
+                | VictoryType.DEFEAT_MONSTER
+            ):
                 io.write_int(info["objective_coords"][0], 1)
                 io.write_int(info["objective_coords"][1], 1)
                 io.write_int(info["objective_coords"][2], 1)
