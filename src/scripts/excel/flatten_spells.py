@@ -11,7 +11,7 @@ def flatten_spells(spell_objects):
         flat["zone_type"] = obj.get("zone_type", "")
         flat["zone_color"] = obj.get("zone_color", "")
         flat["subtype"] = obj.get("subtype", "")
-        # Merge 'spell' and 'contents' into 'spell' column
+        # Merge "spell" and "contents" into "spell" column
         spell_val = ""
         if "spell" in obj:
             val = obj["spell"]

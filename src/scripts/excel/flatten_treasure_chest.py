@@ -14,7 +14,7 @@ def flatten_treasure_chest(treasure_objects):
         contents = obj.get("contents", "")
         row["contents"] = objects.Treasure_Chest_Reward(contents).name
         if contents == 3:
-            art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
+            art = artifacts.ID(obj.get("artifact", "")).name.replace("_", " ")
             if art == "Empty 4 Bytes":
                 art = "Random"
             row["artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)

@@ -33,7 +33,7 @@ def parse_object_defs() -> list:
         obj["type"]    = objects.ID(obj["id"]).name.replace("_", " ")
 
         subtype_result = get_subtype(obj["id"], obj["sub_id"])
-        if hasattr(subtype_result, 'name'):
+        if hasattr(subtype_result, "name"):
             obj["subtype"] = subtype_result.name.replace("_", " ")
         elif obj["id"] == objects.ID.Random_Town:
             obj["subtype"] = "Random"
@@ -1476,7 +1476,7 @@ def parse_dwelling(obj: dict) -> dict:
     obj["owner"] = io.read_int(4)
 
     obj["same_as_town"] = io.read_raw(4)
-    is_same_as_town = int.from_bytes(obj["same_as_town"], 'little') != 0
+    is_same_as_town = int.from_bytes(obj["same_as_town"], "little") != 0
     if not is_same_as_town:
         obj["alignment"] = io.read_bits(2)
 
@@ -1498,7 +1498,7 @@ def parse_leveled(obj: dict) -> dict:
     obj["owner"] = io.read_int(4)
 
     obj["same_as_town"] = io.read_raw(4)
-    is_same_as_town = int.from_bytes(obj["same_as_town"], 'little') != 0
+    is_same_as_town = int.from_bytes(obj["same_as_town"], "little") != 0
     if not is_same_as_town:
         obj["alignment"] = io.read_bits(2)
 

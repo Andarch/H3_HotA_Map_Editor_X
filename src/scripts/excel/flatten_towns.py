@@ -56,7 +56,7 @@ def flatten_towns(objects_list) -> list:
             # Handle alignment field
             elif key == "alignment" and value is not None:
                 alignment_enum = objects.Town_Alignment(value)
-                flattened_obj[key] = alignment_enum.name.replace('_', ' ')
+                flattened_obj[key] = alignment_enum.name.replace("_", " ")
             else:
                 # Keep other fields as-is
                 flattened_obj[key] = value

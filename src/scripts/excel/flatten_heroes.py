@@ -25,14 +25,14 @@ def flatten_heroes(objects_list) -> list:
                                     # Skip empty artifacts (ID 65535)
                                     if artifact_id != 65535 and str(artifact_id) != "<ID.Empty_2_Bytes: 65535>":
                                         # Extract artifact name from enum
-                                        artifact_name = ''
-                                        if hasattr(artifact_id, 'name'):
-                                            artifact_name = artifact_id.name.replace('_', ' ')
-                                        elif ':' in str(artifact_id) and '.' in str(artifact_id):
+                                        artifact_name = ""
+                                        if hasattr(artifact_id, "name"):
+                                            artifact_name = artifact_id.name.replace("_", " ")
+                                        elif ":" in str(artifact_id) and "." in str(artifact_id):
                                             # Handle format like "<ID.Pendant_of_Reflection: 123>"
-                                            artifact_name = str(artifact_id).split('.')[1].split(':')[0].replace('_', ' ')
+                                            artifact_name = str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
                                         else:
-                                            artifact_name = str(artifact_id).replace('_', ' ')
+                                            artifact_name = str(artifact_id).replace("_", " ")
 
                                         if artifact_name:
                                             artifact_names.append(artifact_name)
@@ -48,8 +48,8 @@ def flatten_heroes(objects_list) -> list:
                             skill_lines = []
                             for skill in sub_value:
                                 if isinstance(skill, dict):
-                                    level_name = skill.get('level_name', '')
-                                    skill_name = skill.get('name', '').replace('_', ' ')
+                                    level_name = skill.get("level_name", "")
+                                    skill_name = skill.get("name", "").replace("_", " ")
                                     if level_name and skill_name:
                                         skill_lines.append(f"{level_name} {skill_name}")
                             flattened_obj[sub_key] = "\n".join(skill_lines) if skill_lines else ""
@@ -58,27 +58,27 @@ def flatten_heroes(objects_list) -> list:
                             creature_lines = []
                             for creature in sub_value:
                                 if isinstance(creature, dict):
-                                    creature_id = creature.get('id', '')
-                                    amount = creature.get('amount', '')
+                                    creature_id = creature.get("id", "")
+                                    amount = creature.get("amount", "")
 
                                     # Skip creatures with 0 amount
                                     if not amount or amount == 0:
                                         continue
 
                                     # Extract creature name from ID enum string representation
-                                    creature_name = ''
+                                    creature_name = ""
                                     if creature_id:
                                         id_str = str(creature_id)
                                         # Handle different possible enum formats
-                                        if ':' in id_str and '.' in id_str:
+                                        if ":" in id_str and "." in id_str:
                                             # Format: "<ID.Arch_Devil: 55>" -> "Arch Devil"
-                                            creature_name = id_str.split('.')[1].split(':')[0].replace('_', ' ')
-                                        elif hasattr(creature_id, 'name'):
+                                            creature_name = id_str.split(".")[1].split(":")[0].replace("_", " ")
+                                        elif hasattr(creature_id, "name"):
                                             # Direct access to enum name
-                                            creature_name = creature_id.name.replace('_', ' ')
+                                            creature_name = creature_id.name.replace("_", " ")
                                         else:
                                             # Fallback: use string representation
-                                            creature_name = str(creature_id).replace('_', ' ')
+                                            creature_name = str(creature_id).replace("_", " ")
 
                                     if creature_name and amount:
                                         creature_lines.append(f"{creature_name}: {amount}")
@@ -93,14 +93,14 @@ def flatten_heroes(objects_list) -> list:
                                     # Skip empty artifacts (ID 65535)
                                     if artifact_id != 65535 and str(artifact_id) != "<ID.Empty_2_Bytes: 65535>":
                                         # Extract artifact name from enum
-                                        artifact_name = ''
-                                        if hasattr(artifact_id, 'name'):
-                                            artifact_name = artifact_id.name.replace('_', ' ')
-                                        elif ':' in str(artifact_id) and '.' in str(artifact_id):
+                                        artifact_name = ""
+                                        if hasattr(artifact_id, "name"):
+                                            artifact_name = artifact_id.name.replace("_", " ")
+                                        elif ":" in str(artifact_id) and "." in str(artifact_id):
                                             # Handle format like "<ID.Pendant_of_Reflection: 123>"
-                                            artifact_name = str(artifact_id).split('.')[1].split(':')[0].replace('_', ' ')
+                                            artifact_name = str(artifact_id).split(".")[1].split(":")[0].replace("_", " ")
                                         else:
-                                            artifact_name = str(artifact_id).replace('_', ' ')
+                                            artifact_name = str(artifact_id).replace("_", " ")
 
                                         if artifact_name:
                                             backpack_names.append(artifact_name)
@@ -168,17 +168,17 @@ def _get_portrait_path(portrait_id, hero_data=None):
         portrait_name = portrait_enum.name
 
         # Handle special cases
-        if portrait_name.endswith('_campaign'):
-            # Remove '_campaign' and add ' (campaign)'
-            base_name = portrait_name[:-9]  # Remove '_campaign'
+        if portrait_name.endswith("_campaign"):
+            # Remove "_campaign" and add " (campaign)"
+            base_name = portrait_name[:-9]  # Remove "_campaign"
             filename = f"{base_name} (campaign).bmp"
-        elif portrait_name.startswith('Tarnum_'):
+        elif portrait_name.startswith("Tarnum_"):
             # Convert Tarnum_Barbarian to Tarnum (Barbarian)
-            class_name = portrait_name[7:]  # Remove 'Tarnum_'
+            class_name = portrait_name[7:]  # Remove "Tarnum_"
             filename = f"Tarnum ({class_name}).bmp"
         else:
             # Standard conversion: replace underscores with spaces
-            filename = portrait_name.replace('_', ' ') + '.bmp'
+            filename = portrait_name.replace("_", " ") + ".bmp"
 
         # Get the full path to the portrait file
         script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))

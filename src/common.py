@@ -10,9 +10,9 @@ import time
 from typing import Union
 
 
-TITLE = "H3 HotA Map Editor X"
+APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
-TITLE_VERSION = f"{TITLE} {VERSION}"
+TITLE_VERSION = f"{APPNAME} {VERSION}"
 MAX_PRINT_WIDTH = 75
 DONE = "DONE"
 
@@ -38,16 +38,17 @@ class Color(Enum):
     BLINK     = "\033[5m"
     INVERTED  = "\033[7m"
     STRIKE    = "\033[9m"
+    MAGENTA2  = "\033[35m"
     DEFAULT   = "\033[39m"
     RED       = "\033[91m"
     GREEN     = "\033[92m"
     YELLOW    = "\033[93m"
     BLUE      = "\033[94m"
-    MAGENTA2  = "\033[35m"
-    MAGENTA   = "\033[95m"
+    MAGENTA1  = "\033[95m"
     CYAN      = "\033[96m"
     WHITE     = "\033[97m"
-    GREY      = "\033[90m"
+    GREY1     = "\033[90m"
+    GREY2     = "\033[90;2m"
 
 
 class Sleep(Enum):
@@ -70,24 +71,25 @@ class Text(Enum):
 
 
 map_data = {}
-screen_content = []
-terminal_width = 0
-old_terminal_width = 0
-redraw_scheduled = False
-is_redrawing = False
+
+_terminal_width     = 0
+_old_terminal_width = 0
+_redrawing_screen   = False
+_screen_cache       = []
 
 
 def initialize():
-    global terminal_width, old_terminal_width
+    global _terminal_width, _old_terminal_width
 
     HIDE_CURSOR = "\033[?25l"
     print(HIDE_CURSOR, end = "", flush = True)
 
-    terminal_width = old_terminal_width = shutil.get_terminal_size().columns
+    _terminal_width = _old_terminal_width = shutil.get_terminal_size().columns
 
-    mutex_name = TITLE.replace(" ", "_")
+    mutex_name = APPNAME.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     last_error = ctypes.windll.kernel32.GetLastError()
+
     if last_error == 183:
         draw_header()
         xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
@@ -100,101 +102,99 @@ def initialize():
 
 
 def monitor_terminal_size() -> None:
-    global terminal_width, old_terminal_width, redraw_scheduled
+    global _terminal_width, _old_terminal_width, _redrawing_screen
 
     while True:
-        terminal_width = shutil.get_terminal_size().columns
-        if terminal_width != old_terminal_width:
-            old_terminal_width = terminal_width
-            if not redraw_scheduled:
-                redraw_scheduled = True
+        _terminal_width = shutil.get_terminal_size().columns
+
+        if _terminal_width != _old_terminal_width:
+            _old_terminal_width = _terminal_width
+
+            if not _redrawing_screen:
+                _redrawing_screen = True
                 threading.Timer(0, redraw_screen).start()
+
         time.sleep(Sleep.SHORTER.value)
 
 
-def draw_header(new_screen: bool = True) -> None:
-    global screen_content, terminal_width
+def redraw_screen() -> None:
+    global _redrawing_screen
 
-    HEADER_SYMBOL = "#"
-    SUBHEADER_SYMBOL = "-"
+    draw_header()
 
-    if new_screen:
-        screen_content = []
+    for type, text, align, menu_num, menu_width in _screen_cache:
+        xprint(type, text, align, menu_num, menu_width)
 
-    clear_screen()
+    _redrawing_screen = False
 
-    # Set up header
-    fill_row    = create_header_row(text="", fill_symbol=HEADER_SYMBOL)
-    title_row   = create_header_row(text=TITLE, fill_symbol=HEADER_SYMBOL)
-    version_row = create_header_row(text=VERSION, fill_symbol=HEADER_SYMBOL)
 
-    fill2_color = Color.GREY.value
-    subheader_colors = (fill2_color, fill2_color)
-    subheader_fill = create_header_row(SUBHEADER_SYMBOL, subheader_colors)
+def draw_header() -> None:
+    global _screen_cache
 
-    name = map_data['map_specs']['name']
-    file = map_data['filename']
+    # Clear screen cache if not redrawing the screen
+    if not _redrawing_screen:
+        _screen_cache = []
 
-    if map_data:
-        name_formatted = f"{Color.MAGENTA.value}{name}{Color.RESET.value}"
-        file_formatted = f"{Color.MAGENTA2.value}{file}{Color.RESET.value}"
-    else:
-        name_formatted = f"{name_color}No map{Color.RESET.value}"
-        file_formatted = f"{file_color}loaded{Color.RESET.value}"
+    # Clear terminal
+    os.system("cls" if os.name == "nt" else "clear")
+
+    # Build header
+    header_pattern_row = fill_header_row(fill_color=Color.GREY2.value, fill="#")
+    header_appname_row = fill_header_row(fill_color=Color.GREY2.value, fill="#", text=APPNAME)
+    header_version_row = fill_header_row(fill_color=Color.GREY2.value, fill="#", text=VERSION)
+
+    # Build subheader
+    mapname = map_data["map_specs"]["map_name"] if map_data else "No map"
+    mapfile = map_data["filename"] if map_data else "loaded"
+    subheader_pattern_row = fill_header_row(fill_color=Color.GREY1.value, fill="-")
+    subheader_mapname_row = f"{Color.MAGENTA1.value}{mapname}{Color.RESET.value}"
+    subheader_mapfile_row = f"{Color.MAGENTA2.value}{mapfile}{Color.RESET.value}"
 
     # Print header
     xprint(type=Text.HEADER, text="")
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=fill_row)
-    xprint(type=Text.HEADER, text=fill_row)
-    xprint(type=Text.HEADER, text=title_row)
-    xprint(type=Text.HEADER, text=fill_row)
-    xprint(type=Text.HEADER, text=version_row)
-    xprint(type=Text.HEADER, text=fill_row)
-    xprint(type=Text.HEADER, text=fill_row)
+    xprint(type=Text.HEADER, text=header_pattern_row)
+    xprint(type=Text.HEADER, text=header_pattern_row)
+    xprint(type=Text.HEADER, text=header_appname_row)
+    xprint(type=Text.HEADER, text=header_pattern_row)
+    xprint(type=Text.HEADER, text=header_version_row)
+    xprint(type=Text.HEADER, text=header_pattern_row)
+    xprint(type=Text.HEADER, text=header_pattern_row)
 
     # Print subheader
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=subheader_fill)
-    xprint(type=Text.HEADER, text=name_formatted)
-    xprint(type=Text.HEADER, text=file_formatted)
-    xprint(type=Text.HEADER, text=subheader_fill)
+    xprint(type=Text.HEADER, text=subheader_pattern_row)
+    xprint(type=Text.HEADER, text=subheader_mapname_row)
+    xprint(type=Text.HEADER, text=subheader_mapfile_row)
+    xprint(type=Text.HEADER, text=subheader_pattern_row)
     xprint(type=Text.HEADER, text="")
 
-def redraw_screen() -> None:
-    global redraw_scheduled, is_redrawing, screen_content
-    redraw_scheduled = False
-    is_redrawing = True
-    draw_header(False)
-    for type, text, align, menu_num, menu_width in screen_content:
-        xprint(type, text, align, menu_num, menu_width)
-    is_redrawing = False
 
-def clear_screen() -> None:
-    global screen_content
-    os.system("cls" if os.name == "nt" else "clear")
+def fill_header_row(fill_color: str, fill: str, text: str = "") -> str:
+    print_width = MAX_PRINT_WIDTH if _terminal_width >= MAX_PRINT_WIDTH else _terminal_width
 
-def create_header_row(text: str, fill_symbol: str, fill_color: str) -> str:
-    print_width = MAX_PRINT_WIDTH if terminal_width >= MAX_PRINT_WIDTH else terminal_width
-
-    if not text:
-        row = f"{fill_color}{fill_symbol}" * print_width + Color.RESET.value
+    if text == "":
+        row = f"{fill_color}{fill}" * print_width + Color.RESET.value
     else:
         fill_length = print_width - (len(text) + 2)
-        row_left = f"{fill_color}{fill_symbol}" * (fill_length // 2) + Color.RESET.value
-        row_right = f"{fill_color}{fill_symbol}" * (fill_length // 2) + Color.RESET.value
+
+        row_left = f"{fill_color}{fill}" * (fill_length // 2) + Color.RESET.value
+        row_right = f"{fill_color}{fill}" * (fill_length // 2) + Color.RESET.value
+
         if fill_length % 2 != 0:
-            row_right += f"{fill_color}{fill_symbol}" + Color.RESET.value
+            row_right += f"{fill_color}{fill}" + Color.RESET.value
+
         row = f"{row_left} {Color.CYAN.value}{text}{Color.RESET.value} {row_right}"
 
     return row
 
+
 def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=False, menu_num=-1, menu_width=0, menu={}) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
-        global screen_content, is_redrawing
+        global _screen_cache
         if menu: return menu_prompt(menu)
-        if not is_redrawing and type != Text.HEADER:
-            screen_content.append((type, text, align, menu_num, menu_width))
+        if not _redrawing_screen and type != Text.HEADER:
+            _screen_cache.append((type, text, align, menu_num, menu_width))
         match type:
             case Text.NORMAL:
                 if overwrite > 0:
@@ -242,17 +242,17 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
         return None
 
     def align_text(align=Align.LEFT, text="", menu_width=0) -> str:
-        global terminal_width
+        global _terminal_width
         stripped_text = strip_ansi_codes(str(text))
         text_length = len(stripped_text)
         if align == Align.LEFT:
-            padding = (terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
+            padding = (_terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
             return " " * padding + str(text)
         elif align == Align.CENTER:
-            padding = terminal_width // 2 - text_length // 2
+            padding = _terminal_width // 2 - text_length // 2
             return " " * padding + str(text)
         elif align == Align.MENU:
-            padding = terminal_width // 2 - menu_width // 2 - 2
+            padding = _terminal_width // 2 - menu_width // 2 - 2
             return " " * padding + str(text)
 
     def strip_ansi_codes(text: str) -> str:
@@ -324,7 +324,7 @@ def is_file_writable(filepath: str) -> bool:
     try:
         # Try to open the file in write mode
         if os.path.exists(filepath):
-            with open(filepath, 'r+b') as f:
+            with open(filepath, "r+b") as f:
                 pass
         return True
     except (IOError, OSError, PermissionError):

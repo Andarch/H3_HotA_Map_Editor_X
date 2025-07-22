@@ -36,7 +36,7 @@ def format_enum_list(enum_list, enum_class, special_cases=None):
         if has_item == 1:
             try:
                 enum_item = enum_class(index)
-                name = enum_item.name.replace('_', ' ')
+                name = enum_item.name.replace("_", " ")
 
                 # Apply special case formatting if specified
                 if name in special_cases:
@@ -80,31 +80,31 @@ def format_special_buildings(special_array, state_filter=None):
                 continue
 
             # Format the building name
-            formatted_name = raw_name.replace('_', ' ')
+            formatted_name = raw_name.replace("_", " ")
 
             # Extract faction name and format nicely
-            if formatted_name.endswith(' Castle'):
-                building_name = formatted_name[:-7] + ' (Castle)'
-            elif formatted_name.endswith(' Rampart'):
-                building_name = formatted_name[:-8] + ' (Rampart)'
-            elif formatted_name.endswith(' Tower'):
-                building_name = formatted_name[:-6] + ' (Tower)'
-            elif formatted_name.endswith(' Inferno'):
-                building_name = formatted_name[:-8] + ' (Inferno)'
-            elif formatted_name.endswith(' Necropolis'):
-                building_name = formatted_name[:-11] + ' (Necropolis)'
-            elif formatted_name.endswith(' Dungeon'):
-                building_name = formatted_name[:-8] + ' (Dungeon)'
-            elif formatted_name.endswith(' Stronghold'):
-                building_name = formatted_name[:-11] + ' (Stronghold)'
-            elif formatted_name.endswith(' Fortress'):
-                building_name = formatted_name[:-9] + ' (Fortress)'
-            elif formatted_name.endswith(' Conflux'):
-                building_name = formatted_name[:-8] + ' (Conflux)'
-            elif formatted_name.endswith(' Cove'):
-                building_name = formatted_name[:-5] + ' (Cove)'
-            elif formatted_name.endswith(' Factory'):
-                building_name = formatted_name[:-8] + ' (Factory)'
+            if formatted_name.endswith(" Castle"):
+                building_name = formatted_name[:-7] + " (Castle)"
+            elif formatted_name.endswith(" Rampart"):
+                building_name = formatted_name[:-8] + " (Rampart)"
+            elif formatted_name.endswith(" Tower"):
+                building_name = formatted_name[:-6] + " (Tower)"
+            elif formatted_name.endswith(" Inferno"):
+                building_name = formatted_name[:-8] + " (Inferno)"
+            elif formatted_name.endswith(" Necropolis"):
+                building_name = formatted_name[:-11] + " (Necropolis)"
+            elif formatted_name.endswith(" Dungeon"):
+                building_name = formatted_name[:-8] + " (Dungeon)"
+            elif formatted_name.endswith(" Stronghold"):
+                building_name = formatted_name[:-11] + " (Stronghold)"
+            elif formatted_name.endswith(" Fortress"):
+                building_name = formatted_name[:-9] + " (Fortress)"
+            elif formatted_name.endswith(" Conflux"):
+                building_name = formatted_name[:-8] + " (Conflux)"
+            elif formatted_name.endswith(" Cove"):
+                building_name = formatted_name[:-5] + " (Cove)"
+            elif formatted_name.endswith(" Factory"):
+                building_name = formatted_name[:-8] + " (Factory)"
             else:
                 # No faction suffix or special case, keep as is
                 building_name = formatted_name

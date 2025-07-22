@@ -35,7 +35,7 @@ def flatten_resources(resource_objects):
                     flat[k] = v
             else:
                 flat[k] = v
-        # Ensure 'amount' is always present
+        # Ensure "amount" is always present
         if "amount" not in flat:
             flat["amount"] = obj.get("amount", "")
         flattened.append(flat)

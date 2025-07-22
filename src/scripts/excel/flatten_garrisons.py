@@ -10,7 +10,7 @@ def flatten_garrisons(garrison_objects):
                 # guards is a list of dicts with 'id' and 'amount'
                 guards_list = []
                 for guard in v:
-                    guard_id = getattr(guard['id'], 'value', guard['id'])
+                    guard_id = getattr(guard["id"], "value", guard["id"])
                     # skip NONE (65535)
                     if guard_id == 65535:
                         continue

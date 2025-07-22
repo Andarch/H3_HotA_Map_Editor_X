@@ -25,12 +25,12 @@ def read_raw(length: int) -> bytes:
 
 def read_int(length: int) -> int:
     global in_file
-    return int.from_bytes(in_file.read(length), 'little')
+    return int.from_bytes(in_file.read(length), "little")
 
 
 def read_str(length: int) -> str:
     global in_file
-    return in_file.read(length).decode('latin-1')
+    return in_file.read(length).decode("latin-1")
 
 
 def read_bits(length: int) -> list:
@@ -38,9 +38,9 @@ def read_bits(length: int) -> list:
     raw_data  = read_raw(length)
 
     for c in raw_data:
-        bits = format(int(c), '#010b').removeprefix('0b')[::-1]
+        bits = format(int(c), "#010b").removeprefix("0b")[::-1]
         for b in bits:
-            temp_bits.append(1 if b == '1' else 0)
+            temp_bits.append(1 if b == "1" else 0)
 
     return temp_bits
 
@@ -52,19 +52,19 @@ def write_raw(data: bytes):
 
 def write_int(data: int, length: int) -> None:
     global out_file
-    out_file.write(data.to_bytes(length, 'little'))
+    out_file.write(data.to_bytes(length, "little"))
 
 
 def write_str(data: str) -> None:
     global out_file
-    out_file.write(data.encode('latin-1'))
+    out_file.write(data.encode("latin-1"))
 
 
 def write_bits(data: list) -> None:
     for i in range(0, len(data), 8):
         s = ""
         for b in range(8):
-            s += '1' if data[i + b] else '0'
+            s += "1" if data[i + b] else "0"
         write_int(int(s[::-1], 2), 1)
 
 
@@ -82,9 +82,9 @@ def peek(length: int) -> None:
     for b in data:
         n = str(b)
         s += ("  " if i < 10 else " ") + str(i) + ": "
-        s += ' ' * (3-len(n))  + n + ' '
-        s += format(int(n), '#010b').removeprefix('0b')
-        s += '\n'
+        s += " " * (3-len(n))  + n + " "
+        s += format(int(n), "#010b").removeprefix("0b")
+        s += "\n"
         i += 1
 
     print(s)
@@ -94,7 +94,7 @@ def peek(length: int) -> None:
 def load_map(quickload: bool = False) -> bool:
     global map_data, in_file
 
-    draw_header(new_screen=False)
+    draw_header(dump_screen=False)
 
     # Reload the current map or load a new one
     if quickload:
@@ -161,7 +161,7 @@ def load_map(quickload: bool = False) -> bool:
 def save_map(quicksave: bool = False) -> bool:
     global out_file
 
-    draw_header(new_screen=False)
+    draw_header(dump_screen=False)
 
     if quicksave:
         filename = map_data["filename"]
@@ -176,11 +176,11 @@ def save_map(quicksave: bool = False) -> bool:
     if filename == map_data["filename"]:
         backup_dir = "backups"
         base_name = os.path.basename(map_data["filename"][:-4])
-        backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith('.h3m')]
+        backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith(".h3m")]
         next_suffix = 0
 
         if backup_files:
-            suffixes = [int(f.split('_')[-1].split('.')[0]) for f in backup_files]
+            suffixes = [int(f.split("_")[-1].split(".")[0]) for f in backup_files]
             next_suffix = max(suffixes) + 1
 
         backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")

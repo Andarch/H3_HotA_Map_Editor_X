@@ -31,8 +31,8 @@ def flatten_monsters(monsters):
 
         # Format disposition
         disposition = monster.get("disposition", "")
-        if hasattr(disposition, 'name'):
-            flat["disposition"] = disposition.name.replace('_', ' ').title()
+        if hasattr(disposition, "name"):
+            flat["disposition"] = disposition.name.replace("_", " ").title()
         else:
             flat["disposition"] = str(disposition)
 
@@ -76,7 +76,7 @@ def flatten_monsters(monsters):
                     # Try to get artifact name from ID
                     artifact_name = artifacts.ID(artifact_id).name
                     # Format the name first, then apply special cases
-                    formatted_name = artifact_name.replace('_', ' ').title()
+                    formatted_name = artifact_name.replace("_", " ").title()
                     flat["artifact"] = format.ARTIFACT_SPECIAL_CASES.get(formatted_name, formatted_name)
                 except (ValueError, AttributeError):
                     flat["artifact"] = str(artifact_id)

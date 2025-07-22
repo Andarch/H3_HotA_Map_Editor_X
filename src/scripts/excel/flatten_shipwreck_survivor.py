@@ -14,7 +14,7 @@ def flatten_shipwreck_survivor(treasure_objects):
         contents = obj.get("contents", "")
         row["contents"] = objects.Shipwreck_Survivor_Reward(contents).name
         if contents == 0:
-            art = artifacts.ID(obj.get("artifact", "")).name.replace('_', ' ')
+            art = artifacts.ID(obj.get("artifact", "")).name.replace("_", " ")
             row["artifact"] = format.ARTIFACT_SPECIAL_CASES.get(art, art)
         else:
             row["artifact"] = ""

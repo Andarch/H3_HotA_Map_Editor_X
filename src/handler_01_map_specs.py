@@ -39,7 +39,7 @@ def parse_map_specs() -> dict:
         "hota_versionLocked"       : 0,
         "is_mirror"                : b'',
         "terrain_type_count"       : b'',
-        "name"                     : "",
+        "map_name"                 : "",
         "description"              : "",
         "map_size"                 : 0,
         "has_hero"                 : False,
@@ -54,12 +54,12 @@ def parse_map_specs() -> dict:
     info["map_format"] = MapFormat(io.read_int(4))
 
     if info["map_format"] != MapFormat.HotA:
-        raise NotImplementedError(f"unsupported map format: {info['map_format']}")
+        raise NotImplementedError(f"unsupported map format: {info["map_format"]}")
 
     info["hota_version"] = io.read_int(4)
 
     if info["hota_version"] < 8:
-        raise NotImplementedError(f"unsupported hota version: {info['hota_version']}")
+        raise NotImplementedError(f"unsupported hota version: {info["hota_version"]}")
 
     info["hota_versionMajor"] = io.read_int(4)
     info["hota_versionMinor"] = io.read_int(4)
@@ -74,8 +74,8 @@ def parse_map_specs() -> dict:
     info["hota_versionLocked"]       = bool(      io.read_int(1))
     info["has_hero"]                 = bool(      io.read_int(1))
     info["map_size"]                 = MapSize(   io.read_int(4))
-    info["has_underground"]             = bool(      io.read_int(1))
-    info["name"]                     =            io.read_str(io.read_int(4))
+    info["has_underground"]          = bool(      io.read_int(1))
+    info["map_name"]                     =            io.read_str(io.read_int(4))
     info["description"]              =            io.read_str(io.read_int(4))
     info["difficulty"]               = Difficulty(io.read_int(1))
     info["level_cap"]                =            io.read_int(1)
@@ -100,8 +100,8 @@ def write_map_specs(info: dict) -> None:
     io.write_int(    info["has_hero"], 1)
     io.write_int(    info["map_size"], 4)
     io.write_int(    info["has_underground"], 1)
-    io.write_int(len(info["name"]), 4)
-    io.write_str(    info["name"])
+    io.write_int(len(info["map_name"]), 4)
+    io.write_str(    info["map_name"])
     io.write_int(len(info["description"]), 4)
     io.write_str(    info["description"])
     io.write_int(    info["difficulty"], 1)

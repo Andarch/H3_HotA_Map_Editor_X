@@ -15,7 +15,7 @@ def flatten_artifacts(artifact_objects):
                 # guards is a list of dicts with 'id' and 'amount'
                 guards_list = []
                 for guard in v:
-                    guard_id = getattr(guard['id'], 'value', guard['id'])
+                    guard_id = getattr(guard["id"], "value", guard["id"])
                     # skip NONE (65535)
                     if guard_id == 65535:
                         continue
@@ -27,7 +27,7 @@ def flatten_artifacts(artifact_objects):
                 if hasattr(artifacts, "Pickup_Mode"):
                     try:
                         mode = artifacts.Pickup_Mode(v)
-                        flat[k] = mode.name.replace('_', ' ').title()
+                        flat[k] = mode.name.replace("_", " ").title()
                     except Exception:
                         flat[k] = v
                 else:
@@ -49,7 +49,7 @@ def flatten_artifacts(artifact_objects):
                             if val:
                                 try:
                                     cond = list(artifacts.Pickup_Conditions)[i]
-                                    names.append(cond.name.replace('_', ' '))
+                                    names.append(cond.name.replace("_", " "))
                                 except IndexError:
                                     pass
                         flat[k] = "\n".join(names)
@@ -59,7 +59,7 @@ def flatten_artifacts(artifact_objects):
                     flat[k] = ""
             elif k == "subtype":
                 # Ensure Subtype (artifact name) is processed through ARTIFACT_SPECIAL_CASES
-                name = str(v).replace('_', ' ')
+                name = str(v).replace("_", " ")
                 name = format.ARTIFACT_SPECIAL_CASES.get(name, name)
                 flat[k] = name
             else:

@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent / 'data'))
+sys.path.append(str(Path(__file__).resolve().parent.parent / "data"))
 from enum import IntEnum
 from PIL  import Image
 from ..common import *
@@ -545,7 +545,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
     def generate_images(input: int, map_layers: list, blocked_tiles: dict, ownership: dict, png_number: int, png_name: str) -> None:
         mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
-        map_name = filename[:-4] if filename.endswith('.h3m') else filename
+        map_name = filename[:-4] if filename.endswith(".h3m") else filename
 
         # Determine if we're creating a combined image
         is_combined = input == 2 and len(map_layers) > 1
@@ -573,7 +573,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
 
             if not is_combined:
                 # Save individual layer image
-                layer_letter = 'g' if map_layer_index == 0 else 'u'
+                layer_letter = "g" if map_layer_index == 0 else "u"
                 if input == 1:
                     img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}.png"))
                 elif input == 2:

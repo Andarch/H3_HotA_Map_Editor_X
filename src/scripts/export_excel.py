@@ -60,7 +60,7 @@ def export_excel() -> bool:
         processed_data = _process_data()
 
         # Compile regex for Excel illegal characters
-        illegal_chars = re.compile(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]')
+        illegal_chars = re.compile(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]")
 
         # Write each category to Excel
         for category, items in processed_data.items():
@@ -89,7 +89,7 @@ def export_excel() -> bool:
                 )
 
             # Format column headers
-            df.columns = [str(col).replace('_', ' ').title().replace('Id', 'ID').replace('Xp', 'XP').replace('Ai', 'AI') for col in df.columns]
+            df.columns = [str(col).replace("_", " ").title().replace("Id", "ID").replace("Xp", "XP").replace("Ai", "AI") for col in df.columns]
 
             # Add row numbers (skip for "No data" sheets)
             if not (len(df) == 1 and df.iloc[0, 0] == "No data"):
@@ -178,9 +178,9 @@ def _process_data(object_data, events) -> dict:
         # Special handling for HotA_Collectible based on subtype
         elif obj["id"] == objects.ID.HotA_Collectible:
             subtype = obj.get("subtype", "")
-            if hasattr(subtype, 'name'):
+            if hasattr(subtype, "name"):
                 subtype_name = subtype.name
-            elif hasattr(subtype, 'value'):
+            elif hasattr(subtype, "value"):
                 # Map subtype value to name using HotA_Collectible enum
                 try:
                     subtype_name = objects.HotA_Collectible(subtype.value).name
@@ -268,7 +268,7 @@ def _process_data(object_data, events) -> dict:
             for item in items:
                 # Remove _bytes columns (universal) and category-specific columns
                 cleaned_item_raw = {k: v for k, v in item.items()
-                                   if not k.endswith('_bytes') and k not in columns_to_remove}
+                                   if not k.endswith("_bytes") and k not in columns_to_remove}
 
                 # Clean empty list representations
                 cleaned_item = {}

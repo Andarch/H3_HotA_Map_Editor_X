@@ -4,7 +4,7 @@ import os
 from src import *
 
 
-os.chdir('maps')
+os.chdir("maps")
 
 
 def main() -> None:
