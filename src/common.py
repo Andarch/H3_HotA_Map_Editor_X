@@ -322,7 +322,6 @@ def xprint(type=Text.NORMAL, text="", align=Align.LEFT, overwrite=0, skipline=Fa
 
 def is_file_writable(filepath: str) -> bool:
     try:
-        # Try to open the file in write mode
         if os.path.exists(filepath):
             with open(filepath, "r+b") as f:
                 pass
