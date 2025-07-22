@@ -125,7 +125,7 @@ def load_map(quickload: bool = False) -> bool:
             map_data["teams"] = h2.parse_teams()
 
             xprint(text=f"Parsing 5/13: Hero Availability...", overwrite=1)
-            map_data["starting_heroes"] = h4.parse_starting_heroes(map_data["map_specs"])
+            map_data["starting_heroes"] = h4.parse_starting_heroes()
 
             xprint(text=f"Parsing 6/13: Additional Specs...", overwrite=1)
             map_data["ban_flags"] = h5.parse_flags()

@@ -19,7 +19,7 @@ def main() -> None:
                 if user_input == KB.ESC.value:
                     continue
 
-                xprint()
+                # xprint()
 
                 match user_input:
                     case 1: scripts.print_data()
