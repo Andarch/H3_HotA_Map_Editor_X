@@ -94,13 +94,13 @@ def initialize():
         xprint(type=Text.ERROR, text="Another instance of the editor is already running.")
         return False
 
-    monitor_thread1 = threading.Thread(target=monitor_terminal_size, daemon=True)
+    monitor_thread1 = threading.Thread(target=_monitor_terminal_size, daemon=True)
     monitor_thread1.start()
 
     return True
 
 
-def monitor_terminal_size() -> None:
+def _monitor_terminal_size() -> None:
     global _terminal_width, _old_terminal_width, _redrawing_screen
 
     while True:
@@ -111,12 +111,12 @@ def monitor_terminal_size() -> None:
 
             if not _redrawing_screen:
                 _redrawing_screen = True
-                threading.Timer(0, redraw_screen).start()
+                threading.Timer(0, _redraw_screen).start()
 
         time.sleep(Sleep.SHORTER.value)
 
 
-def redraw_screen() -> None:
+def _redraw_screen() -> None:
     global _redrawing_screen
 
     draw_header()
