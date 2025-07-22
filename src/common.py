@@ -355,8 +355,8 @@ def press_any_key() -> None:
 
 
 def exit() -> None:
-    xprint()
     xprint(text="Exiting...")
+    xprint()
     time.sleep(Sleep.NORMAL.value)
     xprint(text=Color.RESET.value)
     sys.exit(0)
