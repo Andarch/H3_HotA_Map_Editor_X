@@ -82,7 +82,7 @@ _screen_cache = []
 def initialize():
     global _terminal_width, _old_terminal_width
 
-    print(HIDE_CURSOR, end="", flush=True)
+    # print(HIDE_CURSOR, end="", flush=True)
 
     _terminal_width = _old_terminal_width = shutil.get_terminal_size().columns
 

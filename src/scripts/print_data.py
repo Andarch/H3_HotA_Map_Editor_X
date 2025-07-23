@@ -22,23 +22,23 @@ def print_data() -> None:
 
     match user_input:
         case 1:
-            data = pprint.pformat(map_data["map_specs"], width=MAX_PRINT_WIDTH)
+            data = pprint.pprint(map_data["map_specs"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 2:
-            data = pprint.pformat(map_data["player_specs"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["player_specs"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 3:
-            data = pprint.pformat(map_data["starting_heroes"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["starting_heroes"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 4:
-            data = pprint.pformat(map_data["rumors"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["rumors"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 5:
-            data = pprint.pformat(map_data["hero_data"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["hero_data"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 6:
-            data = pprint.pformat(map_data["terrain"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["terrain"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 7:
-            data = pprint.pformat(map_data["object_defs"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["object_defs"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 8:
-            data = pprint.pformat(map_data["object_data"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["object_data"], width=MAX_PRINT_WIDTH, sort_dicts=False)
         case 9:
-            data = pprint.pformat(map_data["events"], width=MAX_PRINT_WIDTH)
+            data = pprint.pformat(map_data["events"], width=MAX_PRINT_WIDTH, sort_dicts=False)
 
     xprint(type=Text.INFO, text=data)
     xprint()
