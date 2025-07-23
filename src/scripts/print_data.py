@@ -51,35 +51,37 @@ def print_data() -> None:
         press_any_key()
         return
 
-    if section_name:
-        json_output = json.dumps(map_data[section_name], indent=4, default=str)
-        json_output = _format_strings(json_output, max_length=MAX_PRINT_WIDTH)
-        json_output = _format_bit_lists(json_output, max_length=MAX_PRINT_WIDTH)
-        lines = json_output.splitlines()
+    # Applies to all sections including hero_data
+    json_output = json.dumps(map_data[section_name], indent=4, default=str)
+    json_output = _format_strings(json_output, max_length=MAX_PRINT_WIDTH)
+    json_output = _format_bit_lists(json_output, max_length=MAX_PRINT_WIDTH)
+    lines = json_output.splitlines()
 
-        xprint(type=Text.INFO, text=f'"{section_name}":')
+    # Print the section name before the data
+    xprint(type=Text.INFO, text=f'"{section_name}":')
 
-        i = 0
-        while i < len(lines):
-            line = lines[i]
-            # Detect a key with a long string value (ends with '":')
-            if line.rstrip().endswith('":'):
-                # Check if next line is a long string (starts with a quote)
-                if i + 1 < len(lines) and lines[i + 1].startswith('"'):
-                    xprint(type=Text.INFO, text=line)  # print key
-                    xprint(type=Text.INFO, text="")  # blank line before
-                    # Print all consecutive long string lines (wrapped)
-                    j = i + 1
-                    while j < len(lines) and (lines[j].startswith('"') or lines[j].startswith(" ")):
-                        xprint(type=Text.INFO, text=lines[j].lstrip())
-                        j += 1
-                    xprint(type=Text.INFO, text="")  # blank line after
-                    i = j
-                    continue
-            xprint(type=Text.INFO, text=line)
-            i += 1
+    # Print each line of the formatted JSON output
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Detect a key with a long string value (ends with '":')
+        if line.rstrip().endswith('":'):
+            # Check if next line is a long string (starts with a quote)
+            if i + 1 < len(lines) and lines[i + 1].startswith('"'):
+                xprint(type=Text.INFO, text=line)  # print key
+                xprint(type=Text.INFO, text="")  # blank line before
+                # Print all consecutive long string lines (wrapped)
+                j = i + 1
+                while j < len(lines) and (lines[j].startswith('"') or lines[j].startswith(" ")):
+                    xprint(type=Text.INFO, text=lines[j].lstrip())
+                    j += 1
+                xprint(type=Text.INFO, text="")  # blank line after
+                i = j
+                continue
+        xprint(type=Text.INFO, text=line)
+        i += 1
 
-        press_any_key()
+    press_any_key()
 
 
 def _format_hero_short_skills_dicts(hero_data: dict) -> list[str]:
