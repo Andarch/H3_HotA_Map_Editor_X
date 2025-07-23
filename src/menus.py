@@ -19,7 +19,7 @@ class Menu(Enum):
     }
 
     INFO = {
-        1: "General",
+        1: "Map Specs",
         2: "Player Specs",
         3: "Start Heroes",
         4: "Rumors",
