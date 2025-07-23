@@ -342,21 +342,6 @@ def xprint(
                     input_chars.append(char)
                     print(char, end="", flush=True)
 
-            # if char == KB.ENTER.value:
-            #     if input_chars:
-            #         xprint()
-            #         xprint()
-            #         return "".join(input_chars)
-            # elif ord(char) == KB.BACKSPACE.value:
-            #     if input_chars:
-            #         input_chars.pop()
-            #         print("\b \b", end="", flush=True)
-            # elif ord(char) == KB.ESC.value:
-            #     return ""
-            # else:
-            #     input_chars.append(char)
-            #     print(char, end="", flush=True)
-
     return main()
 
 
