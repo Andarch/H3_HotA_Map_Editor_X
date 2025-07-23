@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import time
 
 import src.file_io as io
@@ -15,9 +16,9 @@ from src.scripts.print_data import print_data
 os.chdir("maps")
 
 
-def main() -> None:
+def main(filename: str = None) -> None:
     if initialize():
-        io.load_map()
+        io.load_map(filename)
 
         # Main menu
         while True:
@@ -44,7 +45,7 @@ def main() -> None:
                         map_data["object_defs"],
                     )
                 case 6:
-                    io.load_map(quickload=True)
+                    io.load_map(map_data["filename"])
                 case 7:
                     io.save_map(quicksave=True)
                 case 8:
@@ -59,4 +60,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    filename = sys.argv[1] if len(sys.argv) > 1 else None
+    main(filename)

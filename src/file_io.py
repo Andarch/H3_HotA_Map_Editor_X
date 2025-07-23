@@ -91,20 +91,22 @@ def peek(length: int) -> None:
     in_file.seek(-length, 1)
 
 
-def load_map(quickload: bool = False) -> None:
+def load_map(filename: str = None) -> None:
     global map_data, in_file
 
     draw_header()
 
-    # Reload the current map or load a new one
-    if quickload:
-        filename = map_data["filename"]
-    else:
+    # Prompt for filename if not provided
+    if not filename:
         user_input = xprint(type=Text.PROMPT, text="Enter the map filename to load")
-        filename = user_input if user_input[-4:] == ".h3m" else user_input + ".h3m"
+        filename = user_input
 
+    # Return to menu if still no filename
     if not filename:
         return False
+
+    # Ensure the filename has the correct extension
+    filename = filename if filename[-4:] == ".h3m" else filename + ".h3m"
 
     xprint(type=Text.NORMAL, text=f"Loading {filename}...\n")
 
