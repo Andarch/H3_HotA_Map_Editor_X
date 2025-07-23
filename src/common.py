@@ -12,7 +12,7 @@ from typing import Union
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{APPNAME} {VERSION}"
-MAX_PRINT_WIDTH = 75
+MAX_PRINT_WIDTH = 78
 DONE = "DONE"
 HIDE_CURSOR = "\033[?25l"
 SHOW_CURSOR = "\033[?25h"
@@ -72,19 +72,19 @@ class Text(Enum):
 
 
 map_data = {}
+terminal_width = 0
 
-_terminal_width = 0
 _old_terminal_width = 0
 _redrawing_screen = False
 _screen_cache = []
 
 
 def initialize():
-    global _terminal_width, _old_terminal_width
+    global terminal_width, _old_terminal_width
 
-    # print(HIDE_CURSOR, end="", flush=True)
+    print(HIDE_CURSOR, end="", flush=True)
 
-    _terminal_width = _old_terminal_width = shutil.get_terminal_size().columns
+    terminal_width = _old_terminal_width = shutil.get_terminal_size().columns
 
     mutex_name = APPNAME.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
@@ -102,13 +102,13 @@ def initialize():
 
 
 def _monitor_terminal_size() -> None:
-    global _terminal_width, _old_terminal_width, _redrawing_screen
+    global terminal_width, _old_terminal_width, _redrawing_screen
 
     while True:
-        _terminal_width = shutil.get_terminal_size().columns
+        terminal_width = shutil.get_terminal_size().columns
 
-        if _terminal_width != _old_terminal_width:
-            _old_terminal_width = _terminal_width
+        if terminal_width != _old_terminal_width:
+            _old_terminal_width = terminal_width
 
             if not _redrawing_screen:
                 _redrawing_screen = True
@@ -171,7 +171,7 @@ def draw_header() -> None:
 
 
 def fill_header_row(fill_color: str, fill: str, text: str = "") -> str:
-    print_width = MAX_PRINT_WIDTH if _terminal_width >= MAX_PRINT_WIDTH else _terminal_width
+    print_width = MAX_PRINT_WIDTH if terminal_width >= MAX_PRINT_WIDTH else terminal_width
 
     if text == "":
         row = f"{fill_color}{fill}" * print_width + Color.RESET.value
@@ -258,17 +258,17 @@ def xprint(
         return None
 
     def align_text(align=Align.LEFT, text="", menu_width=0) -> str:
-        global _terminal_width
+        global terminal_width
         stripped_text = strip_ansi_codes(str(text))
         text_length = len(stripped_text)
         if align == Align.LEFT:
-            padding = (_terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
+            padding = (terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
             return " " * padding + str(text)
         elif align == Align.CENTER:
-            padding = _terminal_width // 2 - text_length // 2
+            padding = terminal_width // 2 - text_length // 2
             return " " * padding + str(text)
         elif align == Align.MENU:
-            padding = _terminal_width // 2 - menu_width // 2 - 2
+            padding = terminal_width // 2 - menu_width // 2 - 2
             return " " * padding + str(text)
 
     def strip_ansi_codes(text: str) -> str:

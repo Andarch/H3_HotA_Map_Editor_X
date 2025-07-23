@@ -32,24 +32,25 @@ class Difficulty(IntEnum):
 
 def parse_map_specs() -> dict:
     info = {
-        "map_format": 0,
+        "map_format": MapFormat.HotA,
         "hota_version": 0,
         "hota_versionMajor": 0,
         "hota_versionMinor": 0,
         "hota_versionPatch": 0,
-        "hota_versionLocked": 0,
-        "is_mirror": b"",
-        "terrain_type_count": b"",
+        "is_mirror": False,
+        "is_arena": False,
+        "terrain_type_count": 0,
+        "town_type_count": 0,
+        "allowed_difficulties": b"",
+        "can_hire_defeated_heroes": False,
+        "hota_versionLocked": False,
+        "has_hero": False,
+        "map_size": MapSize.S,
+        "has_underground": False,
         "map_name": "",
         "description": "",
-        "map_size": 0,
-        "has_hero": False,
-        "has_underground": False,
-        "is_arena": False,
-        "difficulty": 0,
-        "allowed_difficulties": [],
+        "difficulty": Difficulty.Easy,
         "level_cap": 0,
-        "can_hire_defeated_heroes": 0,
     }
 
     info["map_format"] = MapFormat(io.read_int(4))
