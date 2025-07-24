@@ -24,6 +24,7 @@ def print_data() -> None:
         draw_header()
 
         section_name = None
+        overwrite = 0
         match user_input:
             case 1:
                 section_name = "map_specs"
@@ -37,10 +38,16 @@ def print_data() -> None:
                 section_name = "hero_data"
             case 6:
                 section_name = "terrain"
+                xprint(text="Loading terrain data...")
+                overwrite = 1
             case 7:
                 section_name = "object_defs"
+                xprint(text="Loading object defs...")
+                overwrite = 1
             case 8:
                 section_name = "object_data"
+                xprint(text="Loading object data...")
+                overwrite = 1
             case 9:
                 section_name = "events"
 
@@ -51,17 +58,20 @@ def print_data() -> None:
         else:
             lines = _format_json_section(map_data[section_name])
 
-        xprint(type=Text.INFO, text=f'"{section_name}":')
+        xprint(type=Text.INFO, text=f'"{section_name}":', overwrite=overwrite)
 
         lines_printed = 0
         for line in lines:
             xprint(type=Text.INFO, text=line)
             lines_printed += 1
             if lines_printed % 100 == 0:
-                press_any_key(suffix=" to continue printing")
+                user_input = press_any_key(suffix=" to continue printing")
+                if user_input == KB.ESC.value:
+                    break
                 for _ in range(3):
                     print("\033[F\033[K", end="")
-        press_any_key()
+            if lines_printed == len(lines):
+                press_any_key()
 
 
 def _format_player_specs(player_specs: list) -> list[str]:
@@ -202,47 +212,43 @@ def _format_strings(json_text: str, max_length: int = MAX_PRINT_WIDTH - 8) -> st
 
 def _format_lists(json_text: str, max_length: int = MAX_PRINT_WIDTH - 8) -> str:
     def wrap_match(m):
-        key = m.group(1)
-        values = m.group(2)
-        comma = m.group(3) or ""
+        key_indent = m.group(1)
+        key = m.group(2)
+        values = m.group(3)
+        comma = m.group(4) or ""
+        list_indent = key_indent + "    "
         items = [v.strip() for v in values.split(",") if v.strip()]
         # Special cases
         SPECIAL_KEYS = ("coords", "resources")  # Add more as needed
         if any(special in key for special in SPECIAL_KEYS):
             list_str = "[" + ", ".join(items) + "]"
-            leading_ws = re.match(r"^(\s*)", key).group(1)
             key_clean = key.replace("\n", "").strip()
-            return f"{leading_ws}{key_clean} {list_str}{comma}"
+            return f"{key_indent}{key_clean} {list_str}{comma}"
         # Single-digit numbers (e.g., bits)
         if all(v.isdigit() and len(v) == 1 for v in items):
-            list_str = "[" + ", ".join(items) + "]"
-            # Calculate the full line length including indentation, key, space, list, and comma
-            full_line = f"{key} {list_str}{comma}"
-            if len(full_line) <= max_length:
-                return full_line
-            else:
-                wrapped = []
-                line = ""
-                for idx, v in enumerate(items):
-                    is_last_item = idx == len(items) - 1
-                    # For wrapped lines after the first, add a space at the start
-                    if line and len(line) + len(v) + 2 + 1 > max_length:  # +1 for the space
-                        wrapped.append(line)
-                        line = " "  # Add a space at the start of new lines after the first
+            # Print key, then list on its own line(s)
+            key_line = f"{key_indent}{key} ["
+            list_lines = []
+            line = f"{list_indent}"
+            for idx, v in enumerate(items):
+                is_last = idx == len(items) - 1
+                addition = v + ("," if not is_last else "")
+                # +1 for space if not first item on line
+                if len(line) + len(addition) > max_length:
+                    list_lines.append(line)
+                    line = f"{list_indent}{v}"
+                else:
+                    if line != f"{list_indent}":
+                        line += " "
                     line += v
-                    if not is_last_item:
-                        line += ", "
-                if line:
-                    wrapped.append(line)
-                return (
-                    f"{key}\n\n"
-                    + Color.CYAN_FAINT.value
-                    + "["
-                    + f"\n{Color.CYAN_FAINT.value}".join(wrapped)
-                    + "]"
-                    + f"{comma}{Color.RESET.value}\n"
-                )
+                if not is_last:
+                    line += ","
+                else:
+                    list_lines.append(line)
+            line = f"{key_indent}]{comma}"
+            list_lines.append(line)
+            return "\n".join([key_line] + list_lines)
         return m.group(0)
 
-    pattern = r'(\s*"[^"]+":)\s*\[([0-9,\s]+)\](\,?)'
+    pattern = r'([ \t]*)("[^"]+":)\s*\[([0-9,\s]+)\](\,?)'
     return re.sub(pattern, wrap_match, json_text)

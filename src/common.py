@@ -39,17 +39,19 @@ class Color(Enum):
     BLINK = "\033[5m"
     INVERTED = "\033[7m"
     STRIKE = "\033[9m"
-    MAGENTA2 = "\033[35m"
     DEFAULT = "\033[39m"
     RED = "\033[91m"
     GREEN = "\033[92m"
     YELLOW = "\033[93m"
     BLUE = "\033[94m"
-    MAGENTA1 = "\033[95m"
+    MAGENTA = "\033[35m"
+    MAGENTA_FAINT = "\033[95;2m"
     CYAN = "\033[96m"
     CYAN_FAINT = "\033[96;2m"
     WHITE = "\033[97m"
+    WHITE_FAINT = "\033[97;2m"
     GREY = "\033[90m"
+    GREY_FAINT = "\033[90;2m"
 
 
 class Sleep(Enum):
@@ -139,34 +141,35 @@ def draw_header() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
     # Build header
-    header_pattern_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#")
-    header_appname_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#", text=APPNAME)
-    header_version_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#", text=VERSION)
+    header_default = fill_header_row(fill_color=Color.GREY_FAINT.value, fill="#")
+    header_appname = fill_header_row(fill_color=Color.GREY_FAINT.value, fill="#", text=APPNAME)
+    header_version = fill_header_row(fill_color=Color.GREY_FAINT.value, fill="#", text=VERSION)
 
     # Build subheader
     mapname = map_data["map_specs"]["map_name"] if map_data else "No map"
     mapfile = map_data["filename"] if map_data else "loaded"
-    subheader_pattern_row = fill_header_row(fill_color=Color.GREY.value, fill="-")
-    subheader_mapname_row = f"{Color.MAGENTA1.value}{mapname}{Color.RESET.value}"
-    subheader_mapfile_row = f"{Color.MAGENTA2.value}{mapfile}{Color.RESET.value}"
+    mapname_color = Color.MAGENTA.value if map_data else Color.MAGENTA_FAINT.value
+    subheader_default = fill_header_row(fill_color=Color.WHITE_FAINT.value, fill="-")
+    subheader_mapname = f"{mapname_color}{mapname}{Color.RESET.value}"
+    subheader_mapfile = f"{Color.MAGENTA_FAINT.value}{mapfile}{Color.RESET.value}"
 
     # Print header
     xprint(type=Text.HEADER, text="")
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=header_pattern_row)
-    xprint(type=Text.HEADER, text=header_pattern_row)
-    xprint(type=Text.HEADER, text=header_appname_row)
-    xprint(type=Text.HEADER, text=header_pattern_row)
-    xprint(type=Text.HEADER, text=header_version_row)
-    xprint(type=Text.HEADER, text=header_pattern_row)
-    xprint(type=Text.HEADER, text=header_pattern_row)
+    xprint(type=Text.HEADER, text=header_default)
+    xprint(type=Text.HEADER, text=header_default)
+    xprint(type=Text.HEADER, text=header_appname)
+    xprint(type=Text.HEADER, text=header_default)
+    xprint(type=Text.HEADER, text=header_version)
+    xprint(type=Text.HEADER, text=header_default)
+    xprint(type=Text.HEADER, text=header_default)
 
     # Print subheader
     xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text=subheader_pattern_row)
-    xprint(type=Text.HEADER, text=subheader_mapname_row)
-    xprint(type=Text.HEADER, text=subheader_mapfile_row)
-    xprint(type=Text.HEADER, text=subheader_pattern_row)
+    xprint(type=Text.HEADER, text=subheader_default)
+    xprint(type=Text.HEADER, text=subheader_mapname)
+    xprint(type=Text.HEADER, text=subheader_mapfile)
+    xprint(type=Text.HEADER, text=subheader_default)
     xprint(type=Text.HEADER, text="")
 
 
@@ -213,14 +216,16 @@ def xprint(
                         print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
+                if overwrite > 0:
+                    time.sleep(Sleep.SHORTER.value)
+                    for _ in range(overwrite):
+                        print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
             case Text.MENU:
+                menu_num_formatted = f"[{Color.YELLOW.value}{str(menu_num)}{Color.RESET.value}]"
+                text_formatted = f"{Color.WHITE.value}{text}{Color.RESET.value}"
                 print(
-                    align_text(
-                        align=Align.MENU,
-                        text=f"[{Color.YELLOW.value}{str(menu_num)}{Color.RESET.value}] {Color.WHITE.value}{text}{Color.RESET.value}",
-                        menu_width=menu_width,
-                    )
+                    align_text(align=Align.MENU, text=f"{menu_num_formatted} {text_formatted}", menu_width=menu_width)
                 )
             case Text.PROMPT:
                 xprint()
@@ -359,13 +364,18 @@ def is_file_writable(filepath: str) -> bool:
         return False
 
 
-def press_any_key(suffix: str = " to return to the menu") -> None:
+def press_any_key(suffix: str = " to return to the menu") -> int:
     xprint()
     xprint()
     xprint(text=f"{Color.YELLOW.value + Color.FAINT.value}[Press any key{suffix}]{Color.RESET.value}")
     while True:
-        if msvcrt.getwch():
-            break
+        char = msvcrt.getwch()
+        if char:
+            if char.isdigit():
+                num = int(char)
+            else:
+                num = ord(char)
+            return num
 
 
 def exit() -> None:
