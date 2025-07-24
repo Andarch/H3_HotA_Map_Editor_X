@@ -43,29 +43,77 @@ def print_data() -> None:
         case 9:
             section_name = "events"
 
-    # Prepare lines for printing
     if section_name == "hero_data":
-        lines = _format_hero_short_skills_dicts(map_data[section_name])
+        lines = _format_hero_data(map_data[section_name])
+    elif section_name == "player_specs":
+        lines = _format_player_specs(map_data[section_name])
     else:
-        json_output = json.dumps(map_data[section_name], indent=4, default=str)
-        json_output = _format_strings(json_output, max_length=MAX_PRINT_WIDTH)
-        json_output = _format_bit_lists(json_output, max_length=MAX_PRINT_WIDTH)
-        lines = json_output.splitlines()
+        lines = _format_json_section(map_data[section_name])
 
-    # Print the section name before the data lines
     xprint(type=Text.INFO, text=f'"{section_name}":')
 
-    # Print the data lines
     for line in lines:
         xprint(type=Text.INFO, text=line)
 
     press_any_key()
 
 
-def _format_hero_short_skills_dicts(hero_data: dict) -> list[str]:
+def _format_player_specs(player_specs: list) -> list[str]:
+    def format_hero_dict(d):
+        return '{   "id": ' + str(d["id"]) + ',   "custom_name": ' + str(d["custom_name"]) + "   }"
+
+    lines = []
+    lines.append("[")
+    for pidx, player in enumerate(player_specs):
+        player_lines = []
+        player_lines.append("{")
+        keys = list(player.keys())
+        for idx, k in enumerate(keys):
+            v = player[k]
+            is_last_key = idx == len(keys) - 1
+            if k == "available_heroes":
+                if not v:
+                    player_lines.append('    "available_heroes": []' + ("," if not is_last_key else ""))
+                else:
+                    player_lines.append('    "available_heroes": [')
+                    for hidx, hero in enumerate(v):
+                        comma = "," if hidx < len(v) - 1 else ""
+                        player_lines.append(f"        {format_hero_dict(hero)}{comma}")
+                    player_lines.append("    ]" + ("," if not is_last_key else ""))
+            else:
+                # Format this key/value as JSON, but only this key/value
+                json_lines = _format_json_section({k: v})
+                # Remove the opening and closing braces
+                content_lines = [line for line in json_lines if line.strip() not in ("{", "}")]
+                # Add a comma if not the last key, but preserve all lines (including empty)
+                if content_lines:
+                    if not is_last_key:
+                        # Find the last non-empty line
+                        for i in range(len(content_lines) - 1, -1, -1):
+                            line = content_lines[i]
+                            if line.strip():
+                                # If the line ends with a color reset, insert the comma before it
+                                reset = Color.RESET.value
+                                if line.endswith(reset):
+                                    # Insert comma before reset, but after any trailing comma
+                                    if line[-len(reset) - 1] == ",":
+                                        # Already has a comma before reset, do nothing
+                                        pass
+                                    else:
+                                        content_lines[i] = line[: -len(reset)] + "," + reset
+                                else:
+                                    # No color reset, just add comma
+                                    content_lines[i] = line.rstrip(",") + ","
+                                break
+                    player_lines.extend(content_lines)
+        player_lines.append("}" + ("," if pidx < len(player_specs) - 1 else ""))
+        lines.extend("    " + line if line else "" for line in player_lines)
+    lines.append("]")
+    return lines
+
+
+def _format_hero_data(hero_data: dict) -> list[str]:
     def is_short_skills_dict(d):
-        if not isinstance(d, dict):
-            return False
         keys = set(d.keys())
         return keys == {"add_skills", "cannot_gain_xp", "level"}
 
@@ -81,27 +129,28 @@ def _format_hero_short_skills_dicts(hero_data: dict) -> list[str]:
         )
 
     lines = []
-    # hero_data is a list of dicts, each representing a hero
     for hero in hero_data:
-        if isinstance(hero, dict) and is_short_skills_dict(hero):
-            # Only the 3-key case, print inline
+        if is_short_skills_dict(hero):
             lines.append("    " + format_short_skills_dict(hero))
         else:
-            # Print as formatted JSON for any non-3-key dict or non-dict
-            json_str = json.dumps(hero, indent=4, default=str)
-            json_str = _format_strings(json_str, max_length=MAX_PRINT_WIDTH)
-            json_str = _format_bit_lists(json_str, max_length=MAX_PRINT_WIDTH)
-            for line in json_str.splitlines():
+            for line in _format_json_section(hero):
                 lines.append("    " + line)
     return lines
 
 
-def _format_strings(json_text: str, max_length: int = 70) -> str:
+def _format_json_section(data) -> list[str]:
+    json_output = json.dumps(data, indent=4, default=str)
+    json_output = _format_strings(json_output)
+    json_output = _format_lists(json_output)
+    return json_output.splitlines()
+
+
+def _format_strings(json_text: str, max_length: int = MAX_PRINT_WIDTH - 8) -> str:
     def wrap_match(m):
         key = m.group(1)
         value = m.group(2)
         comma = m.group(3) or ""
-        # If no spaces or any word longer than max_length, fallback to old splitting
+        # If no spaces or any word longer than max_length, fall back to simple wrapping
         if " " not in value or any(len(word) > max_length for word in value.split()):
             wrapped = [value[i : i + max_length].strip() for i in range(0, len(value), max_length)]
         else:
@@ -141,10 +190,11 @@ def _format_strings(json_text: str, max_length: int = 70) -> str:
         )
         return result
 
-    return re.sub(r'(\s*"[^"]+":)\s*"([^"\n]{70,})"(\,?)', wrap_match, json_text)
+    pattern = rf'(\s*"[^"]+":)\s*"([^"\n]{{{max_length},}})"(\,?)'
+    return re.sub(pattern, wrap_match, json_text)
 
 
-def _format_bit_lists(json_text: str, max_length: int = 70) -> str:
+def _format_lists(json_text: str, max_length: int = MAX_PRINT_WIDTH - 8) -> str:
     def wrap_match(m):
         key = m.group(1)
         values = m.group(2)
@@ -158,8 +208,10 @@ def _format_bit_lists(json_text: str, max_length: int = 70) -> str:
             return f"{leading_ws}{key_clean} {list_str}{comma}"
         if all(v.isdigit() and len(v) == 1 for v in items):
             list_str = "[" + ", ".join(items) + "]"
-            if len(list_str) <= max_length:
-                return f"{key} {list_str}{comma}"
+            # Calculate the full line length including indentation, key, space, list, and comma
+            full_line = f"{key} {list_str}{comma}"
+            if len(full_line) <= max_length:
+                return full_line
             else:
                 wrapped = []
                 line = ""
@@ -184,4 +236,5 @@ def _format_bit_lists(json_text: str, max_length: int = 70) -> str:
                 )
         return m.group(0)
 
-    return re.sub(r'(\s*"[^"]+":)\s*\[([0-9,\s]+)\](\,?)', wrap_match, json_text)
+    pattern = r'(\s*"[^"]+":)\s*\[([0-9,\s]+)\](\,?)'
+    return re.sub(pattern, wrap_match, json_text)

@@ -122,8 +122,8 @@ def _redraw_screen() -> None:
 
     draw_header()
 
-    for type, text, info_color, align, overwrite, skip_line, menu_num, menu_width, menu in _screen_cache:
-        xprint(type, text, info_color, align, overwrite, skip_line, menu_num, menu_width, menu)
+    for type, text, align, overwrite, skip_line, menu_num, menu_width, menu in _screen_cache:
+        xprint(type, text, align, overwrite, skip_line, menu_num, menu_width, menu)
 
     _redrawing_screen = False
 

@@ -284,7 +284,12 @@ object_colors = {
 }
 
 
-ignored_owned_objects = {objects.ID.Hero, objects.ID.Prison, objects.ID.Random_Hero, objects.ID.Hero_Placeholder}
+ignored_owned_objects = {
+    objects.ID.Hero,
+    objects.ID.Prison,
+    objects.ID.Random_Hero,
+    objects.ID.Hero_Placeholder,
+}
 
 
 ignored_pickups = {
@@ -391,10 +396,28 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             process_image(input, None, None, 2, "base2")
             process_image(input, border_objects, None, 3, "border")
             process_image(input, {objects.ID.Keymasters_Tent}, None, 4, "tents")
-            process_image(input, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
+            process_image(
+                input,
+                {objects.ID.Monolith_One_Way_Entrance},
+                None,
+                5,
+                "portals1en",
+            )
             process_image(input, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
-            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
-            process_image(input, {objects.ID.Two_Way_Monolith}, two_way_water_portals, 8, "portals2water")
+            process_image(
+                input,
+                {objects.ID.Two_Way_Monolith},
+                two_way_land_portals,
+                7,
+                "portals2land",
+            )
+            process_image(
+                input,
+                {objects.ID.Two_Way_Monolith},
+                two_way_water_portals,
+                8,
+                "portals2water",
+            )
             process_image(input, {objects.ID.Whirlpool}, None, 9, "whirlpools")
             process_image(input, {objects.ID.Prison}, None, 10, "prisons")
             process_image(input, monster_objects, None, 11, "monsters")
@@ -406,17 +429,51 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 13,
                 "spellshrine1",
             )
-            process_image(input, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "spellshrine2")
-            process_image(input, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "spellshrine3")
             process_image(
-                input, {objects.ID.Shrine_1_and_4}, {objects.Shrine_1_and_4.Shrine_of_Magic_Mystery}, 16, "spellshrine4"
+                input,
+                {objects.ID.Shrine_of_Magic_Gesture},
+                None,
+                14,
+                "spellshrine2",
+            )
+            process_image(
+                input,
+                {objects.ID.Shrine_of_Magic_Thought},
+                None,
+                15,
+                "spellshrine3",
+            )
+            process_image(
+                input,
+                {objects.ID.Shrine_1_and_4},
+                {objects.Shrine_1_and_4.Shrine_of_Magic_Mystery},
+                16,
+                "spellshrine4",
             )
             process_image(input, {objects.ID.Pyramid}, None, 17, "pyramids")
             process_image(input, {objects.ID.Artifact}, None, 18, "artifacts")
             process_image(input, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
-            process_image(input, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
-            process_image(input, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
-            process_image(input, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
+            process_image(
+                input,
+                {objects.ID.Random_Treasure_Artifact},
+                None,
+                20,
+                "randomtreasureartifacts",
+            )
+            process_image(
+                input,
+                {objects.ID.Random_Minor_Artifact},
+                None,
+                21,
+                "randomminorartifacts",
+            )
+            process_image(
+                input,
+                {objects.ID.Random_Major_Artifact},
+                None,
+                22,
+                "randommajorartifacts",
+            )
             process_image(input, {objects.ID.Random_Relic}, None, 23, "randomrelics")
             process_image(input, resource_objects, None, 24, "resources")
             process_image(input, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
@@ -426,7 +483,10 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         if input == 1:
             xprint(type=Text.ACTION, text="Generating minimap...")
         elif input == 2:
-            xprint(type=Text.ACTION, text=f"Generating minimap_{png_number:02d}_{png_name}...")
+            xprint(
+                type=Text.ACTION,
+                text=f"Generating minimap_{png_number:02d}_{png_name}...",
+            )
         # Get map size
         size = map_specs["map_size"]
         # Initialize map layer list
@@ -465,7 +525,15 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             owner = determine_owner(input, obj)
             if owner is None and should_skip_object(blockMask, interactiveMask):
                 continue
-            process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_name)
+            process_object(
+                obj,
+                blockMask,
+                interactiveMask,
+                blocked_tiles,
+                ownership,
+                owner,
+                png_name,
+            )
         # Generate and save minimap images
         generate_images(input, map_layers, blocked_tiles, ownership, png_number, png_name)
         xprint(type=Text.SPECIAL, text=DONE)
@@ -572,7 +640,12 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                                     )
 
     def generate_images(
-        input: int, map_layers: list, blocked_tiles: dict, ownership: dict, png_number: int, png_name: str
+        input: int,
+        map_layers: list,
+        blocked_tiles: dict,
+        ownership: dict,
+        png_number: int,
+        png_name: str,
     ) -> None:
         mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
@@ -584,13 +657,19 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         if is_combined:
             # Create single combined image for multiple layers
             combined_width = map_specs["map_size"] * 2 + 2
-            img = Image.new(mode, (combined_width, map_specs["map_size"]), None if png_name == "base1" else transparent)
+            img = Image.new(
+                mode,
+                (combined_width, map_specs["map_size"]),
+                None if png_name == "base1" else transparent,
+            )
 
         for map_layer_index, map_layer in enumerate(map_layers):
             if not is_combined:
                 # Create separate image for each layer
                 img = Image.new(
-                    mode, (map_specs["map_size"], map_specs["map_size"]), None if png_name == "base1" else transparent
+                    mode,
+                    (map_specs["map_size"], map_specs["map_size"]),
+                    None if png_name == "base1" else transparent,
                 )
 
             # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
@@ -601,7 +680,17 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 x = i % map_specs["map_size"]
                 y = i // map_specs["map_size"]
                 owner = ownership[map_layer_index][y][x]
-                color = get_pixel_color(input, png_name, tile, owner, blocked_tiles, map_layer_index, x, y, transparent)
+                color = get_pixel_color(
+                    input,
+                    png_name,
+                    tile,
+                    owner,
+                    blocked_tiles,
+                    map_layer_index,
+                    x,
+                    y,
+                    transparent,
+                )
                 img.putpixel((x + x_offset, y), color)
 
             if not is_combined:
@@ -610,11 +699,23 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 if input == 1:
                     img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}.png"))
                 elif input == 2:
-                    img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png"))
+                    img.save(
+                        os.path.join(
+                            "..",
+                            "images",
+                            f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png",
+                        )
+                    )
 
         if is_combined:
             # Save combined image
-            img.save(os.path.join("..", "images", f"{map_name}_{png_number:02d}_{png_name}.png"))
+            img.save(
+                os.path.join(
+                    "..",
+                    "images",
+                    f"{map_name}_{png_number:02d}_{png_name}.png",
+                )
+            )
 
     def get_pixel_color(
         input: int,
