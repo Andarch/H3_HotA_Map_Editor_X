@@ -99,11 +99,9 @@ def load_map(filename: str = None) -> None:
     # Prompt for filename if not provided
     if not filename:
         user_input = xprint(type=Text.PROMPT, text="Enter the map filename to load")
+        if not user_input:
+            return False
         filename = user_input
-
-    # Return to menu if still no filename
-    if not filename:
-        return False
 
     # Ensure the filename has the correct extension
     filename = filename if filename[-4:] == ".h3m" else filename + ".h3m"
@@ -167,6 +165,8 @@ def save_map(quicksave: bool = False) -> bool:
         filename = map_data["filename"]
     else:
         user_input = xprint(type=Text.PROMPT, text="Enter a new filename")
+        if not user_input:
+            return False
         filename = user_input if user_input[-4:] == ".h3m" else user_input + ".h3m"
 
     if not filename or not is_file_writable(filename):

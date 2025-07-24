@@ -19,9 +19,9 @@ SHOW_CURSOR = "\033[?25h"
 
 
 class KB(Enum):
-    BACKSPACE = "\x08"
-    ENTER = "\r"
-    ESC = "\x1b"
+    BACKSPACE = 8
+    ENTER = 13
+    ESC = 27
 
 
 class Align(Enum):
@@ -213,7 +213,6 @@ def xprint(
                         print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
-                # print(f"info_color literal: {repr(info_color)}")
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
             case Text.MENU:
                 print(
@@ -293,24 +292,26 @@ def xprint(
                     width = text_length
             return width
 
-        def print_menu(menu: dict, width: int) -> str:
-            valid_keys = ""
+        def print_menu(menu: dict, width: int) -> list[int]:
+            valid_keys = [KB.ESC.value]
             for key, value in menu.items():
                 if value:
-                    valid_keys += str(key)
+                    valid_keys.append(key)
                     xprint(type=Text.MENU, text=value, menu_num=key, menu_width=width)
                 else:
                     xprint()
             xprint()
             return valid_keys
 
-        def detect_key_press(valid_keys: str) -> str:
+        def detect_key_press(valid_keys: list[int]) -> int:
             while True:
                 char = msvcrt.getwch()
-                if char in valid_keys:
-                    return int(char)
-                elif ord(char) == KB.ESC.value:
-                    return KB.ESC.value
+                if char.isdigit():
+                    num = int(char)
+                else:
+                    num = ord(char)
+                if num in valid_keys:
+                    return num
 
         return main()
 
@@ -320,7 +321,8 @@ def xprint(
         input_chars = []
         while True:
             char = msvcrt.getwch()
-            match char:
+            num = ord(char)
+            match num:
                 case KB.ENTER.value:
                     if input_chars:
                         print(HIDE_CURSOR, end="", flush=True)
@@ -357,10 +359,10 @@ def is_file_writable(filepath: str) -> bool:
         return False
 
 
-def press_any_key() -> None:
+def press_any_key(suffix: str = " to return to the menu") -> None:
     xprint()
     xprint()
-    xprint(text=f"{Color.YELLOW.value}Press any key to return to the menu...{Color.RESET.value}")
+    xprint(text=f"{Color.YELLOW.value + Color.FAINT.value}[Press any key{suffix}]{Color.RESET.value}")
     while True:
         if msvcrt.getwch():
             break

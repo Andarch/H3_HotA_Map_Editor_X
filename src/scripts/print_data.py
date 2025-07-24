@@ -16,46 +16,52 @@ from ..menus import Menu
 
 
 def print_data() -> None:
-    user_input = xprint(menu=Menu.INFO.value)
-    if user_input == KB.ESC.value:
-        return False
+    while True:
+        user_input = xprint(menu=Menu.INFO.value)
+        if user_input == KB.ESC.value:
+            break
 
-    draw_header()
+        draw_header()
 
-    section_name = None
-    match user_input:
-        case 1:
-            section_name = "map_specs"
-        case 2:
-            section_name = "player_specs"
-        case 3:
-            section_name = "starting_heroes"
-        case 4:
-            section_name = "rumors"
-        case 5:
-            section_name = "hero_data"
-        case 6:
-            section_name = "terrain"
-        case 7:
-            section_name = "object_defs"
-        case 8:
-            section_name = "object_data"
-        case 9:
-            section_name = "events"
+        section_name = None
+        match user_input:
+            case 1:
+                section_name = "map_specs"
+            case 2:
+                section_name = "player_specs"
+            case 3:
+                section_name = "starting_heroes"
+            case 4:
+                section_name = "rumors"
+            case 5:
+                section_name = "hero_data"
+            case 6:
+                section_name = "terrain"
+            case 7:
+                section_name = "object_defs"
+            case 8:
+                section_name = "object_data"
+            case 9:
+                section_name = "events"
 
-    if section_name == "hero_data":
-        lines = _format_hero_data(map_data[section_name])
-    elif section_name == "player_specs":
-        lines = _format_player_specs(map_data[section_name])
-    else:
-        lines = _format_json_section(map_data[section_name])
+        if section_name == "hero_data":
+            lines = _format_hero_data(map_data[section_name])
+        elif section_name == "player_specs":
+            lines = _format_player_specs(map_data[section_name])
+        else:
+            lines = _format_json_section(map_data[section_name])
 
-    xprint(type=Text.INFO, text=f'"{section_name}":')
+        xprint(type=Text.INFO, text=f'"{section_name}":')
 
-    for line in lines:
-        xprint(type=Text.INFO, text=line)
-
-    press_any_key()
+        lines_printed = 0
+        for line in lines:
+            xprint(type=Text.INFO, text=line)
+            lines_printed += 1
+            if lines_printed % 100 == 0:
+                press_any_key(suffix=" to continue printing")
+                for _ in range(3):
+                    print("\033[F\033[K", end="")
+        press_any_key()
 
 
 def _format_player_specs(player_specs: list) -> list[str]:
@@ -200,12 +206,14 @@ def _format_lists(json_text: str, max_length: int = MAX_PRINT_WIDTH - 8) -> str:
         values = m.group(2)
         comma = m.group(3) or ""
         items = [v.strip() for v in values.split(",") if v.strip()]
-        # Special case: keys containing 'coords' always inline, indented, no leading newline
-        if "coords" in key:
+        # Special cases
+        SPECIAL_KEYS = ("coords", "resources")  # Add more as needed
+        if any(special in key for special in SPECIAL_KEYS):
             list_str = "[" + ", ".join(items) + "]"
             leading_ws = re.match(r"^(\s*)", key).group(1)
             key_clean = key.replace("\n", "").strip()
             return f"{leading_ws}{key_clean} {list_str}{comma}"
+        # Single-digit numbers (e.g., bits)
         if all(v.isdigit() and len(v) == 1 for v in items):
             list_str = "[" + ", ".join(items) + "]"
             # Calculate the full line length including indentation, key, space, list, and comma
