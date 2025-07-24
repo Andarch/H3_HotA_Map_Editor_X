@@ -47,9 +47,9 @@ class Color(Enum):
     BLUE = "\033[94m"
     MAGENTA1 = "\033[95m"
     CYAN = "\033[96m"
+    CYAN_FAINT = "\033[96;2m"
     WHITE = "\033[97m"
-    GREY1 = "\033[90m"
-    GREY2 = "\033[90;2m"
+    GREY = "\033[90m"
 
 
 class Sleep(Enum):
@@ -122,8 +122,8 @@ def _redraw_screen() -> None:
 
     draw_header()
 
-    for type, text, align, menu_num, menu_width in _screen_cache:
-        xprint(type, text, align, menu_num, menu_width)
+    for type, text, info_color, align, overwrite, skip_line, menu_num, menu_width, menu in _screen_cache:
+        xprint(type, text, info_color, align, overwrite, skip_line, menu_num, menu_width, menu)
 
     _redrawing_screen = False
 
@@ -139,14 +139,14 @@ def draw_header() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
     # Build header
-    header_pattern_row = fill_header_row(fill_color=Color.GREY2.value, fill="#")
-    header_appname_row = fill_header_row(fill_color=Color.GREY2.value, fill="#", text=APPNAME)
-    header_version_row = fill_header_row(fill_color=Color.GREY2.value, fill="#", text=VERSION)
+    header_pattern_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#")
+    header_appname_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#", text=APPNAME)
+    header_version_row = fill_header_row(fill_color=Color.GREY.value + Color.FAINT.value, fill="#", text=VERSION)
 
     # Build subheader
     mapname = map_data["map_specs"]["map_name"] if map_data else "No map"
     mapfile = map_data["filename"] if map_data else "loaded"
-    subheader_pattern_row = fill_header_row(fill_color=Color.GREY1.value, fill="-")
+    subheader_pattern_row = fill_header_row(fill_color=Color.GREY.value, fill="-")
     subheader_mapname_row = f"{Color.MAGENTA1.value}{mapname}{Color.RESET.value}"
     subheader_mapfile_row = f"{Color.MAGENTA2.value}{mapfile}{Color.RESET.value}"
 
@@ -190,21 +190,21 @@ def fill_header_row(fill_color: str, fill: str, text: str = "") -> str:
 
 
 def xprint(
-    type=Text.NORMAL,
-    text="",
-    align=Align.LEFT,
-    overwrite=0,
-    skipline=False,
-    menu_num=-1,
-    menu_width=0,
-    menu={},
+    type: int = Text.NORMAL,
+    text: str = "",
+    align: int = Align.LEFT,
+    overwrite: int = 0,
+    skip_line: bool = False,
+    menu_num: int = -1,
+    menu_width: int = 0,
+    menu: dict = {},
 ) -> Union[None, Union[int, str]]:
     def main() -> Union[None, Union[int, str]]:
         global _screen_cache
         if menu:
             return menu_prompt(menu)
         if not _redrawing_screen and type != Text.HEADER:
-            _screen_cache.append((type, text, align, menu_num, menu_width))
+            _screen_cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
         match type:
             case Text.NORMAL:
                 if overwrite > 0:
@@ -213,6 +213,7 @@ def xprint(
                         print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
+                # print(f"info_color literal: {repr(info_color)}")
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
             case Text.MENU:
                 print(
@@ -249,7 +250,7 @@ def xprint(
                         print("\033[F\033[K", end="")
                 match align:
                     case Align.LEFT:
-                        if skipline:
+                        if skip_line:
                             xprint()
                         print(align_text(text=f"{Color.RED.value}Error: {text}{Color.RESET.value}"))
                     case Align.FLUSH:
