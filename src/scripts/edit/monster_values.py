@@ -1,6 +1,6 @@
 import data.objects as objects
 
-from ...common import DONE, Text, map_data, press_any_key, xprint
+from ...common import DONE, Text, map_data, wait_for_keypress, xprint
 
 
 def set_compliant_monster_values() -> None:
@@ -30,4 +30,4 @@ def set_compliant_monster_values() -> None:
     xprint(type=Text.SPECIAL, text=DONE)
     xprint(type=Text.INFO, text=f"\nUpdated {count} objects.")
 
-    press_any_key()
+    wait_for_keypress()

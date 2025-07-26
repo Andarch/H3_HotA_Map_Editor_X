@@ -364,7 +364,7 @@ def is_file_writable(filepath: str) -> bool:
         return False
 
 
-def press_any_key(suffix: str = " to return to the menu") -> int:
+def wait_for_keypress(suffix: str = " to return to the menu") -> int:
     xprint()
     xprint()
     xprint(text=f"{Color.YELLOW.value + Color.FAINT.value}[Press any key{suffix}]{Color.RESET.value}")

@@ -9,7 +9,7 @@ from ..common import (
     Text,
     draw_header,
     map_data,
-    press_any_key,
+    wait_for_keypress,
     xprint,
 )
 from ..menus import Menu

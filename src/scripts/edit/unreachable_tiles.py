@@ -1,4 +1,4 @@
-from ...common import Text, map_data, press_any_key, xprint
+from ...common import Text, map_data, wait_for_keypress, xprint
 
 
 def list_unreachable_tiles() -> None:
@@ -122,4 +122,4 @@ def list_unreachable_tiles() -> None:
     if not unreachable_tiles:
         xprint(type=Text.INFO, text="No unreachable tiles found.")
 
-    press_any_key()
+    wait_for_keypress()
