@@ -78,37 +78,43 @@ def _format_data(m: re.Match) -> str:
     suffix = m.group(4)
 
     cleaned_values = [value.strip() for value in values.split(",") if value.strip()]
-    flattened_data = f"{indent}{prefix}{", ".join(cleaned_values)}{suffix}"
+    flat_values = ", ".join(cleaned_values)
+    result_flat = f"{indent}{prefix}{flat_values}{suffix}"
 
-    if len(flattened_data) > MAX_PRINT_WIDTH:
-        lines = []
+    # 1. Try flat on same line as key
+    if len(result_flat) <= MAX_PRINT_WIDTH:
+        return result_flat
 
-        first_line = f"{indent}{prefix}"
-        lines.append(first_line)
+    # 2. Try hanging flat (list on its own indented line)
+    hanging_prefix = "["
+    idx = prefix.rfind(hanging_prefix)
+    key = prefix[:idx].rstrip()
+    hanging_indent = indent + (" " * 4)
+    hanging_line = f"{hanging_indent}{hanging_prefix}{flat_values}{suffix}"
+    if len(hanging_line) <= MAX_PRINT_WIDTH:
+        result_hanging = f"{indent}{key}\n{hanging_indent}{hanging_prefix}{flat_values}{suffix}"
+        return result_hanging
 
-        hanging_indent = indent + (" " * 4)
-        line = f"\n{hanging_indent}"
-
-        for i, value in enumerate(cleaned_values):
-            is_line_start = line == f"{hanging_indent}"
-            is_last_value = i + 1 == len(cleaned_values)
-            formatted_value = ("" if is_line_start else " ") + value + ("" if is_last_value else ",")
-
-            if len(line) + len(formatted_value) <= MAX_PRINT_WIDTH:
-                line += formatted_value
-            else:
-                lines.append(line)
-                line = f"\n{hanging_indent}{formatted_value}"
-
-            if is_last_value:
-                lines.append(line)
-
-        last_line = f"\n{indent}{suffix}"
-        lines.append(last_line)
-        wrapped_data = "".join(lines)
-        return wrapped_data
-    else:
-        return flattened_data
+    # 3. Wrapped version
+    lines = []
+    first_line = f"{indent}{prefix}"
+    lines.append(first_line)
+    line = f"\n{hanging_indent}"
+    for i, value in enumerate(cleaned_values):
+        is_line_start = line == f"{hanging_indent}"
+        is_last_value = i + 1 == len(cleaned_values)
+        formatted_value = ("" if is_line_start else " ") + value + ("" if is_last_value else ",")
+        if len(line) + len(formatted_value) <= MAX_PRINT_WIDTH:
+            line += formatted_value
+        else:
+            lines.append(line)
+            line = f"\n{hanging_indent}{formatted_value}"
+        if is_last_value:
+            lines.append(line)
+    last_line = f"\n{indent}{suffix}"
+    lines.append(last_line)
+    result_wrapped = "".join(lines)
+    return result_wrapped
 
 
 """
