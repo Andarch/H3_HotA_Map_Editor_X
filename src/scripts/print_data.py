@@ -86,27 +86,27 @@ def _format_data(m: re.Match) -> str:
         first_line = f"{indent}{prefix}"
         lines.append(first_line)
 
-        wrapped_indent = indent + (" " * 4)
-        wrapped_line = f"\n{wrapped_indent}"
+        hanging_indent = indent + (" " * 4)
+        line = f"\n{hanging_indent}"
 
         for i, value in enumerate(cleaned_values):
-            is_line_start = wrapped_line == f"{wrapped_indent}"
+            is_line_start = line == f"{hanging_indent}"
             is_last_value = i + 1 == len(cleaned_values)
-            addition = ("" if is_line_start else " ") + value + ("" if is_last_value else ",")
+            formatted_value = ("" if is_line_start else " ") + value + ("" if is_last_value else ",")
 
-            if len(wrapped_line) + len(addition) <= MAX_PRINT_WIDTH:
-                wrapped_line += addition
+            if len(line) + len(formatted_value) <= MAX_PRINT_WIDTH:
+                line += formatted_value
             else:
-                lines.append(wrapped_line)
-                wrapped_line = f"\n{wrapped_indent}{addition}"
+                lines.append(line)
+                line = f"\n{hanging_indent}{formatted_value}"
 
             if is_last_value:
-                lines.append(wrapped_line)
+                lines.append(line)
 
         last_line = f"\n{indent}{suffix}"
         lines.append(last_line)
-        wrapped = "".join(lines)
-        return wrapped
+        wrapped_data = "".join(lines)
+        return wrapped_data
     else:
         return flattened_data
 
