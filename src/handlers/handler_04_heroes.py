@@ -60,8 +60,9 @@ def parse_hero_data() -> list:
             continue
 
         hero = {
-            "experience": -1,
-            "secondary_custom": False,
+            "has_custom_experience": False,
+            "experience": 0,
+            "has_custom_secondary_skills": False,
             "secondary_skills": [],
             "artifacts_equipped": {},
             "artifacts_backpack": [],
@@ -74,11 +75,12 @@ def parse_hero_data() -> list:
             "level": 1,
         }
 
-        if io.read_int(1):  # Is experience set?
+        hero["has_custom_experience"] = bool(io.read_int(1))
+        if hero["has_custom_experience"]:
             hero["experience"] = io.read_int(4)
 
-        if io.read_int(1):  # Are secondary skills set?
-            hero["secondary_custom"] = True
+        hero["has_custom_secondary_skills"] = bool(io.read_int(1))
+        if hero["has_custom_secondary_skills"]:
             for _ in range(io.read_int(4)):
                 skill = {}
                 skill["id"] = io.read_int(1)
@@ -145,14 +147,14 @@ def write_hero_data(info: list) -> None:
         io.write_int(1, 1)
 
         #
-        if hero["experience"] >= 0:
+        if hero["has_custom_experience"]:
             io.write_int(1, 1)
             io.write_int(hero["experience"], 4)
         else:
             io.write_int(0, 1)
 
         #
-        if hero["secondary_custom"]:
+        if hero["has_custom_secondary_skills"]:
             io.write_int(1, 1)
             io.write_int(len(hero["secondary_skills"]), 4)
 
