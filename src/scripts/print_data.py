@@ -101,7 +101,25 @@ def _format_data(m: re.Match) -> str:
 
 
 def _format_lists(indent: str, list_prefix: str, _list: str, list_suffix: str) -> str:
-    list_items = [item.strip() for item in _list.strip("[]").split(",") if item.strip()]
+    # Split on commas that are not inside dictionaries
+    list_items = []
+    content = _list.strip("[]")
+    brace_level = 0
+    current_item = ""
+    for char in content:
+        if char == "{":
+            brace_level += 1
+        elif char == "}":
+            brace_level -= 1
+        elif char == "," and brace_level == 0:
+            if current_item.strip():
+                list_items.append(current_item.strip())
+            current_item = ""
+            continue
+        current_item += char
+    # Add the last item
+    if current_item.strip():
+        list_items.append(current_item.strip())
 
     if not list_items:
         return f"{indent}{list_prefix}[]{list_suffix}"
