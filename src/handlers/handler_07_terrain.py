@@ -45,45 +45,35 @@ class RoadType(IntEnum):
 
 def parse_terrain(map_specs: dict) -> list:
     info = []
-    tile = {
-        "terrain_type": TerrainType.Dirt,
-        "terrain_sprite": 0,
-        "river_type": RiverType.Empty,
-        "river_sprite": 0,
-        "road_type": RoadType.Empty,
-        "road_sprite": 0,
-        "mirroring": [],
-    }
 
     size = map_specs["map_size"]
     has_underground = map_specs["has_underground"]
     tile_amount = size * size * 2 if has_underground else size * size
 
     for _ in range(tile_amount):  # 7 bytes per tile:
-        tile["terrain_type"] = TerrainType(io.read_int(1))
-        tile["terrain_sprite"] = io.read_int(1)
-        tile["river_type"] = RiverType(io.read_int(1))
-        tile["river_sprite"] = io.read_int(1)
-        tile["road_type"] = RoadType(io.read_int(1))
-        tile["road_sprite"] = io.read_int(1)
-        tile["mirroring"] = io.read_bits(1)
+        tile = {
+            "terrain_type_int": io.read_int(1),
+            "terrain_sprite": io.read_int(1),
+            "river_type_int": io.read_int(1),
+            "river_sprite": io.read_int(1),
+            "road_type_int": io.read_int(1),
+            "road_sprite": io.read_int(1),
+            "mirroring": io.read_bits(1),
+        }
+        tile["terrain_type"] = TerrainType(tile["terrain_type_int"])
+        tile["river_type"] = RiverType(tile["river_type_int"])
+        tile["road_type"] = RoadType(tile["road_type_int"])
         info.append(tile)
-        # info.append(
-        #     [
-        #         TerrainType(io.read_int(1)),  # Byte 1: Terrain type
-        #         io.read_int(1),  # Byte 2: Terrain picture
-        #         RiverType(io.read_int(1)),  # Byte 3: River type
-        #         io.read_int(1),  # Byte 4: River picture
-        #         RoadType(io.read_int(1)),  # Byte 5: Road type
-        #         io.read_int(1),  # Byte 6: Road picture
-        #         io.read_bits(1),  # Byte 7: Tile mirroring
-        #     ]
-        # )
 
     return info
 
 
 def write_terrain(info: list) -> None:
     for tile in info:
-        for i in tile:
-            io.write_int(i, 1)
+        io.write_int(tile["terrain_type_int"], 1)
+        io.write_int(tile["terrain_sprite"], 1)
+        io.write_int(tile["river_type_int"], 1)
+        io.write_int(tile["river_sprite"], 1)
+        io.write_int(tile["road_type_int"], 1)
+        io.write_int(tile["road_sprite"], 1)
+        io.write_bits(tile["mirroring"])
