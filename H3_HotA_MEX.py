@@ -33,9 +33,9 @@ def main(filename: str = None) -> None:
                 case 2:
                     edit_data()
                 case 3:
-                    export_excel(map_data)
+                    export_excel()
                 case 4:
-                    export_json(map_data)
+                    export_json()
                 case 5:
                     generate_minimap(
                         map_data["filename"],

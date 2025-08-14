@@ -6,10 +6,10 @@ from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 
 import data.objects as objects
+from src.scripts import excel
 
 from ..common import DONE, Text, draw_header, map_data, xprint
 from ..file_io import is_file_writable
-from . import excel
 
 # Define columns to remove per category
 _COLUMNS_TO_REMOVE = {
@@ -218,7 +218,10 @@ def export_excel() -> bool:
     return True
 
 
-def _process_data(object_data, events) -> dict:
+def _process_data() -> dict:
+    object_data = map_data["object_data"]
+    events = map_data["events"]
+
     # Categorize objects
     processed_data = {category: [] for category in objects.CATEGORIES.keys()}
 

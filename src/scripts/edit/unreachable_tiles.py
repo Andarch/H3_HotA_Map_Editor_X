@@ -32,7 +32,7 @@ def list_unreachable_tiles() -> None:
             x = i % map_size
             y = i // map_size
             # Terrain type 9 is ROCK, which is impassable
-            if tile[0] == 9:  # ROCK terrain type
+            if tile["terrain_type_int"] == 9:  # ROCK terrain type
                 blocked_tiles[layer].add((x, y))
 
     # Process objects to find blocked tiles and interactive tiles
