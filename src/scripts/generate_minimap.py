@@ -732,18 +732,18 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             if owner is not None:
                 return object_colors[owner]
             elif (x, y) in blocked_tiles[map_layer_index]:
-                return terrain_colors[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                return terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
             else:
-                return terrain_colors[tile[0]]
+                return terrain_colors[tile["terrain_type_int"]]
         elif input == 2:
             if png_name == "base1":
                 if (x, y) in blocked_tiles[map_layer_index]:
-                    return terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                    return terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
                 else:
-                    return terrain_colors_alt[tile[0]]
+                    return terrain_colors_alt[tile["terrain_type_int"]]
             elif png_name == "base2":
                 if owner == OBJECTS.ALL_OTHERS:
-                    color = terrain_colors_alt[TERRAIN(tile[0]) + BLOCKED_OFFSET]
+                    color = terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
                     if color == TERRAIN.BROCK:
                         return transparent
                     return color
