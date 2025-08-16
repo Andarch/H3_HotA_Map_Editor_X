@@ -16,10 +16,10 @@ from ..common import (
 from ..menus import Menu
 
 # Define regex patterns for different data types at module level
-REGEX_LISTS = r'([ \t]*)("[^"]+": )(\[[\s\S]*?\])(,?)'
-REGEX_STRINGS = r'([ \t]*)("[^"]+":) (".*?")(,?)'  # Include quotes in the capture group
+REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
+REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
 REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
-REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^{}]*\})(,?)"  # Only match simple dicts that are array elements
+REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 
 
 def print_data() -> None:
@@ -168,18 +168,27 @@ def _format_lists(indent: str, list_prefix: str, _list: str, list_suffix: str) -
         hanging_flat_final = "\n".join(lines)
         return hanging_flat_final
 
-    # 3. Wrapped version - each item on its own line
+    # 3. Wrapped version - pack items per line up to MAX_PRINT_WIDTH (word-like wrapping)
     lines = [f"{indent}{list_prefix}["]
+    current_line = ""
     for i, list_item in enumerate(list_items):
         is_last_item = i + 1 == len(list_items)
-        item_suffix = "" if is_last_item else ","
-        lines.append(f"{hanging_indent}{list_item}{item_suffix}")
+        token = f"{list_item}{'' if is_last_item else ','}"
+        test_line = token if current_line == "" else f"{current_line} {token}"
+        if len(f"{hanging_indent}{test_line}") <= MAX_PRINT_WIDTH:
+            current_line = test_line
+        else:
+            if current_line:
+                lines.append(f"{hanging_indent}{current_line}")
+            current_line = token
+    if current_line:
+        lines.append(f"{hanging_indent}{current_line}")
     lines.append(f"{indent}]{list_suffix}")
     return "\n".join(lines)
 
 
 def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
-    result_flat = f"{indent}{prefix}{values}{comma}"
+    result_flat = f"{indent}{prefix} {values}{comma}"
 
     # If it fits on one line, return it
     if len(result_flat) <= MAX_PRINT_WIDTH:
