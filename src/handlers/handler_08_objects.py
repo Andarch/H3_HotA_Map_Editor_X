@@ -1198,6 +1198,7 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     obj["start_bytes"] = b""
     obj["owner"] = 255
     obj["color"] = ""
+    obj["has_name"] = False
     obj["name"] = ""
     obj["garrison_guards"] = []
     obj["garrison_formation"] = 0
@@ -1216,7 +1217,8 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     obj["owner"] = io.read_int(1)
     obj["color"] = players.Players(obj["owner"]).name
 
-    if io.read_int(1):  # Is the name set?
+    obj["has_name"] = io.read_int(1)
+    if obj["has_name"]:  # Is the name set?
         obj["name"] = io.read_str(io.read_int(4))
 
     if io.read_int(1):  # Is the garrison customized?
@@ -1252,7 +1254,7 @@ def write_town(obj: dict, random: bool = False) -> None:
     io.write_raw(obj["start_bytes"])
     io.write_int(obj["owner"], 1)
 
-    if "name" != "":
+    if obj["has_name"]:
         io.write_int(1, 1)
         io.write_int(len(obj["name"]), 4)
         io.write_str(obj["name"])
