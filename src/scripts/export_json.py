@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import data.objects as objects
 
-from ..common import DONE, KB, Text, xprint
+from ..common import DONE, KB, Text, map_data, xprint
 from ..menus import Menu
 
 
@@ -14,9 +14,9 @@ class CustomEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def export_json(map_key: dict) -> bool:
-    def main(map_key: dict) -> bool:
-        filename = map_key["filename"]
+def export_json() -> None:
+    def main() -> None:
+        filename = map_data["filename"]
 
         if filename.endswith(".h3m"):
             filename = filename[:-4]
@@ -29,11 +29,14 @@ def export_json(map_key: dict) -> bool:
             return False
         match type:
             case 1:
-                data = map_key
+                data = map_data
             case 2:
-                data = get_hero_data(map_key)
+                data = get_hero_data()
             case 3:
-                data = map_key["terrain"]
+                data = map_data["terrain"]
+            case 4:
+                obj_filter = [objects.ID.Town, objects.ID.Random_Town]
+                data = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
 
         xprint(type=Text.ACTION, text="Exporting JSON file...")
 
@@ -41,8 +44,6 @@ def export_json(map_key: dict) -> bool:
             json.dump(data, f, cls=CustomEncoder, indent=4)
 
         xprint(type=Text.SPECIAL, text=DONE)
-
-        return True
 
     def get_export_type() -> int:
         input = xprint(menu=Menu.JSON.value)
@@ -52,8 +53,8 @@ def export_json(map_key: dict) -> bool:
         else:
             return int(input)
 
-    def get_hero_data(map_key: dict) -> dict:
-        player_specs = deepcopy(map_key["player_specs"])
+    def get_hero_data() -> dict:
+        player_specs = deepcopy(map_data["player_specs"])
         player_specs[:] = [player for player in player_specs if len(player["available_heroes"]) > 0]
 
         for player in player_specs:
@@ -73,12 +74,12 @@ def export_json(map_key: dict) -> bool:
             if "placeholder_heroes" in player:
                 del player["placeholder_heroes"]
 
-        custom_heroes = deepcopy(map_key["starting_heroes"]["custom_heroes"])
+        custom_heroes = deepcopy(map_data["starting_heroes"]["custom_heroes"])
 
-        hero_data = deepcopy(map_key["hero_data"])
+        hero_data = deepcopy(map_data["hero_data"])
         hero_data[:] = [hero for hero in hero_data if len(hero) > 3]
 
-        object_data = deepcopy(map_key["object_data"])
+        object_data = deepcopy(map_data["object_data"])
         object_data[:] = [obj for obj in object_data if obj["id"] in (objects.ID.Hero, objects.ID.Prison)]
 
         final_hero_data = {
@@ -90,4 +91,4 @@ def export_json(map_key: dict) -> bool:
 
         return final_hero_data
 
-    return main(map_key)
+    main()

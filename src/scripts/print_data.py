@@ -2,6 +2,8 @@
 import json
 import re
 
+import data.objects as objects
+
 from ..common import (
     KB,
     MAX_PRINT_WIDTH,
@@ -47,11 +49,24 @@ def print_data() -> None:
                 xprint(text="Loading object defs...")
             case 8:
                 section_name = "object_data"
+                obj_filter = []
                 xprint(text="Loading object data...")
             case 9:
                 section_name = "events"
+            case 0:
+                section_name = "object_data"
+                obj_filter = [objects.ID.Town, objects.ID.Random_Town]
+                xprint(text="Loading town data...")
 
-        data = json.dumps(map_data[section_name], indent=4, default=str)
+        if section_name == "object_data":
+            if not obj_filter:
+                dump_source = map_data["object_data"]
+            else:
+                dump_source = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
+        else:
+            dump_source = map_data[section_name]
+
+        data = json.dumps(dump_source, indent=4, default=str)
 
         # Special case: if the entire section is just an empty list, format it inline
         if data.strip() == "[]":

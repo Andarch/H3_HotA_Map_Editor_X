@@ -28,6 +28,7 @@ class Menu(Enum):
         7: "Object Defs",
         8: "Object Data",
         9: "Events",
+        0: "Towns only",
     }
 
     EDIT = {
@@ -35,15 +36,15 @@ class Menu(Enum):
         2: "Modify towns (research/spells/buildings/events)",
         3: "Reset heroes",
         -1: "",
-        3: "List unreachable tiles",
-        4: "Change random monster 1-7 to any level",
-        5: "Set compliant monster values",
+        4: "List unreachable tiles",
+        5: "Change random monster 1-7 to any level",
+        6: "Set compliant monster values",
     }
 
     LOAD = {1: "Load 1 map", 2: "Load 2 maps"}
     SAVE_A = {1: "Save 1 map", 2: "Save 2 maps"}
     SAVE_B = {1: "Save", 2: "Save as"}
 
-    JSON = {1: "All data", 2: "Hero data", 3: "Terrain data"}
+    JSON = {1: "All data", 2: "Hero data", 3: "Terrain data", 4: "Town data"}
 
     MINIMAP = {1: "Normal", 2: "All layers"}

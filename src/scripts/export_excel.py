@@ -76,7 +76,7 @@ _COLUMNS_TO_REMOVE = {
     ],
     "Monsters": ["type", "start_bytes", "middle_bytes"],
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
-    "Town Events": ["hota_town_event_1", "hota_town_event_2"],
+    "Town Events": ["hota_lvl7b_amount", "hota_unknown_constant"],
     "Global Events": [],  # No columns to remove for global events
     "Artifacts": ["def_id", "id", "sub_id", "type", "has_common", "coords_offset"],
     "Resources": ["def_id", "id", "sub_id", "type", "has_common", "coords_offset"],
