@@ -195,7 +195,6 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
     if " " not in content:
         available_width = MAX_PRINT_WIDTH - len(hanging_indent) - 2  # -2 for quotes
         lines = [f"{indent}{prefix}"]
-
         for i in range(0, len(content), available_width):
             chunk = content[i : i + available_width]
             if i == 0:
@@ -204,14 +203,12 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
                 lines.append(f'\n{hanging_indent}{chunk}"{comma}')
             else:
                 lines.append(f"\n{hanging_indent}{chunk}")
-
         return "".join(lines)
     else:
         # Word-based wrapping for strings with spaces
         words = content.split(" ")
         lines = [f"{indent}{prefix}"]
         current_line = '"'
-
         for word in words:
             test_line = current_line + (" " if current_line != '"' else "") + word
             if len(f"{hanging_indent}{test_line}") <= MAX_PRINT_WIDTH - 1:
@@ -220,9 +217,7 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
                 if current_line:
                     lines.append(f"\n{hanging_indent}{current_line}")
                 current_line = word
-
         lines.append(f'\n{hanging_indent}{current_line}"{comma}')
-
         return "".join(lines)
 
 
