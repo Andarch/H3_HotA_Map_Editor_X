@@ -18,14 +18,16 @@ def edit_data() -> None:
 
     match user_input:
         case 1:
-            modify_towns()
+            modify_towns(events=False)
         case 2:
-            reset_heroes()
+            modify_towns(events=True)
         case 3:
-            list_unreachable_tiles()
+            reset_heroes()
         case 4:
-            set_random_monsters()
+            list_unreachable_tiles()
         case 5:
+            set_random_monsters()
+        case 6:
             set_compliant_monster_values()
 
     xprint()

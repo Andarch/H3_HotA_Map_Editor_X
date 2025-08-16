@@ -3,8 +3,12 @@ import data.objects as objects
 from ...common import DONE, Text, map_data, xprint
 
 
-def modify_towns() -> None:
-    xprint(type=Text.ACTION, text="Enabling all buildings/spells and spell research for all towns...")
+def modify_towns(events: bool = False) -> None:
+    if not events:
+        msg = "Enabling spell research, spells, and buildings for all towns..."
+    else:
+        msg = "Enabling spell research, spells, buildings, and events for all towns..."
+    xprint(type=Text.ACTION, text=msg)
 
     for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Town or obj["id"] == objects.ID.Random_Town:
