@@ -55,8 +55,19 @@ def print_data() -> None:
                 section_name = "events"
             case 0:
                 section_name = "object_data"
-                obj_filter = [objects.ID.Town, objects.ID.Random_Town]
-                xprint(text="Loading town data...")
+                # obj_filter = [objects.ID.Town, objects.ID.Random_Town]
+                # xprint(text="Loading town data...")
+                obj_filter = [
+                    objects.ID.Random_Monster,
+                    # objects.ID.Random_Monster_1,
+                    # objects.ID.Random_Monster_2,
+                    # objects.ID.Random_Monster_3,
+                    # objects.ID.Random_Monster_4,
+                    # objects.ID.Random_Monster_5,
+                    # objects.ID.Random_Monster_6,
+                    # objects.ID.Random_Monster_7,
+                ]
+                xprint(text="Loading random monster data...")
 
         if section_name == "object_data":
             if not obj_filter:

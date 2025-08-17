@@ -16,47 +16,46 @@ from src.scripts.print_data import print_data
 os.chdir("maps")
 
 
-def main(filename: str = None) -> None:
+def main(filename: str) -> None:
     if initialize():
         io.load_map(filename)
-
-        # Main menu
         while True:
-            user_input = xprint(menu=Menu.MAIN.value)
-
-            if user_input == KB.ESC.value:
-                continue
-
-            match user_input:
-                case 1:
-                    print_data()
-                case 2:
-                    edit_data()
-                case 3:
-                    export_excel()
-                case 4:
-                    export_json()
-                case 5:
-                    generate_minimap(
-                        map_data["filename"],
-                        map_data["map_specs"],
-                        map_data["terrain"],
-                        map_data["object_data"],
-                        map_data["object_defs"],
-                    )
-                case 6:
-                    io.load_map(map_data["filename"])
-                case 7:
-                    io.save_map(quicksave=True)
-                case 8:
-                    io.load_map()
-                case 9:
-                    io.save_map()
-                case 0:
-                    exit()
+            _main_menu()
             time.sleep(Sleep.TIC.value)
     else:
         exit()
+
+
+def _main_menu() -> None:
+    keypress = xprint(menu=Menu.MAIN.value)
+
+    match keypress:
+        case 1:
+            print_data()
+        case 2:
+            edit_data()
+        case 3:
+            export_excel()
+        case 4:
+            export_json()
+        case 5:
+            generate_minimap(
+                map_data["filename"],
+                map_data["map_specs"],
+                map_data["terrain"],
+                map_data["object_data"],
+                map_data["object_defs"],
+            )
+        case 6:
+            io.load_map(map_data["filename"])
+        case 7:
+            io.save_map(quicksave=True)
+        case 8:
+            io.load_map()
+        case 9:
+            io.save_map()
+        case 0:
+            exit()
 
 
 if __name__ == "__main__":

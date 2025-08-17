@@ -97,7 +97,7 @@ def load_map(filename: str = None) -> None:
     draw_header()
 
     # Prompt for filename if not provided
-    if not filename:
+    if filename is None:
         user_input = xprint(type=Text.PROMPT, text="Enter the map filename to load")
         if not user_input:
             return False

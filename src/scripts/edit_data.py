@@ -1,7 +1,6 @@
-from src.scripts.edit.modify_towns import modify_towns
+import src.scripts.edit as edit
 from src.scripts.edit.monster_values import set_compliant_monster_values
 from src.scripts.edit.random_monsters import set_random_monsters
-from src.scripts.edit.reset_heroes import reset_heroes
 from src.scripts.edit.unreachable_tiles import list_unreachable_tiles
 
 from ..common import KB, draw_header, xprint
@@ -18,11 +17,11 @@ def edit_data() -> None:
 
     match user_input:
         case 1:
-            modify_towns(events=False)
+            edit.towns.modify(events=False)
         case 2:
-            modify_towns(events=True)
+            edit.towns.modify(events=True)
         case 3:
-            reset_heroes()
+            edit.heroes.modify()
         case 4:
             list_unreachable_tiles()
         case 5:

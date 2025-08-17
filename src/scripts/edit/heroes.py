@@ -4,7 +4,7 @@ import data.objects as objects
 from ...common import DONE, Text, map_data, xprint
 
 
-def reset_heroes() -> None:
+def modify() -> None:
     xprint(type=Text.ACTION, text="Resetting heroes...")
 
     special_heroes = _get_special_heroes()

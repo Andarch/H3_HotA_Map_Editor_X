@@ -2,43 +2,37 @@ import data.objects as objects
 
 from ...common import DONE, Text, map_data, xprint
 
+RANDOM_MONSTER_LEVEL_IDS = [
+    objects.ID.Random_Monster_1,
+    objects.ID.Random_Monster_2,
+    objects.ID.Random_Monster_3,
+    objects.ID.Random_Monster_4,
+    objects.ID.Random_Monster_5,
+    objects.ID.Random_Monster_6,
+    objects.ID.Random_Monster_7,
+]
+
 
 def set_random_monsters() -> None:
     xprint(type=Text.ACTION, text="Setting random monsters 1-7 to any level...")
 
-    # Find the first generic Random Monster to get its properties
-    generic_random_monster = None
+    # Find the first Random Monster (non-level-specific) to get its def_id
+    def_id = None
     for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Random_Monster:
-            generic_random_monster = obj
+            def_id = obj["def_id"]
             break
-
-    if not generic_random_monster:
-        xprint(type=Text.ERROR, text="No generic Random Monster found in map data.")
+    if def_id is None:
+        xprint(text="\n")
+        xprint(type=Text.ERROR, text="No random monster found.")
         return
-
-    # Get the target properties from generic Random Monster
-    target_def_id = generic_random_monster["def_id"]
-    target_id = generic_random_monster["id"]
-    target_sub_id = generic_random_monster["sub_id"]
-
-    # Random Monster IDs to convert (1-7)
-    random_monster_ids = [
-        objects.ID.Random_Monster_1,
-        objects.ID.Random_Monster_2,
-        objects.ID.Random_Monster_3,
-        objects.ID.Random_Monster_4,
-        objects.ID.Random_Monster_5,
-        objects.ID.Random_Monster_6,
-        objects.ID.Random_Monster_7,
-    ]
 
     # Update Random Monster 1-7 objects
     for obj in map_data["object_data"]:
-        if obj["id"] in random_monster_ids:
-            obj["def_id"] = target_def_id
-            obj["id"] = target_id
-            obj["sub_id"] = target_sub_id
+        if obj["id"] in RANDOM_MONSTER_LEVEL_IDS:
+            obj["def_id"] = def_id
+            obj["id"] = objects.ID.Random_Monster
+            obj["sub_id"] = 0
             obj["type"] = "Random Monster"
             obj["subtype"] = "Random Monster"
 

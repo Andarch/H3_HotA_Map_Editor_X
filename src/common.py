@@ -9,6 +9,8 @@ import time
 from enum import Enum
 from typing import Union
 
+from src.menus import Menu
+
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{APPNAME} {VERSION}"
@@ -298,7 +300,7 @@ def xprint(
             return width
 
         def print_menu(menu: dict, width: int) -> list[int]:
-            valid_keys = [KB.ESC.value]
+            valid_keys = [] if menu == Menu.MAIN.value else [KB.ESC.value]
             for key, value in menu.items():
                 if value:
                     valid_keys.append(key)
