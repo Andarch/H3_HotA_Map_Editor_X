@@ -2,10 +2,44 @@ import data.objects as objects
 
 from ...common import DONE, Text, map_data, xprint
 
-TOWNS = [objects.ID.Town, objects.ID.Random_Town]
+TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]
 
-PLAYER_LVL7_AMOUNT = 0  # Note: Max of 666
-AI_LVL7_AMOUNT = 0  # Note: Max of 666
+HUMAN_EVENT_NAME = "[Human Bonus]"
+AI_EVENT_NAME = "[AI Bonus]"
+BOSS_EVENT_NAME = "[Boss Bonus]"
+
+HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
+AI_PLAYERS = HUMAN_PLAYERS
+BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
+
+######## SET THESE VALUES ########
+######## (Maximum = 666) #########
+HUMAN_LVL7_CREATURES = 0
+AI_LVL7_CREATURES = 0
+BOSS_LVL7_CREATURES = 0
+###################################
+###################################
+
+HUMAN_LVL1_CREATURES = HUMAN_LVL7_CREATURES * 15
+HUMAN_LVL2_CREATURES = HUMAN_LVL7_CREATURES * 12.5
+HUMAN_LVL3_CREATURES = HUMAN_LVL7_CREATURES * 10
+HUMAN_LVL4_CREATURES = HUMAN_LVL7_CREATURES * 7.5
+HUMAN_LVL5_CREATURES = HUMAN_LVL7_CREATURES * 5
+HUMAN_LVL6_CREATURES = HUMAN_LVL7_CREATURES * 2.5
+
+AI_LVL1_CREATURES = AI_LVL7_CREATURES * 15
+AI_LVL2_CREATURES = AI_LVL7_CREATURES * 12.5
+AI_LVL3_CREATURES = AI_LVL7_CREATURES * 10
+AI_LVL4_CREATURES = AI_LVL7_CREATURES * 7.5
+AI_LVL5_CREATURES = AI_LVL7_CREATURES * 5
+AI_LVL6_CREATURES = AI_LVL7_CREATURES * 2.5
+
+BOSS_LVL1_CREATURES = BOSS_LVL7_CREATURES * 15
+BOSS_LVL2_CREATURES = BOSS_LVL7_CREATURES * 12.5
+BOSS_LVL3_CREATURES = BOSS_LVL7_CREATURES * 10
+BOSS_LVL4_CREATURES = BOSS_LVL7_CREATURES * 7.5
+BOSS_LVL5_CREATURES = BOSS_LVL7_CREATURES * 5
+BOSS_LVL6_CREATURES = BOSS_LVL7_CREATURES * 2.5
 
 
 def modify_towns(events: bool = False) -> None:
@@ -16,7 +50,7 @@ def modify_towns(events: bool = False) -> None:
     xprint(type=Text.ACTION, text=msg)
 
     for obj in map_data["object_data"]:
-        if obj["id"] in TOWNS:
+        if obj["id"] in TOWN_IDS:
             # Fix blank names
             if obj["name"] == "":
                 obj["has_name"] = False
@@ -40,66 +74,96 @@ def modify_towns(events: bool = False) -> None:
             # If events is true, add events
             if events and obj["owner"] != 255:
                 # Remove existing events
-                obj["events"] = [e for e in obj["events"] if e["name"] != "Player Bonus [H3HOTAMEX]"]
-                obj["events"] = [e for e in obj["events"] if e["name"] != "AI Bonus [H3HOTAMEX]"]
+                obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
+                obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
+                obj["events"] = [e for e in obj["events"] if e["name"] != BOSS_EVENT_NAME]
+                obj["events"] = [e for e in obj["events"] if e["name"] != "AI support"]
 
-                player_event = {
+                human_event = {
                     "isTown": True,
-                    "name": "Player Bonus [H3HOTAMEX]",
+                    "name": HUMAN_EVENT_NAME,
                     "message": "",
                     "resources": [0] * 7,
-                    "apply_to": [1, 1, 1, 1, 1, 1, 1, 0],
+                    "apply_to": HUMAN_PLAYERS,
                     "apply_human": True,
                     "apply_ai": False,
                     "first_occurence": 0,
                     "subsequent_occurences": 7,
                     "trash_bytes": b"\x00" * 16,
                     "allowed_difficulties": 31,
-                    "hota_lvl7b_amount": PLAYER_LVL7_AMOUNT,
+                    "hota_lvl7b_amount": HUMAN_LVL7_CREATURES,
                     "hota_unknown_constant": 44,
                     "hota_special": [0] * 48,
                     "apply_neutral_towns": False,
                     "buildings": [0] * 48,
                     "creatures": [
-                        round(PLAYER_LVL7_AMOUNT * 15),
-                        round(PLAYER_LVL7_AMOUNT * 12.5),
-                        round(PLAYER_LVL7_AMOUNT * 10),
-                        round(PLAYER_LVL7_AMOUNT * 7.5),
-                        round(PLAYER_LVL7_AMOUNT * 5),
-                        round(PLAYER_LVL7_AMOUNT * 2.5),
-                        PLAYER_LVL7_AMOUNT,
+                        HUMAN_LVL1_CREATURES,
+                        HUMAN_LVL2_CREATURES,
+                        HUMAN_LVL3_CREATURES,
+                        HUMAN_LVL4_CREATURES,
+                        HUMAN_LVL5_CREATURES,
+                        HUMAN_LVL6_CREATURES,
+                        HUMAN_LVL7_CREATURES,
                     ],
                     "end_trash": b"\x00" * 4,
                 }
                 ai_event = {
                     "isTown": True,
-                    "name": "AI Bonus [H3HOTAMEX]",
+                    "name": AI_EVENT_NAME,
                     "message": "",
                     "resources": [0] * 7,
-                    "apply_to": [0, 0, 0, 0, 0, 0, 0, 1],
+                    "apply_to": AI_PLAYERS,
                     "apply_human": False,
                     "apply_ai": True,
                     "first_occurence": 0,
                     "subsequent_occurences": 7,
                     "trash_bytes": b"\x00" * 16,
                     "allowed_difficulties": 31,
-                    "hota_lvl7b_amount": AI_LVL7_AMOUNT,
+                    "hota_lvl7b_amount": AI_LVL7_CREATURES,
                     "hota_unknown_constant": 44,
                     "hota_special": [0] * 48,
                     "apply_neutral_towns": False,
                     "buildings": [0] * 48,
                     "creatures": [
-                        round(AI_LVL7_AMOUNT * 15),
-                        round(AI_LVL7_AMOUNT * 12.5),
-                        round(AI_LVL7_AMOUNT * 10),
-                        round(AI_LVL7_AMOUNT * 7.5),
-                        round(AI_LVL7_AMOUNT * 5),
-                        round(AI_LVL7_AMOUNT * 2.5),
-                        AI_LVL7_AMOUNT,
+                        AI_LVL1_CREATURES,
+                        AI_LVL2_CREATURES,
+                        AI_LVL3_CREATURES,
+                        AI_LVL4_CREATURES,
+                        AI_LVL5_CREATURES,
+                        AI_LVL6_CREATURES,
+                        AI_LVL7_CREATURES,
+                    ],
+                    "end_trash": b"\x00" * 4,
+                }
+                boss_event = {
+                    "isTown": True,
+                    "name": AI_EVENT_NAME,
+                    "message": "",
+                    "resources": [0] * 7,
+                    "apply_to": BOSS_PLAYERS,
+                    "apply_human": False,
+                    "apply_ai": True,
+                    "first_occurence": 0,
+                    "subsequent_occurences": 7,
+                    "trash_bytes": b"\x00" * 16,
+                    "allowed_difficulties": 31,
+                    "hota_lvl7b_amount": AI_LVL7_CREATURES,
+                    "hota_unknown_constant": 44,
+                    "hota_special": [0] * 48,
+                    "apply_neutral_towns": False,
+                    "buildings": [0] * 48,
+                    "creatures": [
+                        BOSS_LVL1_CREATURES,
+                        BOSS_LVL2_CREATURES,
+                        BOSS_LVL3_CREATURES,
+                        BOSS_LVL4_CREATURES,
+                        BOSS_LVL5_CREATURES,
+                        BOSS_LVL6_CREATURES,
+                        BOSS_LVL7_CREATURES,
                     ],
                     "end_trash": b"\x00" * 4,
                 }
 
-                obj["events"].extend([player_event, ai_event])
+                obj["events"].extend([human_event, ai_event, boss_event])
 
     xprint(type=Text.SPECIAL, text=DONE)
