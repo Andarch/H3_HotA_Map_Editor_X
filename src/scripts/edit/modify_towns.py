@@ -20,26 +20,26 @@ AI_PLAYERS = HUMAN_PLAYERS
 BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
 ##################################################
 
-HUMAN_LVL1_CREATURES = HUMAN_LVL7_CREATURES * 15
-HUMAN_LVL2_CREATURES = HUMAN_LVL7_CREATURES * 12.5
-HUMAN_LVL3_CREATURES = HUMAN_LVL7_CREATURES * 10
-HUMAN_LVL4_CREATURES = HUMAN_LVL7_CREATURES * 7.5
-HUMAN_LVL5_CREATURES = HUMAN_LVL7_CREATURES * 5
-HUMAN_LVL6_CREATURES = HUMAN_LVL7_CREATURES * 2.5
+HUMAN_LVL1_CREATURES = round(HUMAN_LVL7_CREATURES * 15)
+HUMAN_LVL2_CREATURES = round(HUMAN_LVL7_CREATURES * 12.5)
+HUMAN_LVL3_CREATURES = round(HUMAN_LVL7_CREATURES * 10)
+HUMAN_LVL4_CREATURES = round(HUMAN_LVL7_CREATURES * 7.5)
+HUMAN_LVL5_CREATURES = round(HUMAN_LVL7_CREATURES * 5)
+HUMAN_LVL6_CREATURES = round(HUMAN_LVL7_CREATURES * 2.5)
 
-AI_LVL1_CREATURES = AI_LVL7_CREATURES * 15
-AI_LVL2_CREATURES = AI_LVL7_CREATURES * 12.5
-AI_LVL3_CREATURES = AI_LVL7_CREATURES * 10
-AI_LVL4_CREATURES = AI_LVL7_CREATURES * 7.5
-AI_LVL5_CREATURES = AI_LVL7_CREATURES * 5
-AI_LVL6_CREATURES = AI_LVL7_CREATURES * 2.5
+AI_LVL1_CREATURES = round(AI_LVL7_CREATURES * 15)
+AI_LVL2_CREATURES = round(AI_LVL7_CREATURES * 12.5)
+AI_LVL3_CREATURES = round(AI_LVL7_CREATURES * 10)
+AI_LVL4_CREATURES = round(AI_LVL7_CREATURES * 7.5)
+AI_LVL5_CREATURES = round(AI_LVL7_CREATURES * 5)
+AI_LVL6_CREATURES = round(AI_LVL7_CREATURES * 2.5)
 
-BOSS_LVL1_CREATURES = BOSS_LVL7_CREATURES * 15
-BOSS_LVL2_CREATURES = BOSS_LVL7_CREATURES * 12.5
-BOSS_LVL3_CREATURES = BOSS_LVL7_CREATURES * 10
-BOSS_LVL4_CREATURES = BOSS_LVL7_CREATURES * 7.5
-BOSS_LVL5_CREATURES = BOSS_LVL7_CREATURES * 5
-BOSS_LVL6_CREATURES = BOSS_LVL7_CREATURES * 2.5
+BOSS_LVL1_CREATURES = round(BOSS_LVL7_CREATURES * 15)
+BOSS_LVL2_CREATURES = round(BOSS_LVL7_CREATURES * 12.5)
+BOSS_LVL3_CREATURES = round(BOSS_LVL7_CREATURES * 10)
+BOSS_LVL4_CREATURES = round(BOSS_LVL7_CREATURES * 7.5)
+BOSS_LVL5_CREATURES = round(BOSS_LVL7_CREATURES * 5)
+BOSS_LVL6_CREATURES = round(BOSS_LVL7_CREATURES * 2.5)
 
 
 def modify_towns(events: bool = False) -> None:
@@ -71,68 +71,69 @@ def modify_towns(events: bool = False) -> None:
             else:
                 obj["has_fort"] = True
 
-            # If events is true, add events
+            # Add events
             if events and obj["owner"] != 255:
                 # Remove existing events
                 obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != BOSS_EVENT_NAME]
-                obj["events"] = [e for e in obj["events"] if e["name"] != "AI support"]
 
-                human_event = _get_event(
-                    name=HUMAN_EVENT_NAME,
-                    players=HUMAN_PLAYERS,
-                    human=True,
-                    ai=False,
-                    lvl7b_creature_amount=HUMAN_LVL7_CREATURES,
-                    creatures=[
-                        HUMAN_LVL1_CREATURES,
-                        HUMAN_LVL2_CREATURES,
-                        HUMAN_LVL3_CREATURES,
-                        HUMAN_LVL4_CREATURES,
-                        HUMAN_LVL5_CREATURES,
-                        HUMAN_LVL6_CREATURES,
-                        HUMAN_LVL7_CREATURES,
-                    ],
-                )
+                if HUMAN_PLAYERS[obj["owner"]]:
+                    human_event = _get_event(
+                        name=HUMAN_EVENT_NAME,
+                        players=HUMAN_PLAYERS,
+                        human=True,
+                        ai=False,
+                        lvl7b_creature_amount=HUMAN_LVL7_CREATURES,
+                        creatures=[
+                            HUMAN_LVL1_CREATURES,
+                            HUMAN_LVL2_CREATURES,
+                            HUMAN_LVL3_CREATURES,
+                            HUMAN_LVL4_CREATURES,
+                            HUMAN_LVL5_CREATURES,
+                            HUMAN_LVL6_CREATURES,
+                            HUMAN_LVL7_CREATURES,
+                        ],
+                    )
+                    obj["events"].extend([human_event])
 
-                ai_event = _get_event(
-                    name=AI_EVENT_NAME,
-                    players=AI_PLAYERS,
-                    human=False,
-                    ai=True,
-                    lvl7b_creature_amount=AI_LVL7_CREATURES,
-                    creatures=[
-                        AI_LVL1_CREATURES,
-                        AI_LVL2_CREATURES,
-                        AI_LVL3_CREATURES,
-                        AI_LVL4_CREATURES,
-                        AI_LVL5_CREATURES,
-                        AI_LVL6_CREATURES,
-                        AI_LVL7_CREATURES,
-                    ],
-                )
+                if AI_PLAYERS[obj["owner"]]:
+                    ai_event = _get_event(
+                        name=AI_EVENT_NAME,
+                        players=AI_PLAYERS,
+                        human=False,
+                        ai=True,
+                        lvl7b_creature_amount=AI_LVL7_CREATURES,
+                        creatures=[
+                            AI_LVL1_CREATURES,
+                            AI_LVL2_CREATURES,
+                            AI_LVL3_CREATURES,
+                            AI_LVL4_CREATURES,
+                            AI_LVL5_CREATURES,
+                            AI_LVL6_CREATURES,
+                            AI_LVL7_CREATURES,
+                        ],
+                    )
+                    obj["events"].extend([ai_event])
 
-                boss_event = _get_event(
-                    name=BOSS_EVENT_NAME,
-                    players=BOSS_PLAYERS,
-                    human=False,
-                    ai=True,
-                    lvl7b_creature_amount=BOSS_LVL7_CREATURES,
-                    creatures=[
-                        BOSS_LVL1_CREATURES,
-                        BOSS_LVL2_CREATURES,
-                        BOSS_LVL3_CREATURES,
-                        BOSS_LVL4_CREATURES,
-                        BOSS_LVL5_CREATURES,
-                        BOSS_LVL6_CREATURES,
-                        BOSS_LVL7_CREATURES,
-                    ],
-                )
-
-                obj["events"].extend(human_event)
-                obj["events"].extend(ai_event)
-                obj["events"].extend(boss_event)
+                if BOSS_PLAYERS[obj["owner"]]:
+                    boss_event = _get_event(
+                        name=BOSS_EVENT_NAME,
+                        players=BOSS_PLAYERS,
+                        human=False,
+                        ai=True,
+                        lvl7b_creature_amount=BOSS_LVL7_CREATURES,
+                        creatures=[
+                            BOSS_LVL1_CREATURES,
+                            BOSS_LVL2_CREATURES,
+                            BOSS_LVL3_CREATURES,
+                            BOSS_LVL4_CREATURES,
+                            BOSS_LVL5_CREATURES,
+                            BOSS_LVL6_CREATURES,
+                            BOSS_LVL7_CREATURES,
+                        ],
+                    )
+                    obj["events"].extend([boss_event])
 
     xprint(type=Text.SPECIAL, text=DONE)
 
