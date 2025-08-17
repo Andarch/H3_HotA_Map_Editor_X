@@ -115,10 +115,10 @@ def _format_data(m: re.Match) -> str:
         return m.group(0)  # Fallback - return unchanged
 
 
-def _format_lists(indent: str, list_prefix: str, _list: str, list_suffix: str) -> str:
+def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -> str:
     # Split on commas that are not inside dictionaries
     list_items = []
-    content = _list.strip("[]")
+    content = list_.strip("[]")
     brace_level = 0
     current_item = ""
     for char in content:
@@ -146,7 +146,7 @@ def _format_lists(indent: str, list_prefix: str, _list: str, list_suffix: str) -
             list_contains_dicts = False
             break
     if list_contains_dicts:
-        original_format = f"{indent}{list_prefix}{_list}{list_suffix}"
+        original_format = f"{indent}{list_prefix}{list_}{list_suffix}"
         return original_format
 
     # Define for #1 and #2
