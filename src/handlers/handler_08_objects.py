@@ -1119,19 +1119,10 @@ def write_lean_to(obj: dict) -> None:
     io.write_int(1, 5)
 
 
-class Disposition(IntEnum):
-    Compliant = 0
-    Friendly = 1
-    Aggressive = 2
-    Hostile = 3
-    Savage = 4
-    Precise = 5
-
-
 def parse_monster(obj: dict) -> dict:
     obj["start_bytes"] = io.read_raw(4)
     obj["quantity"] = io.read_int(2)
-    obj["disposition"] = Disposition(io.read_int(1))
+    obj["disposition"] = creatures.Disposition(io.read_int(1))
 
     if io.read_int(1):
         obj["message"] = io.read_str(io.read_int(4))

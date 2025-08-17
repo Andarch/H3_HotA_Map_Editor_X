@@ -23,8 +23,7 @@ def set_random_monsters() -> None:
             def_id = obj["def_id"]
             break
     if def_id is None:
-        xprint(text="\n")
-        xprint(type=Text.ERROR, text="No random monster found.")
+        xprint(type=Text.ERROR, text="No random monster found.", skip_line=True)
         return
 
     # Update Random Monster 1-7 objects

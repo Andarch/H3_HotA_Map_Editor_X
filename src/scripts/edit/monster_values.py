@@ -1,3 +1,4 @@
+import data.creatures as creatures
 import data.objects as objects
 
 from ...common import DONE, Text, map_data, wait_for_keypress, xprint
@@ -8,10 +9,11 @@ def set_compliant_monster_values() -> None:
 
     count = 0
     for obj in map_data["object_data"]:
-        # Check if this is a monster (id 54) with zone_type "Player" and disposition "Compliant"
         if (
-            obj.get("id") == objects.ID.Monster and obj.get("zone_type") == "Player" and obj.get("disposition") == 0
-        ):  # Disposition.Compliant = 0
+            obj.get("id") == objects.ID.Monster
+            and obj.get("zone_type") == "Player"
+            and obj.get("disposition") == creatures.Disposition.Compliant
+        ):
 
             match obj["ai_value"]:
                 case 1000:

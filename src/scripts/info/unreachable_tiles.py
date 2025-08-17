@@ -117,9 +117,12 @@ def list_unreachable_tiles() -> None:
                         tile_type = " (Interactive)" if is_interactive else ""
                         coords = f"[{x}, {y}, {layer}] ({layer_name}){tile_type}"
                         unreachable_tiles.append(coords)
-                        xprint(type=Text.INFO, text=coords)
 
-    if not unreachable_tiles:
-        xprint(type=Text.INFO, text="No unreachable tiles found.")
+    if unreachable_tiles:
+        xprint(overwrite=3)
+        for coords in unreachable_tiles:
+            xprint(type=Text.INFO, text=coords)
+    else:
+        xprint(type=Text.ERROR, text="No unreachable tiles found.", skip_line=True)
 
     wait_for_keypress()

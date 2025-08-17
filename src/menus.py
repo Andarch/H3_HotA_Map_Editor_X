@@ -28,17 +28,18 @@ class Menu(Enum):
         7: "Object Defs",
         8: "Object Data",
         9: "Events",
-        0: "Random monsters only",
+        -1: "",
+        0: "Unreachable tiles",
     }
 
     EDIT = {
-        1: "Modify towns (research/spells/buildings)",
-        2: "Modify towns (research/spells/buildings/events)",
-        3: "Reset heroes",
+        1: "Towns: Enable spell research, spells, and buildings",
+        2: "Towns: Create events",
         -1: "",
-        4: "List unreachable tiles",
-        5: "Change random monster 1-7 to any level",
-        6: "Set compliant monster values",
+        3: "Heroes: Reset identity details",
+        -2: "",
+        4: "Change random monster 1-7 to any level",
+        5: "Set compliant monster values",
     }
 
     LOAD = {1: "Load 1 map", 2: "Load 2 maps"}

@@ -1,10 +1,7 @@
-# import pprint
 import json
 import re
 
-import data.objects as objects
-
-from ..common import (
+from ...common import (
     KB,
     MAX_PRINT_WIDTH,
     Text,
@@ -13,7 +10,8 @@ from ..common import (
     wait_for_keypress,
     xprint,
 )
-from ..menus import Menu
+from ...menus import Menu
+from .unreachable_tiles import list_unreachable_tiles
 
 # Define regex patterns for different data types at module level
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
@@ -22,7 +20,7 @@ REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
 REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 
 
-def print_data() -> None:
+def main() -> None:
     while True:
         user_input = xprint(menu=Menu.INFO.value)
         if user_input == KB.ESC.value:
@@ -42,42 +40,32 @@ def print_data() -> None:
             case 5:
                 section_name = "hero_data"
             case 6:
-                section_name = "terrain"
                 xprint(text="Loading terrain data...")
+                section_name = "terrain"
             case 7:
-                section_name = "object_defs"
                 xprint(text="Loading object defs...")
+                section_name = "object_defs"
             case 8:
+                xprint(text="Loading object data...")
                 section_name = "object_data"
                 obj_filter = []
-                xprint(text="Loading object data...")
             case 9:
                 section_name = "events"
             case 0:
-                section_name = "object_data"
-                # obj_filter = [objects.ID.Town, objects.ID.Random_Town]
-                # xprint(text="Loading town data...")
-                obj_filter = [
-                    objects.ID.Random_Monster,
-                    # objects.ID.Random_Monster_1,
-                    # objects.ID.Random_Monster_2,
-                    # objects.ID.Random_Monster_3,
-                    # objects.ID.Random_Monster_4,
-                    # objects.ID.Random_Monster_5,
-                    # objects.ID.Random_Monster_6,
-                    # objects.ID.Random_Monster_7,
-                ]
-                xprint(text="Loading random monster data...")
+                list_unreachable_tiles()
+                continue
 
+        # Apply filter
         if section_name == "object_data":
             if not obj_filter:
-                dump_source = map_data["object_data"]
+                data = map_data["object_data"]
             else:
-                dump_source = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
+                data = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
         else:
-            dump_source = map_data[section_name]
+            data = map_data[section_name]
 
-        data = json.dumps(dump_source, indent=4, default=str)
+        # Perform JSON dump
+        data = json.dumps(data, indent=4, default=str)
 
         # Special case: if the entire section is just an empty list, format it inline
         if data.strip() == "[]":
@@ -91,20 +79,22 @@ def print_data() -> None:
         data = re.sub(REGEX_STRINGS, _format_data, data)
         data = re.sub(REGEX_DICTS, _format_data, data)
 
+        # Special case: clear loading message
+        if section_name in ["terrain", "object_defs", "object_data"]:
+            xprint(overwrite=2)
+
+        # Print formatted data
         lines_printed = 0
         lines = [f'"{section_name}":'] + data.splitlines()
-
         for line in lines:
             xprint(type=Text.INFO, text=line)
             lines_printed += 1
-
             if lines_printed % 100 == 0:
                 user_input = wait_for_keypress(suffix=" to continue printing")
                 if user_input == KB.ESC.value:
                     break
                 for _ in range(3):
                     print("\033[F\033[K", end="")
-
             if lines_printed == len(lines):
                 wait_for_keypress()
 
