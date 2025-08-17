@@ -1,4 +1,5 @@
 import data.objects as objects
+from data.players import Players
 
 from ...common import DONE, Text, map_data, xprint
 
@@ -72,7 +73,7 @@ def modify_towns(events: bool = False) -> None:
                 obj["has_fort"] = True
 
             # Add events
-            if events and obj["owner"] != 255:
+            if events and obj["owner"] != Players.Neutral:
                 # Remove existing events
                 obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
@@ -85,7 +86,7 @@ def modify_towns(events: bool = False) -> None:
                         players=HUMAN_PLAYERS,
                         human=True,
                         ai=False,
-                        lvl7b_creatures=HUMAN_LVL7_CREATURES,
+                        lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
                         random_buildings=[0] * 48,
                         buildings=[0] * 48,
                         creatures=[
@@ -107,7 +108,7 @@ def modify_towns(events: bool = False) -> None:
                         players=AI_PLAYERS,
                         human=False,
                         ai=True,
-                        lvl7b_creatures=AI_LVL7_CREATURES,
+                        lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
                         random_buildings=[1] * 48,
                         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                         creatures=[
@@ -129,7 +130,7 @@ def modify_towns(events: bool = False) -> None:
                         players=BOSS_PLAYERS,
                         human=False,
                         ai=True,
-                        lvl7b_creatures=BOSS_LVL7_CREATURES,
+                        lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
                         random_buildings=[1] * 48,
                         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                         creatures=[
