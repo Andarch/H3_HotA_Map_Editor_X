@@ -172,26 +172,26 @@ def save_map(quicksave: bool = False) -> bool:
     if not filename or not is_file_writable(filename):
         return False
 
-    # Create backup if filename matches the current map
-    if filename == map_data["filename"]:
-        backup_dir = "backups"
-        base_name = os.path.basename(map_data["filename"][:-4])
-        backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith(".h3m")]
-        next_suffix = 0
+    ## Create backup if filename matches the current map
+    # if filename == map_data["filename"]:
+    #     backup_dir = "backups"
+    #     base_name = os.path.basename(map_data["filename"][:-4])
+    #     backup_files = [f for f in os.listdir(backup_dir) if f.startswith(base_name) and f.endswith(".h3m")]
+    #     next_suffix = 0
 
-        if backup_files:
-            suffixes = [int(f.split("_")[-1].split(".")[0]) for f in backup_files]
-            next_suffix = max(suffixes) + 1
+    #     if backup_files:
+    #         suffixes = [int(f.split("_")[-1].split(".")[0]) for f in backup_files]
+    #         next_suffix = max(suffixes) + 1
 
-        backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")
+    #     backup_filename = os.path.join(backup_dir, f"{base_name}_{next_suffix:04d}.h3m")
 
-        try:
-            xprint(type=Text.ACTION, text=f"Creating {backup_filename}...")
-            shutil.copy2(map_data["filename"], backup_filename)
-            xprint(type=Text.SPECIAL, text=DONE)
-            xprint()
-        except Exception as e:
-            xprint(type=Text.ERROR, text=f"Failed to create backup: {e}")
+    #     try:
+    #         xprint(type=Text.ACTION, text=f"Creating {backup_filename}...")
+    #         shutil.copy2(map_data["filename"], backup_filename)
+    #         xprint(type=Text.SPECIAL, text=DONE)
+    #         xprint()
+    #     except Exception as e:
+    #         xprint(type=Text.ERROR, text=f"Failed to create backup: {e}")
 
     xprint(type=Text.ACTION, text=f"Saving {filename}...")
 
