@@ -79,24 +79,13 @@ def modify_towns(events: bool = False) -> None:
                 obj["events"] = [e for e in obj["events"] if e["name"] != BOSS_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != "AI support"]
 
-                human_event = {
-                    "isTown": True,
-                    "name": HUMAN_EVENT_NAME,
-                    "message": "",
-                    "resources": [0] * 7,
-                    "apply_to": HUMAN_PLAYERS,
-                    "apply_human": True,
-                    "apply_ai": False,
-                    "first_occurence": 0,
-                    "subsequent_occurences": 7,
-                    "trash_bytes": b"\x00" * 16,
-                    "allowed_difficulties": 31,
-                    "hota_lvl7b_amount": HUMAN_LVL7_CREATURES,
-                    "hota_unknown_constant": 44,
-                    "hota_special": [0] * 48,
-                    "apply_neutral_towns": False,
-                    "buildings": [0] * 48,
-                    "creatures": [
+                human_event = _get_event(
+                    name=HUMAN_EVENT_NAME,
+                    players=HUMAN_PLAYERS,
+                    human=True,
+                    ai=False,
+                    lvl7b_creature_amount=HUMAN_LVL7_CREATURES,
+                    creatures=[
                         HUMAN_LVL1_CREATURES,
                         HUMAN_LVL2_CREATURES,
                         HUMAN_LVL3_CREATURES,
@@ -105,26 +94,15 @@ def modify_towns(events: bool = False) -> None:
                         HUMAN_LVL6_CREATURES,
                         HUMAN_LVL7_CREATURES,
                     ],
-                    "end_trash": b"\x00" * 4,
-                }
-                ai_event = {
-                    "isTown": True,
-                    "name": AI_EVENT_NAME,
-                    "message": "",
-                    "resources": [0] * 7,
-                    "apply_to": AI_PLAYERS,
-                    "apply_human": False,
-                    "apply_ai": True,
-                    "first_occurence": 0,
-                    "subsequent_occurences": 7,
-                    "trash_bytes": b"\x00" * 16,
-                    "allowed_difficulties": 31,
-                    "hota_lvl7b_amount": AI_LVL7_CREATURES,
-                    "hota_unknown_constant": 44,
-                    "hota_special": [0] * 48,
-                    "apply_neutral_towns": False,
-                    "buildings": [0] * 48,
-                    "creatures": [
+                )
+
+                ai_event = _get_event(
+                    name=AI_EVENT_NAME,
+                    players=AI_PLAYERS,
+                    human=False,
+                    ai=True,
+                    lvl7b_creature_amount=AI_LVL7_CREATURES,
+                    creatures=[
                         AI_LVL1_CREATURES,
                         AI_LVL2_CREATURES,
                         AI_LVL3_CREATURES,
@@ -133,26 +111,15 @@ def modify_towns(events: bool = False) -> None:
                         AI_LVL6_CREATURES,
                         AI_LVL7_CREATURES,
                     ],
-                    "end_trash": b"\x00" * 4,
-                }
-                boss_event = {
-                    "isTown": True,
-                    "name": AI_EVENT_NAME,
-                    "message": "",
-                    "resources": [0] * 7,
-                    "apply_to": BOSS_PLAYERS,
-                    "apply_human": False,
-                    "apply_ai": True,
-                    "first_occurence": 0,
-                    "subsequent_occurences": 7,
-                    "trash_bytes": b"\x00" * 16,
-                    "allowed_difficulties": 31,
-                    "hota_lvl7b_amount": AI_LVL7_CREATURES,
-                    "hota_unknown_constant": 44,
-                    "hota_special": [0] * 48,
-                    "apply_neutral_towns": False,
-                    "buildings": [0] * 48,
-                    "creatures": [
+                )
+
+                boss_event = _get_event(
+                    name=BOSS_EVENT_NAME,
+                    players=BOSS_PLAYERS,
+                    human=False,
+                    ai=True,
+                    lvl7b_creature_amount=BOSS_LVL7_CREATURES,
+                    creatures=[
                         BOSS_LVL1_CREATURES,
                         BOSS_LVL2_CREATURES,
                         BOSS_LVL3_CREATURES,
@@ -161,9 +128,31 @@ def modify_towns(events: bool = False) -> None:
                         BOSS_LVL6_CREATURES,
                         BOSS_LVL7_CREATURES,
                     ],
-                    "end_trash": b"\x00" * 4,
-                }
+                )
 
                 obj["events"].extend([human_event, ai_event, boss_event])
 
     xprint(type=Text.SPECIAL, text=DONE)
+
+
+def _get_event(name: str, players: list, human: bool, ai: bool, lvl7b_creature_amount: int, creatures: list) -> dict:
+    return {
+        "isTown": True,
+        "name": name,
+        "message": "",
+        "resources": [0] * 7,
+        "apply_to": players,
+        "apply_human": human,
+        "apply_ai": ai,
+        "first_occurence": 0,
+        "subsequent_occurences": 7,
+        "trash_bytes": b"\x00" * 16,
+        "allowed_difficulties": 31,
+        "hota_lvl7b_amount": lvl7b_creature_amount,
+        "hota_unknown_constant": 44,
+        "hota_special": [0] * 48,
+        "apply_neutral_towns": False,
+        "buildings": [0] * 48,
+        "creatures": creatures,
+        "end_trash": b"\x00" * 4,
+    }
