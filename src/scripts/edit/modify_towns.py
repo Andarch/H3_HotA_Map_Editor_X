@@ -9,8 +9,6 @@ AI_EVENT_NAME = "[AI Bonus]"
 BOSS_EVENT_NAME = "[Boss Bonus]"
 
 ##################################################
-##################################################
-
 # Set lvl7 creature bonus amounts (max 666 each)
 HUMAN_LVL7_CREATURES = 10
 AI_LVL7_CREATURES = 20
@@ -20,8 +18,6 @@ BOSS_LVL7_CREATURES = 50
 HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
 AI_PLAYERS = HUMAN_PLAYERS
 BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
-
-##################################################
 ##################################################
 
 HUMAN_LVL1_CREATURES = HUMAN_LVL7_CREATURES * 15
