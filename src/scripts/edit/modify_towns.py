@@ -8,17 +8,21 @@ HUMAN_EVENT_NAME = "[Human Bonus]"
 AI_EVENT_NAME = "[AI Bonus]"
 BOSS_EVENT_NAME = "[Boss Bonus]"
 
+##################################################
+##################################################
+
+# Set lvl7 creature bonus amounts (max 666 each)
+HUMAN_LVL7_CREATURES = 10
+AI_LVL7_CREATURES = 20
+BOSS_LVL7_CREATURES = 50
+
+# Set player colors (customize AI if necessary)
 HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
 AI_PLAYERS = HUMAN_PLAYERS
 BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
 
-######## SET THESE VALUES ########
-######## (Maximum = 666) #########
-HUMAN_LVL7_CREATURES = 0
-AI_LVL7_CREATURES = 0
-BOSS_LVL7_CREATURES = 0
-###################################
-###################################
+##################################################
+##################################################
 
 HUMAN_LVL1_CREATURES = HUMAN_LVL7_CREATURES * 15
 HUMAN_LVL2_CREATURES = HUMAN_LVL7_CREATURES * 12.5
@@ -130,7 +134,9 @@ def modify_towns(events: bool = False) -> None:
                     ],
                 )
 
-                obj["events"].extend([human_event, ai_event, boss_event])
+                obj["events"].extend(human_event)
+                obj["events"].extend(ai_event)
+                obj["events"].extend(boss_event)
 
     xprint(type=Text.SPECIAL, text=DONE)
 
