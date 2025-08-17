@@ -78,6 +78,8 @@ def modify_towns(events: bool = False) -> None:
                 obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
                 obj["events"] = [e for e in obj["events"] if e["name"] != BOSS_EVENT_NAME]
+                # Add lines for map-specific events to remove permanently like this:
+                # obj["events"] = [e for e in obj["events"] if e["name"] != "AI support"]
 
                 # Create human event
                 if HUMAN_PLAYERS[obj["owner"]]:
