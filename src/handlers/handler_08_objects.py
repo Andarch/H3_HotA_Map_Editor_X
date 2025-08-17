@@ -1254,12 +1254,11 @@ def write_town(obj: dict, random: bool = False) -> None:
     io.write_raw(obj["start_bytes"])
     io.write_int(obj["owner"], 1)
 
+    io.write_int(obj["has_name"], 1)
+
     if obj["has_name"]:
-        io.write_int(1, 1)
         io.write_int(len(obj["name"]), 4)
         io.write_str(obj["name"])
-    else:
-        io.write_int(0, 1)
 
     if obj["garrison_guards"]:
         io.write_int(1, 1)
