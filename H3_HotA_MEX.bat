@@ -6,4 +6,4 @@ REM Construct the full path to the Python executable
 set PYTHON_EXEC=%BATCH_DIR%.venv\Scripts\python.exe
 
 REM Run the Python script using the constructed path
-wt -p "{6421bf4b-462c-4064-9559-d3d87176ce08}" --title "H3 HotA Map Editor X" -- "%PYTHON_EXEC%" "%BATCH_DIR%H3_HotA_MEX.py"
+wt -p "{55dee3dc-b1ce-40eb-bb2e-c2a10c342d4b}" --title "H3 HotA Map Editor X" -- "%PYTHON_EXEC%" "%BATCH_DIR%H3_HotA_MEX.py" 

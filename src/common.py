@@ -14,7 +14,7 @@ from src.menus import Menu
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
 TITLE_VERSION = f"{APPNAME} {VERSION}"
-MAX_PRINT_WIDTH = 78
+MAX_PRINT_WIDTH = 80
 DONE = "DONE"
 HIDE_CURSOR = "\033[?25l"
 SHOW_CURSOR = "\033[?25h"
@@ -156,8 +156,8 @@ def draw_header() -> None:
     subheader_mapfile = f"{Color.MAGENTA_FAINT.value}{mapfile}{Color.RESET.value}"
 
     # Print header
-    xprint(type=Text.HEADER, text="")
-    xprint(type=Text.HEADER, text="")
+    # xprint(type=Text.HEADER, text="")
+    # xprint(type=Text.HEADER, text="")
     xprint(type=Text.HEADER, text=header_default)
     xprint(type=Text.HEADER, text=header_default)
     xprint(type=Text.HEADER, text=header_appname)
