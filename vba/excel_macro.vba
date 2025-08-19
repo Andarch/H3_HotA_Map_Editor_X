@@ -291,7 +291,7 @@ SkipColorFormatting:
     Next ws
 
     ' Apply tab color to specified sheets
-    Dim tabsToColor As Variant: tabsToColor = Array("Seers Huts", "Quest Objects", "Event Pickups", _
+    Dim tabsToColor As Variant: tabsToColor = Array("Seers Hut", "Quest Objects", "Event Objects", _
         "Border Objects", "Dwellings", "Mines & Warehouses", "Interactive", "Simple Objects", "Text")
 
     For Each b In tabsToColor

@@ -76,8 +76,6 @@ _COLUMNS_TO_REMOVE = {
     ],
     "Monsters": ["type", "start_bytes", "middle_bytes"],
     "Spells": ["def_id", "id", "sub_id", "type", "contents"],
-    "Town Events": ["hota_lvl7b_amount", "hota_unknown_constant"],
-    "Global Events": [],  # No columns to remove for global events
     "Artifacts": ["def_id", "id", "sub_id", "type", "has_common", "coords_offset"],
     "Resources": ["def_id", "id", "sub_id", "type", "has_common", "coords_offset"],
     "Campfire": ["def_id", "id", "sub_id", "type"],
@@ -220,14 +218,9 @@ def export() -> bool:
 
 def _process_data() -> dict:
     object_data = map_data["object_data"]
-    events = map_data["events"]
 
     # Categorize objects
-    processed_data = {category: [] for category in objects.CATEGORIES.keys()}
-
-    # Add Town Events and Global Events categories - will be populated separately
-    processed_data["Town Events"] = []
-    processed_data["Global Events"] = []
+    categorized_objects = {category: [] for category in objects.CATEGORIES.keys()}
 
     # Step 1: Categorize objects
     for obj in object_data:
@@ -236,11 +229,11 @@ def _process_data() -> dict:
         # Special handling for Border_Gate based on sub_id
         if obj["id"] == objects.ID.Border_Gate:
             if obj["sub_id"] == 1000:  # Quest Gate
-                processed_data["Quest Objects"].append(obj)
+                categorized_objects["Quest Objects"].append(obj)
             elif obj["sub_id"] == 1001:  # Grave - reward giving object
-                processed_data["Grave"].append(obj)
+                categorized_objects["Grave"].append(obj)
             else:  # Regular Border Gate
-                processed_data["Border Objects"].append(obj)
+                categorized_objects["Border Objects"].append(obj)
             categorized = True
         # Special handling for HotA_Collectible based on subtype
         elif obj["id"] == objects.ID.HotA_Collectible:
@@ -256,16 +249,16 @@ def _process_data() -> dict:
             else:
                 subtype_name = str(subtype)
             if subtype_name == "Jetsam":
-                processed_data["Flotsam & Jetsam"].append(obj)
+                categorized_objects["Flotsam & Jetsam"].append(obj)
             elif subtype_name == "Sea Barrel":
-                processed_data["Sea Barrel"].append(obj)
+                categorized_objects["Sea Barrel"].append(obj)
             elif subtype_name == "Vial of Mana":
-                processed_data["Vial of Mana"].append(obj)
+                categorized_objects["Vial of Mana"].append(obj)
             elif subtype_name == "Ancient Lamp":
-                processed_data["Ancient Lamp"].append(obj)
+                categorized_objects["Ancient Lamp"].append(obj)
             else:
                 # Fallback to Simple Objects if unknown subtype
-                processed_data["Simple Objects"].append(obj)
+                categorized_objects["Simple Objects"].append(obj)
             categorized = True
         else:
             # Check each category
@@ -274,19 +267,18 @@ def _process_data() -> dict:
                     # Skip HotA_Collectible here since we handled it specially above
                     if obj["id"] == objects.ID.HotA_Collectible:
                         continue
-                    processed_data[category].append(obj)
+                    categorized_objects[category].append(obj)
                     categorized = True
                     break
 
         # If object doesn't fit any category, add to Simple Objects
         if not categorized:
-            processed_data["Simple Objects"].append(obj)
+            categorized_objects["Simple Objects"].append(obj)
 
     # Step 2: Process each category
-    for category, items in processed_data.items():
-        if category in ["Town Events", "Global Events"]:
-            continue  # Handle these separately after processing towns and global events
+    processed_data = {}
 
+    for category, items in categorized_objects.items():
         if items:
             # Sort objects by ID first, then by sub_id
             items.sort(key=lambda obj: (obj["id"], obj.get("sub_id", 0)))
@@ -330,7 +322,7 @@ def _process_data() -> dict:
                 items = flatten.garrisons.flatten(items)
 
             # Remove unwanted columns (universal + category-specific)
-            cleaned_data = []
+            cleaned_items = []
             columns_to_remove = _COLUMNS_TO_REMOVE.get(category, [])
             for item in items:
                 # Remove _bytes columns (universal) and category-specific columns
@@ -347,39 +339,8 @@ def _process_data() -> dict:
                         cleaned_item[key] = ""
                     else:
                         cleaned_item[key] = value
-                cleaned_data.append(cleaned_item)
+                cleaned_items.append(cleaned_item)
 
-            processed_data[category] = cleaned_data
+            processed_data[category] = cleaned_items
 
-    # Step 3: Extract and process town events
-    town_events = []
-    for obj in object_data:
-        if obj["id"] in [objects.ID.Town, objects.ID.Random_Town] and "events" in obj and obj["events"]:
-            for event in obj["events"]:
-                # Create a flattened event object with town context
-                flattened_event = flatten.town_events.flatten(event, obj)
-                town_events.append(flattened_event)
-
-    processed_data["Town Events"] = town_events
-
-    # Step 4: Process global events
-    global_events = flatten.events.flatten(events or [])
-    processed_data["Global Events"] = global_events
-
-    # Reorder to place Campfires after Resources and before Treasure
-    final_data = {}
-    for key in processed_data.keys():
-        if key == "Resources":
-            final_data[key] = processed_data[key]
-            if "Campfires" in processed_data:
-                final_data["Campfires"] = processed_data["Campfires"]
-        elif key == "Campfires":
-            continue  # Already inserted after Resources
-        elif key == "Towns":
-            final_data[key] = processed_data[key]
-            final_data["Town Events"] = processed_data["Town Events"]
-            final_data["Global Events"] = processed_data["Global Events"]
-        elif key not in ["Town Events", "Global Events"]:
-            final_data[key] = processed_data[key]
-
-    return final_data
+    return processed_data
