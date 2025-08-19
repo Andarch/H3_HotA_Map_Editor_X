@@ -2,10 +2,10 @@ import data.objects as objects
 import data.skills as skills
 import data.spells as spells
 
-from . import sort
+from .. import sort
 
 
-def flatten_scholar(scholars):
+def flatten(scholars):
     rows = []
 
     for obj in scholars:

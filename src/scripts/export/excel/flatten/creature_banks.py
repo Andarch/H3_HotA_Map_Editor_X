@@ -1,10 +1,10 @@
 import data.artifacts as artifacts
 import data.objects as objects
 
-from . import sort
+from .. import sort
 
 
-def flatten_creature_banks(creature_banks):
+def flatten(creature_banks):
     rows = []
 
     for obj in creature_banks:

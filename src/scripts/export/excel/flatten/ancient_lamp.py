@@ -1,20 +1,22 @@
 import data.objects as objects
 
-from . import sort
+from .. import sort
 
 
-def flatten_sea_chest(treasure_objects):
+def flatten(treasure_objects):
     rows = []
 
     for obj in treasure_objects:
         row = {}
-
         row["coords"] = obj.get("coords", "")
         row["zone_type"] = obj.get("zone_type", "")
         row["zone_color"] = obj.get("zone_color", "")
         row["subtype"] = obj.get("subtype", "")
-        row["contents"] = objects.Sea_Chest_Reward(obj.get("contents", "")).name.replace("_", " ")
-
+        row["contents"] = objects.Ancient_Lamp_Reward(obj.get("contents", "")).name.replace("_", " ")
+        if row["contents"] == "Custom":
+            row["amount"] = obj.get("amount", "")
+        else:
+            row["amount"] = ""
         rows.append(row)
 
     rows = sort.sort_by_zone(rows)

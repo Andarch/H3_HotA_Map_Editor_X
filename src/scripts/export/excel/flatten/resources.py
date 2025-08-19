@@ -1,9 +1,9 @@
 import data.objects as objects
 
-from . import sort
+from .. import sort
 
 
-def flatten_resources(resource_objects):
+def flatten(resource_objects):
     flattened = []
 
     for obj in resource_objects:

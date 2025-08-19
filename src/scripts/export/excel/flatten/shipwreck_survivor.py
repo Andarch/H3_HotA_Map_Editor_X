@@ -1,10 +1,10 @@
 import data.artifacts as artifacts
 import data.objects as objects
 
-from . import format, sort
+from .. import format, sort
 
 
-def flatten_shipwreck_survivor(treasure_objects):
+def flatten(treasure_objects):
     rows = []
 
     for obj in treasure_objects:

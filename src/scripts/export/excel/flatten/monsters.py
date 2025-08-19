@@ -1,9 +1,9 @@
 import data.artifacts as artifacts
 
-from . import format, sort
+from .. import format, sort
 
 
-def flatten_monsters(monsters):
+def flatten(monsters):
     flattened = []
 
     for monster in monsters:

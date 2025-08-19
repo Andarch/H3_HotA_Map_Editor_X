@@ -1,5 +1,4 @@
-from . import sort
-from .format import format_number
+from .. import format, sort
 
 RESOURCE_NAMES = {
     0: "Wood",
@@ -16,7 +15,7 @@ RESOURCE_IDS = [0, 1, 2, 3, 4, 5, 6]
 DEFAULT_SETTING = b"\x00\x00\x00\x00\xff\xff\xff\xff"
 
 
-def flatten_campfire(campfires):
+def flatten(campfires):
     rows = []
 
     for obj in campfires:
@@ -34,7 +33,7 @@ def flatten_campfire(campfires):
             res_strs = []
             for res, val in items:
                 res_id = res.value if hasattr(res, "value") else int(res)
-                res_strs.append(f"+{format_number(val, as_text=True)} {RESOURCE_NAMES.get(res_id, str(res_id))}")
+                res_strs.append(f"+{format.format_number(val, as_text=True)} {RESOURCE_NAMES.get(res_id, str(res_id))}")
             row["resources"] = "\n".join(res_strs) if res_strs else ""
         else:
             row["mode"] = "Default"

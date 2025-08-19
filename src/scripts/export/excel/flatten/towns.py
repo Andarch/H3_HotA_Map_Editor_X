@@ -1,9 +1,10 @@
 import data.objects as objects
 import data.spells as spells
-from src.scripts import excel
+
+from .. import format
 
 
-def flatten_towns(objects_list) -> list:
+def flatten(objects_list) -> list:
     flattened_objects = []
 
     for obj in objects_list:
@@ -12,22 +13,20 @@ def flatten_towns(objects_list) -> list:
         for key, value in obj.items():
             # Handle spells_must_appear and spells_cant_appear fields
             if key == "spells_must_appear":
-                flattened_obj["Spells – Always"] = excel.format.format_enum_list(
-                    value, spells.ID, excel.format.SPELL_SPECIAL_CASES
-                )
+                flattened_obj["Spells – Always"] = format.format_enum_list(value, spells.ID, format.SPELL_SPECIAL_CASES)
             elif key == "spells_cant_appear":
-                flattened_obj["Spells – Disabled"] = excel.format.format_enum_list(
-                    value, spells.ID, excel.format.SPELL_SPECIAL_CASES
+                flattened_obj["Spells – Disabled"] = format.format_enum_list(
+                    value, spells.ID, format.SPELL_SPECIAL_CASES
                 )
             # Handle buildings_built field
             elif key == "buildings_built":
                 # Get regular buildings first
-                regular_built = excel.format.format_enum_list(value, objects.Town_Buildings)
+                regular_built = format.format_enum_list(value, objects.Town_Buildings)
                 # Get special buildings that are built (state = 1)
                 special_built = ""
 
                 if "buildings_special" in obj:
-                    special_built = excel.format.format_special_buildings(obj["buildings_special"], state_filter=1)
+                    special_built = format.format_special_buildings(obj["buildings_special"], state_filter=1)
 
                 # Combine regular and special buildings
                 all_built = []
@@ -41,12 +40,12 @@ def flatten_towns(objects_list) -> list:
             # Handle buildings_disabled field
             elif key == "buildings_disabled":
                 # Get regular buildings first
-                regular_disabled = excel.format.format_enum_list(value, objects.Town_Buildings)
+                regular_disabled = format.format_enum_list(value, objects.Town_Buildings)
                 # Get special buildings that are disabled (state = 2)
                 special_disabled = ""
 
                 if "buildings_special" in obj:
-                    special_disabled = excel.format.format_special_buildings(obj["buildings_special"], state_filter=2)
+                    special_disabled = format.format_special_buildings(obj["buildings_special"], state_filter=2)
 
                 # Combine regular and special buildings
                 all_disabled = []

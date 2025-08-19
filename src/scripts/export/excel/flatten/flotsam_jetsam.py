@@ -1,9 +1,9 @@
 import data.objects as objects
 
-from . import sort
+from .. import sort
 
 
-def flatten_flotsam_jetsam(treasure_objects):
+def flatten(treasure_objects):
     rows = []
 
     for obj in treasure_objects:

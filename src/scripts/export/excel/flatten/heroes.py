@@ -2,10 +2,11 @@ import os
 
 import data.heroes as heroes
 import data.spells as spells
-from src.scripts import excel
+
+from .. import format
 
 
-def flatten_heroes(objects_list) -> list:
+def flatten(objects_list) -> list:
     flattened_objects = []
 
     for obj in objects_list:
@@ -125,8 +126,8 @@ def flatten_heroes(objects_list) -> list:
                             flattened_obj["backpack"] = "\n".join(backpack_names) if backpack_names else ""
                         # Special formatting for spells
                         elif sub_key == "spells" and sub_value:
-                            flattened_obj["spells"] = excel.format.format_enum_list(
-                                sub_value, spells.ID, excel.format.SPELL_SPECIAL_CASES
+                            flattened_obj["spells"] = format.format_enum_list(
+                                sub_value, spells.ID, format.SPELL_SPECIAL_CASES
                             )
                         else:
                             # Convert other lists to strings

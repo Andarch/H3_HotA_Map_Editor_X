@@ -11,7 +11,7 @@ from ...common import (
     xprint,
 )
 from ...menus import Menu
-from .unreachable_tiles import list_unreachable_tiles
+from . import terrain
 
 # Define regex patterns for different data types at module level
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
@@ -22,13 +22,13 @@ REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 
 def main() -> None:
     while True:
-        user_input = xprint(menu=Menu.INFO.value)
-        if user_input == KB.ESC.value:
+        keypress = xprint(menu=Menu.VIEW.value)
+        if keypress == KB.ESC.value:
             break
 
         draw_header()
 
-        match user_input:
+        match keypress:
             case 1:
                 section_name = "map_specs"
             case 2:
@@ -52,7 +52,7 @@ def main() -> None:
             case 9:
                 section_name = "events"
             case 0:
-                list_unreachable_tiles()
+                terrain.list_unreachable_tiles()
                 continue
 
         # Apply filter
@@ -90,8 +90,8 @@ def main() -> None:
             xprint(type=Text.INFO, text=line)
             lines_printed += 1
             if lines_printed % 100 == 0:
-                user_input = wait_for_keypress(suffix=" to continue printing")
-                if user_input == KB.ESC.value:
+                keypress = wait_for_keypress(suffix=" to continue printing")
+                if keypress == KB.ESC.value:
                     break
                 for _ in range(3):
                     print("\033[F\033[K", end="")

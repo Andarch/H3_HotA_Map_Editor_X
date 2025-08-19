@@ -3,8 +3,7 @@ from copy import deepcopy
 
 import data.objects as objects
 
-from ..common import DONE, KB, Text, map_data, xprint
-from ..menus import Menu
+from ...common import DONE, Text, map_data, xprint
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -14,7 +13,7 @@ class CustomEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def export_json() -> None:
+def export(type: int) -> None:
     def main() -> None:
         filename = map_data["filename"]
 
@@ -23,10 +22,6 @@ def export_json() -> None:
         if not filename.endswith(".json"):
             filename += ".json"
 
-        type = get_export_type()
-
-        if not type:
-            return False
         match type:
             case 1:
                 data = map_data
@@ -44,14 +39,6 @@ def export_json() -> None:
             json.dump(data, f, cls=CustomEncoder, indent=4)
 
         xprint(type=Text.SPECIAL, text=DONE)
-
-    def get_export_type() -> int:
-        input = xprint(menu=Menu.JSON.value)
-
-        if input == KB.ESC.value:
-            return False
-        else:
-            return int(input)
 
     def get_hero_data() -> dict:
         player_specs = deepcopy(map_data["player_specs"])

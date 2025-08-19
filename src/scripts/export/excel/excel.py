@@ -6,10 +6,10 @@ from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 
 import data.objects as objects
-from src.scripts import excel
 
-from ..common import DONE, Text, draw_header, map_data, xprint
-from ..file_io import is_file_writable
+from ....common import DONE, Text, draw_header, map_data, xprint
+from ....file_io import is_file_writable
+from . import flatten
 
 # Define columns to remove per category
 _COLUMNS_TO_REMOVE = {
@@ -95,7 +95,7 @@ _COLUMNS_TO_REMOVE = {
 }
 
 
-def export_excel() -> bool:
+def export() -> bool:
     # Create Excel filename by replacing .h3m with _objects.xlsx
     filename = map_data["filename"][:-4] + ".xlsx"
 
@@ -105,7 +105,7 @@ def export_excel() -> bool:
 
     # Show initial export message
     draw_header()
-    xprint(type=Text.ACTION, text="Exporting object data...")
+    xprint(type=Text.ACTION, text="Exporting Excel file...")
 
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
@@ -293,41 +293,41 @@ def _process_data() -> dict:
 
             # Category-specific transformations
             if category == "Heroes":
-                items = excel.flatten_heroes(items)
+                items = flatten.heroes.flatten(items)
             elif category == "Towns":
-                items = excel.flatten_towns(items)
+                items = flatten.towns.flatten(items)
             elif category == "Monsters":
-                items = excel.flatten_monsters(items)
+                items = flatten.monsters.flatten(items)
             elif category == "Spells":
-                items = excel.flatten_spells(items)
+                items = flatten.spells.flatten(items)
             elif category == "Artifacts":
-                items = excel.flatten_artifacts(items)
+                items = flatten.artifacts.flatten(items)
             elif category == "Resources":
-                items = excel.flatten_resources(items)
+                items = flatten.resources.flatten(items)
             elif category == "Campfire":
-                items = excel.flatten_campfire(items)
+                items = flatten.campfire.flatten(items)
             elif category == "Scholar":
-                items = excel.flatten_scholar(items)
+                items = flatten.scholar.flatten(items)
             elif category == "Treasure Chest":
-                items = excel.flatten_treasure_chest(items)
+                items = flatten.treasure_chest.flatten(items)
             elif category == "Sea Chest":
-                items = excel.flatten_sea_chest(items)
+                items = flatten.sea_chest.flatten(items)
             elif category == "Shipwreck Survivor":
-                items = excel.flatten_shipwreck_survivor(items)
+                items = flatten.shipwreck_survivor.flatten(items)
             elif category == "Flotsam & Jetsam":
-                items = excel.flatten_flotsam_jetsam(items)
+                items = flatten.flotsam_jetsam.flatten(items)
             elif category == "Sea Barrel":
-                items = excel.flatten_sea_barrel(items)
+                items = flatten.sea_barrel.flatten(items)
             elif category == "Vial of Mana":
-                items = excel.flatten_vial_of_mana(items)
+                items = flatten.vial_of_mana.flatten(items)
             elif category == "Ancient Lamp":
-                items = excel.flatten_ancient_lamp(items)
+                items = flatten.ancient_lamp.flatten(items)
             elif category == "Grave":
-                items = excel.flatten_grave(items)
+                items = flatten.grave.flatten(items)
             elif category == "Creature Banks":
-                items = excel.flatten_creature_banks(items)
+                items = flatten.creature_banks.flatten(items)
             elif category == "Garrisons":
-                items = excel.flatten_garrisons(items)
+                items = flatten.garrisons.flatten(items)
 
             # Remove unwanted columns (universal + category-specific)
             cleaned_data = []
@@ -357,13 +357,13 @@ def _process_data() -> dict:
         if obj["id"] in [objects.ID.Town, objects.ID.Random_Town] and "events" in obj and obj["events"]:
             for event in obj["events"]:
                 # Create a flattened event object with town context
-                flattened_event = excel.flatten_town_events(event, obj)
+                flattened_event = flatten.town_events.flatten(event, obj)
                 town_events.append(flattened_event)
 
     processed_data["Town Events"] = town_events
 
     # Step 4: Process global events
-    global_events = excel.flatten_events(events or [])
+    global_events = flatten.events.flatten(events or [])
     processed_data["Global Events"] = global_events
 
     # Reorder to place Campfires after Resources and before Treasure

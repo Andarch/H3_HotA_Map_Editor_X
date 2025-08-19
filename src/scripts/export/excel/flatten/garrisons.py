@@ -1,4 +1,4 @@
-def flatten_garrisons(garrison_objects):
+def flatten(garrison_objects):
     flattened = []
 
     for obj in garrison_objects:

@@ -35,12 +35,14 @@ class Align(Enum):
 
 class Color(Enum):
     RESET = "\033[0m"
+    BOLD = "\033[1m"
     FAINT = "\033[2m"
     ITALIC = "\033[3m"
     UNDERLINE = "\033[4m"
     BLINK = "\033[5m"
     INVERTED = "\033[7m"
     STRIKE = "\033[9m"
+    BOLD_OFF = "\033[22m"
     DEFAULT = "\033[39m"
     RED = "\033[91m"
     GREEN = "\033[92m"
@@ -216,7 +218,7 @@ def xprint(
                     time.sleep(Sleep.SHORTER.value)
                     for _ in range(overwrite):
                         print("\033[F\033[K", end="")
-                print(align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
+                print(align_text(align=align, text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
                 if overwrite > 0:
                     time.sleep(Sleep.SHORTER.value)
@@ -301,6 +303,7 @@ def xprint(
 
         def print_menu(menu: dict, width: int) -> list[int]:
             valid_keys = [] if menu == Menu.MAIN.value else [KB.ESC.value]
+            xprint(text="MAIN MENU\n", align=Align.CENTER)
             for key, value in menu.items():
                 if value:
                     valid_keys.append(key)

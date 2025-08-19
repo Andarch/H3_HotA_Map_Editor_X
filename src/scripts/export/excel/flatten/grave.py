@@ -1,10 +1,10 @@
 import data.artifacts as artifacts
 import data.objects as objects
 
-from . import format, sort
+from .. import format, sort
 
 
-def flatten_grave(graves):
+def flatten(graves):
     rows = []
 
     for obj in graves:

@@ -6,8 +6,8 @@ from PIL import Image
 
 from data import objects
 
-from ..common import DONE, KB, Text, xprint
-from ..menus import Menu
+from ...common import DONE, KB, Text, map_data, xprint
+from ...menus import Menu
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -384,127 +384,126 @@ monster_objects = {
 resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
 
 
-def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> bool:
+def export(keypress: int) -> bool:
     def main():
-        input = xprint(menu=Menu.MINIMAP.value)
-        if input == KB.ESC.value:
-            return False
-        if input == 1:
-            process_image(input, None, None, None, None)
-        elif input == 2:
-            process_image(input, objects.DECOR, None, 1, "base1")
-            process_image(input, None, None, 2, "base2")
-            process_image(input, border_objects, None, 3, "border")
-            process_image(input, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+        if keypress == 1:
+            process_image(keypress, None, None, None, None)
+        elif keypress == 2:
+            process_image(keypress, objects.DECOR, None, 1, "base1")
+            process_image(keypress, None, None, 2, "base2")
+            process_image(keypress, border_objects, None, 3, "border")
+            process_image(keypress, {objects.ID.Keymasters_Tent}, None, 4, "tents")
             process_image(
-                input,
+                keypress,
                 {objects.ID.Monolith_One_Way_Entrance},
                 None,
                 5,
                 "portals1en",
             )
-            process_image(input, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
+            process_image(keypress, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
             process_image(
-                input,
+                keypress,
                 {objects.ID.Two_Way_Monolith},
                 two_way_land_portals,
                 7,
                 "portals2land",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Two_Way_Monolith},
                 two_way_water_portals,
                 8,
                 "portals2water",
             )
-            process_image(input, {objects.ID.Whirlpool}, None, 9, "whirlpools")
-            process_image(input, {objects.ID.Prison}, None, 10, "prisons")
-            process_image(input, monster_objects, None, 11, "monsters")
-            process_image(input, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+            process_image(keypress, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+            process_image(keypress, {objects.ID.Prison}, None, 10, "prisons")
+            process_image(keypress, monster_objects, None, 11, "monsters")
+            process_image(keypress, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
             process_image(
-                input,
+                keypress,
                 {objects.ID.Shrine_1_and_4},
                 {objects.Shrine_1_and_4.Shrine_of_Magic_Incantation},
                 13,
                 "spellshrine1",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Shrine_of_Magic_Gesture},
                 None,
                 14,
                 "spellshrine2",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Shrine_of_Magic_Thought},
                 None,
                 15,
                 "spellshrine3",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Shrine_1_and_4},
                 {objects.Shrine_1_and_4.Shrine_of_Magic_Mystery},
                 16,
                 "spellshrine4",
             )
-            process_image(input, {objects.ID.Pyramid}, None, 17, "pyramids")
-            process_image(input, {objects.ID.Artifact}, None, 18, "artifacts")
-            process_image(input, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+            process_image(keypress, {objects.ID.Pyramid}, None, 17, "pyramids")
+            process_image(keypress, {objects.ID.Artifact}, None, 18, "artifacts")
+            process_image(keypress, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
             process_image(
-                input,
+                keypress,
                 {objects.ID.Random_Treasure_Artifact},
                 None,
                 20,
                 "randomtreasureartifacts",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Random_Minor_Artifact},
                 None,
                 21,
                 "randomminorartifacts",
             )
             process_image(
-                input,
+                keypress,
                 {objects.ID.Random_Major_Artifact},
                 None,
                 22,
                 "randommajorartifacts",
             )
-            process_image(input, {objects.ID.Random_Relic}, None, 23, "randomrelics")
-            process_image(input, resource_objects, None, 24, "resources")
-            process_image(input, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
+            process_image(keypress, {objects.ID.Random_Relic}, None, 23, "randomrelics")
+            process_image(keypress, resource_objects, None, 24, "resources")
+            process_image(keypress, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
         return True
 
-    def process_image(input, filter, subfilter, png_number, png_name) -> bool:
-        if input == 1:
+    def process_image(keypress, filter, subfilter, png_number, png_name) -> bool:
+        if keypress == 1:
             xprint(type=Text.ACTION, text="Generating minimap...")
-        elif input == 2:
+        elif keypress == 2:
             xprint(
                 type=Text.ACTION,
                 text=f"Generating minimap_{png_number:02d}_{png_name}...",
             )
         # Get map size
-        size = map_specs["map_size"]
+        map_size = map_data["map_specs"]["map_size"]
         # Initialize map layer list
-        if map_specs["has_underground"]:
-            half = size * size
-            map_layers = [terrain[:half]]  # overworld
-            map_layers.append(terrain[half:])  # underground
+        if map_data["map_specs"]["has_underground"]:
+            half = map_size * map_size
+            map_layers = [map_data["terrain"][:half]]  # overworld
+            map_layers.append(map_data["terrain"][half:])  # underground
         else:
-            map_layers = [terrain]  # overworld only
+            map_layers = [map_data["terrain"]]  # overworld only
         # Initialize tile dictionaries
         ownership = {
-            map_layer: [[None for _ in range(size)] for _ in range(size)] for map_layer in [OVERWORLD, UNDERGROUND]
+            map_layer: [[None for _ in range(map_size)] for _ in range(map_size)]
+            for map_layer in [OVERWORLD, UNDERGROUND]
         }
         blocked_tiles = {map_layer: set() for map_layer in [OVERWORLD, UNDERGROUND]}
         # Filter objects if a filter is provided
-        filtered_objects = object_data
-        if filter is not None:
-            filtered_objects = [obj for obj in object_data if obj["id"] in filter]
+        if filter is None:
+            filtered_objects = map_data["object_data"]
+        else:
+            filtered_objects = [obj for obj in map_data["object_data"] if obj["id"] in filter]
         # Apply subfilter if provided
         if subfilter is not None:
             filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
@@ -517,12 +516,12 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             elif png_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
                 continue
             # Get object masks
-            def_ = object_defs[obj["def_id"]]
+            def_ = map_data["object_defs"][obj["def_id"]]
             blockMask = def_["red_squares"]
             interactiveMask = def_["yellow_squares"]
             # Determine if object has owner and/or should be skipped (hidden on minimap).
             # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
-            owner = determine_owner(input, obj)
+            owner = determine_owner(keypress, obj)
             if owner is None and should_skip_object(blockMask, interactiveMask):
                 continue
             process_object(
@@ -535,16 +534,16 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 png_name,
             )
         # Generate and save minimap images
-        generate_images(input, map_layers, blocked_tiles, ownership, png_number, png_name)
+        generate_images(keypress, map_layers, blocked_tiles, ownership, png_number, png_name)
         xprint(type=Text.SPECIAL, text=DONE)
         return True
 
-    def determine_owner(input: int, obj: dict) -> Union[int, tuple]:
+    def determine_owner(keypress: int, obj: dict) -> Union[int, tuple]:
         if (
-            input == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects
+            keypress == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects
         ):  # Check if object has "owner" key and should not be ignored
             return obj["owner"]
-        elif input == 2:
+        elif keypress == 2:
             if (
                 (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001)
                 or obj["id"] == objects.ID.Border_Guard
@@ -596,7 +595,8 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                     blocked_tile_x = obj_x - 7 + c
                     blocked_tile_y = obj_y - 5 + r
                     if (
-                        0 <= blocked_tile_x < map_specs["map_size"] and 0 <= blocked_tile_y < map_specs["map_size"]
+                        0 <= blocked_tile_x < map_data["map_specs"]["map_size"]
+                        and 0 <= blocked_tile_y < map_data["map_specs"]["map_size"]
                     ):  # Check if the blocked tile is within the map
                         if obj_z == OVERWORLD:
                             blocked_tiles[OVERWORLD].add(
@@ -640,26 +640,27 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                                     )
 
     def generate_images(
-        input: int,
+        keypress: int,
         map_layers: list,
         blocked_tiles: dict,
         ownership: dict,
         png_number: int,
         png_name: str,
     ) -> None:
+        map_size = map_data["map_specs"]["map_size"]
         mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
-        map_name = filename[:-4] if filename.endswith(".h3m") else filename
+        map_name = map_data["filename"][:-4] if map_data["filename"].endswith(".h3m") else map_data["filename"]
 
         # Determine if we're creating a combined image
-        is_combined = input == 2 and len(map_layers) > 1
+        is_combined = keypress == 2 and len(map_layers) > 1
 
         if is_combined:
             # Create single combined image for multiple layers
-            combined_width = map_specs["map_size"] * 2 + 2
+            combined_width = map_size * 2 + 2
             img = Image.new(
                 mode,
-                (combined_width, map_specs["map_size"]),
+                (combined_width, map_size),
                 None if png_name == "base1" else transparent,
             )
 
@@ -668,20 +669,20 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
                 # Create separate image for each layer
                 img = Image.new(
                     mode,
-                    (map_specs["map_size"], map_specs["map_size"]),
+                    (map_size, map_size),
                     None if png_name == "base1" else transparent,
                 )
 
             # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
-            x_offset = (map_specs["map_size"] + 2) * map_layer_index if is_combined else 0
+            x_offset = (map_size + 2) * map_layer_index if is_combined else 0
 
             # Process each pixel in the layer
             for i, tile in enumerate(map_layer):
-                x = i % map_specs["map_size"]
-                y = i // map_specs["map_size"]
+                x = i % map_size
+                y = i // map_size
                 owner = ownership[map_layer_index][y][x]
                 color = get_pixel_color(
-                    input,
+                    keypress,
                     png_name,
                     tile,
                     owner,
@@ -696,9 +697,9 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             if not is_combined:
                 # Save individual layer image
                 layer_letter = "g" if map_layer_index == 0 else "u"
-                if input == 1:
+                if keypress == 1:
                     img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}.png"))
-                elif input == 2:
+                elif keypress == 2:
                     img.save(
                         os.path.join(
                             "..",
@@ -718,7 +719,7 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
             )
 
     def get_pixel_color(
-        input: int,
+        keypress: int,
         png_name: str,
         tile: tuple,
         owner: int,
@@ -728,14 +729,14 @@ def generate_minimap(filename, map_specs, terrain, object_data, object_defs) -> 
         y: int,
         transparent: tuple,
     ) -> tuple:
-        if input == 1:
+        if keypress == 1:
             if owner is not None:
                 return object_colors[owner]
             elif (x, y) in blocked_tiles[map_layer_index]:
                 return terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
             else:
                 return terrain_colors[tile["terrain_type_int"]]
-        elif input == 2:
+        elif keypress == 2:
             if png_name == "base1":
                 if (x, y) in blocked_tiles[map_layer_index]:
                     return terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]

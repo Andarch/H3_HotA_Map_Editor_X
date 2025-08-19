@@ -1,4 +1,4 @@
-def flatten_events(events):
+def flatten(events):
     flattened_events = []
 
     if not events:

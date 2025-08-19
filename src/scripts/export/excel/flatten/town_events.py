@@ -1,8 +1,9 @@
 import data.objects as objects
-from src.scripts import excel
+
+from .. import format
 
 
-def flatten_town_events(event, town_obj):
+def flatten(event, town_obj):
     flattened_event = {}
 
     # Match the first 4 columns from Towns sheet
@@ -87,12 +88,12 @@ def flatten_town_events(event, town_obj):
 
         if buildings and isinstance(buildings, list):
             # Get regular buildings from the event
-            regular_built = excel.format.format_enum_list(buildings, objects.Town_Buildings)
+            regular_built = format.format_enum_list(buildings, objects.Town_Buildings)
             # Get special buildings from the event's hota_special field
             special_built = ""
 
             if "hota_special" in event:
-                special_built = excel.format.format_special_buildings(event["hota_special"], state_filter=1)
+                special_built = format.format_special_buildings(event["hota_special"], state_filter=1)
 
             # Combine regular and special buildings
             all_built = []

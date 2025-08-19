@@ -1,9 +1,9 @@
 import data.spells as spells
 
-from . import sort
+from .. import sort
 
 
-def flatten_spells(spell_objects):
+def flatten(spell_objects):
     flattened = []
 
     for obj in spell_objects:
