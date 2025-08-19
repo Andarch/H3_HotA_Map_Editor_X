@@ -181,15 +181,15 @@ def fill_header_row(fill_color: str, fill: str, text: str = "") -> str:
     print_width = MAX_PRINT_WIDTH if terminal_width >= MAX_PRINT_WIDTH else terminal_width
 
     if text == "":
-        row = f"{fill_color}{fill}" * print_width + Color.RESET.value
+        row = fill_color + (fill * print_width) + Color.RESET.value
     else:
         fill_length = print_width - (len(text) + 2)
 
-        row_left = f"{fill_color}{fill}" * (fill_length // 2) + Color.RESET.value
-        row_right = f"{fill_color}{fill}" * (fill_length // 2) + Color.RESET.value
-
-        if fill_length % 2 != 0:
-            row_right += f"{fill_color}{fill}" + Color.RESET.value
+        row_left = fill_color + (fill * (fill_length // 2)) + Color.RESET.value
+        if fill_length % 2 == 0:
+            row_right = row_left
+        else:
+            row_right = fill_color + (fill * ((fill_length // 2) + 1)) + Color.RESET.value
 
         row = f"{row_left} {Color.CYAN.value}{text}{Color.RESET.value} {row_right}"
 
@@ -212,18 +212,12 @@ def xprint(
             return menu_prompt(menu)
         if not _redrawing_screen and type != Text.HEADER:
             _screen_cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
+        if overwrite > 0:
+            _overwrite(overwrite)
         match type:
             case Text.NORMAL:
-                if overwrite > 0:
-                    time.sleep(Sleep.SHORTER.value)
-                    for _ in range(overwrite):
-                        print("\033[F\033[K", end="")
                 print(align_text(align=align, text=f"{Color.WHITE.value}{text}{Color.RESET.value}"))
             case Text.INFO:
-                if overwrite > 0:
-                    time.sleep(Sleep.SHORTER.value)
-                    for _ in range(overwrite):
-                        print("\033[F\033[K", end="")
                 print(align_text(text=f"{Color.CYAN.value}{text}{Color.RESET.value}"))
             case Text.MENU:
                 menu_num_formatted = f"[{Color.YELLOW.value}{str(menu_num)}{Color.RESET.value}]"
@@ -236,10 +230,6 @@ def xprint(
                 input = string_prompt(align_text(text=f"{Color.YELLOW.value}[{text}] > {Color.WHITE.value}"))
                 return input
             case Text.ACTION:
-                if overwrite > 0:
-                    time.sleep(Sleep.SHORTER.value)
-                    for _ in range(overwrite):
-                        print("\033[F\033[K", end="")
                 print(
                     align_text(text=f"{Color.WHITE.value}{text}{Color.RESET.value}"),
                     end=" ",
@@ -252,10 +242,6 @@ def xprint(
             case Text.HEADER:
                 print(align_text(align=Align.CENTER, text=text))
             case Text.ERROR:
-                if overwrite > 0:
-                    time.sleep(Sleep.SHORTER.value)
-                    for _ in range(overwrite):
-                        print("\033[F\033[K", end="")
                 match align:
                     case Align.LEFT:
                         if skip_line:
@@ -266,10 +252,15 @@ def xprint(
                 time.sleep(Sleep.LONG.value)
         return None
 
+    def _overwrite(overwrite: int) -> None:
+        time.sleep(Sleep.SHORTER.value)
+        for _ in range(overwrite):
+            print("\033[F\033[K", end="")
+
     def align_text(align=Align.LEFT, text="", menu_width=0) -> str:
         global terminal_width
-        stripped_text = strip_ansi_codes(str(text))
-        text_length = len(stripped_text)
+        cleaned_text = clean(str(text))
+        text_length = len(cleaned_text)
         if align == Align.LEFT:
             padding = (terminal_width // 2) - (MAX_PRINT_WIDTH // 2)
             return " " * padding + str(text)
@@ -277,33 +268,29 @@ def xprint(
             padding = terminal_width // 2 - text_length // 2
             return " " * padding + str(text)
         elif align == Align.MENU:
-            padding = terminal_width // 2 - menu_width // 2 - 2
+            padding = terminal_width // 2 - menu_width // 2
             return " " * padding + str(text)
-
-    def strip_ansi_codes(text: str) -> str:
-        ansi_escape = re.compile(r"\x1B[@-_][0-?]*[ -/]*[@-~]")
-        return ansi_escape.sub("", text)
 
     def menu_prompt(menu: dict) -> str:
         def main() -> str:
             draw_header()
             width = get_menu_width(menu)
             valid_keys = print_menu(menu, width)
-            input = detect_key_press(valid_keys)
-            return input
+            keypress = detect_key_press(valid_keys)
+            return keypress
 
         def get_menu_width(menu: dict) -> int:
             width = 0
             for _, text in menu.items():
-                stripped_text = strip_ansi_codes(text)
-                text_length = len(stripped_text)
+                cleaned_text = clean(text)
+                text_length = len(cleaned_text)
                 if text_length > width:
                     width = text_length
             return width
 
         def print_menu(menu: dict, width: int) -> list[int]:
             valid_keys = [] if menu == Menu.MAIN.value else [KB.ESC.value]
-            xprint(text="MAIN MENU\n", align=Align.CENTER)
+            xprint(text=f"{Color.UNDERLINE.value}MAIN MENU\n", align=Align.CENTER)
             for key, value in menu.items():
                 if value:
                     valid_keys.append(key)
@@ -354,6 +341,14 @@ def xprint(
                 case _:
                     input_chars.append(char)
                     print(char, end="", flush=True)
+
+    def clean(text: str) -> str:
+        # Remove ANSI escape codes
+        ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
+        text = ansi_escape.sub("", text)
+        # Remove control characters except space (preserve visible spaces)
+        invisible = re.compile(r"[\x00-\x1F\x7F]")
+        return invisible.sub("", text)
 
     return main()
 

@@ -105,7 +105,7 @@ def export() -> bool:
 
     # Show initial export message
     draw_header()
-    xprint(type=Text.ACTION, text="Exporting Excel file...")
+    xprint(type=Text.ACTION, text="Exporting Excel file…")
 
     # Open Excel writer with openpyxl engine
     with pd.ExcelWriter(filename, engine="openpyxl") as writer:
