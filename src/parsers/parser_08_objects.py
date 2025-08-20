@@ -11,7 +11,7 @@ import core.players as players
 import core.skills as skills
 import core.spells as spells
 import src.file_io as io
-from src.handlers.handler_06_rumors_and_events import parse_events, write_events
+from src.parsers.parser_06_rumors_and_events import parse_events, write_events
 
 zone_img_g = None
 zone_img_u = None
@@ -826,7 +826,7 @@ def write_garrison(obj: dict) -> None:
 
 
 def parse_hero(obj: dict) -> dict:
-    # This method is pretty similar to parse_hero_data() in the heroes handler,
+    # This method is pretty similar to parse_hero_data() in the heroes parser,
     # but it has some additional bytes to read all over. Maybe combine them
     # into a single method some day.
 
