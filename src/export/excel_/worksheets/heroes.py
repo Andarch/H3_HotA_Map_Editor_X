@@ -173,16 +173,12 @@ def _get_portrait_path(portrait_id, hero_data=None):
                 # Use the default name to find the portrait
                 filename = f"{default_name}.bmp"
 
-                # Get the full path to the portrait file
-                script_dir = os.path.dirname(
-                    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-                )
+                # Get the path to the portrait file
+                portrait = os.path.join("core/portraits", filename)
 
-                portrait_path = os.path.join(script_dir, "portraits", filename)
-
-                # Only return path if file exists
-                if os.path.exists(portrait_path):
-                    return portrait_path
+                # Only return path if portrait exists
+                if os.path.exists(portrait):
+                    return portrait
 
         return ""
 
@@ -206,11 +202,11 @@ def _get_portrait_path(portrait_id, hero_data=None):
 
         # Get the full path to the portrait file
         script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        portrait_path = os.path.join(script_dir, "portraits", filename)
+        portrait = os.path.join(script_dir, "portraits", filename)
 
         # Only return path if file exists
-        if os.path.exists(portrait_path):
-            return portrait_path
+        if os.path.exists(portrait):
+            return portrait
         else:
             return ""
     except (ValueError, AttributeError):
