@@ -1,5 +1,5 @@
-from ...common import KB, draw_header, xprint
-from ...menus import Menu
+from ..common import KB, draw_header, xprint
+from ..menus import Menu
 from .data import heroes, monster_values, random_monsters, towns
 
 

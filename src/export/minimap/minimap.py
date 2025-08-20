@@ -6,8 +6,7 @@ from PIL import Image
 
 from core import objects
 
-from ....common import DONE, KB, Text, map_data, xprint
-from ....menus import Menu
+from ...common import DONE, Text, map_data, xprint
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -647,6 +646,8 @@ def export(keypress: int) -> bool:
         png_number: int,
         png_name: str,
     ) -> None:
+        IMAGES_PATH = ".../maps/images"
+
         map_size = map_data["map_specs"]["map_size"]
         mode = "RGB" if png_name == "base1" else "RGBA"
         transparent = (0, 0, 0, 0)
@@ -698,12 +699,11 @@ def export(keypress: int) -> bool:
                 # Save individual layer image
                 layer_letter = "g" if map_layer_index == 0 else "u"
                 if keypress == 1:
-                    img.save(os.path.join("..", "images", f"{map_name}_{layer_letter}.png"))
+                    img.save(os.path.join(IMAGES_PATH, f"{map_name}_{layer_letter}.png"))
                 elif keypress == 2:
                     img.save(
                         os.path.join(
-                            "..",
-                            "images",
+                            IMAGES_PATH,
                             f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png",
                         )
                     )
@@ -712,8 +712,7 @@ def export(keypress: int) -> bool:
             # Save combined image
             img.save(
                 os.path.join(
-                    "..",
-                    "images",
+                    IMAGES_PATH,
                     f"{map_name}_{png_number:02d}_{png_name}.png",
                 )
             )

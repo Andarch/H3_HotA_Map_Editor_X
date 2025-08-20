@@ -4,10 +4,10 @@ import os
 import sys
 import time
 
+import src.edit as edit
+import src.export as export
 import src.file_io as io
-import src.scripts.edit as edit
-import src.scripts.export as export
-import src.scripts.view as view
+import src.view as view
 from src.common import Sleep, exit, initialize, map_data, xprint
 from src.menus import Menu
 

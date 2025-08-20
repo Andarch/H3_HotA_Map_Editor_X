@@ -135,4 +135,5 @@ dmypy.json
 /images/*
 *.pyproj
 /Lib/
-maps/~$tbd.xlsx
+*.xlsx
+*.h3m

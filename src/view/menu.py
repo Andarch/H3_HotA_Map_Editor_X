@@ -1,9 +1,9 @@
-from ...common import (
+from ..common import (
     KB,
     draw_header,
     xprint,
 )
-from ...menus import Menu
+from ..menus import Menu
 from .format import format_data
 
 # from . import terrain
