@@ -7,8 +7,8 @@ from openpyxl.utils import get_column_letter
 
 import core.objects as objects
 
-from ....common import DONE, Text, draw_header, map_data, xprint
-from ....file_io import is_file_writable
+from ...common import DONE, Text, draw_header, map_data, xprint
+from ...file_io import is_file_writable
 from . import worksheets
 
 # Define columns to remove per category
@@ -94,8 +94,8 @@ _COLUMNS_TO_REMOVE = {
 
 
 def export() -> bool:
-    # Create Excel filename by replacing .h3m with _objects.xlsx
-    filename = map_data["filename"][:-4] + ".xlsx"
+    filepath = "....maps/exports/Excel/"
+    filename = os.path.join(filepath, map_data["filename"][:-4] + ".xlsx")
 
     # Check if Excel file is already open
     if not is_file_writable(filename):

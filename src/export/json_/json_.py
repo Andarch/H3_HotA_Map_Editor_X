@@ -1,9 +1,10 @@
 import json
+import os
 from copy import deepcopy
 
 import core.objects as objects
 
-from ....common import DONE, Text, map_data, xprint
+from ...common import DONE, Text, map_data, xprint
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -15,12 +16,8 @@ class CustomEncoder(json.JSONEncoder):
 
 def export(type: int) -> None:
     def main() -> None:
-        filename = map_data["filename"]
-
-        if filename.endswith(".h3m"):
-            filename = filename[:-4]
-        if not filename.endswith(".json"):
-            filename += ".json"
+        filepath = "....maps/exports/JSON/"
+        filename = os.path.join(filepath, map_data["filename"][:-4] + ".json")
 
         match type:
             case 1:
