@@ -1,5 +1,5 @@
-import core.objects as objects
-import core.spells as spells
+import src.core.objects as objects
+import src.core.spells as spells
 
 from .. import format
 

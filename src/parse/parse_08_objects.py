@@ -3,13 +3,13 @@ from enum import IntEnum
 
 from PIL import Image
 
-import core.artifacts as artifacts
-import core.creatures as creatures
-import core.heroes as heroes
-import core.objects as objects
-import core.players as players
-import core.skills as skills
-import core.spells as spells
+import src.core.artifacts as artifacts
+import src.core.creatures as creatures
+import src.core.heroes as heroes
+import src.core.objects as objects
+import src.core.players as players
+import src.core.skills as skills
+import src.core.spells as spells
 import src.file_io as io
 from src.parse.parse_06_rumors_and_events import parse_events, write_events
 

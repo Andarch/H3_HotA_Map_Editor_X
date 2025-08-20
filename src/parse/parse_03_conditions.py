@@ -1,8 +1,8 @@
 from enum import IntEnum
 
-import core.artifacts as artifacts
+import src.core.artifacts as artifacts
 import src.file_io as io
-from core.objects import Resource
+from src.core.objects import Resource
 
 
 class VictoryType(IntEnum):

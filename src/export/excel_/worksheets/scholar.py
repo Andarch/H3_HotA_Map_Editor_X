@@ -1,6 +1,6 @@
-import core.objects as objects
-import core.skills as skills
-import core.spells as spells
+import src.core.objects as objects
+import src.core.skills as skills
+import src.core.spells as spells
 
 from .. import sort
 

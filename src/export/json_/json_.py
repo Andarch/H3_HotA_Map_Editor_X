@@ -2,7 +2,7 @@ import json
 import os
 from copy import deepcopy
 
-import core.objects as objects
+import src.core.objects as objects
 
 from ...common import DONE, Text, map_data, xprint
 

@@ -1,4 +1,4 @@
-import core.spells as spells
+import src.core.spells as spells
 
 from .. import sort
 

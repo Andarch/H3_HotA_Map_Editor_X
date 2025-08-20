@@ -1,5 +1,5 @@
-import core.creatures as creatures
-import core.objects as objects
+import src.core.creatures as creatures
+import src.core.objects as objects
 
 from ...common import DONE, Text, map_data, wait_for_keypress, xprint
 

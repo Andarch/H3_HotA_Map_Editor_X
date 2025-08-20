@@ -1,4 +1,4 @@
-import core.objects as objects
+import src.core.objects as objects
 
 from .. import sort
 

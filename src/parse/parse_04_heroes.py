@@ -1,7 +1,7 @@
-import core.artifacts as artifacts
-import core.heroes as heroes
-import core.skills as skills
-import core.spells as spells
+import src.core.artifacts as artifacts
+import src.core.heroes as heroes
+import src.core.skills as skills
+import src.core.spells as spells
 import src.file_io as io
 
 

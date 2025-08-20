@@ -1,4 +1,4 @@
-import core.artifacts as artifacts
+import src.core.artifacts as artifacts
 
 from .. import format, sort
 

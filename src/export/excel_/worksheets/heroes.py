@@ -1,7 +1,7 @@
 import os
 
-import core.heroes as heroes
-import core.spells as spells
+import src.core.heroes as heroes
+import src.core.spells as spells
 
 from .. import format
 

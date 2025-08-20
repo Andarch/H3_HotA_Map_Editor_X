@@ -1,7 +1,7 @@
-import core.heroes as heroes
-import core.players as players
+import src.core.heroes as heroes
+import src.core.players as players
 import src.file_io as io
-from core.objects import Town
+from src.core.objects import Town
 
 
 def parse_player_specs() -> list:

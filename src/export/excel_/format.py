@@ -1,4 +1,4 @@
-import core.objects as objects
+import src.core.objects as objects
 
 # Define special case mappings for enum formatting
 SPELL_SPECIAL_CASES = {"Titans Lightning Bolt": "Titan's Lightning Bolt"}

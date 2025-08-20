@@ -5,7 +5,7 @@ import pandas as pd
 from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 
-import core.objects as objects
+import src.core.objects as objects
 
 from ...common import DONE, Text, draw_header, map_data, xprint
 from ...file_io import is_file_writable

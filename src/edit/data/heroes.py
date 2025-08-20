@@ -1,5 +1,5 @@
-import core.heroes as heroes
-import core.objects as objects
+import src.core.heroes as heroes
+import src.core.objects as objects
 
 from ...common import DONE, Text, map_data, xprint
 

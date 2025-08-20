@@ -1,5 +1,5 @@
-import core.objects as objects
-from core.players import Players
+import src.core.objects as objects
+from src.core.players import Players
 
 from ...common import DONE, Text, map_data, xprint
 
