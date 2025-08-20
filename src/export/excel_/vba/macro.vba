@@ -1,4 +1,6 @@
-Sub Adjust1()
+' Backup copy - not automatically added to exported Excel file - exists in personal macro workbook '
+
+Sub Format_H3()
     Dim wb As Workbook
     Dim ts As TableStyle, el As TableStyleElement
     Dim b As Variant
@@ -291,7 +293,7 @@ SkipColorFormatting:
     Next ws
 
     ' Apply tab color to specified sheets
-    Dim tabsToColor As Variant: tabsToColor = Array("Seer's Hut", "Quest Objects", "Event Objects", _
+    Dim tabsToColor As Variant: tabsToColor = Array("Seer\'s Hut", "Quest Objects", "Event Objects", _
         "Border Objects", "Dwellings", "Mines & Warehouses", "Interactive", "Simple Objects", "Text")
 
     For Each b In tabsToColor

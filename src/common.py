@@ -78,6 +78,8 @@ class Text(Enum):
 
 
 map_data = {}
+in_file = None
+out_file = None
 terminal_width = 0
 
 _old_terminal_width = 0

@@ -1,19 +1,25 @@
 from gzip import GzipFile
 from gzip import open as gzopen
 
-from src.parsers import parser_01_map_specs as h1
-from src.parsers import parser_02_players_and_teams as h2
-from src.parsers import parser_03_conditions as h3
-from src.parsers import parser_04_heroes as h4
-from src.parsers import parser_05_additional_flags as h5
-from src.parsers import parser_06_rumors_and_events as h6
-from src.parsers import parser_07_terrain as h7
-from src.parsers import parser_08_objects as h8
+from src.parse import parse_01_map_specs as h1
+from src.parse import parse_02_players_and_teams as h2
+from src.parse import parse_03_conditions as h3
+from src.parse import parse_04_heroes as h4
+from src.parse import parse_05_additional_flags as h5
+from src.parse import parse_06_rumors_and_events as h6
+from src.parse import parse_07_terrain as h7
+from src.parse import parse_08_objects as h8
 
-from .common import DONE, Text, draw_header, is_file_writable, map_data, xprint
-
-in_file = None
-out_file = None
+from .common import (
+    DONE,
+    Text,
+    draw_header,
+    in_file,
+    is_file_writable,
+    map_data,
+    out_file,
+    xprint,
+)
 
 
 def read_raw(length: int) -> bytes:
@@ -106,7 +112,9 @@ def load_map(filename: str = None) -> None:
     xprint(type=Text.NORMAL, text=f"Loading {filename}...\n")
 
     try:
-        with gzopen(filename, "rb") as in_file:
+        with gzopen(filename, "rb") as i:
+            in_file = i
+
             map_data["filename"] = filename
 
             xprint(text="Parsing 1/13: Map Specs...", overwrite=1)
@@ -149,6 +157,9 @@ def load_map(filename: str = None) -> None:
             map_data["null_bytes"] = in_file.read()
 
             xprint(type=Text.SPECIAL, text=DONE)
+
+        in_file = None
+
     except FileNotFoundError:
         xprint(type=Text.ERROR, text=f"Could not find {filename}.")
 
@@ -174,7 +185,8 @@ def save_map(filename: str = None) -> bool:
 
     # Save the map data to the specified filename
     with open(filename, "wb") as f:
-        with GzipFile(filename="", mode="wb", fileobj=f) as out_file:
+        with GzipFile(filename="", mode="wb", fileobj=f) as o:
+            out_file = o
             h1.write_map_specs(map_data["map_specs"])
             h2.write_player_specs(map_data["player_specs"])
             h3.write_conditions(map_data["conditions"])
@@ -188,6 +200,8 @@ def save_map(filename: str = None) -> bool:
             h8.write_object_data(map_data["object_data"])
             h6.write_events(map_data["events"])
             out_file.write(map_data["null_bytes"])
+
+    out_file = None
 
     xprint(type=Text.SPECIAL, text=DONE)
 

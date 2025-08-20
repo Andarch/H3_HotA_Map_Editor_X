@@ -1,5 +1,3 @@
-# from enum import Enum
-
 MAP_DATA = [
     ("1", "Map Specs"),
     ("2", "Player Specs"),
