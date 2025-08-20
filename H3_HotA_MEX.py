@@ -5,11 +5,11 @@ import sys
 import time
 
 import src.file_io as io
+import src.scripts.edit as edit
+import src.scripts.export as export
+import src.scripts.view as view
 from src.common import Sleep, exit, initialize, map_data, xprint
 from src.menus import Menu
-from src.scripts.edit import edit
-from src.scripts.export import export
-from src.scripts.view import view
 
 os.chdir("maps")
 
@@ -21,15 +21,15 @@ def main(filename: str) -> None:
             keypress = xprint(menu=Menu.MAIN.value)
             match keypress:
                 case 1:
-                    view.main()
+                    view.menu()
                 case 2:
-                    edit.main()
+                    edit.menu()
                 case 3:
                     io.save_map(map_data["filename"])
                 case 4:
                     io.save_map()
                 case 5:
-                    export.main()
+                    export.menu()
                 case 6:
                     io.load_map()
                 case 7:
