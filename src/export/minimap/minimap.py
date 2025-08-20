@@ -646,7 +646,7 @@ def export(keypress: int) -> bool:
         png_number: int,
         png_name: str,
     ) -> None:
-        IMAGES_PATH = ".../maps/images"
+        IMAGES_PATH = ".../maps/exports/minimap"
 
         map_size = map_data["map_specs"]["map_size"]
         mode = "RGB" if png_name == "base1" else "RGBA"
