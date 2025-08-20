@@ -1,5 +1,5 @@
-from ...common import KB, draw_header, xprint
-from ...menus import Menu
+from ..common import KB, draw_header, xprint
+from ..menus import Menu
 from . import excel_, json_, minimap
 
 

@@ -1,1 +1,1 @@
-from src.scripts.view.menu import menu as menu
+from src.view.menu import menu as menu

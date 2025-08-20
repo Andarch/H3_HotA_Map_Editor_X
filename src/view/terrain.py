@@ -1,4 +1,4 @@
-from ...common import Text, map_data, wait_for_keypress, xprint
+from ..common import Text, map_data, wait_for_keypress, xprint
 
 
 def list_unreachable_tiles() -> None:

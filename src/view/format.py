@@ -1,7 +1,7 @@
 import json
 import re
 
-from ...common import (
+from ..common import (
     KB,
     MAX_PRINT_WIDTH,
     Text,
