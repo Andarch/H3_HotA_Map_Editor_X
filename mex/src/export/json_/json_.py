@@ -2,7 +2,8 @@ import json
 import os
 from copy import deepcopy
 
-from ....core.h3 import objects
+from core.h3 import objects
+
 from ...common import DONE, MsgType, map_data, xprint
 
 

@@ -1,4 +1,5 @@
-from .....core.h3 import objects, skills, spells
+from core.h3 import objects, skills, spells
+
 from .. import sort
 
 

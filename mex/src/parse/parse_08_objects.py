@@ -1,9 +1,9 @@
 import os
 from enum import IntEnum
 
+from core.h3 import artifacts, creatures, heroes, objects, players, skills, spells
 from PIL import Image
 
-from ...core.h3 import artifacts, creatures, heroes, objects, players, skills, spells
 from .. import file_io as io
 from .parse_06_rumors_and_events import parse_events, write_events
 

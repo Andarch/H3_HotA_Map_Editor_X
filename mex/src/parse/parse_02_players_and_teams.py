@@ -1,4 +1,5 @@
-from ...core.h3 import heroes, objects, players
+from core.h3 import heroes, objects, players
+
 from .. import file_io as io
 
 

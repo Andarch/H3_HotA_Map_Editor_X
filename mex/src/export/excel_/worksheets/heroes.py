@@ -1,6 +1,7 @@
 import os
 
-from .....core.h3 import heroes, spells
+from core.h3 import heroes, spells
+
 from .. import format
 
 

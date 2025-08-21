@@ -1,5 +1,6 @@
-from ....core.h3 import objects
-from ....core.h3.players import Players
+from core.h3 import objects
+from core.h3.players import Players
+
 from ...common import DONE, MsgType, map_data, xprint
 
 TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]

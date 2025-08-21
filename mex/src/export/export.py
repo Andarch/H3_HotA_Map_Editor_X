@@ -1,6 +1,9 @@
-from ...core.menus import Menu
+from core.menus import Menu
+
 from ..common import KB, draw_header, xprint
-from . import excel_, json_, minimap
+from .excel_ import excel_
+from .json_ import json_
+from .minimap import minimap
 
 
 def menu() -> None:

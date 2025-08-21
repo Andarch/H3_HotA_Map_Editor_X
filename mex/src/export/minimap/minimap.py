@@ -1,10 +1,9 @@
 import os
 from enum import IntEnum
-from typing import Union
 
+from core.h3 import objects
 from PIL import Image
 
-from ....core.h3 import objects
 from ...common import DONE, MsgType, map_data, xprint
 
 OVERWORLD = 0
@@ -536,7 +535,7 @@ def export(keypress: int) -> bool:
         xprint(type=MsgType.SPECIAL, text=DONE)
         return True
 
-    def determine_owner(keypress: int, obj: dict) -> Union[int, tuple]:
+    def determine_owner(keypress: int, obj: dict) -> int | tuple | None:
         if (
             keypress == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects
         ):  # Check if object has "owner" key and should not be ignored
@@ -582,7 +581,7 @@ def export(keypress: int) -> bool:
         interactiveMask: list,
         blocked_tiles: dict,
         ownership: dict,
-        owner: Union[int, tuple],
+        owner: int | tuple | None,
         png_layer="",
     ) -> None:
         obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates

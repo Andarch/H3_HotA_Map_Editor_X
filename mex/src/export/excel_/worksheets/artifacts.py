@@ -1,4 +1,5 @@
-from .....core.h3 import artifacts
+from core.h3 import artifacts
+
 from .. import format, sort
 
 

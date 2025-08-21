@@ -7,9 +7,8 @@ import sys
 import threading
 import time
 from enum import Enum, StrEnum
-from typing import Union
 
-from ..core.menus import Menu
+from core.menus import Menu
 
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
@@ -207,8 +206,8 @@ def xprint(
     menu_num: int = -1,
     menu_width: int = 0,
     menu: tuple[str, list] = None,
-) -> Union[None, str]:
-    def main() -> Union[None, str]:
+) -> None | str:
+    def main() -> None | str:
         global _screen_cache
         if menu:
             return menu_prompt(menu[0], menu[1])
@@ -369,13 +368,7 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
     xprint()
     xprint(text=f"{Color.YELLOW.value + Color.FAINT.value}[Press any key{suffix}]{Color.RESET.value}")
     while True:
-        char = msvcrt.getwch()
-        if char:
-            if char.isdigit():
-                num = int(char)
-            else:
-                num = ord(char)
-            return num
+        return msvcrt.getwch()
 
 
 def exit() -> None:

@@ -1,4 +1,5 @@
-from .....core.h3 import objects
+from core.h3 import objects
+
 from .. import sort
 
 

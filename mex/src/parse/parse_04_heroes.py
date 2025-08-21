@@ -1,4 +1,5 @@
-from ...core.h3 import artifacts, heroes, skills, spells
+from core.h3 import artifacts, heroes, skills, spells
+
 from .. import file_io as io
 
 

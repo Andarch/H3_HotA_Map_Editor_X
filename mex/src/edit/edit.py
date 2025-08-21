@@ -1,4 +1,5 @@
-from ...core.menus import Menu
+from core.menus import Menu
+
 from ..common import KB, draw_header, xprint
 from .scripts import heroes, monster_values, random_monsters, towns
 

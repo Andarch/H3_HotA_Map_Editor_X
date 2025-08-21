@@ -1,4 +1,5 @@
-from ....core.h3 import heroes, objects
+from core.h3 import heroes, objects
+
 from ...common import DONE, MsgType, map_data, xprint
 
 

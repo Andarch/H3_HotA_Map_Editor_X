@@ -1,4 +1,5 @@
-from .....core.h3 import objects, spells
+from core.h3 import objects, spells
+
 from .. import format
 
 

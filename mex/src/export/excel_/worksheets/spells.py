@@ -1,4 +1,5 @@
-from .....core.h3 import spells
+from core.h3 import spells
+
 from .. import sort
 
 

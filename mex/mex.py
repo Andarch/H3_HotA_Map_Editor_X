@@ -4,11 +4,12 @@ import os
 import sys
 import time
 
-from .core.menus import Menu
-from .src import edit, export  # , view
-from .src import file_io as io
-from .src.common import Sleep, exit, initialize, map_data, xprint
-from .src.view import view
+from core.menus import Menu
+from src import file_io as io
+from src.common import Sleep, exit, initialize, map_data, xprint
+from src.edit import edit
+from src.export import export
+from src.view import view
 
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
 

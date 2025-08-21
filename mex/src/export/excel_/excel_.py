@@ -2,10 +2,10 @@ import os
 import re
 
 import pandas as pd
+from core.h3 import objects
 from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 
-from ....core.h3 import objects
 from ...common import DONE, MsgType, draw_header, map_data, xprint
 from ...file_io import is_file_writable
 from . import worksheets

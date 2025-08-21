@@ -1,6 +1,7 @@
 from enum import IntEnum
 
-from ...core.h3 import artifacts, objects
+from core.h3 import artifacts, objects
+
 from .. import file_io as io
 
 

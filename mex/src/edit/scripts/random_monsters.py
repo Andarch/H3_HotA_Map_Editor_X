@@ -1,4 +1,5 @@
-from ....core.h3 import objects
+from core.h3 import objects
+
 from ...common import DONE, MsgType, map_data, xprint
 
 RANDOM_MONSTER_LEVEL_IDS = [
