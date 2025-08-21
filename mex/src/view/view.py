@@ -1,6 +1,7 @@
 import json
 import re
 
+import core.h3 as h3
 from core.menus import Menu
 
 from ..common import (
@@ -15,6 +16,8 @@ from ..common import (
 )
 
 # from . import terrain
+
+ALL_OBJ_IDS = [member.value for member in h3.objects.ID]
 
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
 REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
@@ -49,11 +52,8 @@ def menu() -> None:
                 section = ("object_defs", map_data["object_defs"])
             case "8":
                 xprint(text="Loading object data...")
-                filter = []  # Edit this manually to apply a filter
-                if filter:
-                    section = ("object_data", [obj for obj in map_data["object_data"] if obj["id"] in filter])
-                else:
-                    section = ("object_data", map_data["object_data"])
+                filter = [*ALL_OBJ_IDS]  # Edit this manually to apply a filter
+                section = ("object_data", [obj for obj in map_data["object_data"] if obj["id"] in filter])
             case "9":
                 section = ("events", map_data["events"])
             # case "0":
