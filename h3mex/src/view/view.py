@@ -3,7 +3,7 @@ import re
 
 import core.h3m as h3m
 from src.common import (
-    ERASE_LINE,
+    ERASE_PREVIOUS_LINE,
     KB,
     MAX_PRINT_WIDTH,
     MsgType,
@@ -94,7 +94,7 @@ def _view(section: tuple[str, dict | list]) -> None:
             if keypress == KB.ESC:
                 break
             for _ in range(3):
-                print(ERASE_LINE, end="")
+                print(ERASE_PREVIOUS_LINE, end="")
         if lines_printed == len(lines):
             wait_for_keypress()
 

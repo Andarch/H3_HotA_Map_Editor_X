@@ -11,6 +11,11 @@ from src.h3m import h3m
 from src.ui.menu import Menu
 from src.view import view
 
+# APPNAME = "H3 HotA Map Editor X"
+# VERSION = "v0.3.1"
+
+# class App
+
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
 
 

@@ -16,7 +16,7 @@ MAX_PRINT_WIDTH = 80
 DONE = "DONE"
 HIDE_CURSOR = "\033[?25l"
 SHOW_CURSOR = "\033[?25h"
-ERASE_LINE = "\033[F\033[K"
+ERASE_PREVIOUS_LINE = "\033[F\033[K"
 
 
 class KB(StrEnum):
@@ -252,7 +252,7 @@ def xprint(
     def _overwrite(overwrite: int) -> None:
         time.sleep(Sleep.SHORT.value)
         for _ in range(overwrite):
-            print(ERASE_LINE, end="")
+            print(ERASE_PREVIOUS_LINE, end="")
 
     def align_text(align=Align.LEFT, text="", menu_width=0) -> str:
         global terminal_width
@@ -310,31 +310,31 @@ def xprint(
     def string_prompt(prompt: str) -> str:
         print(prompt, end="", flush=True)
         print(SHOW_CURSOR, end="", flush=True)
-        input_chars = []
+        chars = []
         while True:
-            char = msvcrt.getwch()
-            num = ord(char)
-            match num:
+            key = msvcrt.getwch()
+            # num = ord(char)
+            match key:
                 case KB.ENTER:
-                    if input_chars:
+                    if chars:
                         print(HIDE_CURSOR, end="", flush=True)
                         xprint()
                         xprint()
-                        return "".join(input_chars)
+                        return "".join(chars)
                     continue
                 case KB.BACKSPACE:
-                    if input_chars:
-                        input_chars.pop()
+                    if chars:
+                        chars.pop()
                         print("\b \b", end="", flush=True)
                     continue
                 case KB.ESC:
                     print(HIDE_CURSOR, end="", flush=True)
                     if map_data:
                         return ""
-                    print("\r\033[K", end="", flush=True)
-                    exit()
+                    else:
+                        exit()
                 case _:
-                    input_chars.append(char)
+                    chars.append(char)
                     print(char, end="", flush=True)
 
     def clean(text: str) -> str:
