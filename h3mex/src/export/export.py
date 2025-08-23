@@ -1,0 +1,32 @@
+from src.ui.menu import Menu
+
+from ..common import KB, draw_header, xprint
+from .excel_ import excel_
+from .json_ import json_
+from .minimap import minimap
+
+
+def menu() -> None:
+    keypress = xprint(menu=Menu.EXPORT.value)
+    if keypress == KB.ESC:
+        return
+
+    draw_header()
+
+    match keypress:
+        case 1:
+            excel_.export()
+        case 2:
+            json_.export(1)
+        case 3:
+            json_.export(2)
+        case 4:
+            json_.export(3)
+        case 5:
+            json_.export(4)
+        case 6:
+            minimap.export(1)
+        case 7:
+            minimap.export(2)
+
+    xprint()
