@@ -8,7 +8,7 @@ import threading
 import time
 from enum import Enum, StrEnum
 
-from src.ui.menu import Menu
+from src.ui.menus import Menu
 
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
@@ -140,12 +140,12 @@ def draw_header() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
     # Build header
-    header_default = make_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#")
-    header_appname = make_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#", text=APPNAME)
-    header_version = make_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#", text=VERSION)
+    header_default = get_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#")
+    header_appname = get_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#", text=APPNAME)
+    header_version = get_header_line(fill_color=(Color.FAINT + Color.GREY), fill="#", text=VERSION)
 
     # Build subheader
-    subheader_filled = make_header_line(fill_color=(Color.FAINT + Color.WHITE), fill="-")
+    subheader_filled = get_header_line(fill_color=(Color.FAINT + Color.WHITE), fill="-")
 
     subtext1 = map_data["general"]["map_name"] if map_data else "No map"
     subtext1_color = Color.MAGENTA if map_data else Color.FAINT + Color.MAGENTA
@@ -174,23 +174,23 @@ def draw_header() -> None:
     xprint(type=MsgType.HEADER, text="")
 
 
-def make_header_line(fill_color: str, fill: str, text: str = "") -> str:
+def get_header_line(fill_color: str, fill: str, text: str = "") -> str:
     print_width = MAX_PRINT_WIDTH if terminal_width >= MAX_PRINT_WIDTH else terminal_width
 
     if text == "":
-        row = fill_color + (fill * print_width) + Color.RESET
+        line = fill_color + (fill * print_width) + Color.RESET
     else:
         fill_length = print_width - (len(text) + 2)
 
-        row_left = fill_color + (fill * (fill_length // 2)) + Color.RESET
+        line_left = fill_color + (fill * (fill_length // 2)) + Color.RESET
         if fill_length % 2 == 0:
-            row_right = row_left
+            line_right = line_left
         else:
-            row_right = fill_color + (fill * ((fill_length // 2) + 1)) + Color.RESET
+            line_right = fill_color + (fill * ((fill_length // 2) + 1)) + Color.RESET
 
-        row = f"{row_left} {Color.CYAN}{text}{Color.RESET} {row_right}"
+        line = f"{line_left} {Color.CYAN}{text}{Color.RESET} {line_right}"
 
-    return row
+    return line
 
 
 def xprint(
@@ -273,7 +273,7 @@ def xprint(
             draw_header()
             width = get_menu_width(items)
             valid_keys = print_menu(name, items, width)
-            keypress = detect_key_press(valid_keys)
+            keypress = get_keypress(valid_keys)
             return keypress
 
         def get_menu_width(items: list) -> int:
@@ -299,11 +299,11 @@ def xprint(
             xprint()
             return valid_keys
 
-        def detect_key_press(valid_keys: list[str]) -> str:
+        def get_keypress(valid_keys: list[str]) -> str:
             while True:
-                key = msvcrt.getwch()
-                if key in valid_keys:
-                    return key
+                keypress = msvcrt.getwch()
+                if keypress in valid_keys:
+                    return keypress
 
         return main()
 
@@ -312,9 +312,9 @@ def xprint(
         print(SHOW_CURSOR, end="", flush=True)
         chars = []
         while True:
-            key = msvcrt.getwch()
+            keypress = msvcrt.getwch()
             # num = ord(char)
-            match key:
+            match keypress:
                 case KB.ENTER:
                     if chars:
                         print(HIDE_CURSOR, end="", flush=True)
@@ -334,8 +334,8 @@ def xprint(
                     else:
                         exit()
                 case _:
-                    chars.append(char)
-                    print(char, end="", flush=True)
+                    chars.append(keypress)
+                    print(keypress, end="", flush=True)
 
     def clean(text: str) -> str:
         # Remove ANSI escape codes

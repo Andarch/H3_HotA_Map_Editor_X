@@ -1,4 +1,4 @@
-from src.ui.menu import Menu
+from src.ui.menus import Menu
 
 from ..common import KB, draw_header, xprint
 from .excel_ import excel_

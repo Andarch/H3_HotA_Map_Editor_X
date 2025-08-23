@@ -12,7 +12,7 @@ from src.common import (
     wait_for_keypress,
     xprint,
 )
-from src.ui.menu import Menu
+from src.ui.menus import Menu
 
 # from . import terrain
 

@@ -8,7 +8,7 @@ from src.common import Sleep, exit, initialize, map_data, xprint
 from src.edit import edit
 from src.export import export
 from src.h3m import h3m
-from src.ui.menu import Menu
+from src.ui.menus import Menu
 from src.view import view
 
 # APPNAME = "H3 HotA Map Editor X"
