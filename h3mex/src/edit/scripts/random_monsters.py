@@ -1,6 +1,5 @@
 from core.h3m import objects
-
-from ...common import DONE, MsgType, map_data, xprint
+from src.common import DONE, MsgType, map_data, xprint
 
 RANDOM_MONSTER_LEVEL_IDS = [
     objects.ID.Random_Monster_1,

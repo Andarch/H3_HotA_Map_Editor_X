@@ -3,8 +3,7 @@ import os
 from copy import deepcopy
 
 from core.h3m import objects
-
-from ...common import DONE, MsgType, map_data, xprint
+from src.common import DONE, MsgType, map_data, xprint
 
 
 class CustomEncoder(json.JSONEncoder):

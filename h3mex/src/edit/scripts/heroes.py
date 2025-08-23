@@ -1,6 +1,5 @@
 from core.h3m import heroes, objects
-
-from ...common import DONE, MsgType, map_data, xprint
+from src.common import DONE, MsgType, map_data, xprint
 
 
 def reset() -> None:

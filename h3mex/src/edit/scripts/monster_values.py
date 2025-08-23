@@ -1,6 +1,5 @@
 from core.h3m import creatures, objects
-
-from ...common import DONE, MsgType, map_data, wait_for_keypress, xprint
+from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
 
 
 def set_compliant_monster_values() -> None:

@@ -3,8 +3,7 @@ from enum import IntEnum
 
 from core.h3m import objects
 from PIL import Image
-
-from ...common import DONE, MsgType, map_data, xprint
+from src.common import DONE, MsgType, map_data, xprint
 
 OVERWORLD = 0
 UNDERGROUND = 1

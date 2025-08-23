@@ -1,7 +1,6 @@
 from core.h3m import objects
 from core.h3m.players import Players
-
-from ...common import DONE, MsgType, map_data, xprint
+from src.common import DONE, MsgType, map_data, xprint
 
 TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]
 

@@ -2,9 +2,7 @@ import json
 import re
 
 import core.h3m as h3m
-from src.ui.menu import Menu
-
-from ..common import (
+from src.common import (
     ERASE_LINE,
     KB,
     MAX_PRINT_WIDTH,
@@ -14,6 +12,7 @@ from ..common import (
     wait_for_keypress,
     xprint,
 )
+from src.ui.menu import Menu
 
 # from . import terrain
 

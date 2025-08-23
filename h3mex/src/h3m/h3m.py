@@ -1,7 +1,6 @@
-from gzip import GzipFile
 from gzip import open as gzopen
 
-from h3mex import map_data
+from src.common import map_data
 
 from ..common import (
     DONE,
@@ -39,7 +38,7 @@ def load(filename: str = None) -> None:
     xprint(type=MsgType.NORMAL, text=f"Loading {filename}...\n")
 
     try:
-        with gzopen(filename, "rb") as io.map_file:
+        with gzopen(filename, "rb") as io.in_file:
             map_data["filename"] = filename
 
             xprint(text="Parsing 1/13: General...", overwrite=1)
@@ -107,22 +106,20 @@ def save(filename: str = None) -> bool:
     xprint(type=MsgType.ACTION, text=f"Saving {filename}...")
 
     # Save the map data to the specified filename
-    with open(filename, "wb") as f:
-        with GzipFile(filename="", mode="wb", fileobj=f) as f:
-            map_file = f
-            h1_general.write(map_data["general"])
-            h2_players.write(map_data["player_specs"])
-            h3_conditions.write_conditions(map_data["conditions"])
-            h2_players.write_teams(map_data["teams"])
-            h4_heroes.write_starting_heroes(map_data["starting_heroes"])
-            h5_additional_flags.write_flags(map_data["ban_flags"])
-            h6_rumors_and_events.write_rumors(map_data["rumors"])
-            h4_heroes.write_hero_data(map_data["hero_data"])
-            h7_terrain.write_terrain(map_data["terrain"])
-            h8_objects.write_object_defs(map_data["object_defs"])
-            h8_objects.write_object_data(map_data["object_data"])
-            h6_rumors_and_events.write_events(map_data["events"])
-            h9_null.write_null(map_data["null_bytes"])
+    with gzopen(filename, "wb") as io.out_file:
+        h1_general.write(map_data["general"])
+        h2_players.write(map_data["player_specs"])
+        h3_conditions.write_conditions(map_data["conditions"])
+        h2_players.write_teams(map_data["teams"])
+        h4_heroes.write_starting_heroes(map_data["starting_heroes"])
+        h5_additional_flags.write_flags(map_data["ban_flags"])
+        h6_rumors_and_events.write_rumors(map_data["rumors"])
+        h4_heroes.write_hero_data(map_data["hero_data"])
+        h7_terrain.write_terrain(map_data["terrain"])
+        h8_objects.write_object_defs(map_data["object_defs"])
+        h8_objects.write_object_data(map_data["object_data"])
+        h6_rumors_and_events.write_events(map_data["events"])
+        h9_null.write_null(map_data["null_bytes"])
 
     map_file = None
 
