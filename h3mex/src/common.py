@@ -7,8 +7,11 @@ import sys
 import threading
 import time
 from enum import Enum, StrEnum
+from typing import BinaryIO
 
 from src.ui.menu import Menu
+
+from h3mex import map_data
 
 APPNAME = "H3 HotA Map Editor X"
 VERSION = "v0.3.1"
@@ -71,7 +74,6 @@ class MsgType(Enum):
     ERROR = 8
 
 
-map_data = {}
 terminal_width = 0
 
 _old_terminal_width = 0

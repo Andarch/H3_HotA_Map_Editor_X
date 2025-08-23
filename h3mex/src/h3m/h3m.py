@@ -1,13 +1,13 @@
 from gzip import GzipFile
 from gzip import open as gzopen
 
+from h3mex import map_data
+
 from ..common import (
     DONE,
     MsgType,
     draw_header,
     is_file_writable,
-    map,
-    map_data,
     xprint,
 )
 from . import (
@@ -19,14 +19,12 @@ from . import (
     h6_rumors_and_events,
     h7_terrain,
     h8_objects,
+    h9_null,
+    io,
 )
-
-h3m = None
 
 
 def load(filename: str = None) -> None:
-    global map_data, h3m
-
     draw_header()
 
     # Prompt for filename if not provided
@@ -41,16 +39,14 @@ def load(filename: str = None) -> None:
     xprint(type=MsgType.NORMAL, text=f"Loading {filename}...\n")
 
     try:
-        with gzopen(filename, "rb") as h:
-            h3m = h
-
+        with gzopen(filename, "rb") as io.map_file:
             map_data["filename"] = filename
 
             xprint(text="Parsing 1/13: General...", overwrite=1)
-            map_data["general"] = h1_general.read()
+            map_data["general"] = h1_general.read_general()
 
             xprint(text="Parsing 2/13: Player Specs...", overwrite=1)
-            map_data["player_specs"] = h2_players.read()
+            map_data["player_specs"] = h2_players.read_players()
 
             xprint(text="Parsing 3/13: Victory/Loss Conditions...", overwrite=1)
             map_data["conditions"] = h3_conditions.parse_conditions()
@@ -83,18 +79,16 @@ def load(filename: str = None) -> None:
             map_data["events"] = h6_rumors_and_events.parse_events()
 
             xprint(type=MsgType.ACTION, text="Parsing 13/13: Null Bytes...", overwrite=1)
-            map_data["null_bytes"] = map.read()
+            map_data["null_bytes"] = h9_null.read_null()
 
             xprint(type=MsgType.SPECIAL, text=DONE)
-
-        h3m = None
 
     except FileNotFoundError:
         xprint(type=MsgType.ERROR, text=f"Could not find {filename}.")
 
 
 def save(filename: str = None) -> bool:
-    global h3m
+    global map_file
 
     draw_header()
 
@@ -114,8 +108,8 @@ def save(filename: str = None) -> bool:
 
     # Save the map data to the specified filename
     with open(filename, "wb") as f:
-        with GzipFile(filename="", mode="wb", fileobj=f) as h:
-            h3m = h
+        with GzipFile(filename="", mode="wb", fileobj=f) as f:
+            map_file = f
             h1_general.write(map_data["general"])
             h2_players.write(map_data["player_specs"])
             h3_conditions.write_conditions(map_data["conditions"])
@@ -128,9 +122,9 @@ def save(filename: str = None) -> bool:
             h8_objects.write_object_defs(map_data["object_defs"])
             h8_objects.write_object_data(map_data["object_data"])
             h6_rumors_and_events.write_events(map_data["events"])
-            h3m.write(map_data["null_bytes"])
+            h9_null.write_null(map_data["null_bytes"])
 
-    h3m = None
+    map_file = None
 
     xprint(type=MsgType.SPECIAL, text=DONE)
 

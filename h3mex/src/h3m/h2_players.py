@@ -3,7 +3,7 @@ from core.h3m import heroes, objects, players
 from . import io
 
 
-def read() -> list:
+def read_players() -> list:
     specs = []
 
     for p in range(8):

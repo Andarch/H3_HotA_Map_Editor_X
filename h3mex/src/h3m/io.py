@@ -1,16 +1,23 @@
-from .h3m import h3m
+from typing import BinaryIO, Optional
+
+in_file: Optional[BinaryIO] = None
+out_file: Optional[BinaryIO] = None
+
+
+def seek(length: int) -> None:
+    in_file.seek(length, 1)
 
 
 def read_raw(length: int) -> bytes:
-    return map.read(length)
+    return in_file.read(length)
 
 
 def read_int(length: int) -> int:
-    return int.from_bytes(map.read(length), "little")
+    return int.from_bytes(in_file.read(length), "little")
 
 
 def read_str(length: int) -> str:
-    return map.read(length).decode("latin-1")
+    return in_file.read(length).decode("latin-1")
 
 
 def read_bits(length: int) -> list:
@@ -26,18 +33,18 @@ def read_bits(length: int) -> list:
 
 
 def write_raw(data: bytes):
-    global h3m
-    h3m.write(data)
+    global out_file
+    out_file.write(data)
 
 
 def write_int(data: int, length: int) -> None:
-    global h3m
-    h3m.write(data.to_bytes(length, "little"))
+    global out_file
+    out_file.write(data.to_bytes(length, "little"))
 
 
 def write_str(data: str) -> None:
-    global h3m
-    h3m.write(data.encode("latin-1"))
+    global out_file
+    out_file.write(data.encode("latin-1"))
 
 
 def write_bits(data: list) -> None:
@@ -46,7 +53,3 @@ def write_bits(data: list) -> None:
         for b in range(8):
             s += "1" if data[i + b] else "0"
         write_int(int(s[::-1], 2), 1)
-
-
-def seek(length: int) -> None:
-    h3m.seek(length, 1)

@@ -30,7 +30,7 @@ class Difficulty(IntEnum):
     Impossible = 4
 
 
-def read() -> dict:
+def read_general() -> dict:
     info = {
         "map_format": MapFormat.HotA,
         "hota_version": 0,
