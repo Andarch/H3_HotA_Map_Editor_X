@@ -4,7 +4,7 @@ import os
 import sys
 import time
 
-from src.common import Sleep, exit, initialize, map_data, xprint
+from src.common import Wait, exit, initialize, map_data, xprint
 from src.edit import edit
 from src.export import export
 from src.h3m import h3m
@@ -42,7 +42,7 @@ def main(filename: str) -> None:
                     h3m.load(filename)
                 case "0":
                     exit()
-            time.sleep(Sleep.TIC.value)
+            time.sleep(Wait.TIC.value)
     else:
         exit()
 

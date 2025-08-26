@@ -10,6 +10,8 @@ from enum import Enum, StrEnum
 
 from src.ui.menus import Menu
 
+# APPNAME = "H3 HotA Map Editor X"
+# VERSION = "v0.3.1"
 MAX_PRINT_WIDTH = 80
 DONE = "DONE"
 

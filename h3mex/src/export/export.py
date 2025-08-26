@@ -1,6 +1,6 @@
 from src.ui.menus import Menu
 
-from ..common import KB, draw_header, xprint
+from ..common import Keypress, draw_header, xprint
 from .excel_ import excel_
 from .json_ import json_
 from .minimap import minimap
@@ -8,7 +8,7 @@ from .minimap import minimap
 
 def menu() -> None:
     keypress = xprint(menu=Menu.EXPORT.value)
-    if keypress == KB.ESC:
+    if keypress == Keypress.ESC:
         return
 
     draw_header()

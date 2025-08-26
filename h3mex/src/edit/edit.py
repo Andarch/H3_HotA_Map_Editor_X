@@ -1,12 +1,12 @@
 from src.ui.menus import Menu
 
-from ..common import KB, draw_header, xprint
+from ..common import Keypress, draw_header, xprint
 from .scripts import heroes, monster_values, random_monsters, towns
 
 
 def menu() -> None:
     keypress = xprint(menu=Menu.EDIT.value)
-    if keypress == KB.ESC:
+    if keypress == Keypress.ESC:
         return
 
     draw_header()

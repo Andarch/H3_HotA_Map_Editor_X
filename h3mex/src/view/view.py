@@ -3,9 +3,9 @@ import re
 
 import core.h3m as h3m
 from src.common import (
-    ERASE_PREVIOUS_LINE,
-    KB,
     MAX_PRINT_WIDTH,
+    Cursor,
+    Keypress,
     MsgType,
     draw_header,
     map_data,
@@ -27,7 +27,7 @@ REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 def menu() -> None:
     while True:
         keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0]))
-        if keypress == KB.ESC:
+        if keypress == Keypress.ESC:
             break
 
         draw_header()
@@ -91,10 +91,10 @@ def _view(section: tuple[str, dict | list]) -> None:
         lines_printed += 1
         if lines_printed % 100 == 0:
             keypress = wait_for_keypress(suffix=" to continue printing")
-            if keypress == KB.ESC:
+            if keypress == Keypress.ESC:
                 break
             for _ in range(3):
-                print(ERASE_PREVIOUS_LINE, end="")
+                print(Cursor.RESET_PREVIOUS, end="")
         if lines_printed == len(lines):
             wait_for_keypress()
 
