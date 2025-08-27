@@ -1,5 +1,5 @@
 from core.h3m import artifacts, objects
-from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
+from src.common import MsgType, map_data, wait_for_keypress, xprint
 
 
 def fix_empty_contents() -> None:
