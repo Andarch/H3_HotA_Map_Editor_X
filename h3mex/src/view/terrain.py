@@ -2,7 +2,7 @@ from src.common import MsgType, map_data, wait_for_keypress, xprint
 
 
 def list_unreachable_tiles() -> None:
-    xprint(text="Calculating unreachable tiles...\n")
+    xprint(text="Calculating unreachable tiles…\n")
 
     OVERWORLD = 0
     UNDERGROUND = 1

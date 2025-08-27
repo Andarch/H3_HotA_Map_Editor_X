@@ -29,7 +29,7 @@ def export(type: int) -> None:
                 obj_filter = [objects.ID.Town, objects.ID.Random_Town]
                 data = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
 
-        xprint(type=MsgType.ACTION, text="Exporting JSON file...")
+        xprint(type=MsgType.ACTION, text="Exporting JSON file…")
 
         with open(filename, "w") as f:
             json.dump(data, f, cls=CustomEncoder, indent=4)

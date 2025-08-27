@@ -54,6 +54,7 @@ class Menu:
                 None,
                 ("4", "Monsters: Change level-specific random monsters to any level"),
                 ("5", "Set compliant monster values"),
+                ("6", "Fix empty contents"),
             ]
         ],
     }

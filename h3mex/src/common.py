@@ -372,11 +372,12 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
     xprint()
     xprint(text=f"{Color.YELLOW + Color.FAINT}[Press any key{suffix}]{Color.RESET}")
     while True:
-        return msvcrt.getwch()
+        keypress = msvcrt.getwch()
+        return keypress
 
 
 def exit() -> None:
-    xprint(text="Exiting...")
+    xprint(text="Exiting…")
     xprint()
     time.sleep(Wait.NORMAL.value)
     os.system("cls" if os.name == "nt" else "clear")

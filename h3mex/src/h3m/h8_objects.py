@@ -1325,15 +1325,13 @@ def write_scholar(obj: dict) -> None:
 
 def parse_sea_chest(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    # obj["artifact"] = artifacts.ID(file.read_int(4))
-    obj["garbage_bytes"] = io.read_raw(4)
+    obj["artifact"] = io.read_int(4)
     return obj
 
 
 def write_sea_chest(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    # file.write_int(obj["artifact"], 4)
-    io.write_raw(obj["garbage_bytes"])
+    io.write_int(obj["artifact"], 4)
 
 
 class Quest(IntEnum):
@@ -1591,16 +1589,12 @@ def write_seers_hut(obj: dict) -> None:
 
 def parse_shipwreck_survivor(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    # obj["artifact"] = artifacts.ID(file.read_int(4))
-    # obj["garbage_bytes"] = file.read_raw(4)
     obj["artifact"] = io.read_int(4)
     return obj
 
 
 def write_shipwreck_survivor(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    # file.write_int(obj["artifact"], 4)
-    # file.write_raw(obj["garbage_bytes"])
     io.write_int(obj["artifact"], 4)
 
 
@@ -1623,7 +1617,6 @@ def write_spell_scroll(obj: dict) -> None:
 def parse_treasure_chest(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["artifact"] = io.read_int(4)
-    #    obj["artifact"] = artifacts.ID(file.read_int(4))
     return obj
 
 
@@ -1679,15 +1672,13 @@ def write_wagon(obj: dict) -> None:
 
 def parse_warriors_tomb(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    # obj["artifact"] = artifacts.ID(file.read_int(4))
-    obj["garbage_bytes"] = io.read_raw(4)
+    obj["artifact"] = io.read_int(4)
     return obj
 
 
 def write_warriors_tomb(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    # file.write_int(obj["artifact"], 4)
-    io.write_raw(obj["garbage_bytes"])
+    io.write_int(obj["artifact"], 4)
 
 
 def parse_dwelling(obj: dict) -> dict:

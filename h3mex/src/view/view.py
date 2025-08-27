@@ -44,14 +44,16 @@ def menu() -> None:
             case "5":
                 section = ("hero_data", map_data["hero_data"])
             case "6":
-                xprint(text="Loading terrain data...")
+                xprint(text="Loading terrain data…")
                 section = ("terrain", map_data["terrain"])
             case "7":
-                xprint(text="Loading object defs...")
+                xprint(text="Loading object defs…")
                 section = ("object_defs", map_data["object_defs"])
             case "8":
-                xprint(text="Loading object data...")
-                filter = [*ALL_OBJ_IDS]  # Edit this manually to apply a filter
+                xprint(text="Loading object data…")
+                filter = [
+                    h3m.objects.ID.Treasure_Chest
+                ]  # Edit this manually to apply a filter (default [*ALL_OBJ_IDS])
                 section = ("object_data", [obj for obj in map_data["object_data"] if obj["id"] in filter])
             case "9":
                 section = ("events", map_data["events"])

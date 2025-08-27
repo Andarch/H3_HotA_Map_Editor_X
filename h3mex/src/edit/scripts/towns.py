@@ -52,7 +52,7 @@ def edit(spells: bool = False, buildings: bool = False, events: bool = False) ->
 
 
 def _enable_spells() -> None:
-    xprint(type=MsgType.ACTION, text="Enabling spell research and all spells in all towns...")
+    xprint(type=MsgType.ACTION, text="Enabling spell research and all spells in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
             obj["spell_research"] = True
@@ -64,7 +64,7 @@ def _enable_spells() -> None:
 
 
 def _enable_buildings() -> None:
-    xprint(type=MsgType.ACTION, text="Enabling all buildings in all towns...")
+    xprint(type=MsgType.ACTION, text="Enabling all buildings in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
             if "buildings_disabled" in obj:
@@ -76,7 +76,7 @@ def _enable_buildings() -> None:
 
 
 def _create_events() -> None:
-    xprint(type=MsgType.ACTION, text="Configuring town events...")
+    xprint(type=MsgType.ACTION, text="Configuring town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["owner"] != Players.Neutral:
             # Remove any existing events with the same name

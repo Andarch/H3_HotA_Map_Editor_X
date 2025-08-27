@@ -13,7 +13,7 @@ RANDOM_MONSTER_LEVEL_IDS = [
 
 
 def set_random_monsters() -> None:
-    xprint(type=MsgType.ACTION, text="Setting random monsters 1-7 to any level...")
+    xprint(type=MsgType.ACTION, text="Setting random monsters 1-7 to any level…")
 
     # Find the first Random Monster (non-level-specific) to get its def_id
     def_id = None

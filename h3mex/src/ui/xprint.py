@@ -378,7 +378,7 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
 
 
 def exit() -> None:
-    xprint(text="Exiting...")
+    xprint(text="Exiting…")
     xprint()
     time.sleep(Wait.NORMAL.value)
     os.system("cls" if os.name == "nt" else "clear")

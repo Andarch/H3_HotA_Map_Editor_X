@@ -3,7 +3,7 @@ from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
 
 
 def set_compliant_monster_values() -> None:
-    xprint(type=MsgType.ACTION, text="Setting compliant monster values...")
+    xprint(type=MsgType.ACTION, text="Setting compliant monster values…")
 
     count = 0
     for obj in map_data["object_data"]:

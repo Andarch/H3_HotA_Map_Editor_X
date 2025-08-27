@@ -3,7 +3,7 @@ from src.common import DONE, MsgType, map_data, xprint
 
 
 def reset() -> None:
-    xprint(type=MsgType.ACTION, text="Resetting identity details for all non-special heroes...")
+    xprint(type=MsgType.ACTION, text="Resetting identity details for all non-special heroes…")
 
     special_heroes = _get_special_heroes()
 

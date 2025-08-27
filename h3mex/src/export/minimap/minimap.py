@@ -474,11 +474,11 @@ def export(keypress: int) -> bool:
 
     def process_image(keypress, filter, subfilter, png_number, png_name) -> bool:
         if keypress == 1:
-            xprint(type=MsgType.ACTION, text="Generating minimap...")
+            xprint(type=MsgType.ACTION, text="Generating minimap…")
         elif keypress == 2:
             xprint(
                 type=MsgType.ACTION,
-                text=f"Generating minimap_{png_number:02d}_{png_name}...",
+                text=f"Generating minimap_{png_number:02d}_{png_name}…",
             )
         # Get map size
         map_size = map_data["general"]["map_size"]
