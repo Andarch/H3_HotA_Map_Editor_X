@@ -1,5 +1,39 @@
+import random
+
 from core.h3m import creatures, objects
 from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
+
+RANDOM_MONSTER_IDS = [
+    objects.ID.Random_Monster,
+    # objects.ID.Random_Monster_1,
+    # objects.ID.Random_Monster_2,
+    # objects.ID.Random_Monster_3,
+    objects.ID.Random_Monster_4,
+    objects.ID.Random_Monster_5,
+    objects.ID.Random_Monster_6,
+    objects.ID.Random_Monster_7,
+]
+
+
+def set_monster_values() -> None:
+    xprint(type=MsgType.ERROR, text="Not functional…")
+    # xprint(type=MsgType.ACTION, text="Setting monster values…")
+
+    # count = 0
+    # for obj in map_data["object_data"]:
+    #     if obj["id"] in RANDOM_MONSTER_IDS:
+    #         monster = obj
+    #         if not monster["is_value"] and monster["quantity"] == 0:
+    #             monster["is_value"] = True
+    #             monster["ai_value"] = random.randint(15000, 50000)
+
+    #         count += 1
+
+    # xprint(type=MsgType.SPECIAL, text=DONE)
+    # xprint()
+    # xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
+
+    wait_for_keypress()
 
 
 def set_compliant_monster_values() -> None:
@@ -28,6 +62,7 @@ def set_compliant_monster_values() -> None:
             count += 1
 
     xprint(type=MsgType.SPECIAL, text=DONE)
-    xprint(type=MsgType.INFO, text=f"\nUpdated {count} objects.")
+    xprint()
+    xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()

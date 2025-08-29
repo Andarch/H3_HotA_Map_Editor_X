@@ -10,9 +10,9 @@ BOSS_EVENT_NAME = "[Boss Bonus]"
 
 ##################################################
 # Set lvl7 creature bonus amounts (max 666 each)
-HUMAN_LVL7_CREATURES = 10
-AI_LVL7_CREATURES = 20
-BOSS_LVL7_CREATURES = 50
+HUMAN_LVL7_CREATURES = 2
+AI_LVL7_CREATURES = 4
+BOSS_LVL7_CREATURES = 10
 
 # Set which players receive each bonus type
 HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]

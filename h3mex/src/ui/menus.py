@@ -53,8 +53,9 @@ class Menu:
                 ("3", "Heroes: Reset identity details"),
                 None,
                 ("4", "Monsters: Change level-specific random monsters to any level"),
-                ("5", "Set compliant monster values"),
-                ("6", "Fix empty contents"),
+                ("5", "Monsters: Set monster values"),
+                ("6", "Monsters: Set compliant monster values"),
+                ("7", "Rewards:Fix empty contents"),
             ]
         ],
     }

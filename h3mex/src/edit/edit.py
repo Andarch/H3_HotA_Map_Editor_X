@@ -21,8 +21,10 @@ def menu() -> None:
         case "4":
             random_monsters.set_random_monsters()
         case "5":
-            monster_values.set_compliant_monster_values()
+            monster_values.set_monster_values()
         case "6":
+            monster_values.set_compliant_monster_values()
+        case "7":
             fix_empty_contents.fix_empty_contents()
 
     xprint()
