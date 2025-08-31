@@ -92,22 +92,22 @@ def add_treasures():
 
     levels = [0, 1] if has_underground else [0]
     added = 0
-    # attempts = 0
+    attempts_per_obj = 0
     placed_coords = set()  # Track coordinates where we've placed treasures during this run
     current_level_index = 0  # Track which level we're currently trying
 
-    while added < 1000:
+    while added < 1000 and attempts_per_obj < 1000:
         z = levels[current_level_index]  # Use current level
         coords = (random.randint(0, size - 1), random.randint(0, size - 1), z)
 
         # Check if coordinate is already taken (existing object or newly placed)
         if any(obj["coords"] == coords for obj in map_data["object_data"]) or coords in placed_coords:
-            # attempts += 1
+            attempts_per_obj += 1
             continue
 
         # Check if coordinate is on a blocked tile
         if (coords[0], coords[1]) in blocked_tiles[coords[2]]:
-            # attempts += 1
+            attempts_per_obj += 1
             continue
 
         # Check terrain
@@ -122,7 +122,7 @@ def add_treasures():
         # Create object
         if terrain_type == 8:  # Water
             if not sea_treasures:
-                # attempts += 1
+                attempts_per_obj += 1
                 continue
             id = random.choice(sea_treasures)
             if id == objects.ID.HotA_Collectible:
@@ -136,23 +136,26 @@ def add_treasures():
                 new_obj = creators[id](coords, def_id)
         else:  # Land
             if not land_treasures:
-                # attempts += 1
+                attempts_per_obj += 1
                 continue
             id = random.choice(land_treasures)
             def_id = def_ids[(id, 0)]
             new_obj = creators[id](coords, def_id)
 
+        # Log
+        obj_name = objects.ID(id).name if id != objects.ID.HotA_Collectible else objects.HotA_Collectible(sub_id).name
+        xprint(
+            type=MsgType.INFO,
+            text=f"{Color.GREEN}{obj_name}{Color.CYAN} added at {Color.GREEN}{coords}{Color.CYAN} in {attempts_per_obj + 1} attempts",
+        )
+
         map_data["object_data"].append(new_obj)
         placed_coords.add(coords)  # Track this placement
         added += 1
-        # attempts = 0
+        attempts_per_obj = 0
 
         # Only alternate levels after successful placement
         current_level_index = (current_level_index + 1) % len(levels)
-
-        # Log
-        obj_name = objects.ID(id).name if id != objects.ID.HotA_Collectible else objects.HotA_Collectible(sub_id).name
-        xprint(type=MsgType.INFO, text=f"{Color.GREEN}{obj_name}{Color.CYAN} added at {coords}")
 
     xprint()
     xprint(type=MsgType.INFO, text=f"Added {added} treasures.")
