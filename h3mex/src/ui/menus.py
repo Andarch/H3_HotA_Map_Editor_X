@@ -55,7 +55,8 @@ class Menu:
                 ("4", "Monsters: Change level-specific random monsters to any level"),
                 ("5", "Monsters: Set monster values"),
                 ("6", "Monsters: Set compliant monster values"),
-                ("7", "Rewards:Fix empty contents"),
+                ("7", "Rewards: Fix empty contents"),
+                ("8", "Rewards: Add treasures"),
             ]
         ],
     }
