@@ -1,0 +1,70 @@
+[HOTA MAP EDITOR CRASH LOG]
+
+
+HotA version: 1.7.3
+HotA Map Editor version: 0.0 build 40
+
+Time
+{
+   Sun Aug 31 07:14:10 2025
+}
+
+Exception
+{
+   Module: 	h3hota_maped.exe
+   Adress:      0x00422524
+   Code:        EXCEPTION_ACCESS_VIOLATION
+   Flags:       0x00000000
+   Information: read of address: 0x6F97BDB8
+}
+
+Call stack
+{
+             0x004224FE called from        0x0041F4B2
+                      ? called from before 0x1002B9CD
+             0x00F40154 called from        0x02D6444C
+             0x02F503FC called from        0x02D79F40
+             0x0042968F called from        0x0045FEB1
+             0x0045FDFD called from        0x0045F26E
+                      ? called from before 0x0050AA2F
+                      ? called from before 0x1008CB88
+             0x00509AA9 called from        0x0045BF07
+                      ? called from before 0x0050B86B
+                      ? called from before 0x00510551
+                      ? called from before 0x0051A777
+             0x0051A678 called from        0x0045C88E
+                      ? called from before 0x005084A1
+             0x00F40066 called from        0x02D602B3
+                      ? called from before 0x76425D49
+                      ? called from before 0x776CD6DB
+             0x776CD6B0 called from        0x776CD65C
+                      ? called from before 0x00000000
+}
+
+Command Line
+{
+   "c:\users\andy\games\3do\heroes3\h3hota_maped.exe" "C:\Users\Andy\Repos\H3_HotA_Map_Editor_X\maps\path2.h3m"
+}
+
+HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+{
+   ProductName:    Windows 10 Home
+   CurrentVersion: 6.3
+   BuildLab:       26100.ge_release.240331-1435
+}
+
+GetVersionEx
+{
+   PlatformId  = 2
+   Version:      6.2
+   Build:        9200
+   CSDVersion  = 
+   ProductType = 1
+   SuiteMask   = 768
+}
+
+Some values
+{
+     Last RMG Seed = 0
+}
+

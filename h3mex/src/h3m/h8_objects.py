@@ -164,11 +164,11 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         ]
 
         zone_ids = set()
-        for cat in ZONE_INFO_OBJECTS:
-            zone_ids.update(objects.Categories.CATEGORIES.get(cat, []))
+        for category in ZONE_INFO_OBJECTS:
+            zone_ids.update(objects.Categories.CATEGORIES.get(category, []))
 
         if obj["id"] in zone_ids:
-            obj["coords_offset"] = get_coords_offset(obj)
+            obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
                 is_shipwreck = obj["id"] == objects.ID.Shipwreck
                 obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"], is_shipwreck)
@@ -695,21 +695,24 @@ def write_black_market(obj: dict) -> None:
 
 
 def parse_campfire(obj: dict) -> dict:
-    obj["mode"] = io.read_raw(8)
+    obj["mode"] = io.read_int(4)
+    obj["extra_bytes"] = io.read_raw(4)
     obj["resources"] = {}
 
     for _ in range(2):
         amount = io.read_int(4)
-        obj["resources"][objects.Resource(io.read_int(1))] = amount
+        resource_id = io.read_int(1)
+        obj["resources"][resource_id] = amount
 
     return obj
 
 
 def write_campfire(obj: dict) -> None:
-    io.write_raw(obj["mode"])
-    for k in obj["resources"].keys():
-        io.write_int(obj["resources"][k], 4)
-        io.write_int(k, 1)
+    io.write_int(obj["mode"], 4)
+    io.write_raw(obj["extra_bytes"])
+    for resource_id in obj["resources"].keys():
+        io.write_int(obj["resources"][resource_id], 4)
+        io.write_int(resource_id, 1)
 
 
 def parse_bank(obj: dict) -> dict:
@@ -1756,7 +1759,7 @@ def parse_sea_barrel(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["trash_bytes"] = io.read_raw(4)
     obj["amount"] = io.read_int(4)
-    obj["resource"] = objects.Resource(io.read_int(1))
+    obj["resource"] = io.read_int(1)
     obj["mystery_bytes"] = io.read_raw(5)
     return obj
 
@@ -1816,7 +1819,7 @@ def write_grave(obj: dict) -> None:
     io.write_raw(obj["mystery_bytes"])
 
 
-def get_zone(coords: list, is_shipwreck: bool) -> str:
+def get_zone(coords: list, is_shipwreck: bool = False) -> str:
     global zone_img_g, zone_img_u
     x, y, z = coords
     img = zone_img_g if z == 0 else zone_img_u
@@ -1836,7 +1839,7 @@ def get_zone(coords: list, is_shipwreck: bool) -> str:
     return zone_type, zone_color
 
 
-def get_coords_offset(obj: dict) -> list:
+def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
     OBJS_X_OFFSET_MINUS_1 = [
         objects.ID.Monster,
         objects.ID.Random_Monster,
@@ -1856,26 +1859,23 @@ def get_coords_offset(obj: dict) -> list:
         objects.ID.Shipwreck,
     ]
 
-    x, y, z = obj["coords"]
+    x, y, z = coords
 
-    if obj["id"] in OBJS_X_OFFSET_MINUS_1:
-        if obj["id"] == objects.ID.HotA_Collectible:
-            if obj["sub_id"] == objects.HotA_Collectible.Ancient_Lamp:
+    if id in OBJS_X_OFFSET_MINUS_1:
+        if id == objects.ID.HotA_Collectible:
+            if sub_id == objects.HotA_Collectible.Ancient_Lamp:
                 x -= 1
-        elif obj["id"] == objects.ID.HotA_Visitable_2:
-            if obj["sub_id"] == objects.HotA_Visitable_2.Ancient_Altar:
+        elif id == objects.ID.HotA_Visitable_2:
+            if sub_id == objects.HotA_Visitable_2.Ancient_Altar:
                 x -= 1
-        elif obj["id"] == objects.ID.Creature_Bank:
-            if (
-                obj["sub_id"] == objects.Creature_Bank.Temple_of_the_Sea
-                or obj["sub_id"] == objects.Creature_Bank.Red_Tower
-            ):
+        elif id == objects.ID.Creature_Bank:
+            if sub_id == objects.Creature_Bank.Temple_of_the_Sea or sub_id == objects.Creature_Bank.Red_Tower:
                 x -= 2
             elif (
-                obj["sub_id"] != objects.Creature_Bank.Griffin_Conservatory
-                and obj["sub_id"] != objects.Creature_Bank.Imp_Cache
-                and obj["sub_id"] != objects.Creature_Bank.Ivory_Tower
-                and obj["sub_id"] != objects.Creature_Bank.Experimental_Shop
+                sub_id != objects.Creature_Bank.Griffin_Conservatory
+                and sub_id != objects.Creature_Bank.Imp_Cache
+                and sub_id != objects.Creature_Bank.Ivory_Tower
+                and sub_id != objects.Creature_Bank.Experimental_Shop
             ):
                 x -= 1
         else:

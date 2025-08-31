@@ -52,7 +52,7 @@ def menu() -> None:
             case "8":
                 xprint(text="Loading object data…")
                 # Edit this manually to apply a filter (default [*ALL_OBJ_IDS])
-                filter = [h3m.objects.ID.Campfire, h3m.objects.ID.Scholar, h3m.objects.ID.Treasure_Chest]
+                filter = [h3m.objects.ID.HotA_Collectible]
                 section = ("object_data", [obj for obj in map_data["object_data"] if obj["id"] in filter])
             case "9":
                 section = ("events", map_data["events"])
