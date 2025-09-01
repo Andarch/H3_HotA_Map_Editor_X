@@ -39,8 +39,8 @@ def add_treasures():
         def_ids[(obj["id"], obj["sub_id"])] = obj["def_id"]
 
     # Filter available treasures
-    land_treasures = [oid for oid in land_treasures if (oid, 0) in def_ids]
-    sea_treasures = [oid for oid in sea_treasures if oid != objects.ID.HotA_Collectible and (oid, 0) in def_ids]
+    land_treasures = [id for id in land_treasures if (id, 0) in def_ids]
+    sea_treasures = [id for id in sea_treasures if id != objects.ID.HotA_Collectible and (id, 0) in def_ids]
     sea_hota_available = [
         int(sub_id) for sub_id in sea_hota_collectible if (objects.ID.HotA_Collectible, int(sub_id)) in def_ids
     ]
@@ -162,7 +162,7 @@ def add_treasures():
     wait_for_keypress()
 
 
-def _get_base_object(coords, obj_id, def_id):
+def _get_base_object(coords, id, def_id):
     """Common object creation logic"""
     zone_type, zone_color = ("", "")
     if has_zone_images:
@@ -174,7 +174,7 @@ def _get_base_object(coords, obj_id, def_id):
         "zone_type": zone_type,
         "zone_color": zone_color,
         "def_id": def_id,
-        "id": obj_id,
+        "id": id,
         "sub_id": 0,
     }
 
