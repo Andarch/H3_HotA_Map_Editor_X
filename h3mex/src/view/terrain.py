@@ -2,7 +2,8 @@ from src.common import MsgType, map_data, wait_for_keypress, xprint
 
 
 def list_unreachable_tiles() -> None:
-    xprint(text="Calculating unreachable tiles…\n")
+    xprint(text="Calculating unreachable tiles…", overwrite=4)
+    xprint()
 
     OVERWORLD = 0
     UNDERGROUND = 1
@@ -123,6 +124,6 @@ def list_unreachable_tiles() -> None:
         for coords in unreachable_tiles:
             xprint(type=MsgType.INFO, text=coords)
     else:
-        xprint(type=MsgType.ERROR, text="No unreachable tiles found.", skip_line=True)
+        xprint(type=MsgType.INFO, text="No unreachable tiles found.")
 
     wait_for_keypress()

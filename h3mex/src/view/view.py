@@ -14,7 +14,7 @@ from src.common import (
 )
 from src.ui.menus import Menu
 
-# from . import terrain
+from . import terrain
 
 ALL_OBJ_IDS = [member.value for member in objects.ID]
 
@@ -26,7 +26,7 @@ REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0]))
+        keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0])).upper()
         if keypress == Keypress.ESC:
             break
 
@@ -57,9 +57,15 @@ def menu() -> None:
                 section = ("object_data", filtered_objs)
             case "9":
                 section = ("events", map_data["events"])
-            # case "0":
-            #     terrain.list_unreachable_tiles()
-            #     continue
+            case "S":
+                while True:
+                    keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
+                    if keypress == Keypress.ESC:
+                        break
+                    match keypress:
+                        case "1":
+                            terrain.list_unreachable_tiles()
+                continue
 
         _view(section)
 

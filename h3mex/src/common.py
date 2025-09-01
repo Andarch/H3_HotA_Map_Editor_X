@@ -309,8 +309,8 @@ def xprint(
         def get_keypress(valid_keys: list[str]) -> str:
             while True:
                 keypress = msvcrt.getwch()
-                if keypress in valid_keys:
-                    return keypress
+                if keypress.upper() in valid_keys:
+                    return keypress.upper()
 
         return main()
 
