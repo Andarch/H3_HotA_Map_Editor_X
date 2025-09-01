@@ -2,11 +2,10 @@ from src.ui.menus import Menu
 
 from ..common import Keypress, draw_header, xprint
 from .scripts import (
-    add_treasures,
-    fix_empty_contents,
     heroes,
     monsters,
     towns,
+    treasures,
 )
 
 
@@ -31,8 +30,6 @@ def menu() -> None:
         case "6":
             monsters.set_compliant_monster_values()
         case "7":
-            fix_empty_contents.fix_empty_contents()
-        case "8":
-            add_treasures.add_treasures()
+            treasures.add_treasures()
 
     xprint()

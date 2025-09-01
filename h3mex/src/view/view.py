@@ -1,7 +1,7 @@
 import json
 import re
 
-import core.h3m as h3m
+from core.h3m import objects
 from src.common import (
     MAX_PRINT_WIDTH,
     Cursor,
@@ -16,7 +16,7 @@ from src.ui.menus import Menu
 
 # from . import terrain
 
-ALL_OBJ_IDS = [member.value for member in h3m.objects.ID]
+ALL_OBJ_IDS = [member.value for member in objects.ID]
 
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
 REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
@@ -51,9 +51,10 @@ def menu() -> None:
                 section = ("object_defs", map_data["object_defs"])
             case "8":
                 xprint(text="Loading object data…")
-                # Edit this manually to apply a filter (default [*ALL_OBJ_IDS])
-                filter = [h3m.objects.ID.HotA_Collectible]
-                section = ("object_data", [obj for obj in map_data["object_data"] if obj["id"] in filter])
+                # Edit next line manually to apply a filter (default [*ALL_OBJ_IDS])
+                filter = [*ALL_OBJ_IDS]
+                filtered_objs = [obj for obj in map_data["object_data"] if obj["id"] in filter]
+                section = ("object_data", filtered_objs)
             case "9":
                 section = ("events", map_data["events"])
             # case "0":
@@ -70,6 +71,7 @@ def _view(section: tuple[str, dict | list]) -> None:
 
     # Special case: if the entire section is just an empty list, format it inline
     if data.strip() == "[]":
+        xprint(overwrite=2)
         xprint(type=MsgType.INFO, text=f'"{name}": []')
         wait_for_keypress()
         return
