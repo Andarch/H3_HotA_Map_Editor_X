@@ -26,8 +26,8 @@ def fix_empty_contents() -> None:
 
     count = 0
     for obj in map_data["object_data"]:
-        oid = obj.get("id")
-        if oid in target_ids:
+        id = obj.get("id")
+        if id in target_ids:
             contents = obj.get("contents")
             if contents in empty_markers:
                 obj["artifact"] = contents
