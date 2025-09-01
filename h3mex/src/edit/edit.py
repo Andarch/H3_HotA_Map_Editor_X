@@ -5,8 +5,7 @@ from .scripts import (
     add_treasures,
     fix_empty_contents,
     heroes,
-    monster_values,
-    random_monsters,
+    monsters,
     towns,
 )
 
@@ -26,11 +25,11 @@ def menu() -> None:
         case "3":
             heroes.reset()
         case "4":
-            random_monsters.set_random_monsters()
+            monsters.set_random_monsters()
         case "5":
-            monster_values.set_monster_values()
+            monsters.set_monster_values()
         case "6":
-            monster_values.set_compliant_monster_values()
+            monsters.set_compliant_monster_values()
         case "7":
             fix_empty_contents.fix_empty_contents()
         case "8":
