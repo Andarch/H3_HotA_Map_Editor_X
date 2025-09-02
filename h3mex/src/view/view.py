@@ -16,12 +16,14 @@ from src.ui.menus import Menu
 
 from . import terrain
 
-ALL_OBJ_IDS = [member.value for member in objects.ID]
-
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
 REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
 REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
 REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
+
+###################################
+OBJECT_FILTER = [*objects.ID]
+###################################
 
 
 def menu() -> None:
@@ -34,29 +36,27 @@ def menu() -> None:
 
         match keypress:
             case "1":
-                section = ("general", map_data["general"])
+                _view_map_data(("general", map_data["general"]))
             case "2":
-                section = ("player_specs", map_data["player_specs"])
+                _view_map_data(("player_specs", map_data["player_specs"]))
             case "3":
-                section = ("starting_heroes", map_data["starting_heroes"])
+                _view_map_data(("starting_heroes", map_data["starting_heroes"]))
             case "4":
-                section = ("rumors", map_data["rumors"])
+                _view_map_data(("rumors", map_data["rumors"]))
             case "5":
-                section = ("hero_data", map_data["hero_data"])
+                _view_map_data(("hero_data", map_data["hero_data"]))
             case "6":
                 xprint(text="Loading terrain data…")
-                section = ("terrain", map_data["terrain"])
+                _view_map_data(("terrain", map_data["terrain"]))
             case "7":
                 xprint(text="Loading object defs…")
-                section = ("object_defs", map_data["object_defs"])
+                _view_map_data(("object_defs", map_data["object_defs"]))
             case "8":
                 xprint(text="Loading object data…")
-                # Edit next line manually to apply a filter (default [*ALL_OBJ_IDS])
-                filter = [*ALL_OBJ_IDS]
-                filtered_objs = [obj for obj in map_data["object_data"] if obj["id"] in filter]
-                section = ("object_data", filtered_objs)
+                object_data = [obj for obj in map_data["object_data"] if obj["id"] in OBJECT_FILTER]
+                _view_map_data(("object_data", object_data))
             case "9":
-                section = ("events", map_data["events"])
+                _view_map_data(("events", map_data["events"]))
             case "S":
                 while True:
                     keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
@@ -67,10 +67,8 @@ def menu() -> None:
                             terrain.list_unreachable_tiles()
                 continue
 
-        _view(section)
 
-
-def _view(section: tuple[str, dict | list]) -> None:
+def _view_map_data(section: tuple[str, dict | list]) -> None:
     # Perform JSON dump
     name = section[0]
     data = json.dumps(section[1], indent=4, default=str)
@@ -83,10 +81,10 @@ def _view(section: tuple[str, dict | list]) -> None:
         return
 
     # Apply formatting in sequence - array dicts first, then lists
-    data = re.sub(REGEX_ARRAY_DICTS, _format, data)
-    data = re.sub(REGEX_LISTS, _format, data)
-    data = re.sub(REGEX_STRINGS, _format, data)
-    data = re.sub(REGEX_DICTS, _format, data)
+    data = re.sub(REGEX_ARRAY_DICTS, _format_map_data, data)
+    data = re.sub(REGEX_LISTS, _format_map_data, data)
+    data = re.sub(REGEX_STRINGS, _format_map_data, data)
+    data = re.sub(REGEX_DICTS, _format_map_data, data)
 
     # Special case: clear loading message
     if name in ("terrain", "object_defs", "object_data"):
@@ -108,7 +106,7 @@ def _view(section: tuple[str, dict | list]) -> None:
             wait_for_keypress()
 
 
-def _format(m: re.Match) -> str:
+def _format_map_data(m: re.Match) -> str:
     indent = m.group(1)
     prefix = m.group(2)
     value = m.group(3)

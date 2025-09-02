@@ -3,7 +3,7 @@ from enum import IntEnum
 
 class ID(IntEnum):
     Nothing = 0
-    #                               1
+    #  =  1
     Altar_of_Sacrifice = 2
     Anchor_Point = 3
     Arena = 4
@@ -42,7 +42,7 @@ class ID(IntEnum):
     Hut_of_the_Magi = 37
     Idol_of_Fortune = 38
     Lean_To = 39
-    #                           =  40
+    #  =  40
     Library_of_Enlightenment = 41
     Lighthouse = 42
     Monolith_One_Way_Entrance = 43
@@ -234,30 +234,30 @@ class ID(IntEnum):
     Magic_Clouds = 229
     Magic_Plains = 230
     Rocklands = 231
-    #                             232
-    #                             233
-    #                             234
-    #                             235
-    #                             236
-    #                             237
-    #                             238
-    #                             239
-    #                             240
-    #                             241
-    #                             242
-    #                             243
-    #                             244
-    #                             245
-    #                             246
-    #                             247
-    #                             248
-    #                             249
-    #                             250
-    #                             251
-    #                             252
-    #                             253
-    #                             254
-    #                             255
+    # = 232
+    # = 233
+    # = 234
+    # = 235
+    # = 236
+    # = 237
+    # = 238
+    # = 239
+    # = 240
+    # = 241
+    # = 242
+    # = 243
+    # = 244
+    # = 245
+    # = 246
+    # = 247
+    # = 248
+    # = 249
+    # = 250
+    # = 251
+    # = 252
+    # = 253
+    # = 254
+    # = 255
 
 
 class Boat(IntEnum):  # ID 8
