@@ -380,42 +380,42 @@ monster_objects = {
 resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
 
 
-def export(keypress: int) -> bool:
-    if keypress == 1:
-        _process_image(keypress, None, None, None, None)
-    elif keypress == 2:
-        _process_image(keypress, objects.Decor.IDS, None, 1, "base1")
-        _process_image(keypress, None, None, 2, "base2")
-        _process_image(keypress, border_objects, None, 3, "border")
-        _process_image(keypress, {objects.ID.Keymasters_Tent}, None, 4, "tents")
-        _process_image(keypress, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
-        _process_image(keypress, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
-        _process_image(keypress, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
-        _process_image(keypress, {objects.ID.Two_Way_Monolith}, two_way_water_portals, 8, "portals2water")
-        _process_image(keypress, {objects.ID.Whirlpool}, None, 9, "whirlpools")
-        _process_image(keypress, {objects.ID.Prison}, None, 10, "prisons")
-        _process_image(keypress, monster_objects, None, 11, "monsters")
-        _process_image(keypress, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
-        _process_image(keypress, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Incantation}, 13, "shrine1")
-        _process_image(keypress, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
-        _process_image(keypress, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
-        _process_image(keypress, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Mystery}, 16, "shrine4")
-        _process_image(keypress, {objects.ID.Pyramid}, None, 17, "pyramids")
-        _process_image(keypress, {objects.ID.Artifact}, None, 18, "artifacts")
-        _process_image(keypress, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
-        _process_image(keypress, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
-        _process_image(keypress, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
-        _process_image(keypress, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
-        _process_image(keypress, {objects.ID.Random_Relic}, None, 23, "randomrelics")
-        _process_image(keypress, resource_objects, None, 24, "resources")
-        _process_image(keypress, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
+def export(export_type: str) -> None:
+    if export_type == "Standard":
+        _process_image(export_type, None, None, None, None)
+    elif export_type == "Extended":
+        _process_image(export_type, objects.Decor.IDS, None, 1, "base1")
+        _process_image(export_type, None, None, 2, "base2")
+        _process_image(export_type, border_objects, None, 3, "border")
+        _process_image(export_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+        _process_image(export_type, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
+        _process_image(export_type, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
+        _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
+        _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_water_portals, 8, "portals2water")
+        _process_image(export_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+        _process_image(export_type, {objects.ID.Prison}, None, 10, "prisons")
+        _process_image(export_type, monster_objects, None, 11, "monsters")
+        _process_image(export_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+        _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Incantation}, 13, "shrine1")
+        _process_image(export_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
+        _process_image(export_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
+        _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Mystery}, 16, "shrine4")
+        _process_image(export_type, {objects.ID.Pyramid}, None, 17, "pyramids")
+        _process_image(export_type, {objects.ID.Artifact}, None, 18, "artifacts")
+        _process_image(export_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+        _process_image(export_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
+        _process_image(export_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
+        _process_image(export_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
+        _process_image(export_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
+        _process_image(export_type, resource_objects, None, 24, "resources")
+        _process_image(export_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
     return True
 
 
-def _process_image(keypress, filter, subfilter, png_number, png_name) -> bool:
-    if keypress == 1:
+def _process_image(export_type: str, filter: set, subfilter: set | None, png_number: int, png_name: str) -> bool:
+    if export_type == "Standard":
         xprint(type=MsgType.ACTION, text="Generating minimap…")
-    elif keypress == 2:
+    elif export_type == "Extended":
         xprint(
             type=MsgType.ACTION,
             text=f"Generating minimap_{png_number:02d}_{png_name}…",
@@ -456,7 +456,7 @@ def _process_image(keypress, filter, subfilter, png_number, png_name) -> bool:
         interactiveMask = def_["yellow_squares"]
         # Determine if object has owner and/or should be skipped (hidden on minimap).
         # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
-        owner = _determine_owner(keypress, obj)
+        owner = _determine_owner(export_type, obj)
         if owner is None and _should_skip_object(blockMask, interactiveMask):
             continue
         _process_object(
@@ -469,17 +469,17 @@ def _process_image(keypress, filter, subfilter, png_number, png_name) -> bool:
             png_name,
         )
     # Generate and save minimap images
-    _generate_images(keypress, map_layers, blocked_tiles, ownership, png_number, png_name)
+    _generate_images(export_type, map_layers, blocked_tiles, ownership, png_number, png_name)
     xprint(type=MsgType.SPECIAL, text=DONE)
     return True
 
 
-def _determine_owner(keypress: int, obj: dict) -> int | tuple | None:
+def _determine_owner(export_type: str, obj: dict) -> int | tuple | None:
     if (
-        keypress == 1 and "owner" in obj and obj["id"] not in ignored_owned_objects
+        export_type == "Standard" and "owner" in obj and obj["id"] not in ignored_owned_objects
     ):  # Check if object has "owner" key and should not be ignored
         return obj["owner"]
-    elif keypress == 2:
+    elif export_type == "Extended":
         if (
             (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001)
             or obj["id"] == objects.ID.Border_Guard
@@ -577,14 +577,14 @@ def _process_object(
 
 
 def _generate_images(
-    keypress: int,
+    export_type: str,
     map_layers: list,
     blocked_tiles: dict,
     ownership: dict,
     png_number: int,
     png_name: str,
 ) -> None:
-    IMAGES_PATH = ".../maps/exports/minimap"
+    IMAGES_PATH = "exports/minimap"
 
     map_size = map_data["general"]["map_size"]
     mode = "RGB" if png_name == "base1" else "RGBA"
@@ -592,7 +592,7 @@ def _generate_images(
     map_name = map_data["filename"][:-4] if map_data["filename"].endswith(".h3m") else map_data["filename"]
 
     # Determine if we're creating a combined image
-    is_combined = keypress == 2 and len(map_layers) > 1
+    is_combined = export_type == "Extended" and len(map_layers) > 1
 
     if is_combined:
         # Create single combined image for multiple layers
@@ -621,7 +621,7 @@ def _generate_images(
             y = i // map_size
             owner = ownership[map_layer_index][y][x]
             color = _get_pixel_color(
-                keypress,
+                export_type,
                 png_name,
                 tile,
                 owner,
@@ -636,9 +636,9 @@ def _generate_images(
         if not is_combined:
             # Save individual layer image
             layer_letter = "g" if map_layer_index == 0 else "u"
-            if keypress == 1:
+            if export_type == "Standard":
                 img.save(os.path.join(IMAGES_PATH, f"{map_name}_{layer_letter}.png"))
-            elif keypress == 2:
+            elif export_type == "Extended":
                 img.save(
                     os.path.join(
                         IMAGES_PATH,
@@ -657,7 +657,7 @@ def _generate_images(
 
 
 def _get_pixel_color(
-    keypress: int,
+    export_type: str,
     png_name: str,
     tile: tuple,
     owner: int,
@@ -667,14 +667,14 @@ def _get_pixel_color(
     y: int,
     transparent: tuple,
 ) -> tuple:
-    if keypress == 1:
+    if export_type == "Standard":
         if owner is not None:
             return object_colors[owner]
         elif (x, y) in blocked_tiles[map_layer_index]:
             return terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
         else:
             return terrain_colors[tile["terrain_type_int"]]
-    elif keypress == 2:
+    elif export_type == "Extended":
         if png_name == "base1":
             if (x, y) in blocked_tiles[map_layer_index]:
                 return terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]

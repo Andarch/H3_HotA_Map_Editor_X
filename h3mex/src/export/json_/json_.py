@@ -13,19 +13,19 @@ class CustomEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def export(type: int) -> None:
+def export(keypress: str) -> None:
     def main() -> None:
         filepath = "....maps/exports/JSON/"
         filename = os.path.join(filepath, map_data["filename"][:-4] + ".json")
 
-        match type:
-            case 1:
+        match keypress:
+            case "1":
                 data = map_data
-            case 2:
+            case "2":
                 data = get_hero_data()
-            case 3:
+            case "3":
                 data = map_data["terrain"]
-            case 4:
+            case "4":
                 obj_filter = [objects.ID.Town, objects.ID.Random_Town]
                 data = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
 

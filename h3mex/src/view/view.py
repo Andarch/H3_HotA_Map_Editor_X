@@ -26,7 +26,7 @@ REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0])).upper()
+        keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0]))
         if keypress == Keypress.ESC:
             break
 
