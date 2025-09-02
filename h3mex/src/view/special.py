@@ -1,4 +1,4 @@
-from src.common import MsgType, map_data, wait_for_keypress, xprint
+from src.common import MsgType, map_data, xprint
 
 
 def list_unreachable_tiles() -> None:

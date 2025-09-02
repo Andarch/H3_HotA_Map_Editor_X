@@ -1,5 +1,5 @@
 import src.defs.objects as objects
-import src.view.terrain as terrain
+import src.view.special as special
 from src.common import (
     Cursor,
     Keypress,
@@ -29,35 +29,35 @@ def menu() -> None:
         match keypress:
             case "1":
                 data = format_map_data(("general", map_data["general"]))
-                _view(data)
+                _print_lines(data)
             case "2":
                 data = format_map_data(("player_specs", map_data["player_specs"]))
-                _view(data)
+                _print_lines(data)
             case "3":
                 data = format_map_data(("starting_heroes", map_data["starting_heroes"]))
-                _view(data)
+                _print_lines(data)
             case "4":
                 data = format_map_data(("rumors", map_data["rumors"]))
-                _view(data)
+                _print_lines(data)
             case "5":
                 data = format_map_data(("hero_data", map_data["hero_data"]))
-                _view(data)
+                _print_lines(data)
             case "6":
                 xprint(text="Loading terrain data…")
                 data = format_map_data(("terrain", map_data["terrain"]))
-                _view(data)
+                _print_lines(data)
             case "7":
                 xprint(text="Loading object defs…")
                 data = format_map_data(("object_defs", map_data["object_defs"]))
-                _view(data)
+                _print_lines(data)
             case "8":
                 xprint(text="Loading object data…")
                 object_data = [obj for obj in map_data["object_data"] if obj["id"] in OBJECT_FILTER]
                 data = format_map_data(("object_data", object_data))
-                _view(data)
+                _print_lines(data)
             case "9":
                 data = format_map_data(("events", map_data["events"]))
-                _view(data)
+                _print_lines(data)
             case "S":
                 while True:
                     keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
@@ -65,11 +65,11 @@ def menu() -> None:
                         break
                     match keypress:
                         case "1":
-                            data = terrain.list_unreachable_tiles()
-                    _view(data) if data else wait_for_keypress()
+                            data = special.list_unreachable_tiles()
+                    _print_lines(data) if data else wait_for_keypress()
 
 
-def _view(lines: list) -> None:
+def _print_lines(lines: list) -> None:
     lines_printed = 0
     for line in lines:
         xprint(type=MsgType.INFO, text=line)
