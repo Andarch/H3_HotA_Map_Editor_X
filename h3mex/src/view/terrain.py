@@ -121,9 +121,6 @@ def list_unreachable_tiles() -> None:
 
     if unreachable_tiles:
         xprint(overwrite=3)
-        for coords in unreachable_tiles:
-            xprint(type=MsgType.INFO, text=coords)
+        return unreachable_tiles
     else:
         xprint(type=MsgType.INFO, text="No unreachable tiles found.")
-
-    wait_for_keypress()
