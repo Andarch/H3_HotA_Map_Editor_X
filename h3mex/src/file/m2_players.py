@@ -1,4 +1,4 @@
-from core.h3m import heroes, objects, players
+from src.defs import heroes, objects, players
 
 from . import io
 

@@ -1,4 +1,4 @@
-from core.h3m import spells
+from src.defs import spells
 
 from .. import sort
 

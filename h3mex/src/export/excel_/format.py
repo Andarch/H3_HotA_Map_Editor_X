@@ -1,4 +1,4 @@
-from core.h3m import objects
+from src.defs import objects
 
 # Define special case mappings for enum formatting
 SPELL_SPECIAL_CASES = {"Titans Lightning Bolt": "Titan's Lightning Bolt"}

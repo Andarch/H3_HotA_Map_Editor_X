@@ -1,11 +1,11 @@
 import os
 from enum import IntEnum
 
-from core.h3m import artifacts, creatures, heroes, objects, players, skills, spells
 from PIL import Image
+from src.defs import artifacts, creatures, heroes, objects, players, skills, spells
 
 from . import io
-from .h6_rumors_and_events import parse_events, write_events
+from .m6_rumors_and_events import parse_events, write_events
 
 zone_img_g = None
 zone_img_u = None

@@ -1,4 +1,4 @@
-from core.h3m import objects
+from src.defs import objects
 
 from .. import sort
 

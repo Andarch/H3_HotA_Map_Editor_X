@@ -1,4 +1,4 @@
-from core.h3m import objects, skills, spells
+from src.defs import objects, skills, spells
 
 from .. import sort
 

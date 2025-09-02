@@ -1,4 +1,4 @@
-from core.h3m import objects, spells
+from src.defs import objects, spells
 
 from .. import format
 

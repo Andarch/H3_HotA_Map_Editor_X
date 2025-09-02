@@ -1,8 +1,8 @@
 import random
 
-from core.h3m import objects
 from src.common import Color, MsgType, map_data, wait_for_keypress, xprint
-from src.file.h8_objects import get_zone, has_zone_images
+from src.defs import objects
+from src.file.m8_objects import get_zone, has_zone_images
 
 RANDOM_CONTENTS = 4294967295
 

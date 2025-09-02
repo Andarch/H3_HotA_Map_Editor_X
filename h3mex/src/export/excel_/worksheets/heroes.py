@@ -1,6 +1,6 @@
 import os
 
-from core.h3m import heroes, spells
+from src.defs import heroes, spells
 
 from .. import format
 

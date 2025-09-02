@@ -1,18 +1,20 @@
-from . import ancient_lamp as ancient_lamp
-from . import artifacts as artifacts
-from . import campfire as campfire
-from . import creature_banks as creature_banks
-from . import flotsam_jetsam as flotsam_jetsam
-from . import garrisons as garrisons
-from . import grave as grave
-from . import heroes as heroes
-from . import monsters as monsters
-from . import resources as resources
-from . import scholar as scholar
-from . import sea_barrel as sea_barrel
-from . import sea_chest as sea_chest
-from . import shipwreck_survivor as shipwreck_survivor
-from . import spells as spells
-from . import towns as towns
-from . import treasure_chest as treasure_chest
-from . import vial_of_mana as vial_of_mana
+from . import (
+    ancient_lamp,  # noqa: F401
+    artifacts,  # noqa: F401
+    campfire,  # noqa: F401
+    creature_banks,  # noqa: F401
+    flotsam_jetsam,  # noqa: F401
+    garrisons,  # noqa: F401
+    grave,  # noqa: F401
+    heroes,  # noqa: F401
+    monsters,  # noqa: F401
+    resources,  # noqa: F401
+    scholar,  # noqa: F401
+    sea_barrel,  # noqa: F401
+    sea_chest,  # noqa: F401
+    shipwreck_survivor,  # noqa: F401
+    spells,  # noqa: F401
+    towns,  # noqa: F401
+    treasure_chest,  # noqa: F401
+    vial_of_mana,  # noqa: F401
+)

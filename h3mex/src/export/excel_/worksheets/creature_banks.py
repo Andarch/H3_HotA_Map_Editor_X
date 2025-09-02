@@ -1,4 +1,4 @@
-from core.h3m import artifacts, objects
+from src.defs import artifacts, objects
 
 from .. import sort
 

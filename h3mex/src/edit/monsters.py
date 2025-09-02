@@ -1,7 +1,7 @@
 import random  # noqa: F401
 
-from core.h3m import creatures, objects
 from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
+from src.defs import creatures, objects
 
 RANDOM_MONSTER_IDS = [
     objects.ID.Random_Monster,

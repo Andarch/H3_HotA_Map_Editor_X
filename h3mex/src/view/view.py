@@ -1,7 +1,6 @@
 import json
 import re
 
-from core.h3m import objects
 from src.common import (
     MAX_PRINT_WIDTH,
     Cursor,
@@ -12,6 +11,7 @@ from src.common import (
     wait_for_keypress,
     xprint,
 )
+from src.defs import objects
 from src.ui.menus import Menu
 
 from . import terrain

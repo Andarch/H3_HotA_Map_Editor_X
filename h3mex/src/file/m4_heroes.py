@@ -1,4 +1,4 @@
-from core.h3m import artifacts, heroes, skills, spells
+from src.defs import artifacts, heroes, skills, spells
 
 from . import io
 
