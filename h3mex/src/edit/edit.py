@@ -1,7 +1,7 @@
 from src.ui.menus import Menu
 
 from ..common import Keypress, draw_header, xprint
-from .scripts import (
+from . import (
     heroes,
     monsters,
     towns,
