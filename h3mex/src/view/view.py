@@ -29,35 +29,35 @@ def menu() -> None:
         match keypress:
             case "1":
                 data = format_map_data(("general", map_data["general"]))
-                _print_data(data)
+                _view(data)
             case "2":
                 data = format_map_data(("player_specs", map_data["player_specs"]))
-                _print_data(data)
+                _view(data)
             case "3":
                 data = format_map_data(("starting_heroes", map_data["starting_heroes"]))
-                _print_data(data)
+                _view(data)
             case "4":
                 data = format_map_data(("rumors", map_data["rumors"]))
-                _print_data(data)
+                _view(data)
             case "5":
                 data = format_map_data(("hero_data", map_data["hero_data"]))
-                _print_data(data)
+                _view(data)
             case "6":
                 xprint(text="Loading terrain data…")
                 data = format_map_data(("terrain", map_data["terrain"]))
-                _print_data(data)
+                _view(data)
             case "7":
                 xprint(text="Loading object defs…")
                 data = format_map_data(("object_defs", map_data["object_defs"]))
-                _print_data(data)
+                _view(data)
             case "8":
                 xprint(text="Loading object data…")
                 object_data = [obj for obj in map_data["object_data"] if obj["id"] in OBJECT_FILTER]
                 data = format_map_data(("object_data", object_data))
-                _print_data(data)
+                _view(data)
             case "9":
                 data = format_map_data(("events", map_data["events"]))
-                _print_data(data)
+                _view(data)
             case "S":
                 while True:
                     keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
@@ -66,10 +66,10 @@ def menu() -> None:
                     match keypress:
                         case "1":
                             data = terrain.list_unreachable_tiles()
-                    _print_data(data) if data else wait_for_keypress()
+                    _view(data) if data else wait_for_keypress()
 
 
-def _print_data(lines: list) -> None:
+def _view(lines: list) -> None:
     lines_printed = 0
     for line in lines:
         xprint(type=MsgType.INFO, text=line)
