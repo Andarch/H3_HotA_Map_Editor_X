@@ -7,7 +7,7 @@ from .minimap import minimap
 
 
 def menu() -> None:
-    keypress = xprint(menu=Menu.EXPORT.value)
+    keypress = xprint(menu=Menu.EXPORT)
     if keypress == Keypress.ESC:
         return
 
