@@ -209,7 +209,7 @@ def export() -> bool:
                 worksheet.column_dimensions[column_letter].width = max(adjusted_width, 8)
 
     # Show completion message and return success
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
     return True
 

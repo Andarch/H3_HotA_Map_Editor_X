@@ -37,7 +37,7 @@ def set_random_monsters() -> None:
             obj["type"] = "Random Monster"
             obj["subtype"] = "Random Monster"
 
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
 
 def set_monster_values() -> None:
@@ -86,7 +86,7 @@ def set_compliant_monster_values() -> None:
 
             count += 1
 
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
     xprint()
     xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
 

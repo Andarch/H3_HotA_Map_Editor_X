@@ -80,7 +80,7 @@ def load(filename: str = None) -> None:
             xprint(type=MsgType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
             map_data["null_bytes"] = m9_null.read_null()
 
-            xprint(type=MsgType.SPECIAL, text=DONE)
+            xprint(type=MsgType.DONE, text=DONE)
 
     except FileNotFoundError:
         xprint(type=MsgType.ERROR, text=f"Could not find {filename}.")
@@ -123,6 +123,6 @@ def save(filename: str = None) -> bool:
 
     map_file = None
 
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
     return True

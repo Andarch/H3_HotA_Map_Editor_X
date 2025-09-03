@@ -34,7 +34,7 @@ def export(keypress: str) -> None:
         with open(filename, "w") as f:
             json.dump(data, f, cls=CustomEncoder, indent=4)
 
-        xprint(type=MsgType.SPECIAL, text=DONE)
+        xprint(type=MsgType.DONE, text=DONE)
 
     def get_hero_data() -> dict:
         player_specs = deepcopy(map_data["player_specs"])

@@ -12,7 +12,7 @@ def reset() -> None:
     _reset_hero_data(special_heroes)
     _reset_object_data(special_heroes)
 
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
 
 def _get_special_heroes() -> list:

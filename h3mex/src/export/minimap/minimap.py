@@ -470,7 +470,7 @@ def _process_image(export_type: str, filter: set, subfilter: set | None, png_num
         )
     # Generate and save minimap images
     _generate_images(export_type, map_layers, blocked_tiles, ownership, png_number, png_name)
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
     return True
 
 

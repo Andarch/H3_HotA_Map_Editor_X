@@ -60,7 +60,7 @@ def _enable_spells() -> None:
                 obj["spells_must_appear"][i] = 0
             for i in range(len(obj["spells_cant_appear"])):
                 obj["spells_cant_appear"][i] = 0
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
 
 def _enable_buildings() -> None:
@@ -72,7 +72,7 @@ def _enable_buildings() -> None:
                     obj["buildings_disabled"][i] = 0
             else:
                 obj["has_fort"] = True
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
 
 def _create_events() -> None:
@@ -146,7 +146,7 @@ def _create_events() -> None:
                     ],
                 )
                 obj["events"].extend([boss_event])
-    xprint(type=MsgType.SPECIAL, text=DONE)
+    xprint(type=MsgType.DONE, text=DONE)
 
 
 def _get_event_dict(
