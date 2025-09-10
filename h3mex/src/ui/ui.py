@@ -10,7 +10,7 @@ MAX_WIDTH = 80
 
 cache = []
 redrawing = False
-width = 0
+width = shutil.get_terminal_size().columns
 
 
 def monitor_width():

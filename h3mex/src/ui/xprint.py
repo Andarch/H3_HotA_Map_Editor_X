@@ -13,7 +13,6 @@ from src.common import (
 )
 from src.ui import header, ui
 from src.ui.menus import Menu
-from src.utilities import exit
 
 
 def xprint(
@@ -139,6 +138,8 @@ def _string_prompt(prompt: str) -> str:
                 if map_data:
                     return ""
                 else:
+                    from src.utilities import exit
+
                     print("\r\x1b[K", end="", flush=True)
                     exit()
             case _:
