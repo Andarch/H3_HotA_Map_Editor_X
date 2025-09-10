@@ -1,14 +1,11 @@
 from gzip import open as gzopen
 
 from src.common import map_data
+from src.ui import header
+from src.ui.xprint import xprint
+from src.utilities import is_file_writable
 
-from ..common import (
-    DONE,
-    MsgType,
-    draw_header,
-    is_file_writable,
-    xprint,
-)
+from ..common import MsgType
 from . import (
     io,
     m1_general,
@@ -24,7 +21,7 @@ from . import (
 
 
 def load(filename: str = None) -> None:
-    draw_header()
+    header.draw()
 
     # Prompt for filename if not provided
     if filename is None:
@@ -80,7 +77,7 @@ def load(filename: str = None) -> None:
             xprint(type=MsgType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
             map_data["null_bytes"] = m9_null.read_null()
 
-            xprint(type=MsgType.DONE, text=DONE)
+            xprint(type=MsgType.DONE)
 
     except FileNotFoundError:
         xprint(type=MsgType.ERROR, text=f"Could not find {filename}.")
@@ -89,7 +86,7 @@ def load(filename: str = None) -> None:
 def save(filename: str = None) -> bool:
     global map_file
 
-    draw_header()
+    header.draw()
 
     # Prompt for filename if not provided
     if filename is None:
@@ -123,6 +120,6 @@ def save(filename: str = None) -> bool:
 
     map_file = None
 
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
     return True

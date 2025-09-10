@@ -2,8 +2,9 @@ import os
 from enum import IntEnum
 
 from PIL import Image
-from src.common import DONE, MsgType, map_data, xprint
+from src.common import MsgType, map_data
 from src.defs import objects
+from src.ui.xprint import xprint
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -470,7 +471,7 @@ def _process_image(export_type: str, filter: set, subfilter: set | None, png_num
         )
     # Generate and save minimap images
     _generate_images(export_type, map_layers, blocked_tiles, ownership, png_number, png_name)
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
     return True
 
 

@@ -2,8 +2,9 @@ import json
 import os
 from copy import deepcopy
 
-from src.common import DONE, MsgType, map_data, xprint
+from src.common import MsgType, map_data
 from src.defs import objects
+from src.ui.xprint import xprint
 
 
 class CustomEncoder(json.JSONEncoder):
@@ -34,7 +35,7 @@ def export(keypress: str) -> None:
         with open(filename, "w") as f:
             json.dump(data, f, cls=CustomEncoder, indent=4)
 
-        xprint(type=MsgType.DONE, text=DONE)
+        xprint(type=MsgType.DONE)
 
     def get_hero_data() -> dict:
         player_specs = deepcopy(map_data["player_specs"])

@@ -1,15 +1,10 @@
 import src.defs.objects as objects
 import src.view.special as special
-from src.common import (
-    Cursor,
-    Keypress,
-    MsgType,
-    draw_header,
-    map_data,
-    wait_for_keypress,
-    xprint,
-)
+from src.common import Cursor, Keypress, MsgType, map_data
+from src.ui import header
 from src.ui.menus import Menu
+from src.ui.xprint import xprint
+from src.utilities import wait_for_keypress
 
 from .format import format_map_data
 
@@ -24,7 +19,7 @@ def menu() -> None:
         if keypress == Keypress.ESC:
             break
 
-        draw_header()
+        header.draw()
 
         match keypress:
             case "1":

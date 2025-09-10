@@ -1,6 +1,8 @@
+from src.ui import header
 from src.ui.menus import Menu
+from src.ui.xprint import xprint
 
-from ..common import Keypress, draw_header, xprint
+from ..common import Keypress
 from . import (
     heroes,
     monsters,
@@ -14,7 +16,7 @@ def menu() -> None:
     if keypress == Keypress.ESC:
         return
 
-    draw_header()
+    header.draw()
 
     match keypress:
         case "1":

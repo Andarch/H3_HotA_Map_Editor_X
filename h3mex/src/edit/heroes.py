@@ -1,5 +1,6 @@
-from src.common import DONE, MsgType, map_data, xprint
+from src.common import MsgType, map_data
 from src.defs import heroes, objects
+from src.ui.xprint import xprint
 
 
 def reset() -> None:
@@ -12,7 +13,7 @@ def reset() -> None:
     _reset_hero_data(special_heroes)
     _reset_object_data(special_heroes)
 
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
 
 def _get_special_heroes() -> list:

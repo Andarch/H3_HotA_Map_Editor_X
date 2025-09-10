@@ -1,4 +1,5 @@
-from src.common import MsgType, map_data, xprint
+from src.common import MsgType, map_data
+from src.ui.xprint import xprint
 
 
 def list_unreachable_tiles() -> None:

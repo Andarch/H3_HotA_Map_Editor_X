@@ -4,12 +4,13 @@ import ctypes
 import os
 import sys
 
-from src.common import App, Cursor, MsgType, exit, map_data
+from src.common import App, Cursor, MsgType, map_data
 from src.edit import edit
 from src.export import export
 from src.file import file
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
+from src.utilities import exit
 from src.view import view
 
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
@@ -49,7 +50,6 @@ def _initialize():
     if ctypes.windll.kernel32.GetLastError() != 183:
         return True
     else:
-        # draw_header()
         xprint(type=MsgType.ERROR, text="Another instance of the editor is already running.")
         return False
 

@@ -1,6 +1,7 @@
-from src.common import DONE, MsgType, map_data, xprint
+from src.common import MsgType, map_data
 from src.defs import objects
 from src.defs.players import Players
+from src.ui.xprint import xprint
 
 TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]
 
@@ -60,7 +61,7 @@ def _enable_spells() -> None:
                 obj["spells_must_appear"][i] = 0
             for i in range(len(obj["spells_cant_appear"])):
                 obj["spells_cant_appear"][i] = 0
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
 
 def _enable_buildings() -> None:
@@ -72,7 +73,7 @@ def _enable_buildings() -> None:
                     obj["buildings_disabled"][i] = 0
             else:
                 obj["has_fort"] = True
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
 
 def _create_events() -> None:
@@ -146,7 +147,7 @@ def _create_events() -> None:
                     ],
                 )
                 obj["events"].extend([boss_event])
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
 
 def _get_event_dict(

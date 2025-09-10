@@ -9,11 +9,11 @@ from src.common import (
     Keypress,
     MsgType,
     Wait,
-    exit,
     map_data,
 )
 from src.ui import header, ui
 from src.ui.menus import Menu
+from src.utilities import exit
 
 
 def xprint(

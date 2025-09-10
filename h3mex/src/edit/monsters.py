@@ -1,7 +1,9 @@
 import random  # noqa: F401
 
-from src.common import DONE, MsgType, map_data, wait_for_keypress, xprint
+from src.common import MsgType, map_data
 from src.defs import creatures, objects
+from src.ui.xprint import xprint
+from src.utilities import wait_for_keypress
 
 RANDOM_MONSTER_IDS = [
     objects.ID.Random_Monster,
@@ -37,7 +39,7 @@ def set_random_monsters() -> None:
             obj["type"] = "Random Monster"
             obj["subtype"] = "Random Monster"
 
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
 
 def set_monster_values() -> None:
@@ -86,7 +88,7 @@ def set_compliant_monster_values() -> None:
 
             count += 1
 
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
     xprint()
     xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
 

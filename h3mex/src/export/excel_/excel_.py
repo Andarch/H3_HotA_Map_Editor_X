@@ -4,8 +4,11 @@ import re
 import pandas as pd
 from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
-from src.common import DONE, MsgType, draw_header, is_file_writable, map_data, xprint
+from src.common import MsgType, map_data
 from src.defs import objects
+from src.ui import header
+from src.ui.xprint import xprint
+from src.utilities import is_file_writable
 
 from . import worksheets
 
@@ -100,7 +103,7 @@ def export() -> bool:
         return False
 
     # Show initial export message
-    draw_header()
+    header.draw()
     xprint(type=MsgType.ACTION, text="Exporting Excel file…")
 
     # Open Excel writer with openpyxl engine
@@ -209,7 +212,7 @@ def export() -> bool:
                 worksheet.column_dimensions[column_letter].width = max(adjusted_width, 8)
 
     # Show completion message and return success
-    xprint(type=MsgType.DONE, text=DONE)
+    xprint(type=MsgType.DONE)
 
     return True
 

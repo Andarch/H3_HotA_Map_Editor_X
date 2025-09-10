@@ -1,8 +1,10 @@
 import random
 
-from src.common import Color, MsgType, map_data, wait_for_keypress, xprint
+from src.common import Color, MsgType, map_data
 from src.defs import objects
 from src.file.m8_objects import get_zone, has_zone_images
+from src.ui.xprint import xprint
+from src.utilities import wait_for_keypress
 
 RANDOM_CONTENTS = 4294967295
 
