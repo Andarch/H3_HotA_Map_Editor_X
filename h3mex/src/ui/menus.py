@@ -58,6 +58,7 @@ class Menu:
                 ("7", "Monsters: Set compliant monster values"),
                 None,
                 ("8", "Treasures: Add treasures"),
+                ("9", "Treasures: Fix empty contents"),
             ]
         ],
     }
