@@ -24,14 +24,16 @@ def menu() -> None:
         case "2":
             towns.edit(events=True)
         case "3":
-            heroes.reset()
+            towns.edit(human=True)
         case "4":
-            monsters.set_random_monsters()
+            heroes.reset()
         case "5":
-            monsters.set_monster_values()
+            monsters.set_random_monsters()
         case "6":
-            monsters.set_compliant_monster_values()
+            monsters.set_monster_values()
         case "7":
+            monsters.set_compliant_monster_values()
+        case "8":
             treasures.add_treasures()
 
     xprint()

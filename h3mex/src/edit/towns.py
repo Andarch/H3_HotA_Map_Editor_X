@@ -43,13 +43,15 @@ BOSS_LVL5_CREATURES = round(BOSS_LVL7_CREATURES * 6)
 BOSS_LVL6_CREATURES = round(BOSS_LVL7_CREATURES * 3)
 
 
-def edit(spells: bool = False, buildings: bool = False, events: bool = False) -> None:
+def edit(spells: bool = False, buildings: bool = False, events: bool = False, human: bool = False) -> None:
     if spells:
         _enable_spells()
     if buildings:
         _enable_buildings()
     if events:
         _create_events()
+    if human:
+        _change_ai_events()
 
 
 def _enable_spells() -> None:
@@ -73,6 +75,16 @@ def _enable_buildings() -> None:
                     obj["buildings_disabled"][i] = 0
             else:
                 obj["has_fort"] = True
+    xprint(type=MsgType.DONE)
+
+
+def _change_ai_events() -> None:
+    xprint(type=MsgType.ACTION, text="Adding Humans to AI-only town events…")
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS:
+            for event in obj["events"]:
+                if event["apply_ai"] and event["apply_to"] == [1] * 8:
+                    event["apply_human"] = True
     xprint(type=MsgType.DONE)
 
 

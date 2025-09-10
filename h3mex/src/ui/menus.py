@@ -49,14 +49,15 @@ class Menu:
             [
                 ("1", "Towns: Enable spell research, all spells, and all buildings"),
                 ("2", "Towns: Add creature bonus events"),
+                ("3", "Towns: Add humans to AI-only events"),
                 None,
-                ("3", "Heroes: Reset identity details"),
+                ("4", "Heroes: Reset identity details"),
                 None,
-                ("4", "Monsters: Change level-specific random monsters to any level"),
-                ("5", "Monsters: Set monster values"),
-                ("6", "Monsters: Set compliant monster values"),
+                ("5", "Monsters: Change level-specific random monsters to any level"),
+                ("6", "Monsters: Set monster values"),
+                ("7", "Monsters: Set compliant monster values"),
                 None,
-                ("7", "Treasures: Add treasures"),
+                ("8", "Treasures: Add treasures"),
             ]
         ],
     }
