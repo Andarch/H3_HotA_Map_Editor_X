@@ -1019,6 +1019,5 @@ class ZoneInfo:
         (109, 59, 120): ("Player", "Purple"),  # purple
         (50, 112, 116): ("Player", "Teal"),  # teal
         (171, 129, 140): ("Player", "Pink"),  # pink
-        # (179, 170, 76): ("Treasure", "Treasure"),  # gold
         (179, 76, 76): ("Red", "Red"),  # red
     }
