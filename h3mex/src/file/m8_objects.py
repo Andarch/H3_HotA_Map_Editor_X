@@ -126,8 +126,12 @@ def parse_object_data(object_defs: list, filename: str) -> list:
     zonetypes_img_u = Image.open(zonetypes_img_u_path).convert("RGBA") if os.path.exists(zonetypes_img_u_path) else None
     zonecolors_img_g_path = os.path.join("..", "maps", f"{filename}_zonecolors_g.png")
     zonecolors_img_u_path = os.path.join("..", "maps", f"{filename}_zonecolors_u.png")
-    zonecolors_img_g = Image.open(zonecolors_img_g_path).convert("RGBA") if os.path.exists(zonecolors_img_g_path) else None
-    zonecolors_img_u = Image.open(zonecolors_img_u_path).convert("RGBA") if os.path.exists(zonecolors_img_u_path) else None
+    zonecolors_img_g = (
+        Image.open(zonecolors_img_g_path).convert("RGBA") if os.path.exists(zonecolors_img_g_path) else None
+    )
+    zonecolors_img_u = (
+        Image.open(zonecolors_img_u_path).convert("RGBA") if os.path.exists(zonecolors_img_u_path) else None
+    )
     has_zone_images = True if zonetypes_img_g and zonetypes_img_u and zonecolors_img_g and zonecolors_img_u else False
 
     info = []
@@ -176,7 +180,13 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         if obj["id"] in zone_ids:
             obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
+                ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}
                 obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+                if obj["id"] == objects.ID.Shipwreck and (
+                    obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
+                ):
+                    obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1], obj["coords"][2]]
+                    obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
 
         match obj["id"]:
             case objects.ID.Pandoras_Box:
@@ -1826,23 +1836,23 @@ def write_grave(obj: dict) -> None:
 
 def get_zone(coords: list) -> tuple:
     x, y, z = coords
-    
+
     def get_pixel_rgb(img_g, img_u):
         img = img_g if z == 0 else img_u
-        width, height = img.size        
+        width, height = img.size
         if not (0 <= x < width and 0 <= y < height):
-            return None, "Out of Bounds"        
+            return None, "Out of Bounds"
         pixel = img.getpixel((x, y))
         if len(pixel) == 4 and pixel[3] == 0:
-            return None, "Void"        
+            return None, "Void"
         return pixel[:3], None
-    
+
     rgb_types, error_types = get_pixel_rgb(zonetypes_img_g, zonetypes_img_u)
     zone_type = error_types if error_types else objects.ZoneInfo.TYPES.get(rgb_types, "Unknown")
-    
+
     rgb_colors, error_colors = get_pixel_rgb(zonecolors_img_g, zonecolors_img_u)
     zone_color = error_colors if error_colors else objects.ZoneInfo.COLORS.get(rgb_colors, "Unknown")
-    
+
     return zone_type, zone_color
 
 
@@ -1899,13 +1909,15 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Town,
     }
     CONDITIONAL_MINUS_1 = {
-    objects.ID.Creature_Bank,
-    objects.ID.Monolith_One_Way_Entrance,
-    objects.ID.Monolith_One_Way_Exit,
-    objects.ID.Two_Way_Monolith,
-    objects.ID.Prison,
-    objects.ID.HotA_Visitable_1,
-    objects.ID.HotA_Visitable_2,
+        objects.ID.Creature_Bank,
+        objects.ID.Monolith_One_Way_Entrance,
+        objects.ID.Monolith_One_Way_Exit,
+        objects.ID.Two_Way_Monolith,
+        objects.ID.Prison,
+        objects.ID.HotA_Visitable_1,
+        objects.ID.HotA_Collectible,
+        objects.ID.HotA_Visitable_2,
+        objects.ID.Border_Gate,
     }
     CONDITIONAL_MINUS_2 = {
         objects.ID.Creature_Bank,
@@ -1914,7 +1926,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
     def should_apply_minus1(obj_id: int, sub_id: int) -> bool:
         if obj_id not in CONDITIONAL_MINUS_1:
             return True
-        
+
         if obj_id == objects.ID.Creature_Bank:
             return sub_id in {
                 objects.Creature_Bank.Cyclops_Stockpile,
@@ -1930,7 +1942,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.Creature_Bank.Wolf_Raider_Picket,
                 objects.Creature_Bank.Ruins,
             }
-        
+
         if obj_id in {objects.ID.Monolith_One_Way_Entrance, objects.ID.Monolith_One_Way_Exit}:
             return sub_id in {
                 objects.One_Way_Monolith.Big_Purple,
@@ -1938,7 +1950,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.One_Way_Monolith.Big_Red,
                 objects.One_Way_Monolith.Big_Cyan,
             }
-        
+
         if obj_id == objects.ID.Two_Way_Monolith:
             return sub_id in {
                 objects.Two_Way_Monolith.Big_Green,
@@ -1957,10 +1969,10 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.Two_Way_Monolith.Water_Chartreuse,
                 objects.Two_Way_Monolith.Water_Yellow,
             }
-        
+
         if obj_id == objects.ID.Prison:
             return sub_id == objects.Prison.Hero_Camp
-        
+
         if obj_id == objects.ID.HotA_Visitable_1:
             return sub_id in {
                 objects.HotA_Visitable_1.Colosseum_of_the_Magi,
@@ -1969,26 +1981,32 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.HotA_Visitable_1.Warlocks_Lab,
                 objects.HotA_Visitable_1.Prospector,
             }
-        
+
+        if obj_id == objects.ID.HotA_Collectible:
+            return sub_id == objects.HotA_Collectible.Ancient_Lamp
+
         if obj_id == objects.ID.HotA_Visitable_2:
             return sub_id in {
                 objects.HotA_Visitable_2.Observatory,
                 objects.HotA_Visitable_2.Town_Gate,
                 objects.HotA_Visitable_2.Ancient_Altar,
             }
-        
+
+        if obj_id == objects.ID.Border_Gate:
+            return sub_id != objects.Border_Color.Grave
+
         return False
 
     def should_apply_minus2(obj_id: int, sub_id: int) -> bool:
         if obj_id not in CONDITIONAL_MINUS_2:
             return True
-        
+
         if obj_id == objects.ID.Creature_Bank:
             return sub_id in {
                 objects.Creature_Bank.Temple_of_the_Sea,
                 objects.Creature_Bank.Red_Tower,
             }
-        
+
         return False
 
     x, y, z = coords

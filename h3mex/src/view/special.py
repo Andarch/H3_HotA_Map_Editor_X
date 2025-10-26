@@ -132,13 +132,18 @@ def list_invalid_zone_objects() -> None:
     xprint()
 
     errors = {"Out of Bounds", "Void"}
+    invalid_found = False
 
     for obj in map_data["object_data"]:
         zone_type = obj["zone_type"]
         zone_color = obj["zone_color"]
 
         if zone_type in errors or zone_color in errors:
+            invalid_found = True
             xprint(type=MsgType.INFO, text=f"{obj['type']} at {obj['coords']}:")
             xprint(type=MsgType.INFO, text=f"  Zone Type: {zone_type}")
             xprint(type=MsgType.INFO, text=f"  Zone Color: {zone_color}")
             xprint()
+
+    if not invalid_found:
+        xprint(type=MsgType.INFO, text="No invalid zone objects found.")
