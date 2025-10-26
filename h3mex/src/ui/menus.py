@@ -39,7 +39,11 @@ class Menu:
                 None,
                 ("S", "Special…"),
             ],
-            [("1", "Terrain: Unreachable tile coordinates")],
+            [
+                ("1", "Terrain: Unreachable tile coordinates"),
+                None,
+                ("2", "Zones: Invalid objects"),
+            ],
         ],
     }
 

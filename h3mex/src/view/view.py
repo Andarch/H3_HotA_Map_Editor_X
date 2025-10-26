@@ -61,6 +61,8 @@ def menu() -> None:
                     match keypress:
                         case "1":
                             data = special.list_unreachable_tiles()
+                        case "2":
+                            data = special.list_invalid_zone_objects()
                     _print_lines(data) if data else wait_for_keypress()
 
 

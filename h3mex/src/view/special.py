@@ -125,3 +125,20 @@ def list_unreachable_tiles() -> None:
         return unreachable_tiles
     else:
         xprint(type=MsgType.INFO, text="No unreachable tiles found.")
+
+
+def list_invalid_zone_objects() -> None:
+    xprint(text="Checking for invalid zone objects…", overwrite=4)
+    xprint()
+
+    errors = {"Out of Bounds", "Void"}
+
+    for obj in map_data["object_data"]:
+        zone_type = obj["zone_type"]
+        zone_color = obj["zone_color"]
+
+        if zone_type in errors or zone_color in errors:
+            xprint(type=MsgType.INFO, text=f"{obj['type']} at {obj['coords']}:")
+            xprint(type=MsgType.INFO, text=f"  Zone Type: {zone_type}")
+            xprint(type=MsgType.INFO, text=f"  Zone Color: {zone_color}")
+            xprint()
