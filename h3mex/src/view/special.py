@@ -3,7 +3,7 @@ from src.ui.xprint import xprint
 
 
 def list_unreachable_tiles() -> None:
-    xprint(text="Calculating unreachable tiles…", overwrite=4)
+    xprint(text="Calculating unreachable tiles…", overwrite=7)
     xprint()
 
     OVERWORLD = 0
@@ -128,7 +128,7 @@ def list_unreachable_tiles() -> None:
 
 
 def list_invalid_zone_objects() -> None:
-    xprint(text="Checking for invalid zone objects…", overwrite=4)
+    xprint(text="Checking for invalid zone objects…", overwrite=7)
     xprint()
 
     errors = {"Out of Bounds", "Void"}

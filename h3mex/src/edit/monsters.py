@@ -43,22 +43,42 @@ def set_random_monsters() -> None:
 
 
 def set_monster_values() -> None:
-    xprint(type=MsgType.ERROR, text="Not functional…")
-    # xprint(type=MsgType.ACTION, text="Setting monster values…")
+    xprint(type=MsgType.ACTION, text="Setting monster values…")
 
-    # count = 0
-    # for obj in map_data["object_data"]:
-    #     if obj["id"] in RANDOM_MONSTER_IDS:
-    #         monster = obj
-    #         if not monster["is_value"] and monster["quantity"] == 0:
-    #             monster["is_value"] = True
-    #             monster["ai_value"] = random.randint(15000, 50000)
+    AI_VALUE_RANGES = {
+        "P1": (2000, 50000),
+        "P2": (50000, 200000),
+        "P3": (200000, 500000),
+        "P4": (500000, 999999),
+        "R1": (2000, 50000),
+        "R2": (50000, 200000),
+        "R3": (200000, 500000),
+        "R4": (500000, 999999),
+        "L1": (2000, 50000),
+        "L2": (50000, 200000),
+        "L3": (200000, 500000),
+        "L4": (500000, 999999),
+        "W1": (2000, 50000),
+        "W2": (50000, 200000),
+        "W3": (200000, 500000),
+        "W4": (500000, 999999),
+    }
 
-    #         count += 1
+    count = 0
+    for obj in map_data["object_data"]:
+        if (
+            obj["id"] in {objects.ID.Monster, objects.ID.Random_Monster}
+            and obj["disposition"] != creatures.Disposition.Compliant
+        ):
+            obj["disposition"] = random.randint(1, 4)
+            obj["is_value"] = True
+            if obj["zone_type"] in AI_VALUE_RANGES:
+                obj["ai_value"] = random.randint(*AI_VALUE_RANGES[obj["zone_type"]])
+            count += 1
 
-    # xprint(type=MsgType.SPECIAL, text=DONE)
-    # xprint()
-    # xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
+    xprint(type=MsgType.DONE)
+    xprint()
+    xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
