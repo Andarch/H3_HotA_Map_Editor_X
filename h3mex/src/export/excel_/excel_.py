@@ -95,7 +95,7 @@ _COLUMNS_TO_REMOVE = {
 
 
 def export() -> bool:
-    filepath = "....maps/exports/Excel/"
+    filepath = "exports/excel/"
     filename = os.path.join(filepath, map_data["filename"][:-4] + ".xlsx")
 
     # Check if Excel file is already open
