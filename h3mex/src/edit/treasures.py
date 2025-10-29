@@ -1,6 +1,6 @@
 import random
 
-from src.common import Color, MsgType, map_data
+from src.common import MsgType, map_data
 from src.defs import objects
 from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
@@ -11,23 +11,40 @@ RANDOM_CONTENTS = 4294967295
 
 def add_treasures():
     xprint(text="Adding treasures…")
-    xprint()
+    # xprint()
 
     # Candidate pools
     land_treasures = [
-        objects.ID.Campfire,
+        objects.ID.Scholar,
         objects.ID.Scholar,
         objects.ID.Treasure_Chest,
+        objects.ID.Treasure_Chest,
+        objects.ID.Treasure_Chest,
+        objects.ID.Treasure_Chest,
+        objects.ID.Treasure_Chest,
+        objects.ID.Random_Resource,
+        objects.ID.Random_Resource,
+        objects.ID.Random_Resource,
+        objects.ID.Campfire,
+        objects.ID.Campfire,
     ]
 
     sea_treasures = [
         objects.ID.Sea_Chest,
+        objects.ID.Sea_Chest,
+        objects.ID.Sea_Chest,
+        objects.ID.Flotsam,
+        objects.ID.Flotsam,
         objects.ID.Flotsam,
         objects.ID.Shipwreck_Survivor,
     ]
 
     sea_hota_collectible = [
         objects.HotA_Collectible.Sea_Barrel,
+        objects.HotA_Collectible.Sea_Barrel,
+        objects.HotA_Collectible.Sea_Barrel,
+        objects.HotA_Collectible.Jetsam,
+        objects.HotA_Collectible.Jetsam,
         objects.HotA_Collectible.Jetsam,
         objects.HotA_Collectible.Vial_of_Mana,
     ]
@@ -47,6 +64,12 @@ def add_treasures():
         int(sub_id) for sub_id in sea_hota_collectible if (objects.ID.HotA_Collectible, int(sub_id)) in def_ids
     ]
     if sea_hota_available:
+        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Collectible)
         sea_treasures.append(objects.ID.HotA_Collectible)
 
     if not land_treasures and not sea_treasures:
@@ -78,6 +101,7 @@ def add_treasures():
 
     # Object creators
     creators = {
+        objects.ID.Random_Resource: _get_random_resource,
         objects.ID.Campfire: _get_campfire,
         objects.ID.Scholar: _get_scholar,
         objects.ID.Treasure_Chest: _get_treasure_chest,
@@ -98,7 +122,9 @@ def add_treasures():
     placed_coords = set()  # Track coordinates where we've placed treasures during this run
     current_level_index = 0  # Track which level we're currently trying
 
-    while added < 1000 and attempts_per_obj < 1000:
+    max_attempts = 4000
+
+    while added < max_attempts and attempts_per_obj < 1000:
         z = levels[current_level_index]  # Use current level
         coords = (random.randint(0, size - 1), random.randint(0, size - 1), z)
 
@@ -130,26 +156,32 @@ def add_treasures():
             if id == objects.ID.HotA_Collectible:
                 sub_id = random.choice(sea_hota_available)
                 def_id = def_ids[(objects.ID.HotA_Collectible, sub_id)]
-                # Always get correct def_id for each sub_id; no fallback
                 new_obj = hota_creators[sub_id](coords, def_id)
                 new_obj["sub_id"] = sub_id
             else:
                 def_id = def_ids[(id, 0)]
                 new_obj = creators[id](coords, def_id)
-        else:  # Land
+        elif terrain_type != 9:  # Land
             if not land_treasures:
                 attempts_per_obj += 1
                 continue
             id = random.choice(land_treasures)
             def_id = def_ids[(id, 0)]
             new_obj = creators[id](coords, def_id)
+        else:
+            attempts_per_obj += 1
+            continue
 
         # Log
-        obj_name = objects.ID(id).name if id != objects.ID.HotA_Collectible else objects.HotA_Collectible(sub_id).name
-        xprint(
-            type=MsgType.INFO,
-            text=f"{Color.GREEN}{obj_name}{Color.CYAN} added at {Color.GREEN}{coords}{Color.CYAN} in {attempts_per_obj + 1} attempts",
-        )
+        # obj_name = objects.ID(id).name if id != objects.ID.HotA_Collectible else objects.HotA_Collectible(sub_id).name
+        # obj_name = objects.ID(id).name
+        # xprint(
+        #     type=MsgType.INFO,
+        #     text=f"{added + 1}/{max_attempts} {Color.GREEN}{obj_name}{Color.CYAN} added at {Color.GREEN}{coords}{Color.CYAN} in {attempts_per_obj + 1} attempts",
+        # )
+
+        if (added + 1) % 100 == 0:
+            xprint(text=f"Adding treasures… {added + 1}/{max_attempts}", overwrite=1)
 
         map_data["object_data"].append(new_obj)
         placed_coords.add(coords)  # Track this placement
@@ -179,6 +211,20 @@ def _get_base_object(coords, id, def_id):
         "id": id,
         "sub_id": 0,
     }
+
+
+def _get_random_resource(coords, def_id):
+    obj = _get_base_object(coords, objects.ID.Random_Resource, def_id)
+    obj.update(
+        {
+            "type": "Random Resource",
+            "subtype": "Random Resource",
+            "has_common": 0,
+            "amount": 0,
+            "garbage_bytes": b"\x00\x00\x00\x00",
+        }
+    )
+    return obj
 
 
 def _get_campfire(coords, def_id):
