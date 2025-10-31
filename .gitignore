@@ -134,6 +134,4 @@ dmypy.json
 .vscode/
 *.pyproj
 /Lib/
-*.h3m
 *.xlsx
-*.png
