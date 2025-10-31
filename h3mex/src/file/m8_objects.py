@@ -171,6 +171,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
             "Ancient Lamp",
             "Grave",
             "Creature Banks",
+            "Event Objects",
         ]
 
         zone_ids = set()
@@ -670,6 +671,9 @@ def write_artifact(obj: dict) -> None:
 
 def parse_pandoras_box(obj: dict) -> dict:
     obj["has_common"] = io.read_int(1)
+    obj["message"] = ""
+    obj["guards"] = []
+    obj["common_garbage_bytes"] = b"\x00\x00\x00\x00"
     if obj["has_common"]:
         obj = parse_common(obj)
     obj["contents"] = parse_contents()

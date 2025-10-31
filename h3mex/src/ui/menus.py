@@ -65,6 +65,7 @@ class Menu:
                 ("9", "Treasures: Fix empty contents"),
                 None,
                 ("E", "Event Objects: Add explorer bonuses"),
+                ("P", "Pandora's Boxes: Modify default boxes"),
             ]
         ],
     }
