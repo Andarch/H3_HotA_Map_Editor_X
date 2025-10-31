@@ -3,7 +3,7 @@ from src.ui.menus import Menu
 from src.ui.xprint import xprint
 
 from ..common import Keypress
-from . import fix, heroes, monsters, towns, treasures
+from . import eventobjects, fix, heroes, monsters, towns, treasures
 
 
 def menu() -> None:
@@ -32,5 +32,7 @@ def menu() -> None:
             treasures.add_treasures()
         case "9":
             fix.fix_empty_contents()
+        case "E":
+            eventobjects.add_explorer_bonuses()
 
     xprint()

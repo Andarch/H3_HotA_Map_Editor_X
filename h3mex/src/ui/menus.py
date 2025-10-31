@@ -63,6 +63,8 @@ class Menu:
                 None,
                 ("8", "Treasures: Add treasures"),
                 ("9", "Treasures: Fix empty contents"),
+                None,
+                ("E", "Event Objects: Add explorer bonuses"),
             ]
         ],
     }

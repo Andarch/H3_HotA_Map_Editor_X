@@ -122,9 +122,9 @@ def add_treasures():
     placed_coords = set()  # Track coordinates where we've placed treasures during this run
     current_level_index = 0  # Track which level we're currently trying
 
-    max_attempts = 4000
+    amount_to_add = 4000
 
-    while added < max_attempts and attempts_per_obj < 1000:
+    while added < amount_to_add and attempts_per_obj < 1000:
         z = levels[current_level_index]  # Use current level
         coords = (random.randint(0, size - 1), random.randint(0, size - 1), z)
 
@@ -161,7 +161,7 @@ def add_treasures():
             else:
                 def_id = def_ids[(id, 0)]
                 new_obj = creators[id](coords, def_id)
-        elif terrain_type != 9:  # Land
+        elif terrain_type != 9:  # Land (except void)
             if not land_treasures:
                 attempts_per_obj += 1
                 continue
@@ -181,7 +181,7 @@ def add_treasures():
         # )
 
         if (added + 1) % 100 == 0:
-            xprint(text=f"Adding treasures… {added + 1}/{max_attempts}", overwrite=1)
+            xprint(text=f"Adding treasures… {added + 1}/{amount_to_add}", overwrite=1)
 
         map_data["object_data"].append(new_obj)
         placed_coords.add(coords)  # Track this placement
