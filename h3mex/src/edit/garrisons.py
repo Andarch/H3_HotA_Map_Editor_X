@@ -7,7 +7,7 @@ from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 
-def edit_garrisons():
+def copy_garrisons():
     xprint(type=MsgType.ACTION, text="Modifying garrisons…")
 
     modified_count = 0
