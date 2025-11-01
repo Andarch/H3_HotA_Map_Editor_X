@@ -66,7 +66,8 @@ class Menu:
                 None,
                 ("E", "Event Objects: Add explorer bonuses"),
                 ("P", "Pandora's Boxes: Modify default boxes"),
-                ("G", "Garrisons: Copy garrisons"),
+                ("G", "Garrisons: Copy garrison guards"),
+                ("F", "Garrisons: Fill empty garrisons with guards"),
             ]
         ],
     }

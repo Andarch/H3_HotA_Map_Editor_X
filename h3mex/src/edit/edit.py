@@ -37,6 +37,8 @@ def menu() -> None:
         case "P":
             pandoras.modify_pandoras()
         case "G":
-            garrisons.copy_garrisons()
+            garrisons.copy_garrison_guards()
+        case "F":
+            garrisons.fill_empty_garrison_guards()
 
     xprint()

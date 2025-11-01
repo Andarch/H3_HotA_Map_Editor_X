@@ -172,6 +172,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
             "Grave",
             "Creature Banks",
             "Event Objects",
+            "Garrisons",
         ]
 
         zone_ids = set()
@@ -1906,13 +1907,14 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Random_Monster_7,
         objects.ID.Border_Gate,
         objects.ID.Freelancers_Guild,
+        objects.ID.Garrison,
     }
     OBJS_X_OFFSET_MINUS_2 = {
         objects.ID.Creature_Bank,
         objects.ID.Random_Town,
         objects.ID.Town,
     }
-    CONDITIONAL_MINUS_1 = {
+    CONDITIONAL_X_MINUS_1 = {
         objects.ID.Creature_Bank,
         objects.ID.Monolith_One_Way_Entrance,
         objects.ID.Monolith_One_Way_Exit,
@@ -1923,12 +1925,15 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.HotA_Visitable_2,
         objects.ID.Border_Gate,
     }
-    CONDITIONAL_MINUS_2 = {
+    CONDITIONAL_X_MINUS_2 = {
         objects.ID.Creature_Bank,
+    }
+    OBJS_Y_OFFSET_MINUS_1 = {
+        objects.ID.Garrison_Vertical,
     }
 
     def should_apply_minus1(obj_id: int, sub_id: int) -> bool:
-        if obj_id not in CONDITIONAL_MINUS_1:
+        if obj_id not in CONDITIONAL_X_MINUS_1:
             return True
 
         if obj_id == objects.ID.Creature_Bank:
@@ -2002,7 +2007,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         return False
 
     def should_apply_minus2(obj_id: int, sub_id: int) -> bool:
-        if obj_id not in CONDITIONAL_MINUS_2:
+        if obj_id not in CONDITIONAL_X_MINUS_2:
             return True
 
         if obj_id == objects.ID.Creature_Bank:
@@ -2019,5 +2024,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         x -= 1
     elif id in OBJS_X_OFFSET_MINUS_2 and should_apply_minus2(id, sub_id):
         x -= 2
+    elif id in OBJS_Y_OFFSET_MINUS_1:
+        y -= 1
 
     return [x, y, z]
