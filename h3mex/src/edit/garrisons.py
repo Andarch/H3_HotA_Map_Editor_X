@@ -18,7 +18,7 @@ def fill_empty_garrison_guards():
     for obj in map_data["object_data"]:
         if obj["id"] not in garrison_ids:
             continue
-        if obj["owner"] == Players.Neutral:
+        if obj["owner"] == Players.Neutral and _is_empty_guards(obj["guards"]):
             obj["guards"] = _get_random_guards(obj["zone_type"])
             modified_count += 1
 
