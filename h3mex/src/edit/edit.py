@@ -3,7 +3,7 @@ from src.ui.menus import Menu
 from src.ui.xprint import xprint
 
 from ..common import Keypress
-from . import eventobjects, fix, heroes, monsters, pandoras, towns, treasures
+from . import eventobjects, fix, garrisons, heroes, monsters, pandoras, towns, treasures
 
 
 def menu() -> None:
@@ -36,5 +36,7 @@ def menu() -> None:
             eventobjects.add_explorer_bonuses()
         case "P":
             pandoras.modify_pandoras()
+        case "G":
+            garrisons.edit_garrisons()
 
     xprint()
