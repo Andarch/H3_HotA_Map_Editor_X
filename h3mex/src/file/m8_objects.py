@@ -155,31 +155,32 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         obj["type"] = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
-        ZONE_INFO_OBJECTS = [
-            "Monsters",
-            "Spells",
-            "Artifacts",
-            "Resources",
-            "Campfire",
-            "Scholar",
-            "Treasure Chest",
-            "Sea Chest",
-            "Flotsam & Jetsam",
-            "Sea Barrel",
-            "Shipwreck Survivor",
-            "Vial of Mana",
-            "Ancient Lamp",
-            "Grave",
-            "Creature Banks",
-            "Event Objects",
-            "Garrisons",
-        ]
+        # ZONE_INFO_OBJECTS = [
+        #     "Monsters",
+        #     "Spells",
+        #     "Artifacts",
+        #     "Resources",
+        #     "Campfire",
+        #     "Scholar",
+        #     "Treasure Chest",
+        #     "Sea Chest",
+        #     "Flotsam & Jetsam",
+        #     "Sea Barrel",
+        #     "Shipwreck Survivor",
+        #     "Vial of Mana",
+        #     "Ancient Lamp",
+        #     "Grave",
+        #     "Creature Banks",
+        #     "Event Objects",
+        #     "Garrisons",
+        # ]
 
-        zone_ids = set()
-        for category in ZONE_INFO_OBJECTS:
-            zone_ids.update(objects.Categories.CATEGORIES.get(category, []))
+        # zone_ids = set()
+        # for category in ZONE_INFO_OBJECTS:
+        #     zone_ids.update(objects.Categories.CATEGORIES.get(category, []))
 
-        if obj["id"] in zone_ids:
+        # if obj["id"] in zone_ids:
+        if obj["id"] not in objects.Decor.IDS:
             obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
                 ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}

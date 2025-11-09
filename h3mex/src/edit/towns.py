@@ -11,14 +11,14 @@ BOSS_EVENT_NAME = "[Boss Bonus]"
 
 ##################################################
 # Set lvl7 creature bonus amounts (max 666 each)
-HUMAN_LVL7_CREATURES = 2
-AI_LVL7_CREATURES = 4
-BOSS_LVL7_CREATURES = 10
+HUMAN_LVL7_CREATURES = 5
+AI_LVL7_CREATURES = 15
+BOSS_LVL7_CREATURES = 30
 
 # Set which players receive each bonus type
-HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
-AI_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 1]
-BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
+HUMAN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
+AI_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
+BOSS_PLAYERS = [1, 0, 0, 0, 0, 0, 0, 0]
 ##################################################
 
 HUMAN_LVL1_CREATURES = round(HUMAN_LVL7_CREATURES * 25)
@@ -139,26 +139,26 @@ def _create_events() -> None:
                 )
                 obj["events"].extend([ai_event])
             # Create boss event
-            if BOSS_PLAYERS[obj["owner"]]:
-                boss_event = _get_event_dict(
-                    name=BOSS_EVENT_NAME,
-                    players=BOSS_PLAYERS,
-                    human=False,
-                    ai=True,
-                    lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
-                    random_buildings=[1] * 48,
-                    buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
-                    creatures=[
-                        BOSS_LVL1_CREATURES,
-                        BOSS_LVL2_CREATURES,
-                        BOSS_LVL3_CREATURES,
-                        BOSS_LVL4_CREATURES,
-                        BOSS_LVL5_CREATURES,
-                        BOSS_LVL6_CREATURES,
-                        BOSS_LVL7_CREATURES,
-                    ],
-                )
-                obj["events"].extend([boss_event])
+            # if BOSS_PLAYERS[obj["owner"]]:
+            #     boss_event = _get_event_dict(
+            #         name=BOSS_EVENT_NAME,
+            #         players=BOSS_PLAYERS,
+            #         human=False,
+            #         ai=True,
+            #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
+            #         random_buildings=[1] * 48,
+            #         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
+            #         creatures=[
+            #             BOSS_LVL1_CREATURES,
+            #             BOSS_LVL2_CREATURES,
+            #             BOSS_LVL3_CREATURES,
+            #             BOSS_LVL4_CREATURES,
+            #             BOSS_LVL5_CREATURES,
+            #             BOSS_LVL6_CREATURES,
+            #             BOSS_LVL7_CREATURES,
+            #         ],
+            #     )
+            #     obj["events"].extend([boss_event])
     xprint(type=MsgType.DONE)
 
 
