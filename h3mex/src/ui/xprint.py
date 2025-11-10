@@ -90,7 +90,7 @@ def _menu_prompt(name: str, items: list) -> str:
         w = len(text)
         if w > width:
             width = w
-    width += 6
+    width += 8
     valid_keys = [] if name == "MAIN MENU" else [Keypress.ESC]
     xprint(text=f"{name}", align=Align.CENTER)
     xprint()

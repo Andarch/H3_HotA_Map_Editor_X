@@ -2,12 +2,11 @@ import os
 from gzip import open as gzopen
 from typing import Tuple
 
-from src.common import Color, Keypress, map_data
+from src.common import Keypress, MsgType, map_data
 from src.ui import header
 from src.ui.xprint import xprint
 from src.utilities import is_file_writable, quit
 
-from ..common import MsgType
 from . import (
     io,
     m1_general,
@@ -25,44 +24,49 @@ from . import (
 def choose_map() -> Tuple[str, int]:
     header.draw()
 
-    map_list = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
-    if not map_list:
+    filenames = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
+    if not filenames:
         xprint(type=MsgType.ERROR, text="No .h3m files found in the current directory.")
         quit()
 
-    h3m_menu = {
-        "name": "LOAD MAP",
-        "menus": [
-            [(str(i + 1), f"{Color.WHITE}{fname}{Color.RESET}") for i, fname in enumerate([f[:-4] for f in map_list])]
-            + [None, ("M", "More…"), None, None, ("ESC", "Quit")]
-        ],
-    }
+    total_pages = (len(filenames) + 8) // 9
+    pages = [filenames[i : i + 9] for i in range(0, len(filenames), 9)]
 
-    keypress = ""
-    while not keypress.isdigit():
-        keypress = xprint(menu=(h3m_menu["name"], h3m_menu["menus"][0]))
+    esc_text = "Back" if map_data else "Quit"
+    menus = []
+    for page in pages:
+        entries = [(str(i + 1), mapname) for i, mapname in enumerate(page)]
+        if total_pages > 1:
+            entries += [None, ("M", "Show more…"), None, None, ("ESC", esc_text)]
+        else:
+            entries += [None, None, ("ESC", esc_text)]
+        menus.append(entries)
+
+    h3m_menu = {"name": "LOAD MAP", "menus": menus}
+
+    current_page = 0
+    while True:
+        keypress = xprint(menu=(h3m_menu["name"], h3m_menu["menus"][current_page]))
         if keypress == Keypress.ESC:
             return ""
-        continue
-
-    return map_list[int(keypress) - 1]
+        if keypress == "M" and total_pages > 1:
+            current_page = (current_page + 1) % total_pages
+            continue
+        if keypress.isdigit():
+            return filenames[current_page * 9 + (int(keypress) - 1)]
 
 
 def load(filename: str = None) -> None:
-    if not filename:
-        filename = choose_map()
-        if not filename:
-            return
-
     header.draw()
 
-    xprint(text=f"Loading {filename}…\n")
+    xprint(text=f"Loading {filename}…")
+    xprint()
 
     try:
         with gzopen(filename, "rb") as io.in_file:
             map_data["filename"] = filename
 
-            xprint(text="Parsing 1/13: General…", overwrite=1)
+            xprint(text="Parsing 1/13: General…")
             map_data["general"] = m1_general.read_general()
 
             xprint(text="Parsing 2/13: Player Specs…", overwrite=1)
