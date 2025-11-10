@@ -120,12 +120,12 @@ def get_subtype(obj_type: int, i: int) -> int:
 def parse_object_data(object_defs: list, filename: str) -> list:
     global zonetypes_img_g, zonetypes_img_u, zonecolors_img_g, zonecolors_img_u, has_zone_images
     filename = filename[:-4]
-    zonetypes_img_g_path = os.path.join("..", "maps", f"{filename}_zonetypes_g.png")
-    zonetypes_img_u_path = os.path.join("..", "maps", f"{filename}_zonetypes_u.png")
+    zonetypes_img_g_path = os.path.join("..", "maps/images", f"{filename}_zonetypes_g.png")
+    zonetypes_img_u_path = os.path.join("..", "maps/images", f"{filename}_zonetypes_u.png")
     zonetypes_img_g = Image.open(zonetypes_img_g_path).convert("RGBA") if os.path.exists(zonetypes_img_g_path) else None
     zonetypes_img_u = Image.open(zonetypes_img_u_path).convert("RGBA") if os.path.exists(zonetypes_img_u_path) else None
-    zonecolors_img_g_path = os.path.join("..", "maps", f"{filename}_zonecolors_g.png")
-    zonecolors_img_u_path = os.path.join("..", "maps", f"{filename}_zonecolors_u.png")
+    zonecolors_img_g_path = os.path.join("..", "maps/images", f"{filename}_zonecolors_g.png")
+    zonecolors_img_u_path = os.path.join("..", "maps/images", f"{filename}_zonecolors_u.png")
     zonecolors_img_g = (
         Image.open(zonecolors_img_g_path).convert("RGBA") if os.path.exists(zonecolors_img_g_path) else None
     )
