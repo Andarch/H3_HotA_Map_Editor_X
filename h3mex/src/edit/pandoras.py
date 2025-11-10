@@ -111,7 +111,6 @@ def _get_random_guards(zone_type):
 
 
 def _get_random_contents(zone_type):
-
     if zone_type in {"P1", "R1", "L1", "W1"}:
         primary_skills = [random.randint(1, 3) for _ in range(4)]
 
