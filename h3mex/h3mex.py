@@ -42,8 +42,6 @@ def main(filename: str) -> None:
                     filename = file.choose_map()
                     if filename:
                         file.load(filename)
-                    else:
-                        continue
                 case "7":
                     file.load(filename)
                 case Keypress.ESC:
