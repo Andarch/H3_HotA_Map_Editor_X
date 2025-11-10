@@ -27,7 +27,7 @@ class Menu:
                 ("7", "Reload"),
                 None,
                 None,
-                ("ESC", "Quit"),
+                ("ESC", "Exit"),
             ]
         ],
     }

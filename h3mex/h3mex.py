@@ -10,7 +10,7 @@ from src.export import export
 from src.file import file
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
-from src.utilities import quit
+from src.utilities import exit
 from src.view import view
 
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
@@ -22,7 +22,7 @@ def main(filename: str) -> None:
             file.load(filename)
         else:
             filename = file.choose_map()
-            file.load(filename) if filename else quit()
+            file.load(filename) if filename else exit()
         while True:
             filename = map_data["filename"]
             keypress = xprint(menu=(Menu.MAIN["name"], Menu.MAIN["menus"][0]))
@@ -46,9 +46,9 @@ def main(filename: str) -> None:
                 case "7":
                     file.load(filename)
                 case Keypress.ESC:
-                    quit()
+                    exit()
     else:
-        quit()
+        exit()
 
 
 def _initialize():

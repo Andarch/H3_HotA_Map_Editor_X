@@ -28,7 +28,7 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
         return keypress
 
 
-def quit() -> None:
+def exit() -> None:
     header.draw()
     xprint(text="Exiting…")
     xprint()

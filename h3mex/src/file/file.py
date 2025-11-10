@@ -5,7 +5,7 @@ from typing import Tuple
 from src.common import Keypress, MsgType, map_data
 from src.ui import header
 from src.ui.xprint import xprint
-from src.utilities import is_file_writable, quit
+from src.utilities import exit, is_file_writable
 
 from . import (
     io,
@@ -27,12 +27,12 @@ def choose_map() -> Tuple[str, int]:
     filenames = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
     if not filenames:
         xprint(type=MsgType.ERROR, text="No .h3m files found in the current directory.")
-        quit()
+        exit()
 
     total_pages = (len(filenames) + 8) // 9
     pages = [filenames[i : i + 9] for i in range(0, len(filenames), 9)]
 
-    esc_text = "Back" if map_data else "Quit"
+    esc_text = "Back" if map_data else "Exit"
     menus = []
     for page in pages:
         entries = [(str(i + 1), mapname) for i, mapname in enumerate(page)]
