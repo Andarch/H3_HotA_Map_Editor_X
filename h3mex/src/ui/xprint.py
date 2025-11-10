@@ -2,17 +2,8 @@ import msvcrt
 import re
 import time
 
-from src.common import (
-    Align,
-    Color,
-    Cursor,
-    Keypress,
-    MsgType,
-    Wait,
-    map_data,
-)
+from src.common import Align, Color, Cursor, Keypress, MsgType, Wait
 from src.ui import header, ui
-from src.ui.menus import Menu
 
 
 def xprint(
@@ -21,7 +12,7 @@ def xprint(
     align: int = Align.LEFT,
     overwrite: int = 0,
     skip_line: bool = False,
-    menu_num: int = -1,
+    menu_num: str = "",
     menu_width: int = 0,
     menu: tuple[str, list] = None,
 ) -> None | str:
@@ -37,7 +28,8 @@ def xprint(
         case MsgType.INFO:
             print(_align_text(text=f"{Color.CYAN}{text}{Color.RESET}"))
         case MsgType.MENU:
-            menu_num_formatted = f"[{Color.YELLOW}{str(menu_num)}{Color.RESET}]"
+            spacing = 3 - len(menu_num)
+            menu_num_formatted = f"{' ' * spacing}[{Color.YELLOW}{menu_num}{Color.RESET}]"
             text_formatted = f"{Color.WHITE}{text}{Color.RESET}"
             print(_align_text(align=Align.MENU, text=f"{menu_num_formatted} {text_formatted}", menu_width=menu_width))
         case MsgType.PROMPT:
@@ -98,12 +90,13 @@ def _menu_prompt(name: str, items: list) -> str:
         w = len(text)
         if w > width:
             width = w
-    valid_keys = [] if items == Menu.MAIN["menus"][0] else [Keypress.ESC]
+    width += 6
+    valid_keys = [] if name == "MAIN MENU" else [Keypress.ESC]
     xprint(text=f"{name}", align=Align.CENTER)
     xprint()
     for item in items:
         if item:
-            valid_keys.append(item[0])
+            valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
             xprint(type=MsgType.MENU, text=item[1], menu_num=item[0], menu_width=width)
         else:
             xprint()
@@ -135,13 +128,7 @@ def _string_prompt(prompt: str) -> str:
                 continue
             case Keypress.ESC:
                 print(Cursor.HIDE, end="", flush=True)
-                if map_data:
-                    return ""
-                else:
-                    from src.utilities import exit
-
-                    print("\r\x1b[K", end="", flush=True)
-                    exit()
+                return ""
             case _:
                 chars.append(keypress)
                 print(keypress, end="", flush=True)

@@ -1,9 +1,11 @@
+import os
 from gzip import open as gzopen
+from typing import Tuple
 
-from src.common import map_data
+from src.common import Color, Keypress, map_data
 from src.ui import header
 from src.ui.xprint import xprint
-from src.utilities import is_file_writable
+from src.utilities import is_file_writable, quit
 
 from ..common import MsgType
 from . import (
@@ -20,19 +22,41 @@ from . import (
 )
 
 
-def load(filename: str = None) -> None:
+def choose_map() -> Tuple[str, int]:
     header.draw()
 
-    # Prompt for filename if not provided
-    if filename is None:
-        filename = xprint(type=MsgType.PROMPT, text="Enter the map filename to load")
+    map_list = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
+    if not map_list:
+        xprint(type=MsgType.ERROR, text="No .h3m files found in the current directory.")
+        quit()
+
+    h3m_menu = {
+        "name": "LOAD MAP",
+        "menus": [
+            [(str(i + 1), f"{Color.WHITE}{fname}{Color.RESET}") for i, fname in enumerate([f[:-4] for f in map_list])]
+            + [None, ("M", "More…"), None, None, ("ESC", "Quit")]
+        ],
+    }
+
+    keypress = ""
+    while not keypress.isdigit():
+        keypress = xprint(menu=(h3m_menu["name"], h3m_menu["menus"][0]))
+        if keypress == Keypress.ESC:
+            return ""
+        continue
+
+    return map_list[int(keypress) - 1]
+
+
+def load(filename: str = None) -> None:
+    if not filename:
+        filename = choose_map()
         if not filename:
-            return False
+            return
 
-    # Ensure the filename has the correct extension
-    filename = filename if filename[-4:] == ".h3m" else filename + ".h3m"
+    header.draw()
 
-    xprint(type=MsgType.NORMAL, text=f"Loading {filename}…\n")
+    xprint(text=f"Loading {filename}…\n")
 
     try:
         with gzopen(filename, "rb") as io.in_file:

@@ -4,6 +4,7 @@ import sys
 import time
 
 from src.common import Color, Cursor, MsgType, Wait
+from src.ui import header
 from src.ui.xprint import xprint
 
 
@@ -27,7 +28,8 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
         return keypress
 
 
-def exit() -> None:
+def quit() -> None:
+    header.draw()
     xprint(text="Exiting…")
     xprint()
     time.sleep(Wait.NORMAL.value)

@@ -4,13 +4,13 @@ import ctypes
 import os
 import sys
 
-from src.common import App, Cursor, MsgType, map_data
+from src.common import App, Cursor, Keypress, MsgType, map_data
 from src.edit import edit
 from src.export import export
 from src.file import file
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
-from src.utilities import exit
+from src.utilities import quit
 from src.view import view
 
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
@@ -18,7 +18,11 @@ os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
 
 def main(filename: str) -> None:
     if _initialize():
-        file.load(filename)
+        if filename:
+            file.load(filename)
+        else:
+            filename = file.choose_map()
+            file.load(filename) if filename else quit()
         while True:
             filename = map_data["filename"]
             keypress = xprint(menu=(Menu.MAIN["name"], Menu.MAIN["menus"][0]))
@@ -37,10 +41,10 @@ def main(filename: str) -> None:
                     file.load()
                 case "7":
                     file.load(filename)
-                case "0":
-                    exit()
+                case Keypress.ESC:
+                    quit()
     else:
-        exit()
+        quit()
 
 
 def _initialize():
