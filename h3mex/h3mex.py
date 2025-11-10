@@ -13,6 +13,7 @@ from src.ui.xprint import xprint
 from src.utilities import exit
 from src.view import view
 
+os.system("title H3 HotA Map Editor X")
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "maps"))
 
 

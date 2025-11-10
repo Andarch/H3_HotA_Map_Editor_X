@@ -1,12 +1,18 @@
 @echo off
-REM Get the directory where this batch file is located
-set SCRIPT_DIR=%~dp0
+title H3 HotA Map Editor X
+cd /d "%~dp0"
 
 REM Check if running in Windows Terminal or VS Code
-if not defined WT_SESSION if not "%TERM_PROGRAM%"=="vscode" (
-    REM Not in Windows Terminal or VS Code, so launch with wt
-    wt -p "{ed82cbca-d0eb-43b9-ab28-3a57145ceb49}" --title "H3 HotA Map Editor X" -- "%SCRIPT_DIR%.venv\Scripts\python.exe" "%SCRIPT_DIR%h3mex\h3mex.py" %1
-) else (
-    REM Already in a terminal, just run with venv python
-    "%SCRIPT_DIR%.venv\Scripts\python.exe" "%SCRIPT_DIR%h3mex\h3mex.py" %1
-)
+if defined WT_SESSION goto run_python
+if "%TERM_PROGRAM%"=="vscode" goto run_python
+
+REM Not in Windows Terminal or VS Code, so launch with wt
+wt -p "{ed82cbca-d0eb-43b9-ab28-3a57145ceb49}" --title "H3 HotA Map Editor X"
+goto end
+
+:run_python
+REM Already in a terminal, just run with venv python
+.venv\Scripts\python.exe h3mex\h3mex.py %*
+exit
+
+:end
