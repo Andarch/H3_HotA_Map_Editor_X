@@ -54,4 +54,4 @@ def _create_header_line(color: str, symbol: str, text: str = "") -> str:
             line_right = line_left
         else:
             line_right = color + (symbol * ((fill_length // 2) + 1)) + Color.RESET
-        return f"{line_left} {Color.CYAN}{text}{Color.RESET} {line_right}"
+        return f"{line_left} {Color.BOLD}{Color.CYAN}{text}{Color.RESET} {line_right}"
