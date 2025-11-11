@@ -1,0 +1,49 @@
+{
+    "security.workspace.trust.untrustedFiles": "open",
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "workbench.editor.pinnedTabsOnSeparateRow": true,
+    "editor.unicodeHighlight.allowedCharacters": {
+        "–": true
+    },
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "python.defaultInterpreterPath": "c:\\Users\\Andy\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+    "explorer.confirmDelete": false,
+    "files.saveConflictResolution": "overwriteFileOnDisk",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**.venv": true,
+        "**/.vscode": true
+    },
+    "explorer.autoReveal": false,
+    "explorer.confirmDragAndDrop": false,
+    "outline.collapseItems": "alwaysCollapse",
+    "window.zoomLevel": -0.25,
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+    "editor.fontWeight": "normal",
+    "editor.fontSize": 12.5,
+    "terminal.integrated.fontFamily": "'Cascadia Code'",
+    "terminal.integrated.fontWeight": "normal",
+    "terminal.integrated.fontSize": 13,
+    "chat.editor.fontFamily": "'Cascadia Code'",
+    "chat.editor.fontWeight": "normal",
+    "chat.editor.fontSize": 11,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        }
+    },
+    "[php]": {
+        "editor.defaultFormatter": "DEVSENSE.phptools-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        }
+    },
+    "prettier.experimentalTernaries": true,
+    "prettier.configPath": ".prettierrc",
+    "prettier.printWidth": 120,
+}

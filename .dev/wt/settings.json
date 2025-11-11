@@ -1,0 +1,39 @@
+// Excerpt from C:\Users\Andy\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
+
+{
+    "centerOnLaunch": true,
+    "defaultProfile": "{ed82cbca-d0eb-43b9-ab28-3a57145ceb49}",
+    "initialRows": 50,
+    "profiles": 
+    {
+        "defaults": {
+            "rightClickContextMenu": true
+        },
+        "list": 
+        [
+            {
+                "altGrAliasing": true,
+                "antialiasingMode": "grayscale",
+                "closeOnExit": "automatic",
+                "colorScheme": "Campbell",
+                "commandline": "cmd.exe /k \"C:\\Users\\Andy\\Repos\\H3_HotA_Map_Editor_X\\h3mex.bat\"",
+                "cursorShape": "bar",
+                "font": 
+                {
+                    "face": "Cascadia Code",
+                    "size": 12
+                },
+                "guid": "{ed82cbca-d0eb-43b9-ab28-3a57145ceb49}",
+                "hidden": false,
+                "historySize": 9000,
+                "icon": "C:\\Users\\Andy\\Repos\\H3_HotA_Map_Editor_X\\h3mex\\h3mex.ico",
+                "name": "H3 HotA Map Editor X",
+                "padding": "8, 8, 8, 8",
+                "snapOnInput": true,
+                "startingDirectory": "C:\\Users\\Andy\\Repos\\H3_HotA_Map_Editor_X",
+                "tabTitle": "H3 HotA Map Editor X",
+                "useAcrylic": false
+            }
+        ]
+    }
+}
