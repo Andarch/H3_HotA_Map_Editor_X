@@ -1,10 +1,37 @@
+import io
 import os
+import shutil
+import subprocess
+import sys
 from enum import IntEnum
 
 from PIL import Image
-from src.common import MsgType, map_data
+from src.common import Keypress, MsgType, map_data
 from src.defs import objects
+from src.ui.menus import Menu
 from src.ui.xprint import xprint
+from src.utilities import wait_for_keypress
+
+# SIXEL capability detection
+HAVE_PY_SIXEL = False
+HAVE_IMG2SIXEL = False
+_sixel_writer = None
+
+try:
+    from sixel import SixelWriter  # pure-Python encoder
+
+    _sixel_writer = SixelWriter()
+    HAVE_PY_SIXEL = True
+except Exception:
+    HAVE_PY_SIXEL = False
+
+IMG2SIXEL_EXE = shutil.which("img2sixel") or shutil.which("img2sixel.exe")
+if IMG2SIXEL_EXE:
+    try:
+        subprocess.run([IMG2SIXEL_EXE, "--help"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        HAVE_IMG2SIXEL = True
+    except Exception:
+        HAVE_IMG2SIXEL = False
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -14,7 +41,7 @@ BLOCKED_OFFSET = 20
 
 
 class TERRAIN(IntEnum):
-    # normal
+    # Normal
     DIRT = 0
     SAND = 1
     GRASS = 2
@@ -27,8 +54,7 @@ class TERRAIN(IntEnum):
     ROCK = 9
     HIGHLANDS = 10
     WASTELAND = 11
-
-    # blocked
+    # Blocked
     BDIRT = 20
     BSAND = 21
     BGRASS = 22
@@ -69,6 +95,7 @@ class KEYMASTER(IntEnum):
 
 
 class OBJECTS(IntEnum):
+    # Objects with owners
     RED = 0
     BLUE = 1
     TAN = 2
@@ -78,7 +105,7 @@ class OBJECTS(IntEnum):
     TEAL = 6
     PINK = 7
     NEUTRAL = 255
-
+    # Keymaster/Border objects
     KM_LIGHTBLUE = 1000
     KM_GREEN = 1001
     KM_RED = 1002
@@ -87,9 +114,10 @@ class OBJECTS(IntEnum):
     KM_PURPLE = 1005
     KM_WHITE = 1006
     KM_BLACK = 1007
+    # Other barrier objects
     GARRISON = 1999
     QUEST = 2000
-
+    # Monoliths/Portals
     M1_BLUE = 3000
     M1_PINK = 3001
     M1_ORANGE = 3002
@@ -127,13 +155,14 @@ class OBJECTS(IntEnum):
     S2_BLUE = 3522
     S2_CHARTREUSE = 3523
     S2_YELLOW = 3524
-
+    # All other interactive objects
     INTERACTIVE = 9999
+    # All other objects (excluding decor)
     ALL_OTHERS = 10000
 
 
 terrain_colors = {
-    # Terrain
+    # Normal
     TERRAIN.DIRT: (0x52, 0x39, 0x08),
     TERRAIN.SAND: (0xDE, 0xCE, 0x8C),
     TERRAIN.GRASS: (0x00, 0x42, 0x00),
@@ -146,7 +175,7 @@ terrain_colors = {
     TERRAIN.ROCK: (0x00, 0x00, 0x00),
     TERRAIN.HIGHLANDS: (0x29, 0x73, 0x18),
     TERRAIN.WASTELAND: (0xBD, 0x5A, 0x08),
-    # Blocked Terrain
+    # Blocked
     TERRAIN.BDIRT: (0x39, 0x29, 0x08),
     TERRAIN.BSAND: (0xA5, 0x9C, 0x6B),
     TERRAIN.BGRASS: (0x00, 0x31, 0x00),
@@ -161,65 +190,14 @@ terrain_colors = {
     TERRAIN.BWASTELAND: (0x9C, 0x42, 0x08),
 }
 
-
-terrain_colors_alt = {
-    # Terrain
-    TERRAIN.DIRT: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SAND: (0x4D, 0x4D, 0x4D),
-    TERRAIN.GRASS: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SNOW: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SWAMP: (0x4D, 0x4D, 0x4D),
-    TERRAIN.ROUGH: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SUBTERRANEAN: (0x4D, 0x4D, 0x4D),
-    TERRAIN.LAVA: (0x4D, 0x4D, 0x4D),
-    TERRAIN.WATER: (0x4B, 0x56, 0x5E),
-    TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS: (0x4D, 0x4D, 0x4D),
-    TERRAIN.WASTELAND: (0x4D, 0x4D, 0x4D),
-    # Blocked Terrain
-    TERRAIN.BDIRT: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSAND: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BGRASS: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSNOW: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSWAMP: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BROUGH: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSUBTERRANEAN: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BLAVA: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BWATER: (0x3C, 0x45, 0x4D),
-    TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BWASTELAND: (0x3D, 0x3D, 0x3D),
-}
-
-
-# owner_colors = {
-#     OWNER.RED:     (0xff, 0x00, 0x00),
-#     OWNER.BLUE:    (0x31, 0x52, 0xff),
-#     OWNER.TAN:     (0x9c, 0x73, 0x52),
-#     OWNER.GREEN:   (0x42, 0x94, 0x29),
-#     OWNER.ORANGE:  (0xff, 0x84, 0x00),
-#     OWNER.PURPLE:  (0x8c, 0x29, 0xa5),
-#     OWNER.TEAL:    (0x08, 0x9c, 0xa5),
-#     OWNER.PINK:    (0xc6, 0x7b, 0x8c),
-#     OWNER.NEUTRAL: (0x84, 0x84, 0x84)
-# }
-
-
-# keymaster_colors = {
-#     KEYMASTER.LIGHTBLUE: (0x00, 0xb7, 0xff),
-#     KEYMASTER.GREEN:     (0x06, 0xc6, 0x2f),
-#     KEYMASTER.RED:       (0xCE, 0x19, 0x1A),
-#     KEYMASTER.DARKBLUE:  (0x14, 0x14, 0xfe),
-#     KEYMASTER.BROWN:     (0xc8, 0x82, 0x46),
-#     KEYMASTER.PURPLE:    (0xa8, 0x43, 0xe0),
-#     KEYMASTER.WHITE:     (0xf7, 0xf7, 0xf7),
-#     KEYMASTER.BLACK:     (0x12, 0x12, 0x12),
-#     KEYMASTER.GARRISON:  (0x9c, 0x9a, 0x8b),
-#     KEYMASTER.QUEST:     (0xff, 0xff, 0x00)
-# }
+terrain_colors_alt = {t: (0x4D, 0x4D, 0x4D) for t in terrain_colors.keys()}
+terrain_colors_alt[TERRAIN.WATER] = (0x4B, 0x56, 0x5E)
+terrain_colors_alt[TERRAIN.BWATER] = (0x3C, 0x45, 0x4D)
+terrain_colors_alt[TERRAIN.ROCK] = (0x00, 0x00, 0x00)
 
 
 object_colors = {
+    # Objects with owners
     OBJECTS.RED: (0xFF, 0x00, 0x00),
     OBJECTS.BLUE: (0x31, 0x52, 0xFF),
     OBJECTS.TAN: (0x9C, 0x73, 0x52),
@@ -229,6 +207,7 @@ object_colors = {
     OBJECTS.TEAL: (0x08, 0x9C, 0xA5),
     OBJECTS.PINK: (0xC6, 0x7B, 0x8C),
     OBJECTS.NEUTRAL: (0x84, 0x84, 0x84),
+    # Keymaster/Border objects
     OBJECTS.KM_LIGHTBLUE: (0x00, 0xB7, 0xFF),
     OBJECTS.KM_GREEN: (0x06, 0xC6, 0x2F),
     OBJECTS.KM_RED: (0xCE, 0x19, 0x1A),
@@ -237,8 +216,10 @@ object_colors = {
     OBJECTS.KM_PURPLE: (0xA8, 0x43, 0xE0),
     OBJECTS.KM_WHITE: (0xF7, 0xF7, 0xF7),
     OBJECTS.KM_BLACK: (0x12, 0x12, 0x12),
+    # Other barrier objects
     OBJECTS.GARRISON: (0x9C, 0x9A, 0x8B),
     OBJECTS.QUEST: (0xFF, 0xFF, 0x00),
+    # Monoliths/Portals
     OBJECTS.M1_BLUE: (0x1E, 0x40, 0xCF),
     OBJECTS.M1_PINK: (0xF7, 0x38, 0xA6),
     OBJECTS.M1_ORANGE: (0xFF, 0x8C, 0x1A),
@@ -276,12 +257,14 @@ object_colors = {
     OBJECTS.S2_BLUE: (0x41, 0x69, 0xE1),
     OBJECTS.S2_CHARTREUSE: (0xAD, 0xFF, 0x2F),
     OBJECTS.S2_YELLOW: (0xFF, 0xFA, 0xCD),
+    # All other interactive objects
     OBJECTS.INTERACTIVE: (0xFF, 0x00, 0x00),
+    # All other objects (excluding decor)
     OBJECTS.ALL_OTHERS: (0xFF, 0xFF, 0xFF),
 }
 
 
-ignored_owned_objects = {
+ignored_objects_standard = {
     objects.ID.Hero,
     objects.ID.Prison,
     objects.ID.Random_Hero,
@@ -289,7 +272,7 @@ ignored_owned_objects = {
 }
 
 
-ignored_pickups = {
+ignored_objects_base2 = {
     objects.ID.Treasure_Chest,
     objects.ID.Scholar,
     objects.ID.Campfire,
@@ -356,7 +339,7 @@ two_way_land_portals = {
 }
 
 
-two_way_water_portals = {
+two_way_sea_portals = {
     objects.Two_Way_Monolith.Water_White,
     objects.Two_Way_Monolith.Water_Red,
     objects.Two_Way_Monolith.Water_Blue,
@@ -381,125 +364,189 @@ monster_objects = {
 resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
 
 
-def export(export_type: str) -> None:
-    if export_type == "Standard":
-        _process_image(export_type, None, None, None, None)
-    elif export_type == "Extended":
-        _process_image(export_type, objects.Decor.IDS, None, 1, "base1")
-        _process_image(export_type, None, None, 2, "base2")
-        _process_image(export_type, border_objects, None, 3, "border")
-        _process_image(export_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
-        _process_image(export_type, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
-        _process_image(export_type, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
-        _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
-        _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_water_portals, 8, "portals2water")
-        _process_image(export_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
-        _process_image(export_type, {objects.ID.Prison}, None, 10, "prisons")
-        _process_image(export_type, monster_objects, None, 11, "monsters")
-        _process_image(export_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
-        _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Incantation}, 13, "shrine1")
-        _process_image(export_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
-        _process_image(export_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
-        _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Mystery}, 16, "shrine4")
-        _process_image(export_type, {objects.ID.Pyramid}, None, 17, "pyramids")
-        _process_image(export_type, {objects.ID.Artifact}, None, 18, "artifacts")
-        _process_image(export_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
-        _process_image(export_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
-        _process_image(export_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
-        _process_image(export_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
-        _process_image(export_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
-        _process_image(export_type, resource_objects, None, 24, "resources")
-        _process_image(export_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
-        _process_image(export_type, {objects.ID.Event}, None, 26, "eventobjects")
-    return True
+def run(mode: str) -> bool:
+    match mode:
+        case "view":
+            return _view_menu()
+        case "export":
+            return _export_menu()
 
 
-def _process_image(export_type: str, filter: set, subfilter: set | None, png_number: int, png_name: str) -> bool:
-    if export_type == "Standard":
-        xprint(type=MsgType.ACTION, text="Generating minimap…")
-    elif export_type == "Extended":
-        xprint(
-            type=MsgType.ACTION,
-            text=f"Generating minimap_{png_number:02d}_{png_name}…",
-        )
-    # Get map size
+def _view_menu() -> bool:
+    xprint(type=MsgType.INFO, text=f"SIXEL available: {HAVE_PY_SIXEL or HAVE_IMG2SIXEL}")
+
+    # Pre-generate
+    standard = _generate_standard_images()
+    # layered = _generate_all_layers()
+
+    while True:
+        keypress = xprint(menu=(Menu.MINIMAP_VIEW["name"], Menu.MINIMAP_VIEW["menus"][0]))
+        if keypress == Keypress.ESC:
+            return
+
+        match keypress:
+            case "1":
+                _display_images(standard, "Standard")
+
+
+def _generate_standard_images() -> dict:
     map_size = map_data["general"]["map_size"]
-    # Initialize map layer list
     if map_data["general"]["has_underground"]:
         half = map_size * map_size
-        map_layers = [map_data["terrain"][:half]]  # overworld
-        map_layers.append(map_data["terrain"][half:])  # underground
+        terrain_layers = [map_data["terrain"][:half], map_data["terrain"][half:]]
     else:
-        map_layers = [map_data["terrain"]]  # overworld only
-    # Initialize tile dictionaries
+        terrain_layers = [map_data["terrain"]]
     ownership = {
-        map_layer: [[None for _ in range(map_size)] for _ in range(map_size)] for map_layer in [OVERWORLD, UNDERGROUND]
+        layer: [[None for _ in range(map_size)] for _ in range(map_size)] for layer in [OVERWORLD, UNDERGROUND]
     }
-    blocked_tiles = {map_layer: set() for map_layer in [OVERWORLD, UNDERGROUND]}
-    # Filter objects if a filter is provided
-    if filter is None:
-        filtered_objects = map_data["object_data"]
-    else:
-        filtered_objects = [obj for obj in map_data["object_data"] if obj["id"] in filter]
-    # Apply subfilter if provided
-    if subfilter is not None:
-        filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
-    # Iterate through objects
-    for obj in filtered_objects:
-        if png_name == "base2" and (
-            obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)
-        ):
-            continue
-        elif png_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
-            continue
-        # Get object masks
+    blocked_tiles = {layer: set() for layer in [OVERWORLD, UNDERGROUND]}
+    for obj in map_data["object_data"]:
         def_ = map_data["object_defs"][obj["def_id"]]
         blockMask = def_["red_squares"]
         interactiveMask = def_["yellow_squares"]
-        # Determine if object has owner and/or should be skipped (hidden on minimap).
-        # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
-        owner = _determine_owner(export_type, obj)
+        owner = None
+        if "owner" in obj and obj["id"] not in ignored_objects_standard:
+            owner = obj["owner"]
         if owner is None and _should_skip_object(blockMask, interactiveMask):
             continue
-        _process_object(
-            obj,
-            blockMask,
-            interactiveMask,
-            blocked_tiles,
-            ownership,
-            owner,
-            png_name,
-        )
-    # Generate and save minimap images
-    _generate_images(export_type, map_layers, blocked_tiles, ownership, png_number, png_name)
-    xprint(type=MsgType.DONE)
-    return True
+        _process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_layer="standard")
+    images = {}
+    for layer_index, layer in enumerate(terrain_layers):
+        img = Image.new("RGB", (map_size, map_size))
+        for i, tile in enumerate(layer):
+            x = i % map_size
+            y = i // map_size
+            owner = ownership[layer_index][y][x]
+            if owner is not None and owner in object_colors:
+                color = object_colors[owner]
+            elif (x, y) in blocked_tiles[layer_index]:
+                color = terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
+            else:
+                color = terrain_colors[tile["terrain_type_int"]]
+            img.putpixel((x, y), color)
+        images["g" if layer_index == 0 else "u"] = img
+    return images
 
 
-def _determine_owner(export_type: str, obj: dict) -> int | tuple | None:
-    if (
-        export_type == "Standard" and "owner" in obj and obj["id"] not in ignored_owned_objects
-    ):  # Check if object has "owner" key and should not be ignored
-        return obj["owner"]
-    elif export_type == "Extended":
-        if (
-            (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001)
-            or obj["id"] == objects.ID.Border_Guard
-            or obj["id"] == objects.ID.Keymasters_Tent
-        ):
-            return obj["sub_id"] + 1000
-        elif obj["id"] == objects.ID.Garrison or obj["id"] == objects.ID.Garrison_Vertical:
-            return (1999, obj["owner"])
-        elif obj["id"] == objects.ID.Quest_Guard:
-            return 2000
-        elif obj["id"] == objects.ID.Monolith_One_Way_Entrance or obj["id"] == objects.ID.Monolith_One_Way_Exit:
-            return obj["sub_id"] + 3000
-        elif obj["id"] == objects.ID.Two_Way_Monolith:
-            return obj["sub_id"] + 3500
-        elif obj["id"] not in objects.Decor.IDS:
-            return 10000
-    else:
-        return None
+# def export(export_type: str) -> None:
+#     if export_type == "Standard":
+#         _process_image(export_type, None, None, None, None)
+#     elif export_type == "Extended":
+#         _process_image(export_type, objects.Decor.IDS, None, 1, "base1")
+#         _process_image(export_type, None, None, 2, "base2")
+#         _process_image(export_type, border_objects, None, 3, "border")
+#         _process_image(export_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+#         _process_image(export_type, {objects.ID.Monolith_One_Way_Entrance}, None, 5, "portals1en")
+#         _process_image(export_type, {objects.ID.Monolith_One_Way_Exit}, None, 6, "portals1ex")
+#         _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_land_portals, 7, "portals2land")
+#         _process_image(export_type, {objects.ID.Two_Way_Monolith}, two_way_sea_portals, 8, "portals2water")
+#         _process_image(export_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+#         _process_image(export_type, {objects.ID.Prison}, None, 10, "prisons")
+#         _process_image(export_type, monster_objects, None, 11, "monsters")
+#         _process_image(export_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+#         _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Incantation}, 13, "shrine1")
+#         _process_image(export_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
+#         _process_image(export_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
+#         _process_image(export_type, {objects.ID.Shrines}, {objects.Shrines.Shrine_of_Magic_Mystery}, 16, "shrine4")
+#         _process_image(export_type, {objects.ID.Pyramid}, None, 17, "pyramids")
+#         _process_image(export_type, {objects.ID.Artifact}, None, 18, "artifacts")
+#         _process_image(export_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+#         _process_image(export_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts")
+#         _process_image(export_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts")
+#         _process_image(export_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts")
+#         _process_image(export_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
+#         _process_image(export_type, resource_objects, None, 24, "resources")
+#         _process_image(export_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
+#         _process_image(export_type, {objects.ID.Event}, None, 26, "eventobjects")
+#     return True
+
+
+# def _process_image(export_type: str, filter: set, subfilter: set | None, png_number: int, png_name: str) -> bool:
+#     if export_type == "Standard":
+#         xprint(type=MsgType.ACTION, text="Generating minimap…")
+#     elif export_type == "Extended":
+#         xprint(
+#             type=MsgType.ACTION,
+#             text=f"Generating minimap_{png_number:02d}_{png_name}…",
+#         )
+#     # Get map size
+#     map_size = map_data["general"]["map_size"]
+#     # Initialize map layer list
+#     if map_data["general"]["has_underground"]:
+#         half = map_size * map_size
+#         map_layers = [map_data["terrain"][:half]]  # overworld
+#         map_layers.append(map_data["terrain"][half:])  # underground
+#     else:
+#         map_layers = [map_data["terrain"]]  # overworld only
+#     # Initialize tile dictionaries
+#     ownership = {
+#         map_layer: [[None for _ in range(map_size)] for _ in range(map_size)] for map_layer in [OVERWORLD, UNDERGROUND]
+#     }
+#     blocked_tiles = {map_layer: set() for map_layer in [OVERWORLD, UNDERGROUND]}
+#     # Filter objects if a filter is provided
+#     if filter is None:
+#         filtered_objects = map_data["object_data"]
+#     else:
+#         filtered_objects = [obj for obj in map_data["object_data"] if obj["id"] in filter]
+#     # Apply subfilter if provided
+#     if subfilter is not None:
+#         filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
+#     # Iterate through objects
+#     for obj in filtered_objects:
+#         if png_name == "base2" and (
+#             obj["id"] in ignored_objects_base2 or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)
+#         ):
+#             continue
+#         elif png_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
+#             continue
+#         # Get object masks
+#         def_ = map_data["object_defs"][obj["def_id"]]
+#         blockMask = def_["red_squares"]
+#         interactiveMask = def_["yellow_squares"]
+#         # Determine if object has owner and/or should be skipped (hidden on minimap).
+#         # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
+#         owner = _determine_owner(export_type, obj)
+#         if owner is None and _should_skip_object(blockMask, interactiveMask):
+#             continue
+#         _process_object(
+#             obj,
+#             blockMask,
+#             interactiveMask,
+#             blocked_tiles,
+#             ownership,
+#             owner,
+#             png_name,
+#         )
+#     # Generate and save minimap images
+#     _generate_images(export_type, map_layers, blocked_tiles, ownership, png_number, png_name)
+#     xprint(type=MsgType.DONE)
+#     return True
+
+
+# def _determine_owner(export_type: str, obj: dict) -> int | tuple | None:
+#     if (
+#         export_type == "Standard" and "owner" in obj and obj["id"] not in ignored_objects_standard
+#     ):  # Check if object has "owner" key and should not be ignored
+#         return obj["owner"]
+#     elif export_type == "Extended":
+#         if (
+#             (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] != 1001)
+#             or obj["id"] == objects.ID.Border_Guard
+#             or obj["id"] == objects.ID.Keymasters_Tent
+#         ):
+#             return obj["sub_id"] + 1000
+#         elif obj["id"] == objects.ID.Garrison or obj["id"] == objects.ID.Garrison_Vertical:
+#             return (1999, obj["owner"])
+#         elif obj["id"] == objects.ID.Quest_Guard:
+#             return 2000
+#         elif obj["id"] == objects.ID.Monolith_One_Way_Entrance or obj["id"] == objects.ID.Monolith_One_Way_Exit:
+#             return obj["sub_id"] + 3000
+#         elif obj["id"] == objects.ID.Two_Way_Monolith:
+#             return obj["sub_id"] + 3500
+#         elif obj["id"] not in objects.Decor.IDS:
+#             return 10000
+#     else:
+#         return None
 
 
 def _should_skip_object(blockMask: list, interactiveMask: list) -> bool:
@@ -578,120 +625,190 @@ def _process_object(
                                 )
 
 
-def _generate_images(
-    export_type: str,
-    map_layers: list,
-    blocked_tiles: dict,
-    ownership: dict,
-    png_number: int,
-    png_name: str,
-) -> None:
-    IMAGES_PATH = "exports/minimap"
-
-    map_size = map_data["general"]["map_size"]
-    mode = "RGB" if png_name == "base1" else "RGBA"
-    transparent = (0, 0, 0, 0)
-    map_name = map_data["filename"][:-4] if map_data["filename"].endswith(".h3m") else map_data["filename"]
-
-    # Determine if we're creating a combined image
-    is_combined = export_type == "Extended" and len(map_layers) > 1
-
-    if is_combined:
-        # Create single combined image for multiple layers
-        combined_width = map_size * 2 + 2
-        img = Image.new(
-            mode,
-            (combined_width, map_size),
-            None if png_name == "base1" else transparent,
-        )
-
-    for map_layer_index, map_layer in enumerate(map_layers):
-        if not is_combined:
-            # Create separate image for each layer
-            img = Image.new(
-                mode,
-                (map_size, map_size),
-                None if png_name == "base1" else transparent,
-            )
-
-        # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
-        x_offset = (map_size + 2) * map_layer_index if is_combined else 0
-
-        # Process each pixel in the layer
-        for i, tile in enumerate(map_layer):
-            x = i % map_size
-            y = i // map_size
-            owner = ownership[map_layer_index][y][x]
-            color = _get_pixel_color(
-                export_type,
-                png_name,
-                tile,
-                owner,
-                blocked_tiles,
-                map_layer_index,
-                x,
-                y,
-                transparent,
-            )
-            img.putpixel((x + x_offset, y), color)
-
-        if not is_combined:
-            # Save individual layer image
-            layer_letter = "g" if map_layer_index == 0 else "u"
-            if export_type == "Standard":
-                img.save(os.path.join(IMAGES_PATH, f"{map_name}_{layer_letter}.png"))
-            elif export_type == "Extended":
-                img.save(
-                    os.path.join(
-                        IMAGES_PATH,
-                        f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png",
-                    )
-                )
-
-    if is_combined:
-        # Save combined image
-        img.save(
-            os.path.join(
-                IMAGES_PATH,
-                f"{map_name}_{png_number:02d}_{png_name}.png",
-            )
-        )
-
-
-def _get_pixel_color(
-    export_type: str,
-    png_name: str,
-    tile: tuple,
-    owner: int,
-    blocked_tiles: dict,
-    map_layer_index: int,
-    x: int,
-    y: int,
-    transparent: tuple,
-) -> tuple:
-    if export_type == "Standard":
-        if owner is not None:
-            return object_colors[owner]
-        elif (x, y) in blocked_tiles[map_layer_index]:
-            return terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
+def _emit_sixel(img: Image.Image) -> bool:
+    if img.mode != "RGB":
+        if img.mode == "RGBA":
+            bg = Image.new("RGB", img.size, (255, 255, 255))
+            bg.paste(img, (0, 0), img)
+            img = bg
         else:
-            return terrain_colors[tile["terrain_type_int"]]
-    elif export_type == "Extended":
-        if png_name == "base1":
-            if (x, y) in blocked_tiles[map_layer_index]:
-                return terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
-            else:
-                return terrain_colors_alt[tile["terrain_type_int"]]
-        elif png_name == "base2":
-            if owner == OBJECTS.ALL_OTHERS:
-                color = terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
-                if color == TERRAIN.BROCK:
-                    return transparent
-                return color
-            else:
-                return transparent
-        else:
-            if owner is not None:
-                return object_colors[owner] + (255,)
-            else:
-                return transparent
+            img = img.convert("RGB")
+    if HAVE_PY_SIXEL:
+        try:
+            _sixel_writer.draw(img)
+            sys.stdout.write("\r\n")
+            sys.stdout.flush()
+            return True
+        except Exception:
+            pass
+    if HAVE_IMG2SIXEL:
+        try:
+            buf = io.BytesIO()
+            img.save(buf, format="PNG")
+            subprocess.run([IMG2SIXEL_EXE, "-"], input=buf.getvalue(), stdout=sys.stdout.buffer, check=True)
+            sys.stdout.write("\r\n")
+            sys.stdout.flush()
+            return True
+        except Exception:
+            pass
+    return False
+
+
+def _display_images(layer_images: dict, title: str) -> None:
+    map_name = _map_name()
+    for letter, img in layer_images.items():
+        layer_name = "Ground" if letter == "g" else "Underground"
+        scale = max(1, 400 // max(img.width, img.height))
+        img2 = img.resize((img.width * scale, img.height * scale), Image.NEAREST) if scale > 1 else img
+        print(f"\n{map_name} - {layer_name} - {title}:")
+        if not _emit_sixel(img2):
+            img2.show()
+        print("")
+    wait_for_keypress()
+
+
+def _export_menu() -> bool:
+    xprint(type=MsgType.INFO, text="1) Standard minimap")
+    xprint(type=MsgType.INFO, text="0) Exit")
+    images_path = "exports/minimap"
+    os.makedirs(images_path, exist_ok=True)
+    map_name = _map_name()
+    while True:
+        choice = input("Select: ").strip()
+        if choice == "0":
+            return True
+        if choice == "1":
+            std = _generate_standard_images()
+            _save_standard_images(std, images_path, map_name)
+            xprint(type=MsgType.DONE, text="Exported.")
+            return True
+        print("Invalid.")
+
+
+def _save_standard_images(images: dict, path: str, map_name: str) -> None:
+    for layer, img in images.items():
+        img.save(os.path.join(path, f"{map_name}_{layer}.png"))
+
+
+def _map_name() -> str:
+    fn = map_data["filename"]
+    return fn[:-4] if fn.lower().endswith(".h3m") else fn
+
+
+# def _generate_images(
+#     export_type: str,
+#     map_layers: list,
+#     blocked_tiles: dict,
+#     ownership: dict,
+#     png_number: int,
+#     png_name: str,
+# ) -> None:
+#     IMAGES_PATH = "exports/minimap"
+
+#     map_size = map_data["general"]["map_size"]
+#     mode = "RGB" if png_name == "base1" else "RGBA"
+#     transparent = (0, 0, 0, 0)
+#     map_name = map_data["filename"][:-4] if map_data["filename"].endswith(".h3m") else map_data["filename"]
+
+#     # Determine if we're creating a combined image
+#     is_combined = export_type == "Extended" and len(map_layers) > 1
+
+#     if is_combined:
+#         # Create single combined image for multiple layers
+#         combined_width = map_size * 2 + 2
+#         img = Image.new(
+#             mode,
+#             (combined_width, map_size),
+#             None if png_name == "base1" else transparent,
+#         )
+
+#     for map_layer_index, map_layer in enumerate(map_layers):
+#         if not is_combined:
+#             # Create separate image for each layer
+#             img = Image.new(
+#                 mode,
+#                 (map_size, map_size),
+#                 None if png_name == "base1" else transparent,
+#             )
+
+#         # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
+#         x_offset = (map_size + 2) * map_layer_index if is_combined else 0
+
+#         # Process each pixel in the layer
+#         for i, tile in enumerate(map_layer):
+#             x = i % map_size
+#             y = i // map_size
+#             owner = ownership[map_layer_index][y][x]
+#             color = _get_pixel_color(
+#                 export_type,
+#                 png_name,
+#                 tile,
+#                 owner,
+#                 blocked_tiles,
+#                 map_layer_index,
+#                 x,
+#                 y,
+#                 transparent,
+#             )
+#             img.putpixel((x + x_offset, y), color)
+
+#         if not is_combined:
+#             # Save individual layer image
+#             layer_letter = "g" if map_layer_index == 0 else "u"
+#             if export_type == "Standard":
+#                 img.save(os.path.join(IMAGES_PATH, f"{map_name}_{layer_letter}.png"))
+#             elif export_type == "Extended":
+#                 img.save(
+#                     os.path.join(
+#                         IMAGES_PATH,
+#                         f"{map_name}_{layer_letter}_{png_number:02d}_{png_name}.png",
+#                     )
+#                 )
+
+#     if is_combined:
+#         # Save combined image
+#         img.save(
+#             os.path.join(
+#                 IMAGES_PATH,
+#                 f"{map_name}_{png_number:02d}_{png_name}.png",
+#             )
+#         )
+
+
+# def _get_pixel_color(
+#     export_type: str,
+#     png_name: str,
+#     tile: tuple,
+#     owner: int,
+#     blocked_tiles: dict,
+#     map_layer_index: int,
+#     x: int,
+#     y: int,
+#     transparent: tuple,
+# ) -> tuple:
+#     if export_type == "Standard":
+#         if owner is not None:
+#             return object_colors[owner]
+#         elif (x, y) in blocked_tiles[map_layer_index]:
+#             return terrain_colors[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
+#         else:
+#             return terrain_colors[tile["terrain_type_int"]]
+#     elif export_type == "Extended":
+#         if png_name == "base1":
+#             if (x, y) in blocked_tiles[map_layer_index]:
+#                 return terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
+#             else:
+#                 return terrain_colors_alt[tile["terrain_type_int"]]
+#         elif png_name == "base2":
+#             if owner == OBJECTS.ALL_OTHERS:
+#                 color = terrain_colors_alt[TERRAIN(tile["terrain_type_int"]) + BLOCKED_OFFSET]
+#                 if color == TERRAIN.BROCK:
+#                     return transparent
+#                 return color
+#             else:
+#                 return transparent
+#         else:
+#             if owner is not None:
+#                 return object_colors[owner] + (255,)
+#             else:
+#                 return transparent

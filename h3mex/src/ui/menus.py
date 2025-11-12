@@ -11,6 +11,12 @@ class Menu:
         ("9", "Events"),
     ]
 
+    _MINIMAP = [
+        ("1", "Standard minimap"),
+        None,
+        ("2", "Custom minimap…"),
+    ]
+
     MAIN = {
         "name": "MAIN MENU",
         "menus": [
@@ -37,6 +43,8 @@ class Menu:
         "menus": [
             [
                 *_H3M,
+                None,
+                ("M", "Minimap…"),
                 None,
                 ("S", "Special…"),
             ],
@@ -88,4 +96,14 @@ class Menu:
                 ("7", "PNG: Extended minimap"),
             ]
         ],
+    }
+
+    MINIMAP_VIEW = {
+        "name": "VIEW MINIMAP",
+        "menus": [[*_MINIMAP]],
+    }
+
+    MINIMAP_EXPORT = {
+        "name": "EXPORT MINIMAP",
+        "menus": [[*_MINIMAP]],
     }
