@@ -92,8 +92,7 @@ class Menu:
                 ("4", "JSON: Terrain data"),
                 ("5", "JSON: Town data"),
                 None,
-                ("6", "PNG: Normal minimap"),
-                ("7", "PNG: Extended minimap"),
+                ("6", "PNG: Normal minimap…"),
             ]
         ],
     }

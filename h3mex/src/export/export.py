@@ -1,3 +1,4 @@
+from src.minimap import minimap
 from src.ui import header
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
@@ -5,7 +6,6 @@ from src.ui.xprint import xprint
 from ..common import Keypress
 from .excel_ import excel_
 from .json_ import json_
-from .minimap import minimap
 
 
 def menu() -> None:
@@ -27,8 +27,6 @@ def menu() -> None:
         case "5":
             json_.export("4")
         case "6":
-            minimap.export("Standard")
-        case "7":
-            minimap.export("Extended")
+            minimap.run("export")
 
     xprint()

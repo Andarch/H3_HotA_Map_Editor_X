@@ -1,37 +1,17 @@
 import io
 import os
-import shutil
 import subprocess
 import sys
 from enum import IntEnum
+from pathlib import Path
 
 from PIL import Image
 from src.common import Keypress, MsgType, map_data
 from src.defs import objects
+from src.ui import ui
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
-
-# SIXEL capability detection
-HAVE_PY_SIXEL = False
-HAVE_IMG2SIXEL = False
-_sixel_writer = None
-
-try:
-    from sixel import SixelWriter  # pure-Python encoder
-
-    _sixel_writer = SixelWriter()
-    HAVE_PY_SIXEL = True
-except Exception:
-    HAVE_PY_SIXEL = False
-
-IMG2SIXEL_EXE = shutil.which("img2sixel") or shutil.which("img2sixel.exe")
-if IMG2SIXEL_EXE:
-    try:
-        subprocess.run([IMG2SIXEL_EXE, "--help"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        HAVE_IMG2SIXEL = True
-    except Exception:
-        HAVE_IMG2SIXEL = False
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -373,19 +353,16 @@ def run(mode: str) -> bool:
 
 
 def _view_menu() -> bool:
-    xprint(type=MsgType.INFO, text=f"SIXEL available: {HAVE_PY_SIXEL or HAVE_IMG2SIXEL}")
-
-    # Pre-generate
-    standard = _generate_standard_images()
-    # layered = _generate_all_layers()
-
     while True:
         keypress = xprint(menu=(Menu.MINIMAP_VIEW["name"], Menu.MINIMAP_VIEW["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
+        xprint(text="", overwrite=len(Menu.MINIMAP_VIEW["menus"][0]) + 4)
+
         match keypress:
             case "1":
+                standard = _generate_standard_images()
                 _display_images(standard, "Standard")
 
 
@@ -625,45 +602,43 @@ def _process_object(
                                 )
 
 
-def _emit_sixel(img: Image.Image) -> bool:
-    if img.mode != "RGB":
-        if img.mode == "RGBA":
-            bg = Image.new("RGB", img.size, (255, 255, 255))
-            bg.paste(img, (0, 0), img)
-            img = bg
-        else:
-            img = img.convert("RGB")
-    if HAVE_PY_SIXEL:
-        try:
-            _sixel_writer.draw(img)
-            sys.stdout.write("\r\n")
-            sys.stdout.flush()
-            return True
-        except Exception:
-            pass
-    if HAVE_IMG2SIXEL:
-        try:
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            subprocess.run([IMG2SIXEL_EXE, "-"], input=buf.getvalue(), stdout=sys.stdout.buffer, check=True)
-            sys.stdout.write("\r\n")
-            sys.stdout.flush()
-            return True
-        except Exception:
-            pass
-    return False
+def _emit_sixel(img: Image.Image, add_newline: bool = True) -> bool:
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+
+    img2sixel = str(Path(__file__).resolve().parents[2] / "res" / "bin" / "img2sixel.exe")
+    subprocess.run([img2sixel], input=buf.getvalue(), stdout=sys.stdout.buffer, check=True)
+
+    if add_newline:
+        sys.stdout.write("\r\n")
+        sys.stdout.flush()
 
 
 def _display_images(layer_images: dict, title: str) -> None:
-    map_name = _map_name()
-    for letter, img in layer_images.items():
-        layer_name = "Ground" if letter == "g" else "Underground"
-        scale = max(1, 400 // max(img.width, img.height))
-        img2 = img.resize((img.width * scale, img.height * scale), Image.NEAREST) if scale > 1 else img
-        print(f"\n{map_name} - {layer_name} - {title}:")
-        if not _emit_sixel(img2):
-            img2.show()
-        print("")
+    IMG_PX = 390
+    IMG_COLS = 39
+    GAP_COLS = 2
+    GAP_PX = GAP_COLS * (IMG_PX // IMG_COLS)
+    BG_COLOR = (16, 16, 16)
+
+    for layer, img in layer_images.items():
+        img = img.resize((IMG_PX, IMG_PX), resample=Image.Resampling.NEAREST)
+        if img.mode == "RGBA":
+            bg = Image.new("RGB", img.size, BG_COLOR)
+            bg.paste(img, (0, 0), img)
+            img = bg
+        layer_images[layer] = img
+
+    xprint(type=MsgType.INDENT)
+
+    if "u" in layer_images:
+        canvas = Image.new("RGB", (IMG_PX * 2 + GAP_PX, IMG_PX), BG_COLOR)
+        canvas.paste(layer_images["g"], (0, 0))
+        canvas.paste(layer_images["u"], (IMG_PX + GAP_PX, 0))
+        _emit_sixel(canvas, add_newline=True)
+    else:
+        _emit_sixel(layer_images["g"], add_newline=True)
+
     wait_for_keypress()
 
 

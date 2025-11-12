@@ -55,6 +55,7 @@ class Wait(float, Enum):
 
 
 class MsgType(Enum):
+    INDENT = 0
     NORMAL = 1
     INFO = 2
     MENU = 3

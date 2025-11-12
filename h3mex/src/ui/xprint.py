@@ -57,6 +57,12 @@ def xprint(
                 case Align.FLUSH:
                     print(f"{Color.RED}Error: {text}{Color.RESET}")
             time.sleep(Wait.LONG.value)
+        case MsgType.INDENT:
+            print(
+                _align_text(text=text),
+                end="",
+                flush=True,
+            )
     return None
 
 
