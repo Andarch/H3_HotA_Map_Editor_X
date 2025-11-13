@@ -1,7 +1,10 @@
 import msvcrt
 import os
+import subprocess
 import sys
 import time
+from io import BytesIO
+from pathlib import Path
 
 from src.common import Color, Cursor, MsgType, Wait
 from src.ui import header
@@ -26,6 +29,14 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
     while True:
         keypress = msvcrt.getwch()
         return keypress
+
+
+def display_image(buffer: BytesIO) -> None:
+    xprint(type=MsgType.INDENT)
+    img2sixel = str(Path(os.getcwd()).parent / "h3mex" / "res" / "bin" / "img2sixel.exe")
+    subprocess.run([img2sixel], input=buffer.getvalue(), stdout=sys.stdout.buffer, check=True)
+    sys.stdout.write("\r\n")
+    sys.stdout.flush()
 
 
 def exit() -> None:

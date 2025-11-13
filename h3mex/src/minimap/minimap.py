@@ -1,8 +1,6 @@
-import io
 import os
-import subprocess
-import sys
 from enum import IntEnum
+from io import BytesIO
 from pathlib import Path
 
 from PIL import Image
@@ -11,7 +9,7 @@ from src.defs import objects
 from src.ui import ui
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
-from src.utilities import wait_for_keypress
+from src.utilities import display_image, wait_for_keypress
 
 OVERWORLD = 0
 UNDERGROUND = 1
@@ -362,11 +360,13 @@ def _view_menu() -> bool:
 
         match keypress:
             case "1":
-                standard = _generate_standard_images()
-                _display_images(standard, "Standard")
+                minimaps = _generate_standard_minimap()
+
+        _display_minimap(minimaps)
+        wait_for_keypress()
 
 
-def _generate_standard_images() -> dict:
+def _generate_standard_minimap() -> list:
     map_size = map_data["general"]["map_size"]
     if map_data["general"]["has_underground"]:
         half = map_size * map_size
@@ -387,7 +387,7 @@ def _generate_standard_images() -> dict:
         if owner is None and _should_skip_object(blockMask, interactiveMask):
             continue
         _process_object(obj, blockMask, interactiveMask, blocked_tiles, ownership, owner, png_layer="standard")
-    images = {}
+    minimaps = []
     for layer_index, layer in enumerate(terrain_layers):
         img = Image.new("RGB", (map_size, map_size))
         for i, tile in enumerate(layer):
@@ -401,8 +401,8 @@ def _generate_standard_images() -> dict:
             else:
                 color = terrain_colors[tile["terrain_type_int"]]
             img.putpixel((x, y), color)
-        images["g" if layer_index == 0 else "u"] = img
-    return images
+        minimaps.append(img)
+    return minimaps
 
 
 # def export(export_type: str) -> None:
@@ -602,44 +602,23 @@ def _process_object(
                                 )
 
 
-def _emit_sixel(img: Image.Image, add_newline: bool = True) -> bool:
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
+def _display_minimap(minimaps: list) -> None:
+    for layer in range(len(minimaps)):
+        minimaps[layer] = minimaps[layer].resize((370, 370), resample=Image.Resampling.NEAREST)
+        if minimaps[layer].mode == "RGBA":
+            canvas = Image.new("RGB", minimaps[layer].size)
+            canvas.paste(minimaps[layer], (0, 0))
+            minimaps[layer] = canvas
 
-    img2sixel = str(Path(__file__).resolve().parents[2] / "res" / "bin" / "img2sixel.exe")
-    subprocess.run([img2sixel], input=buf.getvalue(), stdout=sys.stdout.buffer, check=True)
+    bg = Image.open(Path(os.getcwd()).parent / "h3mex" / "res" / "graphics" / "minimap_bg.png")
+    minimap = bg.copy()
+    minimap.paste(minimaps[0], (20, 20))
+    if len(minimaps) > 1:
+        minimap.paste(minimaps[1], (410, 20))
 
-    if add_newline:
-        sys.stdout.write("\r\n")
-        sys.stdout.flush()
-
-
-def _display_images(layer_images: dict, title: str) -> None:
-    IMG_PX = 390
-    IMG_COLS = 39
-    GAP_COLS = 2
-    GAP_PX = GAP_COLS * (IMG_PX // IMG_COLS)
-    BG_COLOR = (16, 16, 16)
-
-    for layer, img in layer_images.items():
-        img = img.resize((IMG_PX, IMG_PX), resample=Image.Resampling.NEAREST)
-        if img.mode == "RGBA":
-            bg = Image.new("RGB", img.size, BG_COLOR)
-            bg.paste(img, (0, 0), img)
-            img = bg
-        layer_images[layer] = img
-
-    xprint(type=MsgType.INDENT)
-
-    if "u" in layer_images:
-        canvas = Image.new("RGB", (IMG_PX * 2 + GAP_PX, IMG_PX), BG_COLOR)
-        canvas.paste(layer_images["g"], (0, 0))
-        canvas.paste(layer_images["u"], (IMG_PX + GAP_PX, 0))
-        _emit_sixel(canvas, add_newline=True)
-    else:
-        _emit_sixel(layer_images["g"], add_newline=True)
-
-    wait_for_keypress()
+    buffer = BytesIO()
+    minimap.save(buffer, format="PNG")
+    display_image(buffer)
 
 
 def _export_menu() -> bool:
@@ -653,7 +632,7 @@ def _export_menu() -> bool:
         if choice == "0":
             return True
         if choice == "1":
-            std = _generate_standard_images()
+            std = _generate_standard_minimap()
             _save_standard_images(std, images_path, map_name)
             xprint(type=MsgType.DONE, text="Exported.")
             return True
