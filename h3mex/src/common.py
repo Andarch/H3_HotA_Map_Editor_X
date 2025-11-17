@@ -1,4 +1,4 @@
-from enum import Enum, StrEnum
+from enum import Enum, IntEnum, StrEnum
 
 
 class App(StrEnum):
@@ -19,14 +19,26 @@ class Keypress(StrEnum):
     ESC = "\x1b"
 
 
-class Align(Enum):
+class TextType(Enum):
+    INDENT = 0
+    NORMAL = 1
+    INFO = 2
+    MENU = 3
+    PROMPT = 4
+    ACTION = 5
+    DONE = 6
+    HEADER = 7
+    ERROR = 8
+
+
+class TextAlign(Enum):
     LEFT = 1
     CENTER = 2
     MENU = 3
     FLUSH = 4
 
 
-class Color(StrEnum):
+class TextColor(StrEnum):
     RESET = "\x1b[0m"
     BOLD = "\x1b[1m"
     FAINT = "\x1b[2m"
@@ -54,16 +66,9 @@ class Wait(float, Enum):
     LONG = 1.5
 
 
-class MsgType(Enum):
-    INDENT = 0
-    NORMAL = 1
-    INFO = 2
-    MENU = 3
-    PROMPT = 4
-    ACTION = 5
-    DONE = 6
-    HEADER = 7
-    ERROR = 8
+class MapLayer(IntEnum):
+    Ground = 0
+    Underground = 1
 
 
 map_data = {}

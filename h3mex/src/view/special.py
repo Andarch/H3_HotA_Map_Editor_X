@@ -1,4 +1,4 @@
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.ui.xprint import xprint
 
 
@@ -34,7 +34,7 @@ def list_unreachable_tiles() -> None:
             x = i % map_size
             y = i // map_size
             # Terrain type 9 is ROCK, which is impassable
-            if tile["terrain_type_int"] == 9:  # ROCK terrain type
+            if tile["terrain_type"] == 9:  # ROCK terrain type
                 blocked_tiles[layer].add((x, y))
 
     # Process objects to find blocked tiles and interactive tiles
@@ -124,7 +124,7 @@ def list_unreachable_tiles() -> None:
         xprint(overwrite=3)
         return unreachable_tiles
     else:
-        xprint(type=MsgType.INFO, text="No unreachable tiles found.")
+        xprint(type=TextType.INFO, text="No unreachable tiles found.")
 
 
 def list_invalid_zone_objects() -> None:
@@ -140,10 +140,10 @@ def list_invalid_zone_objects() -> None:
 
         if zone_type in errors or zone_color in errors:
             invalid_found = True
-            xprint(type=MsgType.INFO, text=f"{obj['type']} at {obj['coords']}:")
-            xprint(type=MsgType.INFO, text=f"  Zone Type: {zone_type}")
-            xprint(type=MsgType.INFO, text=f"  Zone Color: {zone_color}")
+            xprint(type=TextType.INFO, text=f"{obj['type']} at {obj['coords']}:")
+            xprint(type=TextType.INFO, text=f"  Zone Type: {zone_type}")
+            xprint(type=TextType.INFO, text=f"  Zone Color: {zone_color}")
             xprint()
 
     if not invalid_found:
-        xprint(type=MsgType.INFO, text="No invalid zone objects found.")
+        xprint(type=TextType.INFO, text="No invalid zone objects found.")

@@ -1,15 +1,14 @@
 import random
 from copy import deepcopy
 
-from src.common import MsgType, map_data
-from src.defs import creatures, objects
-from src.defs.players import Players
+from src.common import TextType, map_data
+from src.defs import creatures, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 
 def fill_empty_garrison_guards():
-    xprint(type=MsgType.ACTION, text="Filling empty garrison guards…")
+    xprint(type=TextType.ACTION, text="Filling empty garrison guards…")
 
     modified_count = 0
 
@@ -18,30 +17,30 @@ def fill_empty_garrison_guards():
     for obj in map_data["object_data"]:
         if obj["id"] not in garrison_ids:
             continue
-        if obj["owner"] == Players.Neutral and _is_empty_guards(obj["guards"]):
+        if obj["owner"] == players.ID.Neutral and _is_empty_guards(obj["guards"]):
             obj["guards"] = _get_random_guards(obj["zone_type"])
             modified_count += 1
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
     xprint()
-    xprint(type=MsgType.INFO, text=f"Filled {modified_count} empty garrisons with guards.")
+    xprint(type=TextType.INFO, text=f"Filled {modified_count} empty garrisons with guards.")
     wait_for_keypress()
 
 
 def copy_garrison_guards():
-    xprint(type=MsgType.ACTION, text="Copying garrison guards…")
+    xprint(type=TextType.ACTION, text="Copying garrison guards…")
 
     modified_count = 0
 
     # Collect one non-empty guards template per owner (skip Red)
-    templates: dict[Players, list | None] = {
-        Players.Blue: None,
-        Players.Tan: None,
-        Players.Green: None,
-        Players.Orange: None,
-        Players.Purple: None,
-        Players.Teal: None,
-        Players.Pink: None,
+    templates: dict[players.ID, list | None] = {
+        players.ID.Blue: None,
+        players.ID.Tan: None,
+        players.ID.Green: None,
+        players.ID.Orange: None,
+        players.ID.Purple: None,
+        players.ID.Teal: None,
+        players.ID.Pink: None,
     }
 
     garrison_ids = {objects.ID.Garrison, objects.ID.Garrison_Vertical}
@@ -70,9 +69,9 @@ def copy_garrison_guards():
                 obj["guards"] = deepcopy(template)
                 modified_count += 1
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
     xprint()
-    xprint(type=MsgType.INFO, text=f"Copied {modified_count} garrison guards.")
+    xprint(type=TextType.INFO, text=f"Copied {modified_count} garrison guards.")
     wait_for_keypress()
 
 

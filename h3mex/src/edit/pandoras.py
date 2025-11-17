@@ -1,13 +1,13 @@
 import random
 
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import creatures, objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 
 def modify_pandoras():
-    xprint(type=MsgType.ACTION, text="Modifying Pandora's Boxes…")
+    xprint(type=TextType.ACTION, text="Modifying Pandora's Boxes…")
 
     modified_count = 0
 
@@ -22,9 +22,9 @@ def modify_pandoras():
             obj["contents"] = _get_random_contents(obj["zone_type"])
             modified_count += 1
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
     xprint()
-    xprint(type=MsgType.INFO, text=f"Modified {modified_count} Pandora's Boxes.")
+    xprint(type=TextType.INFO, text=f"Modified {modified_count} Pandora's Boxes.")
     wait_for_keypress()
 
 

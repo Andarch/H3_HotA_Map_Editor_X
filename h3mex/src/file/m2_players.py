@@ -28,7 +28,7 @@ def read_players() -> list:
             "placeholder_heroes": [],
         }
 
-        info["color"] = players.Players(p).name
+        info["color"] = players.ID(p).name
         info["playability_human"] = bool(io.read_int(1))
         info["playability_ai"] = bool(io.read_int(1))
         info["ai_behavior"] = io.read_int(1)

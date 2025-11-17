@@ -1,6 +1,6 @@
 import random  # noqa: F401
 
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import creatures, objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -18,7 +18,7 @@ RANDOM_MONSTER_IDS = [
 
 
 def set_random_monsters() -> None:
-    xprint(type=MsgType.ACTION, text="Setting random monsters 1-7 to any level…")
+    xprint(type=TextType.ACTION, text="Setting random monsters 1-7 to any level…")
 
     # Find the first Random Monster (non-level-specific) to get its def_id
     def_id = None
@@ -27,7 +27,7 @@ def set_random_monsters() -> None:
             def_id = obj["def_id"]
             break
     if def_id is None:
-        xprint(type=MsgType.ERROR, text="No random monster found.", skip_line=True)
+        xprint(type=TextType.ERROR, text="No random monster found.", skip_line=True)
         return
 
     # Update Random Monster 1-7 objects
@@ -39,11 +39,11 @@ def set_random_monsters() -> None:
             obj["type"] = "Random Monster"
             obj["subtype"] = "Random Monster"
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def set_monster_values() -> None:
-    xprint(type=MsgType.ACTION, text="Setting monster values…")
+    xprint(type=TextType.ACTION, text="Setting monster values…")
 
     AI_VALUE_RANGES = {
         "P1": (2000, 50000),
@@ -76,15 +76,15 @@ def set_monster_values() -> None:
                 obj["ai_value"] = random.randint(*AI_VALUE_RANGES[obj["zone_type"]])
             count += 1
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
     xprint()
-    xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
 
 def set_compliant_monster_values() -> None:
-    xprint(type=MsgType.ACTION, text="Setting compliant monster values…")
+    xprint(type=TextType.ACTION, text="Setting compliant monster values…")
 
     count = 0
     for obj in map_data["object_data"]:
@@ -108,8 +108,8 @@ def set_compliant_monster_values() -> None:
 
             count += 1
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
     xprint()
-    xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()

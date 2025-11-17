@@ -4,7 +4,7 @@ import ctypes
 import os
 import sys
 
-from src.common import App, Cursor, Keypress, MsgType, map_data
+from src.common import App, Cursor, Keypress, TextType, map_data
 from src.edit import edit
 from src.export import export
 from src.file import file
@@ -57,7 +57,7 @@ def _initialize():
     if ctypes.windll.kernel32.GetLastError() != 183:
         return True
     else:
-        xprint(type=MsgType.ERROR, text="Another instance of the editor is already running.")
+        xprint(type=TextType.ERROR, text="Another instance of the editor is already running.")
         return False
 
 

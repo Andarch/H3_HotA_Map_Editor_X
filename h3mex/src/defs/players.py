@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 
-class Players(IntEnum):
+class ID(IntEnum):
     Red = 0
     Blue = 1
     Tan = 2

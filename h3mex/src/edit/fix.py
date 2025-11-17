@@ -1,11 +1,11 @@
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import artifacts, objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 
 def fix_empty_contents() -> None:
-    xprint(type=MsgType.ACTION, text="Fixing empty contents in objects…")
+    xprint(type=TextType.ACTION, text="Fixing empty contents in objects…")
 
     target_ids = {
         objects.ID.Sea_Chest,
@@ -35,10 +35,10 @@ def fix_empty_contents() -> None:
                 obj["artifact"] = contents
                 count += 1
                 xprint(
-                    type=MsgType.INFO,
+                    type=TextType.INFO,
                     text=f"{obj.get('type')} at {obj.get('coords')} contains {enum_name_by_value(artifacts.ID, contents)}",
                 )
     xprint()
-    xprint(type=MsgType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()

@@ -2,7 +2,7 @@ import os
 from gzip import open as gzopen
 from typing import Tuple
 
-from src.common import Keypress, MsgType, map_data
+from src.common import Keypress, TextType, map_data
 from src.ui import header
 from src.ui.xprint import xprint
 from src.utilities import exit, is_file_writable
@@ -26,7 +26,7 @@ def choose_map() -> Tuple[str, int]:
 
     filenames = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
     if not filenames:
-        xprint(type=MsgType.ERROR, text="No .h3m files found in the current directory.")
+        xprint(type=TextType.ERROR, text="No .h3m files found in the current directory.")
         exit()
 
     total_pages = (len(filenames) + 8) // 9
@@ -102,13 +102,13 @@ def load(filename: str = None) -> None:
             xprint(text="Parsing 12/13: Events…", overwrite=1)
             map_data["events"] = m6_rumors_and_events.parse_events()
 
-            xprint(type=MsgType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
+            xprint(type=TextType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
             map_data["null_bytes"] = m9_null.read_null()
 
-            xprint(type=MsgType.DONE)
+            xprint(type=TextType.DONE)
 
     except FileNotFoundError:
-        xprint(type=MsgType.ERROR, text=f"Could not find {filename}.")
+        xprint(type=TextType.ERROR, text=f"Could not find {filename}.")
 
 
 def save(filename: str = None) -> bool:
@@ -118,7 +118,7 @@ def save(filename: str = None) -> bool:
 
     # Prompt for filename if not provided
     if filename is None:
-        filename = xprint(type=MsgType.PROMPT, text="Enter a new filename")
+        filename = xprint(type=TextType.PROMPT, text="Enter a new filename")
         if not filename:
             return False
 
@@ -128,7 +128,7 @@ def save(filename: str = None) -> bool:
     if not is_file_writable(filename):
         return False
 
-    xprint(type=MsgType.ACTION, text=f"Saving {filename}…")
+    xprint(type=TextType.ACTION, text=f"Saving {filename}…")
 
     # Save the map data to the specified filename
     with gzopen(filename, "wb") as io.out_file:
@@ -148,6 +148,6 @@ def save(filename: str = None) -> bool:
 
     map_file = None
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
     return True

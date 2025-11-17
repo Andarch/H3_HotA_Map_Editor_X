@@ -1,6 +1,6 @@
-import src.defs.objects as objects
 import src.view.special as special
-from src.common import Cursor, Keypress, MsgType, map_data
+from src.common import Cursor, Keypress, TextType, map_data
+from src.defs import objects
 from src.minimap import minimap
 from src.ui import header
 from src.ui.menus import Menu
@@ -55,7 +55,7 @@ def menu() -> None:
                 data = format_map_data(("events", map_data["events"]))
                 _print_lines(data)
             case "M":
-                minimap.run("view")
+                minimap.view()
             case "S":
                 while True:
                     keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
@@ -72,7 +72,7 @@ def menu() -> None:
 def _print_lines(lines: list) -> None:
     lines_printed = 0
     for line in lines:
-        xprint(type=MsgType.INFO, text=line)
+        xprint(type=TextType.INFO, text=line)
         lines_printed += 1
         if lines_printed % 100 == 0:
             keypress = wait_for_keypress(suffix=" to continue printing")

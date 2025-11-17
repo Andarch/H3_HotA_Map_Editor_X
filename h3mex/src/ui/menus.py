@@ -85,14 +85,12 @@ class Menu:
         "name": "EXPORT",
         "menus": [
             [
-                ("1", "Excel: Object data"),
+                ("1", "JSON: All data"),
+                ("2", "JSON: Hero data"),
+                ("3", "JSON: Terrain data"),
+                ("4", "JSON: Town data"),
                 None,
-                ("2", "JSON: All data"),
-                ("3", "JSON: Hero data"),
-                ("4", "JSON: Terrain data"),
-                ("5", "JSON: Town data"),
-                None,
-                ("6", "PNG: Normal minimap…"),
+                ("5", "PNG: Normal minimap…"),
             ]
         ],
     }

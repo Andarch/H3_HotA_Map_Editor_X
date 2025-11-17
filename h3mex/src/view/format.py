@@ -1,7 +1,6 @@
 import json
 import re
 
-from src.defs import objects
 from src.ui.ui import MAX_WIDTH
 from src.ui.xprint import xprint
 
@@ -9,10 +8,6 @@ REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
 REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
 REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
 REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
-
-###################################
-OBJECT_FILTER = [*objects.ID]
-###################################
 
 
 def format_map_data(section: tuple[str, dict | list]) -> list[str]:

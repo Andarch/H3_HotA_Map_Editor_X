@@ -1,10 +1,10 @@
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import heroes, objects
 from src.ui.xprint import xprint
 
 
 def reset() -> None:
-    xprint(type=MsgType.ACTION, text="Resetting identity details for all non-special heroes…")
+    xprint(type=TextType.ACTION, text="Resetting identity details for all non-special heroes…")
 
     special_heroes = _get_special_heroes()
 
@@ -13,7 +13,7 @@ def reset() -> None:
     _reset_hero_data(special_heroes)
     _reset_object_data(special_heroes)
 
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def _get_special_heroes() -> list:

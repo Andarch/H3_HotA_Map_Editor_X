@@ -2,7 +2,7 @@ import json
 import os
 from copy import deepcopy
 
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import objects
 from src.ui.xprint import xprint
 
@@ -30,12 +30,12 @@ def export(keypress: str) -> None:
                 obj_filter = [objects.ID.Town, objects.ID.Random_Town]
                 data = [obj for obj in map_data["object_data"] if obj["id"] in obj_filter]
 
-        xprint(type=MsgType.ACTION, text="Exporting JSON file…")
+        xprint(type=TextType.ACTION, text="Exporting JSON file…")
 
         with open(filename, "w") as f:
             json.dump(data, f, cls=CustomEncoder, indent=4)
 
-        xprint(type=MsgType.DONE)
+        xprint(type=TextType.DONE)
 
     def get_hero_data() -> dict:
         player_specs = deepcopy(map_data["player_specs"])

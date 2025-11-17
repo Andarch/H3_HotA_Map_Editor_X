@@ -1,10 +1,9 @@
+from src.common import Keypress
 from src.minimap import minimap
 from src.ui import header
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
 
-from ..common import Keypress
-from .excel_ import excel_
 from .json_ import json_
 
 
@@ -17,16 +16,14 @@ def menu() -> None:
 
     match keypress:
         case "1":
-            excel_.export()
-        case "2":
             json_.export("1")
-        case "3":
+        case "2":
             json_.export("2")
-        case "4":
+        case "3":
             json_.export("3")
-        case "5":
+        case "4":
             json_.export("4")
-        case "6":
-            minimap.run("export")
+        case "5":
+            minimap.export()
 
     xprint()

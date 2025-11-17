@@ -27,11 +27,12 @@ def parse_object_defs() -> list:
 
         obj["id"] = io.read_int(4)
         obj["sub_id"] = io.read_int(4)
+
         obj["type"] = objects.ID(obj["id"]).name.replace("_", " ")
 
-        subtype_result = get_subtype(obj["id"], obj["sub_id"])
-        if hasattr(subtype_result, "name"):
-            obj["subtype"] = subtype_result.name.replace("_", " ")
+        subtype = get_subtype(obj["id"], obj["sub_id"])
+        if hasattr(subtype, "name"):
+            obj["subtype"] = subtype.name.replace("_", " ")
         elif obj["id"] == objects.ID.Random_Town:
             obj["subtype"] = "Random"
         else:
@@ -67,53 +68,53 @@ def get_subtype(obj_type: int, i: int) -> int:
         case objects.ID.Artifact:
             return artifacts.ID(i)
         case objects.ID.Border_Guard:
-            return objects.Border_Color(i)
+            return objects.SubID.Border(i)
         case objects.ID.Keymasters_Tent:
-            return objects.Border_Color(i)
+            return objects.SubID.Border(i)
         case objects.ID.Cartographer:
-            return objects.Cartographer(i)
+            return objects.SubID.Cartographer(i)
         case objects.ID.Creature_Bank:
-            return objects.Creature_Bank(i)
+            return objects.SubID.CreatureBank(i)
         case objects.ID.Creature_Generator_1:
-            return objects.Dwelling(i)
+            return objects.SubID.Dwelling.Normal(i)
         case objects.ID.Creature_Generator_4:
-            return objects.Dwelling_Multi(i)
+            return objects.SubID.Dwelling.Special(i)
         case objects.ID.Hero:
             return heroes.Classes(i)
         case objects.ID.Hill_Fort:
-            return objects.Hill_Fort(i)
+            return objects.SubID.HillFort(i)
         case objects.ID.Monolith_One_Way_Entrance:
-            return objects.One_Way_Monolith(i)
+            return objects.SubID.MonolithPortal.OneWay(i)
         case objects.ID.Monolith_One_Way_Exit:
-            return objects.One_Way_Monolith(i)
+            return objects.SubID.MonolithPortal.OneWay(i)
         case objects.ID.Two_Way_Monolith:
-            return objects.Two_Way_Monolith(i)
+            return objects.SubID.MonolithPortal.TwoWay(i)
         case objects.ID.Mine:
-            return objects.Resource(i)
+            return objects.SubID.Resource(i)
         case objects.ID.Monster:
             return creatures.ID(i)
         case objects.ID.Resource:
-            return objects.Resource(i)
+            return objects.SubID.Resource(i)
         case objects.ID.Town:
-            return objects.Town(i)
+            return objects.SubID.Town(i)
         case objects.ID.HotA_Decoration_1:
-            return objects.HotA_Decoration_1(i)
+            return objects.SubID.HotADecoration1(i)
         case objects.ID.HotA_Decoration_2:
-            return objects.HotA_Decoration_2(i)
+            return objects.SubID.HotADecoration2(i)
         case objects.ID.HotA_Ground:
-            return objects.HotA_Ground(i)
+            return objects.SubID.HotAMagicalTerrain(i)
         case objects.ID.HotA_Warehouse:
-            return objects.Resource(i)
+            return objects.SubID.Resource(i)
         case objects.ID.HotA_Visitable_1:
-            return objects.HotA_Visitable_1(i)
+            return objects.SubID.HotAVisitable1(i)
         case objects.ID.HotA_Collectible:
-            return objects.HotA_Collectible(i)
+            return objects.SubID.HotACollectible(i)
         case objects.ID.HotA_Visitable_2:
-            return objects.HotA_Visitable_2(i)
+            return objects.SubID.HotAVisitable2(i)
         case objects.ID.Border_Gate:
-            return objects.Border_Color(i)
-        case objects.ID.Shrines:
-            return objects.Shrines(i)
+            return objects.SubID.Border(i)
+        case objects.ID.Shrine_1_and_4:
+            return objects.SubID.Shrine_1_and_4(i)
     return i
 
 
@@ -155,31 +156,6 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         obj["type"] = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
-        # ZONE_INFO_OBJECTS = [
-        #     "Monsters",
-        #     "Spells",
-        #     "Artifacts",
-        #     "Resources",
-        #     "Campfire",
-        #     "Scholar",
-        #     "Treasure Chest",
-        #     "Sea Chest",
-        #     "Flotsam & Jetsam",
-        #     "Sea Barrel",
-        #     "Shipwreck Survivor",
-        #     "Vial of Mana",
-        #     "Ancient Lamp",
-        #     "Grave",
-        #     "Creature Banks",
-        #     "Event Objects",
-        #     "Garrisons",
-        # ]
-
-        # zone_ids = set()
-        # for category in ZONE_INFO_OBJECTS:
-        #     zone_ids.update(objects.Categories.CATEGORIES.get(category, []))
-
-        # if obj["id"] in zone_ids:
         if obj["id"] not in objects.Decor.IDS:
             obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
@@ -247,7 +223,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj = parse_abandoned_mine(obj)
 
             case objects.ID.Mine:
-                if obj["sub_id"] == objects.Resource.Abandoned:
+                if obj["sub_id"] == objects.SubID.Resource.Abandoned:
                     obj = parse_abandoned_mine(obj)
                 else:
                     obj["owner"] = io.read_int(4)
@@ -313,7 +289,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj = parse_garrison(obj)
 
             # The level 4 HotA Shrine is just a subtype of the level 1 Shrine.
-            case objects.ID.Shrines | objects.ID.Shrine_of_Magic_Gesture | objects.ID.Shrine_of_Magic_Thought:
+            case objects.ID.Shrine_1_and_4 | objects.ID.Shrine_of_Magic_Gesture | objects.ID.Shrine_of_Magic_Thought:
                 obj["spell"] = spells.ID(io.read_int(4))
 
             case objects.ID.Spell_Scroll:
@@ -403,7 +379,7 @@ def write_object_data(info: list) -> None:
                 write_abandoned_mine(obj)
 
             case objects.ID.Mine:
-                if obj["sub_id"] == objects.Resource.Abandoned:
+                if obj["sub_id"] == objects.SubID.Resource.Abandoned:
                     write_abandoned_mine(obj)
                 else:
                     io.write_int(obj["owner"], 4)
@@ -467,7 +443,7 @@ def write_object_data(info: list) -> None:
             case objects.ID.Garrison | objects.ID.Garrison_Vertical:
                 write_garrison(obj)
 
-            case objects.ID.Shrines | objects.ID.Shrine_of_Magic_Gesture | objects.ID.Shrine_of_Magic_Thought:
+            case objects.ID.Shrine_1_and_4 | objects.ID.Shrine_of_Magic_Gesture | objects.ID.Shrine_of_Magic_Thought:
                 io.write_int(obj["spell"], 4)
 
             case objects.ID.Spell_Scroll:
@@ -488,26 +464,26 @@ def write_object_data(info: list) -> None:
 
 def parse_hota_collectible(obj: dict) -> dict:
     match obj["sub_id"]:
-        case objects.HotA_Collectible.Ancient_Lamp:
+        case objects.SubID.HotACollectible.Ancient_Lamp:
             obj = parse_ancient_lamp(obj)
-        case objects.HotA_Collectible.Sea_Barrel:
+        case objects.SubID.HotACollectible.Sea_Barrel:
             obj = parse_sea_barrel(obj)
-        case objects.HotA_Collectible.Jetsam:
+        case objects.SubID.HotACollectible.Jetsam:
             obj = parse_flotsam(obj)
-        case objects.HotA_Collectible.Vial_of_Mana:
+        case objects.SubID.HotACollectible.Vial_of_Mana:
             obj = parse_vial_of_mana(obj)
     return obj
 
 
 def write_hota_collectible(obj: dict) -> None:
     match obj["sub_id"]:
-        case objects.HotA_Collectible.Ancient_Lamp:
+        case objects.SubID.HotACollectible.Ancient_Lamp:
             write_ancient_lamp(obj)
-        case objects.HotA_Collectible.Sea_Barrel:
+        case objects.SubID.HotACollectible.Sea_Barrel:
             write_sea_barrel(obj)
-        case objects.HotA_Collectible.Jetsam:
+        case objects.SubID.HotACollectible.Jetsam:
             write_flotsam(obj)
-        case objects.HotA_Collectible.Vial_of_Mana:
+        case objects.SubID.HotACollectible.Vial_of_Mana:
             write_vial_of_mana(obj)
 
 
@@ -829,7 +805,7 @@ def write_flotsam(obj: dict) -> None:
 
 def parse_garrison(obj: dict) -> dict:
     obj["owner"] = io.read_int(4)
-    obj["color"] = players.Players(obj["owner"]).name
+    obj["color"] = players.ID(obj["owner"]).name
     obj["guards"] = parse_creatures()
     obj["troops_removable"] = io.read_int(1)
 
@@ -850,7 +826,7 @@ def parse_hero(obj: dict) -> dict:
 
     obj["start_bytes"] = io.read_raw(4)
     obj["owner"] = io.read_int(1)
-    obj["color"] = players.Players(obj["owner"]).name
+    obj["color"] = players.ID(obj["owner"]).name
 
     hero = {
         "hero_type": "",
@@ -1124,7 +1100,7 @@ def parse_lean_to(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["trash_bytes"] = io.read_int(4)
     obj["amount"] = io.read_int(4)
-    obj["resource"] = objects.Resource(io.read_int(1))
+    obj["resource"] = objects.SubID.Resource(io.read_int(1))
     io.seek(5)
     return obj
 
@@ -1224,7 +1200,7 @@ def parse_town(obj: dict, random: bool = False) -> dict:
 
     obj["start_bytes"] = io.read_raw(4)
     obj["owner"] = io.read_int(1)
-    obj["color"] = players.Players(obj["owner"]).name
+    obj["color"] = players.ID(obj["owner"]).name
 
     obj["has_name"] = io.read_int(1)
     if obj["has_name"]:  # Is the name set?
@@ -1532,7 +1508,7 @@ def parse_reward() -> dict:
 
         case Reward.RESOURCE:
             reward["value"] = []
-            reward["value"].append(objects.Resource(io.read_int(1)))
+            reward["value"].append(objects.SubID.Resource(io.read_int(1)))
             reward["value"].append(io.read_int(4))
 
         case Reward.PRIMARY_SKILL:
@@ -1680,7 +1656,7 @@ def parse_wagon(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["artifact"] = artifacts.ID(io.read_int(4))
     obj["amount"] = io.read_int(4)
-    obj["resource"] = objects.Resource(io.read_int(1))
+    obj["resource"] = objects.SubID.Resource(io.read_int(1))
 
     obj["mystery_bytes"] = io.read_raw(5)
     return obj
@@ -1827,7 +1803,7 @@ def parse_grave(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
     obj["artifact"] = artifacts.ID(io.read_int(4))
     obj["amount"] = io.read_int(4)
-    obj["resource"] = objects.Resource(io.read_int(1))
+    obj["resource"] = objects.SubID.Resource(io.read_int(1))
     obj["mystery_bytes"] = io.read_raw(5)
     return obj
 
@@ -1939,71 +1915,70 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
 
         if obj_id == objects.ID.Creature_Bank:
             return sub_id in {
-                objects.Creature_Bank.Cyclops_Stockpile,
-                objects.Creature_Bank.Dwarven_Treasury,
-                objects.Creature_Bank.Medusa_Stores,
-                objects.Creature_Bank.Naga_Bank,
-                objects.Creature_Bank.Dragon_Fly_Hive,
-                objects.Creature_Bank.Pirate_Cavern,
-                objects.Creature_Bank.Mansion,
-                objects.Creature_Bank.Spit,
-                objects.Creature_Bank.Black_Tower,
-                objects.Creature_Bank.Churchyard,
-                objects.Creature_Bank.Wolf_Raider_Picket,
-                objects.Creature_Bank.Ruins,
+                objects.SubID.CreatureBank.Cyclops_Stockpile,
+                objects.SubID.CreatureBank.Dwarven_Treasury,
+                objects.SubID.CreatureBank.Medusa_Stores,
+                objects.SubID.CreatureBank.Naga_Bank,
+                objects.SubID.CreatureBank.Dragon_Fly_Hive,
+                objects.SubID.CreatureBank.Pirate_Cavern,
+                objects.SubID.CreatureBank.Mansion,
+                objects.SubID.CreatureBank.Spit,
+                objects.SubID.CreatureBank.Black_Tower,
+                objects.SubID.CreatureBank.Churchyard,
+                objects.SubID.CreatureBank.Wolf_Raider_Picket,
+                objects.SubID.CreatureBank.Ruins,
             }
 
         if obj_id in {objects.ID.Monolith_One_Way_Entrance, objects.ID.Monolith_One_Way_Exit}:
             return sub_id in {
-                objects.One_Way_Monolith.Big_Purple,
-                objects.One_Way_Monolith.Big_Orange,
-                objects.One_Way_Monolith.Big_Red,
-                objects.One_Way_Monolith.Big_Cyan,
+                objects.SubID.MonolithPortal.OneWay.Big_Purple,
+                objects.SubID.MonolithPortal.OneWay.Big_Orange,
+                objects.SubID.MonolithPortal.OneWay.Big_Red,
+                objects.SubID.MonolithPortal.OneWay.Big_Cyan,
             }
 
         if obj_id == objects.ID.Two_Way_Monolith:
             return sub_id in {
-                objects.Two_Way_Monolith.Big_Green,
-                objects.Two_Way_Monolith.Big_Yellow,
-                objects.Two_Way_Monolith.Big_Red,
-                objects.Two_Way_Monolith.Big_Cyan,
-                objects.Two_Way_Monolith.Water_White,
-                objects.Two_Way_Monolith.Big_Chartreuse,
-                objects.Two_Way_Monolith.Big_Turquoise,
-                objects.Two_Way_Monolith.Big_Violet,
-                objects.Two_Way_Monolith.Big_Orange,
-                objects.Two_Way_Monolith.Big_Pink,
-                objects.Two_Way_Monolith.Big_Blue,
-                objects.Two_Way_Monolith.Water_Red,
-                objects.Two_Way_Monolith.Water_Blue,
-                objects.Two_Way_Monolith.Water_Chartreuse,
-                objects.Two_Way_Monolith.Water_Yellow,
+                objects.SubID.MonolithPortal.TwoWay.Big_Green,
+                objects.SubID.MonolithPortal.TwoWay.Big_Yellow,
+                objects.SubID.MonolithPortal.TwoWay.Big_Red,
+                objects.SubID.MonolithPortal.TwoWay.Big_Cyan,
+                objects.SubID.MonolithPortal.TwoWay.Water_White,
+                objects.SubID.MonolithPortal.TwoWay.Big_Chartreuse,
+                objects.SubID.MonolithPortal.TwoWay.Big_Turquoise,
+                objects.SubID.MonolithPortal.TwoWay.Big_Violet,
+                objects.SubID.MonolithPortal.TwoWay.Big_Orange,
+                objects.SubID.MonolithPortal.TwoWay.Big_Pink,
+                objects.SubID.MonolithPortal.TwoWay.Big_Blue,
+                objects.SubID.MonolithPortal.TwoWay.Water_Red,
+                objects.SubID.MonolithPortal.TwoWay.Water_Blue,
+                objects.SubID.MonolithPortal.TwoWay.Water_Chartreuse,
+                objects.SubID.MonolithPortal.TwoWay.Water_Yellow,
             }
 
         if obj_id == objects.ID.Prison:
-            return sub_id == objects.Prison.Hero_Camp
+            return sub_id == objects.SubID.Prison.Hero_Camp
 
         if obj_id == objects.ID.HotA_Visitable_1:
             return sub_id in {
-                objects.HotA_Visitable_1.Colosseum_of_the_Magi,
-                objects.HotA_Visitable_1.Hermits_Shack,
-                objects.HotA_Visitable_1.Gazebo,
-                objects.HotA_Visitable_1.Warlocks_Lab,
-                objects.HotA_Visitable_1.Prospector,
+                objects.SubID.HotAVisitable1.Colosseum_of_the_Magi,
+                objects.SubID.HotAVisitable1.Hermits_Shack,
+                objects.SubID.HotAVisitable1.Gazebo,
+                objects.SubID.HotAVisitable1.Warlocks_Lab,
+                objects.SubID.HotAVisitable1.Prospector,
             }
 
         if obj_id == objects.ID.HotA_Collectible:
-            return sub_id == objects.HotA_Collectible.Ancient_Lamp
-
+            return sub_id == objects.SubID.HotACollectible.Ancient_Lamp
         if obj_id == objects.ID.HotA_Visitable_2:
             return sub_id in {
-                objects.HotA_Visitable_2.Observatory,
-                objects.HotA_Visitable_2.Town_Gate,
-                objects.HotA_Visitable_2.Ancient_Altar,
+                objects.SubID.HotAVisitable2.Observatory,
+                objects.SubID.HotAVisitable2.Town_Gate,
+                objects.SubID.HotAVisitable2.Ancient_Altar,
             }
 
         if obj_id == objects.ID.Border_Gate:
-            return sub_id != objects.Border_Color.Grave
+            return sub_id != objects.SubID.Border.Grave
 
         return False
 
@@ -2013,8 +1988,8 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
 
         if obj_id == objects.ID.Creature_Bank:
             return sub_id in {
-                objects.Creature_Bank.Temple_of_the_Sea,
-                objects.Creature_Bank.Red_Tower,
+                objects.SubID.CreatureBank.Temple_of_the_Sea,
+                objects.SubID.CreatureBank.Red_Tower,
             }
 
         return False

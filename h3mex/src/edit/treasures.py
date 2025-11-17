@@ -1,6 +1,6 @@
 import random
 
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import objects
 from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
@@ -40,13 +40,13 @@ def add_treasures():
     ]
 
     sea_hota_collectible = [
-        objects.HotA_Collectible.Sea_Barrel,
-        objects.HotA_Collectible.Sea_Barrel,
-        objects.HotA_Collectible.Sea_Barrel,
-        objects.HotA_Collectible.Jetsam,
-        objects.HotA_Collectible.Jetsam,
-        objects.HotA_Collectible.Jetsam,
-        objects.HotA_Collectible.Vial_of_Mana,
+        objects.SubID.HotACollectible.Sea_Barrel,
+        objects.SubID.HotACollectible.Sea_Barrel,
+        objects.SubID.HotACollectible.Sea_Barrel,
+        objects.SubID.HotACollectible.Jetsam,
+        objects.SubID.HotACollectible.Jetsam,
+        objects.SubID.HotACollectible.Jetsam,
+        objects.SubID.HotACollectible.Vial_of_Mana,
     ]
 
     size = map_data["general"]["map_size"]
@@ -73,7 +73,7 @@ def add_treasures():
         sea_treasures.append(objects.ID.HotA_Collectible)
 
     if not land_treasures and not sea_treasures:
-        xprint(type=MsgType.ERROR, text="No eligible treasure definitions found on map. Nothing to add.")
+        xprint(type=TextType.ERROR, text="No eligible treasure definitions found on map. Nothing to add.")
         return
 
     # Calculate blocked tiles: only tiles actually marked as blocked (red) or interactive (yellow) in the mask
@@ -111,9 +111,9 @@ def add_treasures():
     }
 
     hota_creators = {
-        objects.HotA_Collectible.Sea_Barrel: _get_sea_barrel,
-        objects.HotA_Collectible.Jetsam: _get_jetsam,
-        objects.HotA_Collectible.Vial_of_Mana: _get_vial_of_mana,
+        objects.SubID.HotACollectible.Sea_Barrel: _get_sea_barrel,
+        objects.SubID.HotACollectible.Jetsam: _get_jetsam,
+        objects.SubID.HotACollectible.Vial_of_Mana: _get_vial_of_mana,
     }
 
     levels = [0, 1] if has_underground else [0]
@@ -145,7 +145,7 @@ def add_treasures():
             terrain_layer = map_data["terrain"][size * size :]
 
         idx = coords[1] * size + coords[0]
-        terrain_type = terrain_layer[idx]["terrain_type_int"]
+        terrain_type = terrain_layer[idx]["terrain_type"]
 
         # Create object
         if terrain_type == 8:  # Water
@@ -173,8 +173,8 @@ def add_treasures():
             continue
 
         # Log
-        # obj_name = objects.ID(id).name if id != objects.ID.HotA_Collectible else objects.HotA_Collectible(sub_id).name
-        # obj_name = objects.ID(id).name
+        # obj_name = Object(id).name if id != Object.HotA_Collectible else Object.HotA_Collectible(sub_id).name
+        # obj_name = Object(id).name
         # xprint(
         #     type=MsgType.INFO,
         #     text=f"{added + 1}/{max_attempts} {Color.GREEN}{obj_name}{Color.CYAN} added at {Color.GREEN}{coords}{Color.CYAN} in {attempts_per_obj + 1} attempts",
@@ -192,7 +192,7 @@ def add_treasures():
         current_level_index = (current_level_index + 1) % len(levels)
 
     xprint()
-    xprint(type=MsgType.INFO, text=f"Added {added} treasures.")
+    xprint(type=TextType.INFO, text=f"Added {added} treasures.")
     wait_for_keypress()
 
 
@@ -235,7 +235,7 @@ def _get_campfire(coords, def_id):
             "subtype": "Campfire",
             "mode": RANDOM_CONTENTS,
             "extra_bytes": b"\xff\xff\xff\xff",
-            "resources": {objects.Resource.Gold.value: 1, objects.Resource.Wood.value: 1},
+            "resources": {objects.SubID.Resource.Gold.value: 1, objects.SubID.Resource.Wood.value: 1},
         }
     )
     return obj

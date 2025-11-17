@@ -6,4 +6,5 @@ from . import (
     players,  # noqa: F401
     skills,  # noqa: F401
     spells,  # noqa: F401
+    terrain,  # noqa: F401
 )

@@ -1,6 +1,5 @@
-from src.common import MsgType, map_data
-from src.defs import objects
-from src.defs.players import Players
+from src.common import TextType, map_data
+from src.defs import objects, players
 from src.ui.xprint import xprint
 
 TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]
@@ -55,7 +54,7 @@ def edit(spells: bool = False, buildings: bool = False, events: bool = False, hu
 
 
 def _enable_spells() -> None:
-    xprint(type=MsgType.ACTION, text="Enabling spell research and all spells in all towns…")
+    xprint(type=TextType.ACTION, text="Enabling spell research and all spells in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
             obj["spell_research"] = True
@@ -63,11 +62,11 @@ def _enable_spells() -> None:
                 obj["spells_must_appear"][i] = 0
             for i in range(len(obj["spells_cant_appear"])):
                 obj["spells_cant_appear"][i] = 0
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def _enable_buildings() -> None:
-    xprint(type=MsgType.ACTION, text="Enabling all buildings in all towns…")
+    xprint(type=TextType.ACTION, text="Enabling all buildings in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
             if "buildings_disabled" in obj:
@@ -75,23 +74,23 @@ def _enable_buildings() -> None:
                     obj["buildings_disabled"][i] = 0
             else:
                 obj["has_fort"] = True
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def _change_ai_events() -> None:
-    xprint(type=MsgType.ACTION, text="Adding Humans to AI-only town events…")
+    xprint(type=TextType.ACTION, text="Adding Humans to AI-only town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
             for event in obj["events"]:
                 if event["apply_ai"] and event["apply_to"] == [1] * 8:
                     event["apply_human"] = True
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def _create_events() -> None:
-    xprint(type=MsgType.ACTION, text="Configuring town events…")
+    xprint(type=TextType.ACTION, text="Configuring town events…")
     for obj in map_data["object_data"]:
-        if obj["id"] in TOWN_IDS and obj["owner"] != Players.Neutral:
+        if obj["id"] in TOWN_IDS and obj["owner"] != players.ID.Neutral:
             # Remove any existing events with the same name
             obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
             obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
@@ -103,7 +102,7 @@ def _create_events() -> None:
                     players=HUMAN_PLAYERS,
                     human=True,
                     ai=False,
-                    lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
+                    lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
                     random_buildings=[0] * 48,
                     buildings=[0] * 48,
                     creatures=[
@@ -124,7 +123,7 @@ def _create_events() -> None:
                     players=AI_PLAYERS,
                     human=False,
                     ai=True,
-                    lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
+                    lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
                     random_buildings=[1] * 48,
                     buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                     creatures=[
@@ -145,7 +144,7 @@ def _create_events() -> None:
             #         players=BOSS_PLAYERS,
             #         human=False,
             #         ai=True,
-            #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == objects.Town.Factory else 0,
+            #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == Town.Factory else 0,
             #         random_buildings=[1] * 48,
             #         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
             #         creatures=[
@@ -159,7 +158,7 @@ def _create_events() -> None:
             #         ],
             #     )
             #     obj["events"].extend([boss_event])
-    xprint(type=MsgType.DONE)
+    xprint(type=TextType.DONE)
 
 
 def _get_event_dict(

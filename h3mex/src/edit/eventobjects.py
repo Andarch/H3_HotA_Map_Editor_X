@@ -1,6 +1,6 @@
 import random
 
-from src.common import MsgType, map_data
+from src.common import TextType, map_data
 from src.defs import objects
 from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
@@ -20,7 +20,7 @@ def add_explorer_bonuses():
         if obj["id"] == objects.ID.Event:
             def_id = obj["def_id"]
     if def_id is None:
-        xprint(type=MsgType.ERROR, text="No event objects found on map. Unable to get def_id.")
+        xprint(type=TextType.ERROR, text="No event objects found on map. Unable to get def_id.")
         return
 
     # Calculate blocked tiles: only tiles actually marked as blocked (red) or interactive (yellow) in the mask
@@ -95,7 +95,7 @@ def add_explorer_bonuses():
             terrain_layer = map_data["terrain"][size * size :]
 
         idx = coords[1] * size + coords[0]
-        terrain_type = terrain_layer[idx]["terrain_type_int"]
+        terrain_type = terrain_layer[idx]["terrain_type"]
 
         # Create object
         if terrain_type != 9 and terrain_type != 8:  # Not void or water
@@ -125,7 +125,7 @@ def add_explorer_bonuses():
         current_quadrant_index += 1
 
     xprint()
-    xprint(type=MsgType.INFO, text=f"Added {added} explorer bonuses.")
+    xprint(type=TextType.INFO, text=f"Added {added} explorer bonuses.")
     wait_for_keypress()
 
 

@@ -1,6 +1,6 @@
 import os
 
-from src.common import App, Color, MsgType, map_data
+from src.common import App, TextColor, TextType, map_data
 from src.ui import ui
 from src.ui.xprint import xprint
 
@@ -13,45 +13,45 @@ def draw() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
     # Build header
-    header_default = _create_header_line(color=(Color.FAINT + Color.GREY), symbol="#")
-    header_appname = _create_header_line(color=(Color.FAINT + Color.GREY), symbol="#", text=App.NAME)
-    header_version = _create_header_line(color=(Color.FAINT + Color.GREY), symbol="#", text=App.VERSION)
+    header_default = _create_header_line(color=(TextColor.FAINT + TextColor.GREY), symbol="#")
+    header_appname = _create_header_line(color=(TextColor.FAINT + TextColor.GREY), symbol="#", text=App.NAME)
+    header_version = _create_header_line(color=(TextColor.FAINT + TextColor.GREY), symbol="#", text=App.VERSION)
 
     # Build subheader
-    subheader_filled = _create_header_line(color=(Color.FAINT + Color.WHITE), symbol="-")
+    subheader_filled = _create_header_line(color=(TextColor.FAINT + TextColor.WHITE), symbol="-")
     subtext1 = map_data["general"]["map_name"] if map_data else "No map"
-    subtext1_color = Color.MAGENTA if map_data else Color.FAINT + Color.MAGENTA
-    subheader_line1 = f"{subtext1_color}{subtext1}{Color.RESET}"
+    subtext1_color = TextColor.MAGENTA if map_data else TextColor.FAINT + TextColor.MAGENTA
+    subheader_line1 = f"{subtext1_color}{subtext1}{TextColor.RESET}"
     subtext2 = map_data["filename"] if map_data else "loaded"
-    subheader_line2 = f"{Color.FAINT + Color.MAGENTA}{subtext2}{Color.RESET}"
+    subheader_line2 = f"{TextColor.FAINT + TextColor.MAGENTA}{subtext2}{TextColor.RESET}"
 
     # Print header
-    xprint(type=MsgType.HEADER, text=header_default)
-    xprint(type=MsgType.HEADER, text=header_default)
-    xprint(type=MsgType.HEADER, text=header_appname)
-    xprint(type=MsgType.HEADER, text=header_default)
-    xprint(type=MsgType.HEADER, text=header_version)
-    xprint(type=MsgType.HEADER, text=header_default)
-    xprint(type=MsgType.HEADER, text=header_default)
+    xprint(type=TextType.HEADER, text=header_default)
+    xprint(type=TextType.HEADER, text=header_default)
+    xprint(type=TextType.HEADER, text=header_appname)
+    xprint(type=TextType.HEADER, text=header_default)
+    xprint(type=TextType.HEADER, text=header_version)
+    xprint(type=TextType.HEADER, text=header_default)
+    xprint(type=TextType.HEADER, text=header_default)
 
     # Print subheader
-    xprint(type=MsgType.HEADER, text="")
-    xprint(type=MsgType.HEADER, text=subheader_filled)
-    xprint(type=MsgType.HEADER, text=subheader_line1)
-    xprint(type=MsgType.HEADER, text=subheader_line2)
-    xprint(type=MsgType.HEADER, text=subheader_filled)
-    xprint(type=MsgType.HEADER, text="")
+    xprint(type=TextType.HEADER, text="")
+    xprint(type=TextType.HEADER, text=subheader_filled)
+    xprint(type=TextType.HEADER, text=subheader_line1)
+    xprint(type=TextType.HEADER, text=subheader_line2)
+    xprint(type=TextType.HEADER, text=subheader_filled)
+    xprint(type=TextType.HEADER, text="")
 
 
 def _create_header_line(color: str, symbol: str, text: str = "") -> str:
     width = ui.MAX_WIDTH if ui.width >= ui.MAX_WIDTH else ui.width
     if text == "":
-        return color + (symbol * width) + Color.RESET
+        return color + (symbol * width) + TextColor.RESET
     else:
         fill_length = width - (len(text) + 2)
-        line_left = color + (symbol * (fill_length // 2)) + Color.RESET
+        line_left = color + (symbol * (fill_length // 2)) + TextColor.RESET
         if fill_length % 2 == 0:
             line_right = line_left
         else:
-            line_right = color + (symbol * ((fill_length // 2) + 1)) + Color.RESET
-        return f"{line_left} {Color.BOLD}{Color.CYAN}{text}{Color.RESET} {line_right}"
+            line_right = color + (symbol * ((fill_length // 2) + 1)) + TextColor.RESET
+        return f"{line_left} {TextColor.BOLD}{TextColor.CYAN}{text}{TextColor.RESET} {line_right}"
