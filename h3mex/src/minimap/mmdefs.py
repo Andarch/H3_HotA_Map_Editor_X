@@ -1,3 +1,5 @@
+from enum import IntEnum
+
 from src.defs import objects, players, terrain
 
 
@@ -65,6 +67,11 @@ class TerrainRGB:
         terrain.ID.Highlands: _ALT_LAND_RGB,
         terrain.ID.Wasteland: _ALT_LAND_RGB,
     }
+
+
+class OtherObjects(IntEnum):
+    Interactive = 0
+    Blocked = 1
 
 
 class ObjectRGB:

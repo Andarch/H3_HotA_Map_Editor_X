@@ -39,7 +39,7 @@ def read_players() -> list:
 
         if info["has_main_town"]:
             info["generate_hero"] = bool(io.read_int(1))
-            info["town_type"] = objects.Town(io.read_int(1))
+            info["town_type"] = objects.SubID.Town(io.read_int(1))
             info["town_coords"][0] = io.read_int(1)
             info["town_coords"][1] = io.read_int(1)
             info["town_coords"][2] = io.read_int(1)

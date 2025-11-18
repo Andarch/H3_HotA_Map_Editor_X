@@ -8,7 +8,7 @@ from src.ui.menus import Menu
 from src.ui.xprint import xprint
 from src.utilities import display_image, wait_for_keypress
 
-from .mmdefs import ObjectGroup, ObjectRGB, TerrainRGB
+from .mmdefs import ObjectGroup, ObjectRGB, OtherObjects, TerrainRGB
 
 
 def view() -> bool:
@@ -60,12 +60,13 @@ def _generate_standard_minimap() -> list:
             x = i % map_size
             y = i // map_size
             owner = owners[layer_index][y][x]
-            if owner is not None and owner in object_colors:
-                color = object_colors[owner]
+            if owner is not None:
+                if owner in ObjectRGB.player:
+                    color = ObjectRGB.player[owner]
             elif (x, y) in blocked_tiles[layer_index]:
-                color = terrain_colors[Terrain(tile["terrain_type"]) + 20]
+                color = TerrainRGB.blocked[tile["terrain_type"]]
             else:
-                color = terrain_colors[tile["terrain_type"]]
+                color = TerrainRGB.passable[tile["terrain_type"]]
             img.putpixel((x, y), color)
         minimaps.append(img)
     return minimaps
@@ -234,7 +235,7 @@ def _process_object(
                         )  # Add the coordinates of the blocked tile to the overworld set
                         if ownership[MapLayer.Ground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[MapLayer.Ground][obj_y - 5 + r][obj_x - 7 + c] = Objects.INTERACTIVE
+                                ownership[MapLayer.Ground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[MapLayer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
@@ -254,7 +255,7 @@ def _process_object(
                         )  # Add the coordinates of the blocked tile to the underground set
                         if ownership[MapLayer.Underground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[MapLayer.Underground][obj_y - 5 + r][obj_x - 7 + c] = Objects.INTERACTIVE
+                                ownership[MapLayer.Underground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[MapLayer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
