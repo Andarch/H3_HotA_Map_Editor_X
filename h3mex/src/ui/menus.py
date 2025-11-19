@@ -74,7 +74,7 @@ class Menu:
                 ("9", "Treasures: Fix empty contents"),
                 None,
                 ("E", "Event Objects: Add explorer bonuses"),
-                ("P", "Pandora's Boxes: Modify default boxes"),
+                ("P", "Pandora's Boxes: Modify contents"),
                 ("G", "Garrisons: Copy garrison guards"),
                 ("F", "Garrisons: Fill empty garrisons with guards"),
             ]

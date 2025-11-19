@@ -11,8 +11,8 @@ BOSS_EVENT_NAME = "[Boss Bonus]"
 ##################################################
 # Set lvl7 creature bonus amounts (max 666 each)
 HUMAN_LVL7_CREATURES = 5
-AI_LVL7_CREATURES = 15
-BOSS_LVL7_CREATURES = 30
+AI_LVL7_CREATURES = 25
+BOSS_LVL7_CREATURES = 50
 
 # Set which players receive each bonus type
 HUMAN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
@@ -102,8 +102,10 @@ def _create_events() -> None:
                     players=HUMAN_PLAYERS,
                     human=True,
                     ai=False,
+                    first=7,
+                    subsequent=7,
                     lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
-                    random_buildings=[0] * 48,
+                    random_town_buildings=[0] * 48,
                     buildings=[0] * 48,
                     creatures=[
                         HUMAN_LVL1_CREATURES,
@@ -123,8 +125,10 @@ def _create_events() -> None:
                     players=AI_PLAYERS,
                     human=False,
                     ai=True,
+                    first=0,
+                    subsequent=7,
                     lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
-                    random_buildings=[1] * 48,
+                    random_town_buildings=[1] * 48,
                     buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                     creatures=[
                         AI_LVL1_CREATURES,
@@ -144,6 +148,8 @@ def _create_events() -> None:
             #         players=BOSS_PLAYERS,
             #         human=False,
             #         ai=True,
+            #         first=0,
+            #         subsequent=7,
             #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == Town.Factory else 0,
             #         random_buildings=[1] * 48,
             #         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
@@ -166,8 +172,10 @@ def _get_event_dict(
     players: list,
     human: bool,
     ai: bool,
+    first: int,
+    subsequent: int,
     lvl7b_creatures: int,
-    random_buildings: list,
+    random_town_buildings: list,
     buildings: list,
     creatures: list,
 ) -> dict:
@@ -179,13 +187,13 @@ def _get_event_dict(
         "apply_to": players,
         "apply_human": human,
         "apply_ai": ai,
-        "first_occurence": 0,
-        "subsequent_occurences": 7,
+        "first_occurence": first,
+        "subsequent_occurences": subsequent,
         "trash_bytes": b"\x00" * 16,
         "allowed_difficulties": 31,
         "hota_lvl7b_amount": lvl7b_creatures,
         "hota_unknown_constant": 44,
-        "hota_special": random_buildings,
+        "hota_special": random_town_buildings,
         "apply_neutral_towns": False,
         "buildings": buildings,
         "creatures": creatures,

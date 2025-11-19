@@ -46,22 +46,22 @@ def set_monster_values() -> None:
     xprint(type=TextType.ACTION, text="Setting monster values…")
 
     AI_VALUE_RANGES = {
-        "P1": (2000, 50000),
+        "P1": (2000, 25000),
         "P2": (50000, 200000),
-        "P3": (200000, 500000),
-        "P4": (500000, 999999),
-        "R1": (2000, 50000),
-        "R2": (50000, 200000),
-        "R3": (200000, 500000),
-        "R4": (500000, 999999),
-        "L1": (2000, 50000),
-        "L2": (50000, 200000),
-        "L3": (200000, 500000),
-        "L4": (500000, 999999),
-        "W1": (2000, 50000),
-        "W2": (50000, 200000),
-        "W3": (200000, 500000),
-        "W4": (500000, 999999),
+        "P3": (300000, 500000),
+        "P4": (850000, 999999),
+        "R1": (400000, 750000),
+        "R2": (400000, 750000),
+        "R3": (750000, 999999),
+        "R4": (750000, 999999),
+        "L1": (100000, 200000),
+        "L2": (300000, 400000),
+        "L3": (500000, 750000),
+        "L4": (850000, 999999),
+        "W1": (100000, 200000),
+        "W2": (300000, 400000),
+        "W3": (500000, 750000),
+        "W4": (850000, 999999),
     }
 
     count = 0
@@ -70,7 +70,10 @@ def set_monster_values() -> None:
             obj["id"] in {objects.ID.Monster, objects.ID.Random_Monster}
             and obj["disposition"] != creatures.Disposition.Compliant
         ):
-            obj["disposition"] = random.randint(1, 4)
+            if obj["id"] == objects.ID.Monster:
+                obj["disposition"] = 4
+            elif obj["id"] == objects.ID.Random_Monster:
+                obj["disposition"] = random.choices([2, 3, 4], weights=[1, 2, 2])[0]
             obj["is_value"] = True
             if obj["zone_type"] in AI_VALUE_RANGES:
                 obj["ai_value"] = random.randint(*AI_VALUE_RANGES[obj["zone_type"]])
