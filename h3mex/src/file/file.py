@@ -125,8 +125,24 @@ def save(filename: str = None) -> bool:
     # Ensure the filename has the correct extension
     filename = filename if filename[-4:] == ".h3m" else filename + ".h3m"
 
+    # Check if the file is writable
     if not is_file_writable(filename):
+        xprint(type=TextType.ERROR, text=f"Cannot write to {filename}.")
         return False
+
+    # Create backup if overwriting existing file
+    if filename is None or filename == map_data["filename"]:
+        backup_num = 1
+        for i in range(1, 10):
+            if not os.path.exists(f"{filename}.bak{i}"):
+                backup_num = i
+                break
+        else:
+            backup_num = 1
+        backup_filename = f"{filename}.bak{backup_num}"
+        if os.path.exists(backup_filename):
+            os.remove(backup_filename)
+        os.rename(filename, backup_filename)
 
     xprint(type=TextType.ACTION, text=f"Saving {filename}…")
 
