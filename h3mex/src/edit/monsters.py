@@ -1,20 +1,9 @@
 import random  # noqa: F401
 
 from src.common import TextType, map_data
-from src.defs import creatures, objects
+from src.defs import creatures, groups, objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
-
-RANDOM_MONSTER_IDS = [
-    objects.ID.Random_Monster,
-    objects.ID.Random_Monster_1,
-    objects.ID.Random_Monster_2,
-    objects.ID.Random_Monster_3,
-    objects.ID.Random_Monster_4,
-    objects.ID.Random_Monster_5,
-    objects.ID.Random_Monster_6,
-    objects.ID.Random_Monster_7,
-]
 
 
 def set_random_monsters() -> None:
@@ -32,7 +21,7 @@ def set_random_monsters() -> None:
 
     # Update Random Monster 1-7 objects
     for obj in map_data["object_data"]:
-        if obj["id"] in RANDOM_MONSTER_IDS and obj["id"] != objects.ID.Random_Monster:
+        if obj["id"] in groups.RANDOM_MONSTERS_LEVEL:
             obj["def_id"] = def_id
             obj["id"] = objects.ID.Random_Monster
             obj["sub_id"] = 0

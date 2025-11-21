@@ -46,9 +46,9 @@ class ID(IntEnum):
     # 40
     Library_of_Enlightenment = 41
     Lighthouse = 42
-    Monolith_One_Way_Entrance = 43
-    Monolith_One_Way_Exit = 44
-    Two_Way_Monolith = 45
+    One_Way_Portal_Entrance = 43
+    One_Way_Portal_Exit = 44
+    Two_Way_Portal = 45
     Magic_Plains_RoE = 46
     School_of_Magic = 47
     Magic_Spring = 48
@@ -143,8 +143,8 @@ class ID(IntEnum):
     Outcropping = 136
     Pine_Trees = 137
     Plant = 138
-    HotA_Decoration_1 = 139
-    HotA_Decoration_2 = 140
+    HotA_Decor_1 = 139
+    HotA_Decor_2 = 140
     ### Normal ###
     HotA_Ground = 141
     HotA_Warehouse = 142
@@ -414,7 +414,11 @@ class SubID(IntEnum):
         Old = 0
         HotA = 1
 
-    class MonolithPortal:
+    class Observation(IntEnum):  # ID 58
+        Redwood_Observatory = 0
+        Observation_Tower = 1
+
+    class Portal:
         class OneWay(IntEnum):  # ID 43 & 44
             Small_Blue = 0
             Small_Pink = 1
@@ -455,10 +459,6 @@ class SubID(IntEnum):
             Water_Blue = 22
             Water_Chartreuse = 23
             Water_Yellow = 24
-
-    class Observation(IntEnum):  # ID 58
-        Redwood_Observatory = 0
-        Observation_Tower = 1
 
     class Prison(IntEnum):  # ID 62
         Normal = 0
@@ -778,101 +778,6 @@ class CreatureBankStack(IntEnum):
     Random = 255
     No = 0
     Yes = 1
-
-
-class Decor:
-    IDS = {
-        ID.Brush,
-        ID.Bush,
-        ID.Cactus,
-        ID.Canyon,
-        ID.Crater,
-        ID.Dead_Vegetation,
-        ID.Flowers,
-        ID.Frozen_Lake,
-        ID.Hedge,
-        ID.Hill,
-        ID.Hole,
-        ID.Kelp,
-        ID.Lake,
-        ID.Lava_Flow,
-        ID.Lava_Lake,
-        ID.Mushrooms,
-        ID.Log,
-        ID.Mandrake,
-        ID.Moss,
-        ID.Mound,
-        ID.Mountain,
-        ID.Oak_Trees,
-        ID.Outcropping,
-        ID.Pine_Trees,
-        ID.Plant,
-        ID.HotA_Decoration_1,
-        ID.HotA_Decoration_2,
-        ID.River_Delta,
-        ID.Rock,
-        ID.Sand_Dune,
-        ID.Sand_Pit,
-        ID.Shrub,
-        ID.Skull,
-        ID.Stalagmite,
-        ID.Stump,
-        ID.Tar_Pit,
-        ID.Trees,
-        ID.Vine,
-        ID.Volcanic_Vent,
-        ID.Volcano,
-        ID.Willow_Trees,
-        ID.Yucca_Trees,
-        ID.Reef,
-        ID.Brush_2,
-        ID.Bush_2,
-        ID.Cactus_2,
-        ID.Canyon_2,
-        ID.Crater_2,
-        ID.Dead_Vegetation_2,
-        ID.Flowers_2,
-        ID.Frozen_Lake_2,
-        ID.Hedge_2,
-        ID.Hill_2,
-        ID.Hole_2,
-        ID.Kelp_2,
-        ID.Lake_2,
-        ID.Lava_Flow_2,
-        ID.Lava_Lake_2,
-        ID.Mushrooms_2,
-        ID.Log_2,
-        ID.Mandrake_2,
-        ID.Moss_2,
-        ID.Mound_2,
-        ID.Mountain_2,
-        ID.Oak_Trees_2,
-        ID.Outcropping_2,
-        ID.Pine_Trees_2,
-        ID.Plant_2,
-        ID.River_Delta_2,
-        ID.Rock_2,
-        ID.Sand_Dune_2,
-        ID.Sand_Pit_2,
-        ID.Shrub_2,
-        ID.Skull_2,
-        ID.Stalagmite_2,
-        ID.Stump_2,
-        ID.Tar_Pit_2,
-        ID.Trees_2,
-        ID.Vine_2,
-        ID.Volcanic_Vent_2,
-        ID.Volcano_2,
-        ID.Willow_Trees_2,
-        ID.Yucca_Trees_2,
-        ID.Reef_2,
-        ID.Desert_Hills,
-        ID.Dirt_Hills,
-        ID.Grass_Hills,
-        ID.Rough_Hills,
-        ID.Subterranean_Rocks,
-        ID.Swamp_Foliage,
-    }
 
 
 class ZoneInfo:

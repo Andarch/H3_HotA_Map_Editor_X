@@ -66,7 +66,7 @@ class Wait(float, Enum):
     LONG = 1.5
 
 
-class MapLayer(IntEnum):
+class Layer(IntEnum):
     Ground = 0
     Underground = 1
 
