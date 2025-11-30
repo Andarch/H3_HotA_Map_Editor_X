@@ -32,11 +32,14 @@ def wait_for_keypress(suffix: str = " to return to the menu") -> int:
 
 
 def display_image(buffer: BytesIO) -> None:
-    xprint(type=TextType.INDENT)
-    img2sixel = str(Path(os.getcwd()).parent / "h3mex" / "res" / "bin" / "img2sixel.exe")
-    subprocess.run([img2sixel], input=buffer.getvalue(), stdout=sys.stdout.buffer, check=True)
-    sys.stdout.write("\r\n")
-    sys.stdout.flush()
+    if os.environ.get("TERM_PROGRAM") != "vscode":
+        xprint(type=TextType.INDENT)
+        img2sixel = str(Path(os.getcwd()).parent / "h3mex" / "res" / "bin" / "img2sixel.exe")
+        subprocess.run([img2sixel], input=buffer.getvalue(), stdout=sys.stdout.buffer, check=True)
+        sys.stdout.write("\r\n")
+        sys.stdout.flush()
+    else:
+        xprint(type=TextType.ERROR, text="Image display is not supported in the VS Code terminal.")
 
 
 def exit() -> None:

@@ -332,6 +332,11 @@ resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
 
 
 def view() -> None:
+    if os.environ.get("TERM_PROGRAM") == "vscode":
+        xprint(type=TextType.ERROR, text="Minimap viewing is not supported in the VS Code terminal.")
+        wait_for_keypress()
+        return
+
     while True:
         keypress = xprint(menu=(Menu.VIEW_MINIMAP["name"], Menu.VIEW_MINIMAP["menus"][0]))
         if keypress == Keypress.ESC:
@@ -467,7 +472,7 @@ def _process_image(
         )
     # Generate and save minimap images
     if generate_type == "View":
-        _generate_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
+        _display_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
     if generate_type == "Export":
         _export_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
         xprint(type=TextType.DONE)
@@ -585,7 +590,7 @@ def _process_object(
                                 )
 
 
-def _generate_minimap_images(
+def _display_minimap_images(
     minimap_type: str,
     map_layers: list,
     blocked_tiles: dict,
@@ -619,22 +624,19 @@ def _generate_minimap_images(
             img.putpixel((x, y), color)
 
         minimap_images.append(img)
-    _display_minimap_images(minimap_images, png_number, png_name)
 
-
-def _display_minimap_images(minimaps: list, png_number: int, png_name: str) -> None:
-    for layer in range(len(minimaps)):
-        minimaps[layer] = minimaps[layer].resize((370, 370), resample=Image.Resampling.NEAREST)
-        if minimaps[layer].mode == "RGBA":
-            canvas = Image.new("RGB", minimaps[layer].size)
-            canvas.paste(minimaps[layer], (0, 0))
-            minimaps[layer] = canvas
+    for layer in range(len(minimap_images)):
+        minimap_images[layer] = minimap_images[layer].resize((370, 370), resample=Image.Resampling.NEAREST)
+        if minimap_images[layer].mode == "RGBA":
+            canvas = Image.new("RGB", minimap_images[layer].size)
+            canvas.paste(minimap_images[layer], (0, 0))
+            minimap_images[layer] = canvas
 
     bg = Image.open(Path(os.getcwd()).parent / "h3mex" / "res" / "graphics" / "minimap_bg.png")
     minimap = bg.copy()
-    minimap.paste(minimaps[0], (20, 20))
-    if len(minimaps) > 1:
-        minimap.paste(minimaps[1], (410, 20))
+    minimap.paste(minimap_images[0], (20, 20))
+    if len(minimap_images) > 1:
+        minimap.paste(minimap_images[1], (410, 20))
 
     buffer = BytesIO()
     minimap.save(buffer, format="PNG")
