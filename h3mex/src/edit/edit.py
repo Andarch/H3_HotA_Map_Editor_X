@@ -33,13 +33,26 @@ def menu() -> None:
                 treasures.add_treasures()
             case "9":
                 fix.fix_empty_contents()
-            case "E":
-                eventobjects.add_explorer_bonuses()
-            case "P":
-                pandoras.modify_pandoras()
-            case "G":
-                garrisons.copy_garrison_guards()
-            case "F":
-                garrisons.fill_empty_garrison_guards()
+            case "M":
+                while True:
+                    keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][1]))
+                    if keypress == Keypress.ESC:
+                        break
 
-        xprint()
+                    header.draw()
+
+                    match keypress:
+                        case "1":
+                            eventobjects.add_explorer_bonuses()
+                        case "2":
+                            eventobjects.delete_explorer_bonuses()
+                        case "3":
+                            pandoras.modify_pandoras()
+                        case "4":
+                            garrisons.copy_garrison_guards()
+                        case "5":
+                            garrisons.fill_empty_garrison_guards()
+                        case "M":
+                            break
+
+        # xprint()

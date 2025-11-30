@@ -7,6 +7,22 @@ from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 
+def delete_explorer_bonuses():
+    xprint(text="Deleting explorer bonuses…")
+
+    initial_count = len(map_data["object_data"])
+    map_data["object_data"] = [
+        obj
+        for obj in map_data["object_data"]
+        if not (obj["id"] == objects.ID.Event and obj["message"] == "Explorer Bonus")
+    ]
+    deleted_count = initial_count - len(map_data["object_data"])
+
+    xprint()
+    xprint(type=TextType.INFO, text=f"Deleted {deleted_count} explorer bonuses.")
+    wait_for_keypress()
+
+
 def add_explorer_bonuses():
     xprint(text="Adding explorer bonuses…")
 
