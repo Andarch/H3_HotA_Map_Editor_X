@@ -410,6 +410,38 @@ def generate(generate_type: str, minimap_type: str) -> None:
         _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
         _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, 26, "scholars")
         _process_image(generate_type, minimap_type, {objects.ID.Event}, None, 27, "eventobjects")
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Trading_Post, objects.ID.Trading_Post_Snow},
+            None,
+            28,
+            "tradingposts",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.HotA_Visitable_1},
+            {objects.SubID.HotAVisitable1.Warlocks_Lab},
+            29,
+            "warlockslabs",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Redwood_Observatory},
+            None,
+            30,
+            "redwoodobservatories",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Cover_of_Darkness},
+            None,
+            31,
+            "coversofdarkness",
+        )
 
 
 def _process_image(
