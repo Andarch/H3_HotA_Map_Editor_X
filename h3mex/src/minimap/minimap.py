@@ -14,11 +14,11 @@ from .mmdefs import ObjectRGB, OtherObjects, TerrainRGB
 
 def view() -> bool:
     while True:
-        keypress = xprint(menu=(Menu.MINIMAP_VIEW["name"], Menu.MINIMAP_VIEW["menus"][0]))
+        keypress = xprint(menu=(Menu.VIEW_MINIMAP["name"], Menu.VIEW_MINIMAP["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
-        xprint(overwrite=len(Menu.MINIMAP_VIEW["menus"][0]) + 4)
+        xprint(overwrite=len(Menu.VIEW_MINIMAP["menus"][0]) + 4)
 
         match keypress:
             case "1":
@@ -44,7 +44,7 @@ def _generate_minimap_images(export_type: str) -> list:
     else:
         terrain_layers = [map_data["terrain"]]
 
-    tile_owners = {
+    owners = {
         layer: [[None for _ in range(map_size)] for _ in range(map_size)] for layer in [Layer.Ground, Layer.Underground]
     }
     blocked_tiles = {layer: set() for layer in [Layer.Ground, Layer.Underground]}
@@ -53,12 +53,12 @@ def _generate_minimap_images(export_type: str) -> list:
         obj_def = map_data["object_defs"][obj["def_id"]]
         block_mask = obj_def["red_squares"]
         interactive_mask = obj_def["yellow_squares"]
-        color_id = None
+        owner = obj["owner"] if "owner" in obj else None
 
-        color_id = _get_color_id(export_type, obj)
-        if color_id is None and _should_skip_object(block_mask, interactive_mask):
+        obj_color = _get_obj_color(export_type, obj)
+        if obj_color is None and _should_skip_object(block_mask, interactive_mask):
             continue
-        _process_object(obj, block_mask, interactive_mask, blocked_tiles, tile_owners, color_id, png_layer="standard")
+        _process_object(obj, block_mask, interactive_mask, blocked_tiles, owners, obj_color, png_layer="standard")
 
     minimap_images = []
     for layer_index, layer in enumerate(terrain_layers):
@@ -66,11 +66,11 @@ def _generate_minimap_images(export_type: str) -> list:
         for i, tile in enumerate(layer):
             x = i % map_size
             y = i // map_size
-            color_id = tile_owners[layer_index][y][x]
+            obj_color = owners[layer_index][y][x]
 
-            if color_id is not None:
-                if color_id in ObjectRGB.player:
-                    color = ObjectRGB.player[color_id]
+            if obj_color is not None:
+                if obj_color in ObjectRGB.player:
+                    color = ObjectRGB.player[obj_color]
             elif (x, y) in blocked_tiles[layer_index]:
                 color = TerrainRGB.blocked[tile["terrain_type"]]
             else:
@@ -81,7 +81,7 @@ def _generate_minimap_images(export_type: str) -> list:
     return minimap_images
 
 
-def _get_color_id(mode: str, obj: dict) -> int | tuple | None:
+def _get_obj_color(mode: str, obj: dict) -> int | tuple | None:
     match mode:
         case "Standard":
             if "owner" in obj and obj["id"] not in groups.HEROES:
@@ -156,7 +156,7 @@ def _process_object(
     blockMask: list,
     interactiveMask: list,
     blocked_tiles: dict,
-    ownership: dict,
+    owners: dict,
     owner: int | tuple | None,
     png_layer="",
 ) -> None:
@@ -175,40 +175,38 @@ def _process_object(
                         blocked_tiles[Layer.Ground].add(
                             (blocked_tile_x, blocked_tile_y)
                         )  # Add the coordinates of the blocked tile to the overworld set
-                        if ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] is None:
+                        if owners[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
+                                owners[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
-                                    ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
-                                        1
-                                    ]  # Set to owner color
+                                    owners[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[1]  # Set to owner color
                                 else:  # Outer tiles
-                                    ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
+                                    owners[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
                                         0
                                     ]  # Set to garrison color
                             else:
-                                ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = (
+                                owners[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = (
                                     owner if owner is not None else None
                                 )
                     elif obj_z == Layer.Underground:
                         blocked_tiles[Layer.Underground].add(
                             (blocked_tile_x, blocked_tile_y)
                         )  # Add the coordinates of the blocked tile to the underground set
-                        if ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] is None:
+                        if owners[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
+                                owners[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = OtherObjects.Interactive
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
-                                    ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
+                                    owners[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
                                         1
                                     ]  # Set to owner color
                                 else:  # Outer tiles
-                                    ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
+                                    owners[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
                                         0
                                     ]  # Set to garrison color
                             else:
-                                ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = (
+                                owners[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = (
                                     owner if owner is not None else None
                                 )
 
@@ -317,7 +315,7 @@ def _process_image(export_type: str, filter: set, subfilter: set | None, png_num
         interactiveMask = def_["yellow_squares"]
         # Determine if object has owner and/or should be skipped (hidden on minimap).
         # If object is valid (should be shown on minimap), process it to determine blocked tiles and set tile ownership.
-        owner = _get_color_id(export_type, obj)
+        owner = _get_obj_color(export_type, obj)
         if owner is None and _should_skip_object(blockMask, interactiveMask):
             continue
         _process_object(

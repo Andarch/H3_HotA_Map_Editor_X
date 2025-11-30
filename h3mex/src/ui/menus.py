@@ -95,12 +95,12 @@ class Menu:
         ],
     }
 
-    MINIMAP_VIEW = {
+    VIEW_MINIMAP = {
         "name": "VIEW MINIMAP",
         "menus": [[*_MINIMAP]],
     }
 
-    MINIMAP_EXPORT = {
+    EXPORT_MINIMAP = {
         "name": "EXPORT MINIMAP",
         "menus": [[*_MINIMAP]],
     }
