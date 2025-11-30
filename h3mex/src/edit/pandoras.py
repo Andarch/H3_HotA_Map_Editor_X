@@ -109,23 +109,16 @@ def _get_random_guards(zone_type):
             {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(600, 1000)},
             {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(1600, 2400)},
             {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(4000, 6000)},
-            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(8000, 10000)},
+            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(8000, 9999)},
         ]
-    # else:
-    #     return [
-    #         {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(2000, 2700)},
-    #         {"id": _rand_enum_value(creatures.Level4Creatures), "amount": random.randint(800, 1300)},
-    #         {"id": _rand_enum_value(creatures.Level6Creatures), "amount": random.randint(300, 600)},
-    #         {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(200, 350)},
-    #         {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(600, 800)},
-    #         {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(1400, 2000)},
-    #         {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(2700, 3400)},
-    #     ]
 
 
 def _get_random_contents(zone_type):
     if zone_type in {"P1", "L1", "W1"}:
-        primary_skills = [random.randint(1, 2) for _ in range(4)]
+        # Generate primary skills with at least one slot being 1
+        primary_skills = [random.randint(0, 1) for _ in range(4)]
+        if sum(primary_skills) == 0:
+            primary_skills[random.randint(0, 3)] = 1
 
         # Initialize values
         experience = 0
@@ -153,7 +146,7 @@ def _get_random_contents(zone_type):
 
         # 25% chance for Resources boost
         if random.random() < 0.25:
-            resources = [random.randint(10, 20) for _ in range(7)]
+            resources = [random.randint(10, 20) for _ in range(6)] + [random.randint(10, 20) * 100]
 
         # 25% chance for Movement_Points boost
         if random.random() < 0.25:
@@ -175,7 +168,15 @@ def _get_random_contents(zone_type):
             "Movement_Points": movement_points,
         }
     elif zone_type in {"P2", "L2", "W2"}:
+        # Generate primary skills with range 1-2, but at most one slot can be 2
         primary_skills = [random.randint(1, 2) for _ in range(4)]
+        # If more than one slot is 2, change extras to 1
+        count_twos = sum(1 for skill in primary_skills if skill == 2)
+        if count_twos > 1:
+            for i in range(len(primary_skills)):
+                if primary_skills[i] == 2 and count_twos > 1:
+                    primary_skills[i] = 1
+                    count_twos -= 1
 
         # Initialize values
         experience = 0
@@ -203,7 +204,7 @@ def _get_random_contents(zone_type):
 
         # 25% chance for Resources boost
         if random.random() < 0.25:
-            resources = [random.randint(40, 70) for _ in range(7)]
+            resources = [random.randint(40, 70) for _ in range(6)] + [random.randint(40, 70) * 100]
 
         # 25% chance for Movement_Points boost
         if random.random() < 0.25:
@@ -225,7 +226,17 @@ def _get_random_contents(zone_type):
             "Movement_Points": movement_points,
         }
     elif zone_type in {"P3", "R1", "R2", "L3", "W3"}:
-        primary_skills = [random.randint(2, 3) for _ in range(4)]
+        primary_skills = [random.randint(1, 3) for _ in range(4)]
+        # Ensure at least one slot is 1
+        if 1 not in primary_skills:
+            primary_skills[random.randint(0, 3)] = 1
+        # Ensure at most one slot is 3
+        count_threes = sum(1 for skill in primary_skills if skill == 3)
+        if count_threes > 1:
+            for i in range(len(primary_skills)):
+                if primary_skills[i] == 3 and count_threes > 1:
+                    primary_skills[i] = 2
+                    count_threes -= 1
 
         # Initialize values
         experience = 0
@@ -253,7 +264,7 @@ def _get_random_contents(zone_type):
 
         # 25% chance for Resources boost
         if random.random() < 0.25:
-            resources = [random.randint(70, 130) for _ in range(7)]
+            resources = [random.randint(70, 130) for _ in range(6)] + [random.randint(70, 130) * 100]
 
         # 25% chance for Movement_Points boost
         if random.random() < 0.25:
@@ -275,7 +286,17 @@ def _get_random_contents(zone_type):
             "Movement_Points": movement_points,
         }
     elif zone_type in {"P4", "R3", "R4", "L4", "W4"}:
-        primary_skills = [random.randint(3, 4) for _ in range(4)]
+        primary_skills = [random.randint(2, 4) for _ in range(4)]
+        # Ensure at least one slot is 2
+        if 2 not in primary_skills:
+            primary_skills[random.randint(0, 3)] = 2
+        # Ensure at most one slot is 4
+        count_fours = sum(1 for skill in primary_skills if skill == 4)
+        if count_fours > 1:
+            for i in range(len(primary_skills)):
+                if primary_skills[i] == 4 and count_fours > 1:
+                    primary_skills[i] = 3
+                    count_fours -= 1
 
         # Initialize values
         experience = 0
@@ -303,7 +324,7 @@ def _get_random_contents(zone_type):
 
         # 25% chance for Resources boost
         if random.random() < 0.25:
-            resources = [random.randint(100, 200) for _ in range(7)]
+            resources = [random.randint(100, 200) for _ in range(6)] + [random.randint(100, 200) * 100]
 
         # 25% chance for Movement_Points boost
         if random.random() < 0.25:
@@ -324,53 +345,3 @@ def _get_random_contents(zone_type):
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    # else:
-    #     primary_skills = [random.randint(2, 3) for _ in range(4)]
-
-    #     # Initialize values
-    #     experience = 0
-    #     spell_points = 0
-    #     morale = 0
-    #     luck = 0
-    #     resources = [0, 0, 0, 0, 0, 0, 0]
-    #     movement_points = 0
-
-    #     # 25% chance for Experience boost
-    #     if random.random() < 0.25:
-    #         experience = random.choice([70000, 100000, 130000])
-
-    #     # 25% chance for Spell_Points boost
-    #     if random.random() < 0.25:
-    #         spell_points = random.choice([700, 850, 1000])
-
-    #     # 25% chance for Morale boost
-    #     if random.random() < 0.25:
-    #         morale = random.choice([1, 2, 3])
-
-    #     # 25% chance for Luck boost
-    #     if random.random() < 0.25:
-    #         luck = random.choice([1, 2, 3])
-
-    #     # 25% chance for Resources boost
-    #     if random.random() < 0.25:
-    #         resources = [random.randint(70, 130) for _ in range(7)]
-
-    #     # 25% chance for Movement_Points boost
-    #     if random.random() < 0.25:
-    #         movement_points = random.choice([1000, 2250, 3500])
-
-    #     return {
-    #         "Experience": experience,
-    #         "Spell_Points": spell_points,
-    #         "Morale": morale,
-    #         "Luck": luck,
-    #         "Resources": resources,
-    #         "Primary_Skills": primary_skills,
-    #         "Secondary_Skills": [],
-    #         "Artifacts": [],
-    #         "Spells": [],
-    #         "Creatures": [],
-    #         "garbage_bytes": b"\x00\x00\x00\x00\x00\x00\x00\x00",
-    #         "Movement_Mode": 0,
-    #         "Movement_Points": movement_points,
-    #     }
