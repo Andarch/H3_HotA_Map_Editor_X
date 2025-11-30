@@ -1,11 +1,20 @@
 from . import objects
 
+##############################
+# HEROES
+##############################
+
 HEROES = {
     objects.ID.Hero,
     objects.ID.Random_Hero,
     objects.ID.Prison,
     objects.ID.Hero_Placeholder,
 }
+
+
+##############################
+# MONSTERS
+##############################
 
 RANDOM_MONSTERS_LEVEL = {
     objects.ID.Random_Monster_1,
@@ -19,6 +28,11 @@ RANDOM_MONSTERS_LEVEL = {
 RANDOM_MONSTERS = {objects.ID.Random_Monster, *RANDOM_MONSTERS_LEVEL}
 MONSTERS = {objects.ID.Monster, *RANDOM_MONSTERS}
 
+
+##############################
+# ARTIFACTS
+##############################
+
 RANDOM_ARTIFACTS = {
     objects.ID.Random_Artifact,
     objects.ID.Random_Treasure_Artifact,
@@ -28,7 +42,17 @@ RANDOM_ARTIFACTS = {
 }
 ARTIFACTS = {objects.ID.Artifact, *RANDOM_ARTIFACTS}
 
+
+##############################
+# RESOURCES
+##############################
+
 RESOURCES = {objects.ID.Resource, objects.ID.Random_Resource}
+
+
+##############################
+# COLLECTIBLES
+##############################
 
 COLLECTIBLES = {
     objects.ID.Campfire,
@@ -42,6 +66,11 @@ COLLECTIBLES = {
     objects.ID.Spell_Scroll,
     objects.ID.Treasure_Chest,
 }
+
+
+##############################
+# MAGICAL TERRAIN
+##############################
 
 MAGICAL_TERRAIN = {
     objects.ID.Cursed_Ground_RoE,
@@ -59,27 +88,37 @@ MAGICAL_TERRAIN = {
     objects.ID.Rocklands,
 }
 
-PASSABLE = {
-    *HEROES,
-    *MONSTERS,
-    *ARTIFACTS,
-    *RESOURCES,
-    *COLLECTIBLES,
-    *MAGICAL_TERRAIN,
-    objects.ID.Boat,
-    objects.ID.Event,
-    objects.ID.Grail,
-    objects.ID.HotA_Decor_1,
-    objects.ID.HotA_Decor_2,
-}
 
-PASSABLE_HOTA_DECOR_1 = {
-    0,
-}
+##############################
+# PASSABLE
+##############################
 
-PASSABLE_HOTA_DECOR_2 = {
-    0,
-}
+# PASSABLE = {
+#     *HEROES,
+#     *MONSTERS,
+#     *ARTIFACTS,
+#     *RESOURCES,
+#     *COLLECTIBLES,
+#     *MAGICAL_TERRAIN,
+#     objects.ID.Boat,
+#     objects.ID.Event,
+#     objects.ID.Grail,
+#     objects.ID.HotA_Decor_1,
+#     objects.ID.HotA_Decor_2,
+# }
+
+# PASSABLE_HOTA_DECOR_1 = {
+#     0,
+# }
+
+# PASSABLE_HOTA_DECOR_2 = {
+#     0,
+# }
+
+
+##############################
+# BARRIERS
+##############################
 
 BARRIERS = {
     objects.ID.Border_Gate,
@@ -88,6 +127,11 @@ BARRIERS = {
     objects.ID.Garrison_Vertical,
     objects.ID.Quest_Guard,
 }
+
+
+##############################
+# PORTALS
+##############################
 
 TWO_WAY_LAND_PORTALS = {
     objects.SubID.Portal.TwoWay.Small_Green,
@@ -118,6 +162,11 @@ TWO_WAY_SEA_PORTALS = {
     objects.SubID.Portal.TwoWay.Water_Chartreuse,
     objects.SubID.Portal.TwoWay.Water_Yellow,
 }
+
+
+##############################
+# DECOR
+##############################
 
 DECOR = {
     objects.ID.Brush,

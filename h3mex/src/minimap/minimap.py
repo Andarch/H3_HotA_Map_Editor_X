@@ -9,7 +9,7 @@ from src.ui.menus import Menu
 from src.ui.xprint import xprint
 from src.utilities import display_image, wait_for_keypress
 
-from .mmdefs import ObjectGroups, ObjectRGB, OtherObjects, TerrainRGB
+from .mmdefs import ObjectRGB, OtherObjects, TerrainRGB
 
 
 def view() -> bool:
