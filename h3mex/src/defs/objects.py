@@ -406,6 +406,10 @@ class SubID(IntEnum):
             Elementals = 0
             Golems = 1
 
+    class FountainOfYouth(IntEnum):  # ID 31
+        Land = 0
+        Water = 1
+
     class Garrison(IntEnum):  # ID 33 & 219
         Normal = 0
         Anti_Magic = 1

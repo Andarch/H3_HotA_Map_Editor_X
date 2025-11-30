@@ -128,7 +128,7 @@ def list_unreachable_tiles() -> None:
 
 
 def list_invalid_zone_objects() -> None:
-    xprint(text="Checking for invalid zone objects…", overwrite=7)
+    xprint(text="Checking for invalid zone objects…", overwrite=6)
     xprint()
 
     errors = {"Out of Bounds", "Void"}

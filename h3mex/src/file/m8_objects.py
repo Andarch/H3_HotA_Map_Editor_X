@@ -165,15 +165,27 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         obj["type"] = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
-        if obj["id"] not in groups.DECOR:
+        if obj["id"] not in (groups.DECOR | groups.MAGICAL_TERRAIN):
             obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
                 ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}
                 obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
-                if obj["id"] == objects.ID.Shipwreck and (
+                if obj["id"] in (objects.ID.Shipwreck, objects.ID.Creature_Generator_1, objects.ID.Prison) and (
                     obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
                 ):
                     obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1], obj["coords"][2]]
+                    obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+                if obj["id"] == objects.ID.Fountain_of_Youth and (
+                    obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
+                ):
+                    obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1] - 1, obj["coords"][2]]
+                    obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+                if (
+                    obj["id"] == objects.ID.Border_Gate
+                    and obj["sub_id"] == objects.SubID.Border.Quest_Gate
+                    and (obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES)
+                ):
+                    obj["coords_offset"] = [obj["coords"][0], obj["coords"][1] - 1, obj["coords"][2]]
                     obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
 
         match obj["id"]:
@@ -1850,12 +1862,14 @@ def get_zone(coords: list) -> tuple:
 def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
     OBJS_X_OFFSET_MINUS_1 = {
         objects.ID.Arena,
+        objects.ID.Cartographer,
         objects.ID.Cover_of_Darkness,
         objects.ID.Creature_Bank,
         objects.ID.Derelict_Ship,
         objects.ID.Dragon_Utopia,
         objects.ID.Faerie_Ring,
         objects.ID.Hero,
+        objects.ID.Hut_of_the_Magi,
         objects.ID.Library_of_Enlightenment,
         objects.ID.One_Way_Portal_Entrance,
         objects.ID.One_Way_Portal_Exit,
@@ -1906,6 +1920,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.One_Way_Portal_Exit,
         objects.ID.Two_Way_Portal,
         objects.ID.Prison,
+        objects.ID.War_Machine_Factory,
         objects.ID.HotA_Visitable_1,
         objects.ID.HotA_Pickup,
         objects.ID.HotA_Visitable_2,
@@ -1988,6 +2003,9 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
 
         if obj_id == objects.ID.Border_Gate:
             return sub_id != objects.SubID.Border.Grave
+
+        if obj_id == objects.ID.War_Machine_Factory:
+            return sub_id == objects.SubID.WarMachineFactory.Normal
 
         return False
 
