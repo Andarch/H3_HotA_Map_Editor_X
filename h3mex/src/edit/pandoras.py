@@ -13,17 +13,25 @@ def modify_pandoras():
 
     for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Pandoras_Box:
+            modified = False
             # is_default = _check_default(obj)
             # if not is_default:
             #     continue
-            if obj["contents"]["Artifacts"] or obj["contents"]["Spells"]:
-                continue
+            # if obj["contents"]["Artifacts"] or obj["contents"]["Spells"]:
+            #     continue
+            # if obj["zone_type"] not in {"P1", "P2", "P3", "P4"}:
+            #     continue
 
             obj["has_common"] = 1
-            obj["guards"] = _get_random_guards(obj["zone_type"])
-            obj["contents"] = _get_random_contents(obj["zone_type"])
+            if not obj["contents"]["Spells"]:
+                obj["guards"] = _get_random_guards(obj["zone_type"])
+                modified = True
+            if not obj["contents"]["Spells"] and not obj["contents"]["Artifacts"]:
+                obj["contents"] = _get_random_contents(obj["zone_type"])
+                modified = True
 
-            modified_count += 1
+            if modified:
+                modified_count += 1
 
     xprint(type=TextType.DONE)
     xprint()
@@ -114,7 +122,71 @@ def _get_random_guards(zone_type):
 
 
 def _get_random_contents(zone_type):
-    if zone_type in {"P1", "L1", "W1"}:
+    if zone_type in {"P1"}:
+        return {
+            "Experience": 15000,
+            "Spell_Points": 100,
+            "Morale": 1,
+            "Luck": 1,
+            "Resources": [10, 10, 10, 10, 10, 10, 10000],
+            "Primary_Skills": [1, 1, 1, 1],
+            "Secondary_Skills": [],
+            "Artifacts": [],
+            "Spells": [],
+            "Creatures": [],
+            "garbage_bytes": b"\x00\x00\x00\x00\x00\x00\x00\x00",
+            "Movement_Mode": 0,
+            "Movement_Points": 500,
+        }
+    if zone_type in {"P2"}:
+        return {
+            "Experience": 50000,
+            "Spell_Points": 300,
+            "Morale": 2,
+            "Luck": 2,
+            "Resources": [20, 20, 20, 20, 20, 20, 20000],
+            "Primary_Skills": [1, 1, 1, 1],
+            "Secondary_Skills": [],
+            "Artifacts": [],
+            "Spells": [],
+            "Creatures": [],
+            "garbage_bytes": b"\x00\x00\x00\x00\x00\x00\x00\x00",
+            "Movement_Mode": 0,
+            "Movement_Points": 1000,
+        }
+    if zone_type in {"P3"}:
+        return {
+            "Experience": 100000,
+            "Spell_Points": 500,
+            "Morale": 3,
+            "Luck": 3,
+            "Resources": [30, 30, 30, 30, 30, 30, 30000],
+            "Primary_Skills": [1, 1, 1, 1],
+            "Secondary_Skills": [],
+            "Artifacts": [],
+            "Spells": [],
+            "Creatures": [],
+            "garbage_bytes": b"\x00\x00\x00\x00\x00\x00\x00\x00",
+            "Movement_Mode": 0,
+            "Movement_Points": 1500,
+        }
+    if zone_type in {"P4"}:
+        return {
+            "Experience": 200000,
+            "Spell_Points": 1000,
+            "Morale": 3,
+            "Luck": 3,
+            "Resources": [50, 50, 50, 50, 50, 50, 50000],
+            "Primary_Skills": [2, 2, 2, 2],
+            "Secondary_Skills": [],
+            "Artifacts": [],
+            "Spells": [],
+            "Creatures": [],
+            "garbage_bytes": b"\x00\x00\x00\x00\x00\x00\x00\x00",
+            "Movement_Mode": 0,
+            "Movement_Points": 2000,
+        }
+    if zone_type in {"L1", "W1"}:
         # Generate primary skills with at least one slot being 1
         primary_skills = [random.randint(0, 1) for _ in range(4)]
         if sum(primary_skills) == 0:
@@ -167,7 +239,7 @@ def _get_random_contents(zone_type):
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"P2", "L2", "W2"}:
+    elif zone_type in {"L2", "W2"}:
         # Generate primary skills with range 1-2, but at most one slot can be 2
         primary_skills = [random.randint(1, 2) for _ in range(4)]
         # If more than one slot is 2, change extras to 1
@@ -225,7 +297,7 @@ def _get_random_contents(zone_type):
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"P3", "R1", "R2", "L3", "W3"}:
+    elif zone_type in {"R1", "R2", "L3", "W3"}:
         primary_skills = [random.randint(1, 3) for _ in range(4)]
         # Ensure at least one slot is 1
         if 1 not in primary_skills:
@@ -285,7 +357,7 @@ def _get_random_contents(zone_type):
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"P4", "R3", "R4", "L4", "W4"}:
+    elif zone_type in {"R3", "R4", "L4", "W4"}:
         primary_skills = [random.randint(2, 4) for _ in range(4)]
         # Ensure at least one slot is 2
         if 2 not in primary_skills:
