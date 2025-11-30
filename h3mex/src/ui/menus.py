@@ -72,6 +72,7 @@ class Menu:
                 None,
                 ("8", "Treasures: Add treasures"),
                 ("9", "Treasures: Fix empty contents"),
+                ("0", "Treasures: Add scholars"),
                 None,
                 ("M", "Show more…"),
             ],

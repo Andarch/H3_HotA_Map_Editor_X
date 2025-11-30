@@ -33,6 +33,8 @@ def menu() -> None:
                 treasures.add_treasures()
             case "9":
                 fix.fix_empty_contents()
+            case "0":
+                treasures.add_scholars()
             case "M":
                 while True:
                     keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][1]))

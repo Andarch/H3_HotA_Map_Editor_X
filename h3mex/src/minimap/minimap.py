@@ -352,56 +352,57 @@ def generate(generate_type: str, minimap_type: str) -> None:
     if minimap_type == "Standard":
         _process_image(generate_type, minimap_type, None, None, None, None)
     elif minimap_type == "Extended":
-        _process_image(generate_type, minimap_type, groups.DECOR, None, 1, "base1")
-        _process_image(generate_type, minimap_type, None, None, 2, "base2")
-        _process_image(generate_type, minimap_type, border_objects, None, 3, "border")
-        _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
-        _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Entrance}, None, 5, "portals1en")
-        _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Exit}, None, 6, "portals1ex")
-        _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_land_portals, 7, "portals2land"
-        )
-        _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_water_portals, 8, "portals2water"
-        )
-        _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
-        _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, 10, "prisons")
-        _process_image(generate_type, minimap_type, monster_objects, None, 11, "monsters")
-        _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.Shrine_1_and_4},
-            {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
-            13,
-            "shrine1",
-        )
-        _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
-        _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.Shrine_1_and_4},
-            {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
-            16,
-            "shrine4",
-        )
-        _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, 17, "pyramids")
-        _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, 18, "artifacts")
-        _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
-        _process_image(
-            generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts"
-        )
-        _process_image(
-            generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts"
-        )
-        _process_image(
-            generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts"
-        )
-        _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
-        _process_image(generate_type, minimap_type, resource_objects, None, 24, "resources")
-        _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
-        _process_image(generate_type, minimap_type, {objects.ID.Event}, None, 26, "eventobjects")
+        # _process_image(generate_type, minimap_type, groups.DECOR, None, 1, "base1")
+        # _process_image(generate_type, minimap_type, None, None, 2, "base2")
+        # _process_image(generate_type, minimap_type, border_objects, None, 3, "border")
+        # _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+        # _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Entrance}, None, 5, "portals1en")
+        # _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Exit}, None, 6, "portals1ex")
+        # _process_image(
+        #     generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_land_portals, 7, "portals2land"
+        # )
+        # _process_image(
+        #     generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_water_portals, 8, "portals2water"
+        # )
+        # _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+        # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, 10, "prisons")
+        # _process_image(generate_type, minimap_type, monster_objects, None, 11, "monsters")
+        # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+        # _process_image(
+        #     generate_type,
+        #     minimap_type,
+        #     {objects.ID.Shrine_1_and_4},
+        #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
+        #     13,
+        #     "shrine1",
+        # )
+        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
+        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
+        # _process_image(
+        #     generate_type,
+        #     minimap_type,
+        #     {objects.ID.Shrine_1_and_4},
+        #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
+        #     16,
+        #     "shrine4",
+        # )
+        # _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, 17, "pyramids")
+        # _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, 18, "artifacts")
+        # _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+        # _process_image(
+        #     generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts"
+        # )
+        # _process_image(
+        #     generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts"
+        # )
+        # _process_image(
+        #     generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts"
+        # )
+        # _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
+        # _process_image(generate_type, minimap_type, resource_objects, None, 24, "resources")
+        # _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
+        _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, 26, "scholars")
+        # _process_image(generate_type, minimap_type, {objects.ID.Event}, None, 27, "eventobjects")
 
 
 def _process_image(

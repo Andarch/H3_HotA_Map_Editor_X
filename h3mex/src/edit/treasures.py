@@ -1,12 +1,253 @@
 import random
 
+import src.file.m8_objects as m8_objects
 from src.common import TextType, map_data
 from src.defs import objects
-from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 RANDOM_CONTENTS = 4294967295
+
+
+def remove_scholars():
+    xprint(type=TextType.ACTION, text="Removing scholars…")
+
+    # Protected coordinates
+    protected_coords = [
+        [48, 10, 0],
+        [49, 10, 0],
+        [50, 10, 0],
+        [51, 10, 0],
+        [48, 11, 0],
+        [49, 11, 0],
+        [50, 11, 0],
+        [51, 11, 0],
+        [102, 38, 0],
+        [103, 38, 0],
+        [102, 39, 0],
+        [102, 40, 0],
+        [7, 133, 0],
+        [8, 133, 0],
+        [9, 133, 0],
+        [7, 134, 0],
+        [8, 134, 0],
+        [9, 134, 0],
+        [7, 137, 0],
+        [8, 137, 0],
+        [9, 137, 0],
+        [7, 138, 0],
+        [8, 138, 0],
+        [9, 138, 0],
+        [76, 186, 1],
+        [77, 186, 1],
+        [78, 186, 1],
+        [79, 186, 1],
+        [80, 186, 1],
+        [81, 186, 1],
+        [82, 186, 1],
+        [83, 186, 1],
+        [84, 186, 1],
+        [160, 142, 1],
+        [161, 142, 1],
+        [162, 142, 1],
+        [161, 143, 1],
+        [162, 143, 1],
+        [163, 143, 1],
+        [208, 134, 1],
+        [208, 135, 1],
+        [209, 135, 1],
+        [210, 135, 1],
+        [211, 135, 1],
+        [212, 135, 1],
+        [213, 135, 1],
+        [212, 136, 1],
+        [213, 136, 1],
+        [214, 136, 1],
+        [215, 136, 1],
+        [218, 140, 1],
+        [155, 114, 1],
+        [155, 115, 1],
+        [155, 116, 1],
+        [87, 121, 1],
+        [87, 123, 1],
+        [87, 125, 1],
+        [87, 127, 1],
+    ]
+
+    # Separate scholars into removable and protected
+    scholars = [obj for obj in map_data["object_data"] if obj["id"] == objects.ID.Scholar]
+    removable_scholars = [s for s in scholars if s["coords"] not in protected_coords]
+    protected_scholars = [s for s in scholars if s["coords"] in protected_coords]
+
+    # Remove all removable scholars
+    removed_count = len(removable_scholars)
+    removed_set = set(id(s) for s in removable_scholars)
+    map_data["object_data"] = [
+        obj for obj in map_data["object_data"] if not (obj["id"] == objects.ID.Scholar and id(obj) in removed_set)
+    ]
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(
+        type=TextType.INFO,
+        text=f"Removed {removed_count} scholars. Protected {len(protected_scholars)} scholars.",
+    )
+    wait_for_keypress()
+
+
+def add_scholars():
+    xprint(type=TextType.ACTION, text="Adding scholars…")
+
+    # Distribution by zone_type
+    zone_distribution = {
+        "L1": 25,
+        "L2": 50,
+    }
+
+    size = map_data["general"]["map_size"]
+    has_underground = map_data["general"]["has_underground"]
+
+    # Get scholar def_id
+    scholar_def_id = None
+    for obj in map_data["object_data"]:
+        if obj["id"] == objects.ID.Scholar:
+            scholar_def_id = obj["def_id"]
+            break
+
+    if scholar_def_id is None:
+        xprint(type=TextType.ERROR, text="No scholar definition found on map. Cannot add scholars.")
+        return
+
+    # Build zone tile lookup tables
+    zone_tiles = {0: {}, 1: {}}  # {level: {(x, y): zone_type}}
+
+    # Create reverse mapping: zone_type -> RGB color
+    zone_colors = {}
+    if hasattr(objects, "ZoneInfo") and hasattr(objects.ZoneInfo, "TYPES"):
+        # Reverse the TYPES dict: zone_type -> color tuple
+        for color_tuple, zone_type in objects.ZoneInfo.TYPES.items():
+            if zone_type in zone_distribution:
+                zone_colors[zone_type] = color_tuple
+
+    if not zone_colors:
+        xprint(type=TextType.ERROR, text="Could not map zone types to colors.")
+        return
+
+    # Scan ground zone image (compare RGB only; images are RGBA)
+    if m8_objects.zonetypes_img_g:
+        for y in range(size):
+            for x in range(size):
+                pixel = m8_objects.zonetypes_img_g.getpixel((x, y))
+                # pixel may be (r,g,b,a); compare only RGB
+                rgb = pixel[0:3] if len(pixel) >= 3 else pixel
+                for zone_type, color in zone_colors.items():
+                    if rgb == color:
+                        zone_tiles[0][(x, y)] = zone_type
+                        break
+
+    # Scan underground zone image (compare RGB only)
+    if m8_objects.zonetypes_img_u and has_underground:
+        for y in range(size):
+            for x in range(size):
+                pixel = m8_objects.zonetypes_img_u.getpixel((x, y))
+                rgb = pixel[0:3] if len(pixel) >= 3 else pixel
+                for zone_type, color in zone_colors.items():
+                    if rgb == color:
+                        zone_tiles[1][(x, y)] = zone_type
+                        break
+
+    # Calculate blocked tiles
+    blocked_tiles = {0: set(), 1: set()}
+
+    for obj in map_data["object_data"]:
+        def_ = map_data["object_defs"][obj["def_id"]]
+        blockMask = def_["red_squares"]
+        interactiveMask = def_["yellow_squares"]
+
+        obj_x, obj_y, obj_z = obj["coords"]
+
+        for r in range(6):
+            for c in range(8):
+                index = r * 8 + c
+                tile_x = obj_x - 7 + c
+                tile_y = obj_y - 5 + r
+
+                if 0 <= tile_x < size and 0 <= tile_y < size:
+                    b = blockMask[index]
+                    i = interactiveMask[index]
+                    if b != 1 or i == 1:
+                        blocked_tiles[obj_z].add((tile_x, tile_y))
+
+    # Add scholars
+    levels = [0, 1] if has_underground else [0]
+    added = 0
+    placed_coords = set()
+    existing_coords = {tuple(obj["coords"]) for obj in map_data["object_data"]}
+    current_level_index = 0
+    total_to_add = sum(zone_distribution.values())
+    zone_added_count = {zone: 0 for zone in zone_distribution}
+    attempts = 0
+    # Increase attempts multiplier to reduce premature exhaustion on busy maps
+    max_attempts = total_to_add * 500  # Increased from *50 to *500
+
+    while added < total_to_add and attempts < max_attempts:
+        attempts += 1
+        z = levels[current_level_index]
+        x = random.randint(0, size - 1)
+        y = random.randint(0, size - 1)
+        coords_tuple = (x, y, z)
+
+        # Check if coordinate is already taken
+        if coords_tuple in placed_coords or coords_tuple in existing_coords:
+            current_level_index = (current_level_index + 1) % len(levels)
+            continue
+
+        # Check if coordinate is on a blocked tile
+        if (x, y) in blocked_tiles[z]:
+            current_level_index = (current_level_index + 1) % len(levels)
+            continue
+
+        # Get zone type from lookup table
+        current_zone_type = zone_tiles[z].get((x, y))
+        if current_zone_type is None or current_zone_type not in zone_distribution:
+            current_level_index = (current_level_index + 1) % len(levels)
+            continue
+
+        # Check if we've met quota for this zone
+        if zone_added_count[current_zone_type] >= zone_distribution[current_zone_type]:
+            current_level_index = (current_level_index + 1) % len(levels)
+            continue
+
+        # Get zone color
+        current_zone_color = zone_colors.get(current_zone_type, "")
+
+        # Create scholar
+        coords = list(coords_tuple)
+        scholar = {
+            "coords": coords,
+            "coords_offset": coords,
+            "zone_type": current_zone_type,
+            "zone_color": current_zone_color,
+            "def_id": scholar_def_id,
+            "id": objects.ID.Scholar,
+            "sub_id": 0,
+            "type": "Scholar",
+            "subtype": "Scholar",
+            "reward_type": 255,
+        }
+
+        map_data["object_data"].append(scholar)
+        existing_coords.add(coords_tuple)
+        placed_coords.add(coords_tuple)
+        zone_added_count[current_zone_type] += 1
+        added += 1
+
+        current_level_index = (current_level_index + 1) % len(levels)
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(type=TextType.INFO, text=f"Added {added} scholars.")
+    wait_for_keypress()
 
 
 def add_treasures():
@@ -199,8 +440,8 @@ def add_treasures():
 def _get_base_object(coords, id, def_id):
     """Common object creation logic"""
     zone_type, zone_color = ("", "")
-    if has_zone_images:
-        zone_type, zone_color = get_zone(coords)
+    if m8_objects.has_zone_images:
+        zone_type, zone_color = m8_objects.get_zone(coords)
 
     return {
         "coords": coords,
