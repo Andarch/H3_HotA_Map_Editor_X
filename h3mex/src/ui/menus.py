@@ -91,6 +91,7 @@ class Menu:
                 ("4", "JSON: Town data"),
                 None,
                 ("5", "PNG: Normal minimap…"),
+                ("6", "PNG: Extended minimap…"),
             ]
         ],
     }

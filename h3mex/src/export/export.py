@@ -24,6 +24,8 @@ def menu() -> None:
         case "4":
             json_.export("4")
         case "5":
-            minimap.export()
+            minimap.generate("Export", "Standard")
+        case "6":
+            minimap.generate("Export", "Extended")
 
     xprint()

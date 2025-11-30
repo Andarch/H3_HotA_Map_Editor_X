@@ -2,7 +2,16 @@ import os
 from enum import IntEnum
 
 from PIL import Image
-from src.defs import artifacts, creatures, heroes, objects, players, skills, spells
+from src.defs import (
+    artifacts,
+    creatures,
+    groups,
+    heroes,
+    objects,
+    players,
+    skills,
+    spells,
+)
 
 from . import io
 from .m6_rumors_and_events import parse_events, write_events
@@ -156,7 +165,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
         obj["type"] = object_defs[obj["def_id"]]["type"]
         obj["subtype"] = object_defs[obj["def_id"]]["subtype"]
 
-        if obj["id"] not in objects.Groups.DECOR:
+        if obj["id"] not in groups.DECOR:
             obj["coords_offset"] = get_coords_offset(obj["coords"], obj["id"], obj["sub_id"])
             if has_zone_images:
                 ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}
