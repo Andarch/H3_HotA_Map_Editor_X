@@ -98,17 +98,17 @@ def get_subtype(obj_type: int, i: int) -> int:
         case objects.ID.Town:
             return objects.SubID.Town(i)
         case objects.ID.HotA_Decor_1:
-            return objects.SubID.HotADecoration1(i)
+            return objects.SubID.HotADecor1(i)
         case objects.ID.HotA_Decor_2:
-            return objects.SubID.HotADecoration2(i)
-        case objects.ID.HotA_Ground:
+            return objects.SubID.HotADecor2(i)
+        case objects.ID.HotA_Magical_Terrain:
             return objects.SubID.HotAMagicalTerrain(i)
         case objects.ID.HotA_Warehouse:
             return objects.SubID.Resource(i)
         case objects.ID.HotA_Visitable_1:
             return objects.SubID.HotAVisitable1(i)
-        case objects.ID.HotA_Collectible:
-            return objects.SubID.HotACollectible(i)
+        case objects.ID.HotA_Pickup:
+            return objects.SubID.HotAPickups(i)
         case objects.ID.HotA_Visitable_2:
             return objects.SubID.HotAVisitable2(i)
         case objects.ID.Border_Gate:
@@ -217,7 +217,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
             case objects.ID.Witch_Hut:
                 obj["skills"] = io.read_bits(4)
 
-            case objects.ID.HotA_Collectible:
+            case objects.ID.HotA_Pickup:
                 obj = parse_hota_collectible(obj)
             case objects.ID.Abandoned_Mine:
                 obj = parse_abandoned_mine(obj)
@@ -373,7 +373,7 @@ def write_object_data(info: list) -> None:
             case objects.ID.Witch_Hut:
                 io.write_bits(obj["skills"])
 
-            case objects.ID.HotA_Collectible:
+            case objects.ID.HotA_Pickup:
                 write_hota_collectible(obj)
             case objects.ID.Abandoned_Mine:
                 write_abandoned_mine(obj)
@@ -464,26 +464,26 @@ def write_object_data(info: list) -> None:
 
 def parse_hota_collectible(obj: dict) -> dict:
     match obj["sub_id"]:
-        case objects.SubID.HotACollectible.Ancient_Lamp:
+        case objects.SubID.HotAPickups.Ancient_Lamp:
             obj = parse_ancient_lamp(obj)
-        case objects.SubID.HotACollectible.Sea_Barrel:
+        case objects.SubID.HotAPickups.Sea_Barrel:
             obj = parse_sea_barrel(obj)
-        case objects.SubID.HotACollectible.Jetsam:
+        case objects.SubID.HotAPickups.Jetsam:
             obj = parse_flotsam(obj)
-        case objects.SubID.HotACollectible.Vial_of_Mana:
+        case objects.SubID.HotAPickups.Vial_of_Mana:
             obj = parse_vial_of_mana(obj)
     return obj
 
 
 def write_hota_collectible(obj: dict) -> None:
     match obj["sub_id"]:
-        case objects.SubID.HotACollectible.Ancient_Lamp:
+        case objects.SubID.HotAPickups.Ancient_Lamp:
             write_ancient_lamp(obj)
-        case objects.SubID.HotACollectible.Sea_Barrel:
+        case objects.SubID.HotAPickups.Sea_Barrel:
             write_sea_barrel(obj)
-        case objects.SubID.HotACollectible.Jetsam:
+        case objects.SubID.HotAPickups.Jetsam:
             write_flotsam(obj)
-        case objects.SubID.HotACollectible.Vial_of_Mana:
+        case objects.SubID.HotAPickups.Vial_of_Mana:
             write_vial_of_mana(obj)
 
 
@@ -1877,7 +1877,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Windmill,
         objects.ID.Witch_Hut,
         objects.ID.HotA_Visitable_1,
-        objects.ID.HotA_Collectible,
+        objects.ID.HotA_Pickup,
         objects.ID.HotA_Visitable_2,
         objects.ID.Random_Monster_5,
         objects.ID.Random_Monster_6,
@@ -1898,7 +1898,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Two_Way_Portal,
         objects.ID.Prison,
         objects.ID.HotA_Visitable_1,
-        objects.ID.HotA_Collectible,
+        objects.ID.HotA_Pickup,
         objects.ID.HotA_Visitable_2,
         objects.ID.Border_Gate,
     }
@@ -1968,8 +1968,8 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.SubID.HotAVisitable1.Prospector,
             }
 
-        if obj_id == objects.ID.HotA_Collectible:
-            return sub_id == objects.SubID.HotACollectible.Ancient_Lamp
+        if obj_id == objects.ID.HotA_Pickup:
+            return sub_id == objects.SubID.HotAPickups.Ancient_Lamp
         if obj_id == objects.ID.HotA_Visitable_2:
             return sub_id in {
                 objects.SubID.HotAVisitable2.Observatory,

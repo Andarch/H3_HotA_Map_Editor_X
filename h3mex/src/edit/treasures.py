@@ -40,13 +40,13 @@ def add_treasures():
     ]
 
     sea_hota_collectible = [
-        objects.SubID.HotACollectible.Sea_Barrel,
-        objects.SubID.HotACollectible.Sea_Barrel,
-        objects.SubID.HotACollectible.Sea_Barrel,
-        objects.SubID.HotACollectible.Jetsam,
-        objects.SubID.HotACollectible.Jetsam,
-        objects.SubID.HotACollectible.Jetsam,
-        objects.SubID.HotACollectible.Vial_of_Mana,
+        objects.SubID.HotAPickups.Sea_Barrel,
+        objects.SubID.HotAPickups.Sea_Barrel,
+        objects.SubID.HotAPickups.Sea_Barrel,
+        objects.SubID.HotAPickups.Jetsam,
+        objects.SubID.HotAPickups.Jetsam,
+        objects.SubID.HotAPickups.Jetsam,
+        objects.SubID.HotAPickups.Vial_of_Mana,
     ]
 
     size = map_data["general"]["map_size"]
@@ -59,18 +59,18 @@ def add_treasures():
 
     # Filter available treasures
     land_treasures = [id for id in land_treasures if (id, 0) in def_ids]
-    sea_treasures = [id for id in sea_treasures if id != objects.ID.HotA_Collectible and (id, 0) in def_ids]
+    sea_treasures = [id for id in sea_treasures if id != objects.ID.HotA_Pickup and (id, 0) in def_ids]
     sea_hota_available = [
-        int(sub_id) for sub_id in sea_hota_collectible if (objects.ID.HotA_Collectible, int(sub_id)) in def_ids
+        int(sub_id) for sub_id in sea_hota_collectible if (objects.ID.HotA_Pickup, int(sub_id)) in def_ids
     ]
     if sea_hota_available:
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
-        sea_treasures.append(objects.ID.HotA_Collectible)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
+        sea_treasures.append(objects.ID.HotA_Pickup)
 
     if not land_treasures and not sea_treasures:
         xprint(type=TextType.ERROR, text="No eligible treasure definitions found on map. Nothing to add.")
@@ -111,9 +111,9 @@ def add_treasures():
     }
 
     hota_creators = {
-        objects.SubID.HotACollectible.Sea_Barrel: _get_sea_barrel,
-        objects.SubID.HotACollectible.Jetsam: _get_jetsam,
-        objects.SubID.HotACollectible.Vial_of_Mana: _get_vial_of_mana,
+        objects.SubID.HotAPickups.Sea_Barrel: _get_sea_barrel,
+        objects.SubID.HotAPickups.Jetsam: _get_jetsam,
+        objects.SubID.HotAPickups.Vial_of_Mana: _get_vial_of_mana,
     }
 
     levels = [0, 1] if has_underground else [0]
@@ -153,9 +153,9 @@ def add_treasures():
                 attempts_per_obj += 1
                 continue
             id = random.choice(sea_treasures)
-            if id == objects.ID.HotA_Collectible:
+            if id == objects.ID.HotA_Pickup:
                 sub_id = random.choice(sea_hota_available)
-                def_id = def_ids[(objects.ID.HotA_Collectible, sub_id)]
+                def_id = def_ids[(objects.ID.HotA_Pickup, sub_id)]
                 new_obj = hota_creators[sub_id](coords, def_id)
                 new_obj["sub_id"] = sub_id
             else:
@@ -306,7 +306,7 @@ def _get_shipwreck_survivor(coords, def_id):
 
 
 def _get_sea_barrel(coords, def_id):
-    obj = _get_base_object(coords, objects.ID.HotA_Collectible, def_id)
+    obj = _get_base_object(coords, objects.ID.HotA_Pickup, def_id)
     obj.update(
         {
             "sub_id": 1,
@@ -323,7 +323,7 @@ def _get_sea_barrel(coords, def_id):
 
 
 def _get_jetsam(coords, def_id):
-    obj = _get_base_object(coords, objects.ID.HotA_Collectible, def_id)
+    obj = _get_base_object(coords, objects.ID.HotA_Pickup, def_id)
     obj.update(
         {
             "sub_id": 2,
@@ -337,7 +337,7 @@ def _get_jetsam(coords, def_id):
 
 
 def _get_vial_of_mana(coords, def_id):
-    obj = _get_base_object(coords, objects.ID.HotA_Collectible, def_id)
+    obj = _get_base_object(coords, objects.ID.HotA_Pickup, def_id)
     obj.update(
         {
             "sub_id": 3,

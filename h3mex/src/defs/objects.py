@@ -146,13 +146,13 @@ class ID(IntEnum):
     HotA_Decor_1 = 139
     HotA_Decor_2 = 140
     ### Normal ###
-    HotA_Ground = 141
+    HotA_Magical_Terrain = 141
     HotA_Warehouse = 142
     ### Decor ###
     River_Delta = 143
     ### Normal ###
     HotA_Visitable_1 = 144
-    HotA_Collectible = 145
+    HotA_Pickup = 145
     HotA_Visitable_2 = 146
     ### Decor ###
     Rock = 147
@@ -500,7 +500,7 @@ class SubID(IntEnum):
         Normal = 0
         Cannon = 1
 
-    class HotACollectible(IntEnum):  # ID 145
+    class HotAPickups(IntEnum):  # ID 145
         Ancient_Lamp = 0
         Sea_Barrel = 1
         Jetsam = 2
@@ -532,7 +532,7 @@ class SubID(IntEnum):
         Dunes = 1
         Fields_of_Glory = 2
 
-    class HotADecoration1(IntEnum):  # ID 139
+    class HotADecor1(IntEnum):  # ID 139
         Crate = 0
         Crates = 1
         Sack = 2
@@ -566,7 +566,7 @@ class SubID(IntEnum):
         Burnt_Structure = 30
         Stele = 31
 
-    class HotADecoration2(IntEnum):  # ID 140
+    class HotADecor2(IntEnum):  # ID 140
         Boulder = 0
         Stone = 1
         Palms = 2

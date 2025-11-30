@@ -7,15 +7,6 @@ HEROES = {
     objects.ID.Hero_Placeholder,
 }
 
-RANDOM_ARTIFACTS = {
-    objects.ID.Random_Artifact,
-    objects.ID.Random_Treasure_Artifact,
-    objects.ID.Random_Minor_Artifact,
-    objects.ID.Random_Major_Artifact,
-    objects.ID.Random_Relic,
-}
-ARTIFACTS = {objects.ID.Artifact, *RANDOM_ARTIFACTS}
-
 RANDOM_MONSTERS_LEVEL = {
     objects.ID.Random_Monster_1,
     objects.ID.Random_Monster_2,
@@ -28,26 +19,21 @@ RANDOM_MONSTERS_LEVEL = {
 RANDOM_MONSTERS = {objects.ID.Random_Monster, *RANDOM_MONSTERS_LEVEL}
 MONSTERS = {objects.ID.Monster, *RANDOM_MONSTERS}
 
+RANDOM_ARTIFACTS = {
+    objects.ID.Random_Artifact,
+    objects.ID.Random_Treasure_Artifact,
+    objects.ID.Random_Minor_Artifact,
+    objects.ID.Random_Major_Artifact,
+    objects.ID.Random_Relic,
+}
+ARTIFACTS = {objects.ID.Artifact, *RANDOM_ARTIFACTS}
+
 RESOURCES = {objects.ID.Resource, objects.ID.Random_Resource}
 
-MAGICAL_TERRAIN = {
-    0,
-}
-
-PASSABLE = {
-    *HEROES,
-    *ARTIFACTS,
-    *MONSTERS,
-    *RESOURCES,
-    *MAGICAL_TERRAIN,
-    objects.ID.Boat,
+COLLECTIBLES = {
     objects.ID.Campfire,
-    objects.ID.Event,
     objects.ID.Flotsam,
-    objects.ID.Grail,
-    objects.ID.HotA_Collectible,
-    objects.ID.HotA_Decor_1,
-    objects.ID.HotA_Decor_2,
+    objects.ID.HotA_Pickup,
     objects.ID.Ocean_Bottle,
     objects.ID.Pandoras_Box,
     objects.ID.Scholar,
@@ -55,6 +41,36 @@ PASSABLE = {
     objects.ID.Shipwreck_Survivor,
     objects.ID.Spell_Scroll,
     objects.ID.Treasure_Chest,
+}
+
+MAGICAL_TERRAIN = {
+    objects.ID.Cursed_Ground_RoE,
+    objects.ID.Magic_Plains_RoE,
+    objects.ID.HotA_Magical_Terrain,
+    objects.ID.Clover_Field,
+    objects.ID.Cursed_Ground,
+    objects.ID.Evil_Fog,
+    objects.ID.Favorable_Winds,
+    objects.ID.Fiery_Fields,
+    objects.ID.Holy_Ground,
+    objects.ID.Lucid_Pools,
+    objects.ID.Magic_Clouds,
+    objects.ID.Magic_Plains,
+    objects.ID.Rocklands,
+}
+
+PASSABLE = {
+    *HEROES,
+    *MONSTERS,
+    *ARTIFACTS,
+    *RESOURCES,
+    *COLLECTIBLES,
+    *MAGICAL_TERRAIN,
+    objects.ID.Boat,
+    objects.ID.Event,
+    objects.ID.Grail,
+    objects.ID.HotA_Decor_1,
+    objects.ID.HotA_Decor_2,
 }
 
 PASSABLE_HOTA_DECOR_1 = {
