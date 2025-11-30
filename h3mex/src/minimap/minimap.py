@@ -3,8 +3,8 @@ from enum import IntEnum
 from io import BytesIO
 from pathlib import Path
 
-from PIL import Image
-from src.common import Keypress, Layer, TextType, map_data
+from PIL import Image, ImageEnhance
+from src.common import Keypress, Layer, TextAlign, TextType, map_data
 from src.defs import groups, objects
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
@@ -330,6 +330,8 @@ monster_objects = {
 
 resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
 
+base_layers = {"base1g": None, "base1u": None, "base2g": None, "base2u": None}
+
 
 def view() -> None:
     if os.environ.get("TERM_PROGRAM") == "vscode":
@@ -472,7 +474,7 @@ def _process_image(
         )
     # Generate and save minimap images
     if generate_type == "View":
-        _display_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
+        _view_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
     if generate_type == "Export":
         _export_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
         xprint(type=TextType.DONE)
@@ -590,7 +592,7 @@ def _process_object(
                                 )
 
 
-def _display_minimap_images(
+def _view_minimap_images(
     minimap_type: str,
     map_layers: list,
     blocked_tiles: dict,
@@ -605,7 +607,7 @@ def _display_minimap_images(
 
     minimap_images = []
     for layer_index, layer in enumerate(map_layers):
-        img = Image.new("RGB", (map_size, map_size))
+        img = Image.new("RGBA", (map_size, map_size))
         for i, tile in enumerate(layer):
             x = i % map_size
             y = i // map_size
@@ -627,10 +629,36 @@ def _display_minimap_images(
 
     for layer in range(len(minimap_images)):
         minimap_images[layer] = minimap_images[layer].resize((370, 370), resample=Image.Resampling.NEAREST)
-        if minimap_images[layer].mode == "RGBA":
-            canvas = Image.new("RGB", minimap_images[layer].size)
-            canvas.paste(minimap_images[layer], (0, 0))
-            minimap_images[layer] = canvas
+
+        if png_name == "base1":
+            if layer == 0:
+                base_layers["base1g"] = Image.new("RGBA", (370, 370))
+                base_layers["base1g"].paste(minimap_images[layer], (0, 0))
+                base_layers["base1g"] = ImageEnhance.Brightness(base_layers["base1g"]).enhance(0.75)
+            elif layer == 1:
+                base_layers["base1u"] = Image.new("RGBA", (370, 370))
+                base_layers["base1u"].paste(minimap_images[layer], (0, 0))
+                base_layers["base1u"] = ImageEnhance.Brightness(base_layers["base1u"]).enhance(0.75)
+        if png_name == "base2":
+            if layer == 0:
+                base_layers["base2g"] = Image.new("RGBA", (370, 370))
+                base_layers["base2g"].paste(minimap_images[layer], (0, 0))
+                base_layers["base2g"] = ImageEnhance.Brightness(base_layers["base2g"]).enhance(0.75)
+            elif layer == 1:
+                base_layers["base2u"] = Image.new("RGBA", (370, 370))
+                base_layers["base2u"].paste(minimap_images[layer], (0, 0))
+                base_layers["base2u"] = ImageEnhance.Brightness(base_layers["base2u"]).enhance(0.75)
+
+        canvas = Image.new("RGBA", minimap_images[layer].size)
+        if minimap_type == "Extended" and png_name not in {"base1", "base2"}:
+            if layer == 0:
+                canvas.paste(base_layers["base1g"], (0, 0), base_layers["base1g"])
+                canvas.paste(base_layers["base2g"], (0, 0), base_layers["base2g"])
+            elif layer == 1:
+                canvas.paste(base_layers["base1u"], (0, 0), base_layers["base1u"])
+                canvas.paste(base_layers["base2u"], (0, 0), base_layers["base2u"])
+        canvas.paste(minimap_images[layer], (0, 0), minimap_images[layer])
+        minimap_images[layer] = canvas.convert("RGB")
 
     bg = Image.open(Path(os.getcwd()).parent / "h3mex" / "res" / "graphics" / "minimap_bg.png")
     minimap = bg.copy()
@@ -641,8 +669,15 @@ def _display_minimap_images(
     buffer = BytesIO()
     minimap.save(buffer, format="PNG")
 
-    xprint(overwrite=2)
+    xprint()
+    if minimap_type == "Standard":
+        xprint(text="STANDARD MINIMAP", align=TextAlign.CENTER, overwrite=2)
+    else:
+        xprint(text=f"EXTENDED MINIMAP - {png_number:02d}_{png_name}", align=TextAlign.CENTER, overwrite=2)
+    xprint()
+
     display_image(buffer)
+    xprint()
 
 
 def _export_minimap_images(
