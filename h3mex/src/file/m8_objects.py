@@ -1585,10 +1585,10 @@ def parse_seers_hut(obj: dict) -> dict:
     obj["repeatable_quests"] = []
 
     for _ in range(io.read_int(4)):  # Amount of one-time quests
-        obj["one_time_quests"].append([parse_quest(), parse_reward()])
+        obj["one_time_quests"].append({"quest": parse_quest(), "reward": parse_reward()})
 
     for _ in range(io.read_int(4)):  # Amount of repeatable quests
-        obj["repeatable_quests"].append([parse_quest(), parse_reward()])
+        obj["repeatable_quests"].append({"quest": parse_quest(), "reward": parse_reward()})
 
     io.seek(2)
     return obj
@@ -1597,13 +1597,13 @@ def parse_seers_hut(obj: dict) -> dict:
 def write_seers_hut(obj: dict) -> None:
     io.write_int(len(obj["one_time_quests"]), 4)
     for quest in obj["one_time_quests"]:
-        write_quest(quest[0])
-        write_reward(quest[1])
+        write_quest(quest["quest"])
+        write_reward(quest["reward"])
 
     io.write_int(len(obj["repeatable_quests"]), 4)
     for quest in obj["repeatable_quests"]:
-        write_quest(quest[0])
-        write_reward(quest[1])
+        write_quest(quest["quest"])
+        write_reward(quest["reward"])
 
     io.write_int(0, 2)
 
