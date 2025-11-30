@@ -1,10 +1,117 @@
 import random
 
 from src.common import TextType, map_data
-from src.defs import objects
+from src.defs import creatures, objects
 from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
+
+
+def modify_ai_main_hero_boost():
+    xprint(text="Modifying AI main hero boost…")
+
+    LVL7_AMOUNT = 100
+    MULTIPLIERS = [1, 2.5, 5, 7.5, 10, 12.5, 15]
+    MULTIPLIERS_FACTORY = [1, 1, 5, 7.5, 10, 12.5, 15]
+
+    # Map player slot (1..7) -> creature IDs for that slot.
+    # Note: allowed_players is 8 bits; index 0 is the red player (irrelevant here),
+    # the last 7 bits correspond to player slots 1..7.
+    PLAYER_CREATURES = {
+        1: [
+            creatures.ID.Archangel,
+            creatures.ID.Champion,
+            creatures.ID.Zealot,
+            creatures.ID.Crusader,
+            creatures.ID.Royal_Griffin,
+            creatures.ID.Marksman,
+            creatures.ID.Halberdier,
+        ],
+        2: [
+            creatures.ID.Black_Dragon,
+            creatures.ID.Scorpicore,
+            creatures.ID.Minotaur_King,
+            creatures.ID.Medusa_Queen,
+            creatures.ID.Evil_Eye,
+            creatures.ID.Harpy_Hag,
+            creatures.ID.Infernal_Troglodyte,
+        ],
+        3: [
+            creatures.ID.Gold_Dragon,
+            creatures.ID.War_Unicorn,
+            creatures.ID.Dendroid_Soldier,
+            creatures.ID.Silver_Pegasus,
+            creatures.ID.Grand_Elf,
+            creatures.ID.Battle_Dwarf,
+            creatures.ID.Centaur_Captain,
+        ],
+        4: [
+            creatures.ID.Juggernaut,
+            creatures.ID.Crimson_Couatl,
+            creatures.ID.Bounty_Hunter,
+            creatures.ID.Olgoi_Khorkhoi,
+            creatures.ID.Sentinel_Automaton,
+            creatures.ID.Bellwether_Armadillo,
+            creatures.ID.Engineer,
+        ],
+        5: [
+            creatures.ID.Ghost_Dragon,
+            creatures.ID.Dread_Knight,
+            creatures.ID.Power_Lich,
+            creatures.ID.Vampire_Lord,
+            creatures.ID.Wraith,
+            creatures.ID.Zombie,
+            creatures.ID.Skeleton_Warrior,
+        ],
+        6: [
+            creatures.ID.Haspid,
+            creatures.ID.Nix_Warrior,
+            creatures.ID.Sorceress,
+            creatures.ID.Ayssid,
+            creatures.ID.Sea_Dog,
+            creatures.ID.Seaman,
+            creatures.ID.Oceanid,
+        ],
+        7: [
+            creatures.ID.Titan,
+            creatures.ID.Naga_Queen,
+            creatures.ID.Master_Genie,
+            creatures.ID.Arch_Mage,
+            creatures.ID.Iron_Golem,
+            creatures.ID.Obsidian_Gargoyle,
+            creatures.ID.Master_Gremlin,
+        ],
+    }
+
+    modified = 0
+    for obj in map_data.get("object_data", []):
+        if obj.get("id") != objects.ID.Event or obj.get("message") != "AI main hero boost":
+            continue
+
+        allowed = obj.get("allowed_players", [])
+        player_slot = None
+        allowed = (list(allowed) + [0] * 8)[:8]
+        player_slot = next((i for i, v in enumerate(allowed[1:], start=1) if v == 1 or v is True), None)
+
+        if player_slot is None:
+            continue
+
+        creature_ids = PLAYER_CREATURES.get(player_slot)
+        if not creature_ids:
+            continue
+
+        # Use Factory multipliers for player slot 4, otherwise use standard multipliers
+        multipliers = MULTIPLIERS_FACTORY if player_slot == 4 else MULTIPLIERS
+
+        # Build creature stack with integer counts (avoid float quantities).
+        obj.setdefault("contents", {})["Creatures"] = [
+            {"id": cid, "amount": int(LVL7_AMOUNT * mult)} for cid, mult in zip(creature_ids, multipliers)
+        ]
+        modified += 1
+
+    xprint()
+    xprint(type=TextType.INFO, text=f"Modified {modified} AI main hero boosts.")
+    wait_for_keypress()
 
 
 def delete_explorer_bonuses():

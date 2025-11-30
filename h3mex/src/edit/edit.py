@@ -47,10 +47,12 @@ def menu() -> None:
                         case "2":
                             eventobjects.delete_explorer_bonuses()
                         case "3":
-                            pandoras.modify_pandoras()
+                            eventobjects.modify_ai_main_hero_boost()
                         case "4":
-                            garrisons.copy_garrison_guards()
+                            pandoras.modify_pandoras()
                         case "5":
+                            garrisons.copy_garrison_guards()
+                        case "6":
                             garrisons.fill_empty_garrison_guards()
                         case "M":
                             break
