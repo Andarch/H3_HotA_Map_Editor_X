@@ -214,8 +214,10 @@ def _copy_events() -> None:
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["town_events"] and obj["town_events"][0]["message"] == "source":
             for event in obj["town_events"]:
+                event["message"] = ""
                 events.append(event)
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["town_events"] and obj["town_events"][0]["message"] == "target":
             obj["town_events"] = events.copy()
+            obj["town_events"][0]["message"] == ""
     xprint(type=TextType.DONE)
