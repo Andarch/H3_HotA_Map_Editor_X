@@ -442,6 +442,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     31,
         #     "coversofdarkness",
         # )
+        # _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, 32, "oceanbottles")
 
 
 def _process_image(
