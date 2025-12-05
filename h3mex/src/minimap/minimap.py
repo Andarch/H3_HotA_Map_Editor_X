@@ -384,12 +384,27 @@ def generate(generate_type: str, minimap_type: str) -> None:
                 objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
                 objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
                 objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+                objects.SubID.MonolithPortal.OneWay.White_Monolith,
+            },
+            num,
+            "monoliths1_en",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
             },
             num,
             "tmp_monoliths1_en_others",
         )
-
-        num += 1
         _process_image(
             generate_type,
             minimap_type,
@@ -397,53 +412,6 @@ def generate(generate_type: str, minimap_type: str) -> None:
             {objects.SubID.MonolithPortal.OneWay.White_Monolith},
             num,
             "tmp_monoliths1_en_white",
-        )
-
-        num += 1
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Entrance},
-            {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-                objects.SubID.MonolithPortal.OneWay.White_Monolith,
-            },
-            num,
-            "monoliths1_en",
-        )
-
-        num += 1
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Exit},
-            {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-            },
-            num,
-            "tmp_monoliths1_ex_others",
-        )
-
-        num += 1
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Entrance},
-            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
-            num,
-            "tmp_monoliths1_ex_white",
         )
 
         num += 1
@@ -463,6 +431,30 @@ def generate(generate_type: str, minimap_type: str) -> None:
             },
             num,
             "monoliths1_ex",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Exit},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+            },
+            num,
+            "tmp_monoliths1_ex_others",
+        )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
+            num,
+            "tmp_monoliths1_ex_white",
         )
 
         num += 1
@@ -486,16 +478,16 @@ def generate(generate_type: str, minimap_type: str) -> None:
         num += 1
         _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, num, "whirlpools")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, num, "prisons")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, monster_objects, None, num, "monsters")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, num, "spellscrolls")
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
@@ -505,13 +497,13 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     "shrine1",
         # )
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, num, "shrine2")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, num, "shrine3")
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
@@ -521,46 +513,46 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     "shrine4",
         # )
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, num, "pyramids")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, num, "artifacts")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, num, "randomartifacts")
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, num, "randomtreasureartifacts"
         # )
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, num, "randomminorartifacts"
         # )
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, num, "randommajorartifacts"
         # )
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, num, "randomrelics")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, resource_objects, None, num, "resources")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, num, "treasurechests")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, num, "scholars")
 
-        # num += 1
+        num += 1
         # _process_image(generate_type, minimap_type, {objects.ID.Event}, None, num, "eventobjects")
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
@@ -570,7 +562,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     "tradingposts",
         # )
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
@@ -580,7 +572,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     "warlockslabs",
         # )
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
@@ -590,7 +582,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         #     "redwoodobservatories",
         # )
 
-        # num += 1
+        num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
