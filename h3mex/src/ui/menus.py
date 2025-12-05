@@ -67,7 +67,7 @@ class Menu:
                 None,
                 ("3", "Towns…"),
                 None,
-                ("4", "Heroes: Reset identity details"),
+                ("4", "Heroes…"),
                 None,
                 ("5", "Monsters: Change level-specific random monsters to any level"),
                 ("6", "Monsters: Set monster values"),
@@ -99,6 +99,11 @@ class Menu:
                 ("3", "Towns: Add humans to AI-only events"),
                 ("4", "Towns: Copy events from source town to target towns"),
                 ("5", "Towns: Copy buildings from source town to target towns"),
+            ],
+            [
+                ("1", "Heroes: Reset identity details"),
+                ("2", "Heroes: Move heroes"),
+                ("3", "Heroes: Swap hero indexes"),
             ],
         ],
     }

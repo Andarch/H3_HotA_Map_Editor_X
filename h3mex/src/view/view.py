@@ -11,7 +11,7 @@ from .format import format_map_data
 
 ###################################
 # OBJECT_FILTER = [*objects.ID]
-OBJECT_FILTER = [objects.ID.Ocean_Bottle]
+OBJECT_FILTER = [objects.ID.Hero]
 ###################################
 
 

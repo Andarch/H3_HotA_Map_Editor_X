@@ -51,7 +51,20 @@ def menu() -> None:
                         case "5":
                             towns.edit(copy_buildings=True)
             case "4":
-                heroes.reset()
+                while True:
+                    keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][3]))
+                    if keypress == Keypress.ESC:
+                        break
+
+                    header.draw()
+
+                    match keypress:
+                        case "1":
+                            heroes.reset()
+                        case "2":
+                            heroes.move_heroes_from_towns_to_map()
+                        case "3":
+                            heroes.swap_hero_indexes()
             case "5":
                 monsters.set_random_monsters()
             case "6":

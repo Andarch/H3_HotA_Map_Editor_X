@@ -32,7 +32,7 @@ def replace_objects() -> None:
     protected_count = 0
 
     for i, obj in enumerate(map_data["object_data"]):
-        if obj["id"] == objects.ID.One_Way_M | P_Entrance and obj["sub_id"] not in {4, 5, 6, 7, 11}:
+        if obj["id"] == objects.ID.One_Way_MonolithPortal_Entrance and obj["sub_id"] not in {4, 5, 6, 7, 11}:
             if obj["coords"] in protected_coords:
                 protected_count += 1
                 continue

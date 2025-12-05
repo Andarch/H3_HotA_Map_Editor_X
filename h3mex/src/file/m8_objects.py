@@ -2,6 +2,7 @@ import os
 from enum import IntEnum
 
 from PIL import Image
+from src.common import map_data
 from src.defs import (
     artifacts,
     creatures,
@@ -886,7 +887,15 @@ def parse_hero(obj: dict) -> dict:
             hero["hero_type"] = "Prison"
 
     hero["id"] = io.read_int(1)
-    hero["default_name"] = heroes.ID(hero["id"]).name.replace("_", " ")
+
+    custom_default_name = None
+    for h in map_data["starting_heroes"]["custom_heroes"]:
+        if h["id"] == hero["id"]:
+            custom_default_name = h["custom_name"]
+            break
+    hero["default_name"] = (
+        custom_default_name if custom_default_name is not None else heroes.ID(hero["id"]).name.replace("_", " ")
+    )
 
     hero["has_custom_name"] = bool(io.read_int(1))
     if hero["has_custom_name"]:
