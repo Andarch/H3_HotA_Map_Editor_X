@@ -361,17 +361,17 @@ def generate(generate_type: str, minimap_type: str) -> None:
     elif minimap_type == "Extended":
         _process_image(generate_type, minimap_type, groups.DECOR, None, 1, "base1")
         _process_image(generate_type, minimap_type, None, None, 2, "base2")
-        # _process_image(generate_type, minimap_type, border_objects, None, 3, "border")
-        # _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
+        _process_image(generate_type, minimap_type, border_objects, None, 3, "border")
+        _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
         _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Entrance}, None, 5, "portals1en")
         _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Exit}, None, 6, "portals1ex")
-        # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_land_portals, 7, "portals2land"
-        # )
-        # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_water_portals, 8, "portals2water"
-        # )
-        # _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_land_portals, 7, "portals2land"
+        )
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_water_portals, 8, "portals2water"
+        )
+        _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
         # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, 10, "prisons")
         # _process_image(generate_type, minimap_type, monster_objects, None, 11, "monsters")
         # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
