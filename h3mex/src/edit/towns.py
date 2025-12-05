@@ -42,15 +42,23 @@ BOSS_LVL5_CREATURES = round(BOSS_LVL7_CREATURES * 6)
 BOSS_LVL6_CREATURES = round(BOSS_LVL7_CREATURES * 3)
 
 
-def edit(spells: bool = False, buildings: bool = False, events: bool = False, human: bool = False) -> None:
+def edit(
+    spells: bool = False,
+    buildings: bool = False,
+    add_events: bool = False,
+    human: bool = False,
+    copy_events: bool = False,
+) -> None:
     if spells:
         _enable_spells()
     if buildings:
         _enable_buildings()
-    if events:
+    if add_events:
         _create_events()
     if human:
         _change_ai_events()
+    if copy_events:
+        _copy_events()
 
 
 def _enable_spells() -> None:
@@ -77,24 +85,47 @@ def _enable_buildings() -> None:
     xprint(type=TextType.DONE)
 
 
-def _change_ai_events() -> None:
-    xprint(type=TextType.ACTION, text="Adding Humans to AI-only town events…")
-    for obj in map_data["object_data"]:
-        if obj["id"] in TOWN_IDS:
-            for event in obj["events"]:
-                if event["apply_ai"] and event["apply_to"] == [1] * 8:
-                    event["apply_human"] = True
-    xprint(type=TextType.DONE)
-
-
 def _create_events() -> None:
+    def _get_event_dict(
+        name: str,
+        players: list,
+        human: bool,
+        ai: bool,
+        first: int,
+        subsequent: int,
+        lvl7b_creatures: int,
+        random_town_buildings: list,
+        buildings: list,
+        creatures: list,
+    ) -> dict:
+        return {
+            "isTown": True,
+            "name": name,
+            "message": "",
+            "resources": [0] * 7,
+            "apply_to": players,
+            "apply_human": human,
+            "apply_ai": ai,
+            "first_occurence": first,
+            "subsequent_occurences": subsequent,
+            "trash_bytes": b"\x00" * 16,
+            "allowed_difficulties": 31,
+            "hota_lvl7b_amount": lvl7b_creatures,
+            "hota_unknown_constant": 44,
+            "hota_special": random_town_buildings,
+            "apply_neutral_towns": False,
+            "buildings": buildings,
+            "creatures": creatures,
+            "end_trash": b"\x00" * 4,
+        }
+
     xprint(type=TextType.ACTION, text="Configuring town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["owner"] != players.ID.Neutral:
             # Remove any existing events with the same name
-            obj["events"] = [e for e in obj["events"] if e["name"] != HUMAN_EVENT_NAME]
-            obj["events"] = [e for e in obj["events"] if e["name"] != AI_EVENT_NAME]
-            obj["events"] = [e for e in obj["events"] if e["name"] != BOSS_EVENT_NAME]
+            obj["town_events"] = [e for e in obj["town_events"] if e["name"] != HUMAN_EVENT_NAME]
+            obj["town_events"] = [e for e in obj["town_events"] if e["name"] != AI_EVENT_NAME]
+            obj["town_events"] = [e for e in obj["town_events"] if e["name"] != BOSS_EVENT_NAME]
             # Create human event
             if HUMAN_PLAYERS[obj["owner"]]:
                 human_event = _get_event_dict(
@@ -117,7 +148,7 @@ def _create_events() -> None:
                         HUMAN_LVL7_CREATURES,
                     ],
                 )
-                obj["events"].extend([human_event])
+                obj["town_events"].extend([human_event])
             # Create AI event
             if AI_PLAYERS[obj["owner"]] and not BOSS_PLAYERS[obj["owner"]]:
                 ai_event = _get_event_dict(
@@ -140,7 +171,7 @@ def _create_events() -> None:
                         AI_LVL7_CREATURES,
                     ],
                 )
-                obj["events"].extend([ai_event])
+                obj["town_events"].extend([ai_event])
             # Create boss event
             # if BOSS_PLAYERS[obj["owner"]]:
             #     boss_event = _get_event_dict(
@@ -163,39 +194,28 @@ def _create_events() -> None:
             #             BOSS_LVL7_CREATURES,
             #         ],
             #     )
-            #     obj["events"].extend([boss_event])
+            #     obj["town_events"].extend([boss_event])
     xprint(type=TextType.DONE)
 
 
-def _get_event_dict(
-    name: str,
-    players: list,
-    human: bool,
-    ai: bool,
-    first: int,
-    subsequent: int,
-    lvl7b_creatures: int,
-    random_town_buildings: list,
-    buildings: list,
-    creatures: list,
-) -> dict:
-    return {
-        "isTown": True,
-        "name": name,
-        "message": "",
-        "resources": [0] * 7,
-        "apply_to": players,
-        "apply_human": human,
-        "apply_ai": ai,
-        "first_occurence": first,
-        "subsequent_occurences": subsequent,
-        "trash_bytes": b"\x00" * 16,
-        "allowed_difficulties": 31,
-        "hota_lvl7b_amount": lvl7b_creatures,
-        "hota_unknown_constant": 44,
-        "hota_special": random_town_buildings,
-        "apply_neutral_towns": False,
-        "buildings": buildings,
-        "creatures": creatures,
-        "end_trash": b"\x00" * 4,
-    }
+def _change_ai_events() -> None:
+    xprint(type=TextType.ACTION, text="Adding Humans to AI-only town events…")
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS:
+            for event in obj["town_events"]:
+                if event["apply_ai"] and event["apply_to"] == [1] * 8:
+                    event["apply_human"] = True
+    xprint(type=TextType.DONE)
+
+
+def _copy_events() -> None:
+    xprint(type=TextType.ACTION, text="Copying events from source town to target towns…")
+    events = []
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["town_events"] and obj["town_events"][0]["message"] == "source":
+            for event in obj["town_events"]:
+                events.append(event)
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["town_events"] and obj["town_events"][0]["message"] == "target":
+            obj["town_events"] = events.copy()
+    xprint(type=TextType.DONE)

@@ -29,7 +29,7 @@ class ID(IntEnum):
     Marletto_Tower = 23
     Derelict_Ship = 24
     Dragon_Utopia = 25
-    Event = 26
+    Event_Object = 26
     Eye_of_the_Magi = 27
     Faerie_Ring = 28
     Flotsam = 29

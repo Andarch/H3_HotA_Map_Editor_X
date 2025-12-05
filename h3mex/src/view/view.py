@@ -11,7 +11,7 @@ from .format import format_map_data
 
 ###################################
 # OBJECT_FILTER = [*objects.ID]
-OBJECT_FILTER = [objects.ID.Seers_Hut]
+OBJECT_FILTER = [objects.ID.Town, objects.ID.Random_Town]
 ###################################
 
 
@@ -53,7 +53,10 @@ def menu() -> None:
                 data = format_map_data(("object_data", object_data))
                 _print_lines(data)
             case "9":
-                data = format_map_data(("events", map_data["events"]))
+                data = format_map_data(("global_events", map_data["global_events"]))
+                _print_lines(data)
+            case "0":
+                data = format_map_data(("town_events", map_data["town_events"]))
                 _print_lines(data)
             case "M":
                 minimap.view()

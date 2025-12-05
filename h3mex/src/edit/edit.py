@@ -26,11 +26,22 @@ def menu() -> None:
 
         match keypress:
             case "1":
-                towns.edit(spells=True, buildings=True)
-            case "2":
-                towns.edit(events=True)
-            case "3":
-                towns.edit(human=True)
+                while True:
+                    keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][2]))
+                    if keypress == Keypress.ESC:
+                        break
+
+                    header.draw()
+
+                    match keypress:
+                        case "1":
+                            towns.edit(spells=True, buildings=True)
+                        case "2":
+                            towns.edit(add_events=True)
+                        case "3":
+                            towns.edit(human=True)
+                        case "4":
+                            towns.edit(copy_events=True)
             case "4":
                 heroes.reset()
             case "5":

@@ -16,7 +16,7 @@ class CustomEncoder(json.JSONEncoder):
 
 def export(keypress: str) -> None:
     def main() -> None:
-        filepath = "....maps/exports/JSON/"
+        filepath = "exports/json"
         filename = os.path.join(filepath, map_data["filename"][:-4] + ".json")
 
         match keypress:

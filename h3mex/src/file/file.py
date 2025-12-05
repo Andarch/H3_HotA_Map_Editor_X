@@ -97,10 +97,11 @@ def load(filename: str = None) -> None:
             map_data["object_defs"] = m8_objects.parse_object_defs()
 
             xprint(text="Parsing 11/13: Object Data…", overwrite=1)
+            map_data["town_events"] = {}
             map_data["object_data"] = m8_objects.parse_object_data(map_data["object_defs"], map_data["filename"])
 
             xprint(text="Parsing 12/13: Events…", overwrite=1)
-            map_data["events"] = m6_rumors_and_events.parse_events()
+            map_data["global_events"] = m6_rumors_and_events.parse_events()
 
             xprint(type=TextType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
             map_data["null_bytes"] = m9_null.read_null()
@@ -159,7 +160,7 @@ def save(filename: str = None) -> bool:
         m7_terrain.write_terrain(map_data["terrain"])
         m8_objects.write_object_defs(map_data["object_defs"])
         m8_objects.write_object_data(map_data["object_data"])
-        m6_rumors_and_events.write_events(map_data["events"])
+        m6_rumors_and_events.write_events(map_data["global_events"])
         m9_null.write_null(map_data["null_bytes"])
 
     map_file = None

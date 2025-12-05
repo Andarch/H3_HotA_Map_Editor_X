@@ -1,3 +1,5 @@
+from src.common import map_data
+
 from . import io
 
 
@@ -24,13 +26,16 @@ def write_rumors(info: list) -> None:
         io.write_str(rumor["text"])
 
 
-def parse_events(is_town: bool = False) -> list:
+def parse_events(town: str = None, coords: list = None) -> list:
     info = []
     event_count = io.read_int(4)
 
     for _ in range(event_count):
         event = {}
-        event["isTown"] = is_town
+
+        if town and town not in map_data["town_events"]:
+            map_data["town_events"][f"{town} {coords}"] = []
+
         event["name"] = io.read_str(io.read_int(4))
         event["message"] = io.read_str(io.read_int(4))
 
@@ -46,7 +51,7 @@ def parse_events(is_town: bool = False) -> list:
         event["trash_bytes"] = io.read_raw(16)
         event["allowed_difficulties"] = io.read_int(4)
 
-        if is_town:
+        if town:
             event["hota_lvl7b_amount"] = io.read_int(4)
             event["hota_unknown_constant"] = io.read_int(4)
             event["hota_special"] = io.read_bits(6)
@@ -58,6 +63,7 @@ def parse_events(is_town: bool = False) -> list:
                 event["creatures"].append(io.read_int(2))
 
             event["end_trash"] = io.read_raw(4)
+            map_data["town_events"][f"{town} {coords}"].append(event)
 
         info.append(event)
 

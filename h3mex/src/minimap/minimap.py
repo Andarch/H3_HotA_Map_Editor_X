@@ -249,7 +249,7 @@ ignored_pickups = {
     objects.ID.Ocean_Bottle,
     objects.ID.Grail,
     objects.ID.Monster,
-    objects.ID.Event,
+    objects.ID.Event_Object,
     objects.ID.Artifact,
     objects.ID.Pandoras_Box,
     objects.ID.Spell_Scroll,

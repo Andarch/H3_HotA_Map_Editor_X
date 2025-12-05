@@ -8,7 +8,8 @@ class Menu:
         ("6", "Terrain"),
         ("7", "Object Defs"),
         ("8", "Object Data"),
-        ("9", "Events"),
+        ("9", "Global Events"),
+        ("0", "Town Events"),
     ]
 
     _MINIMAP = [
@@ -60,9 +61,7 @@ class Menu:
         "name": "EDIT",
         "menus": [
             [
-                ("1", "Towns: Enable spell research, all spells, and all buildings"),
-                ("2", "Towns: Add creature bonus events"),
-                ("3", "Towns: Add humans to AI-only events"),
+                ("1", "Towns…"),
                 None,
                 ("4", "Heroes: Reset identity details"),
                 None,
@@ -89,6 +88,12 @@ class Menu:
                 ("7", "Garrisons: Fill empty garrisons with guards"),
                 None,
                 ("M", "Show more…"),
+            ],
+            [
+                ("1", "Towns: Enable all spells/research and all buildings"),
+                ("2", "Towns: Add creature bonus events"),
+                ("3", "Towns: Add humans to AI-only events"),
+                ("4", "Towns: Copy events from source town to target towns"),
             ],
         ],
     }

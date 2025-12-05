@@ -85,7 +85,7 @@ def modify_ai_main_hero_boost():
 
     modified = 0
     for obj in map_data.get("object_data", []):
-        if obj.get("id") != objects.ID.Event or obj.get("message") != "AI main hero boost":
+        if obj.get("id") != objects.ID.Event_Object or obj.get("message") != "AI main hero boost":
             continue
 
         allowed = obj.get("allowed_players", [])
@@ -121,7 +121,7 @@ def delete_explorer_bonuses():
     map_data["object_data"] = [
         obj
         for obj in map_data["object_data"]
-        if not (obj["id"] == objects.ID.Event and obj["message"] == "Explorer Bonus")
+        if not (obj["id"] == objects.ID.Event_Object and obj["message"] == "Explorer Bonus")
     ]
     deleted_count = initial_count - len(map_data["object_data"])
 
@@ -140,7 +140,7 @@ def add_explorer_bonuses():
     # Get event object def_id
     def_id = None
     for obj in map_data["object_data"]:
-        if obj["id"] == objects.ID.Event:
+        if obj["id"] == objects.ID.Event_Object:
             def_id = obj["def_id"]
     if def_id is None:
         xprint(type=TextType.ERROR, text="No event objects found on map. Unable to get def_id.")
@@ -289,7 +289,7 @@ def _get_explorer_bonus(coords, def_id):
         "zone_type": zone_type,
         "zone_color": zone_color,
         "def_id": def_id,
-        "id": objects.ID.Event,
+        "id": objects.ID.Event_Object,
         "sub_id": 0,
         "type": "Event",
         "subtype": "Event",

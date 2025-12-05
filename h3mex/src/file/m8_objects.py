@@ -197,8 +197,8 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj = parse_campfire(obj)
             case objects.ID.Corpse:
                 obj = parse_corpse(obj)
-            case objects.ID.Event:
-                obj = parse_event(obj)
+            case objects.ID.Event_Object:
+                obj = parse_event_object(obj)
             case objects.ID.Flotsam:
                 obj = parse_flotsam(obj)
             case objects.ID.Lean_To:
@@ -260,10 +260,8 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 elif obj["sub_id"] == 1001:  # HotA Grave
                     obj = parse_grave(obj)
 
-            case objects.ID.Town:
+            case objects.ID.Town | objects.ID.Random_Town:
                 obj = parse_town(obj)
-            case objects.ID.Random_Town:
-                obj = parse_town(obj, random=True)
 
             case objects.ID.Resource | objects.ID.Random_Resource:
                 obj = parse_resource(obj)
@@ -353,8 +351,8 @@ def write_object_data(info: list) -> None:
                 write_campfire(obj)
             case objects.ID.Corpse:
                 write_corpse(obj)
-            case objects.ID.Event:
-                write_event(obj)
+            case objects.ID.Event_Object:
+                write_event_object(obj)
             case objects.ID.Flotsam:
                 write_flotsam(obj)
             case objects.ID.Lean_To:
@@ -414,10 +412,8 @@ def write_object_data(info: list) -> None:
                 elif obj["sub_id"] == 1001:  # HotA Grave
                     write_grave(obj)
 
-            case objects.ID.Town:
-                write_town(obj)
-            case objects.ID.Random_Town:
-                write_town(obj, random=True)
+            case objects.ID.Town | objects.ID.Random_Town:
+                obj = write_town(obj)
 
             case objects.ID.Resource | objects.ID.Random_Resource:
                 write_resource(obj)
@@ -528,8 +524,10 @@ def parse_common(obj: dict) -> dict:
     message_length = io.read_int(4)
 
     if message_length > 0:
+        obj["has_message"] = True
         obj["message"] = io.read_str(message_length)
     if io.read_int(1):
+        obj["has_guards"] = True
         obj["guards"] = parse_creatures()
 
     obj["common_garbage_bytes"] = io.read_raw(4)
@@ -539,13 +537,13 @@ def parse_common(obj: dict) -> dict:
 def write_common(obj: dict) -> None:
     io.write_int(1, 1)
 
-    if "message" in obj:
+    if obj.get("has_message", False):
         io.write_int(len(obj["message"]), 4)
         io.write_str(obj["message"])
     else:
         io.write_int(0, 4)
 
-    if "guards" in obj:
+    if obj.get("has_guards", False):
         io.write_int(1, 1)
         write_creatures(obj["guards"])
     else:
@@ -669,10 +667,13 @@ def write_artifact(obj: dict) -> None:
 
 
 def parse_pandoras_box(obj: dict) -> dict:
-    obj["has_common"] = io.read_int(1)
+    obj["has_message"] = False
+    obj["has_guards"] = False
     obj["message"] = ""
     obj["guards"] = []
     obj["common_garbage_bytes"] = b"\x00\x00\x00\x00"
+
+    obj["has_common"] = io.read_int(1)
     if obj["has_common"]:
         obj = parse_common(obj)
     obj["contents"] = parse_contents()
@@ -772,7 +773,7 @@ def write_corpse(obj: dict) -> None:
     io.write_raw(obj["garbage_bytes"])
 
 
-def parse_event(obj: dict) -> dict:
+def parse_event_object(obj: dict) -> dict:
     obj["has_common"] = io.read_int(1)
     if obj["has_common"]:
         obj = parse_common(obj)
@@ -793,7 +794,7 @@ def parse_event(obj: dict) -> dict:
     return obj
 
 
-def write_event(obj: dict) -> None:
+def write_event_object(obj: dict) -> None:
     if obj["has_common"]:
         write_common(obj)
     else:
@@ -1200,7 +1201,7 @@ def write_pyramid(obj: dict) -> None:
     io.write_raw(obj["garbage_bytes"])
 
 
-def parse_town(obj: dict, random: bool = False) -> dict:
+def parse_town(obj: dict) -> dict:
     obj["start_bytes"] = b""
     obj["owner"] = 255
     obj["color"] = ""
@@ -1216,7 +1217,7 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     obj["spell_research"] = False
     obj["spells_must_appear"] = []
     obj["spells_cant_appear"] = []
-    obj["events"] = []
+    obj["town_events"] = []
     obj["alignment"] = 255
 
     obj["start_bytes"] = io.read_raw(4)
@@ -1249,14 +1250,14 @@ def parse_town(obj: dict, random: bool = False) -> dict:
     for _ in range(io.read_int(4)):  # Amount of special buildings.
         obj["buildings_special"].append(io.read_int(1))
 
-    obj["events"] = parse_events(is_town=True)
+    obj["town_events"] = parse_events(town=obj["name"] or "Random Name", coords=obj["coords"])
     obj["alignment"] = io.read_int(1)
 
     io.seek(3)
     return obj
 
 
-def write_town(obj: dict, random: bool = False) -> None:
+def write_town(obj: dict) -> None:
     io.write_raw(obj["start_bytes"])
     io.write_int(obj["owner"], 1)
 
@@ -1290,7 +1291,7 @@ def write_town(obj: dict, random: bool = False) -> None:
     for i in obj["buildings_special"]:
         io.write_int(i, 1)
 
-    write_events(obj["events"], is_town=True)
+    write_events(obj["town_events"], is_town=True)
 
     io.write_int(obj["alignment"], 1)
     io.write_int(0, 3)
