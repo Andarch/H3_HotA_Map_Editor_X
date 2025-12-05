@@ -94,6 +94,7 @@ class Menu:
                 ("2", "Towns: Add creature bonus events"),
                 ("3", "Towns: Add humans to AI-only events"),
                 ("4", "Towns: Copy events from source town to target towns"),
+                ("5", "Towns: Copy buildings from source town to target towns"),
             ],
         ],
     }

@@ -42,6 +42,8 @@ def menu() -> None:
                             towns.edit(human=True)
                         case "4":
                             towns.edit(copy_events=True)
+                        case "5":
+                            towns.edit(copy_buildings=True)
             case "4":
                 heroes.reset()
             case "5":

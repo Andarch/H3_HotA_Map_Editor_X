@@ -48,6 +48,7 @@ def edit(
     add_events: bool = False,
     human: bool = False,
     copy_events: bool = False,
+    copy_buildings: bool = False,
 ) -> None:
     if spells:
         _enable_spells()
@@ -59,6 +60,8 @@ def edit(
         _change_ai_events()
     if copy_events:
         _copy_events()
+    if copy_buildings:
+        _copy_buildings()
 
 
 def _enable_spells() -> None:
@@ -220,4 +223,23 @@ def _copy_events() -> None:
         if obj["id"] in TOWN_IDS and obj["town_events"] and obj["town_events"][0]["message"] == "target":
             obj["town_events"] = events.copy()
             obj["town_events"][0]["message"] == ""
+    xprint(type=TextType.DONE)
+
+
+def _copy_buildings() -> None:
+    xprint(type=TextType.ACTION, text="Copying buildings from source town to target towns…")
+    buildings = {}
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["name"] == "Watchfield":
+            buildings["has_fort"] = obj["has_fort"]
+            buildings["built"] = obj["buildings_built"]
+            buildings["disabled"] = obj["buildings_disabled"]
+            buildings["special"] = obj["buildings_special"]
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["name"] in {"Wayside", "Brenwick Hill"}:
+            obj["has_custom_buildings"] = True
+            obj["has_fort"] = buildings["has_fort"]
+            obj["buildings_built"] = buildings["built"]
+            obj["buildings_disabled"] = buildings["disabled"]
+            obj["buildings_special"] = buildings["special"]
     xprint(type=TextType.DONE)

@@ -1237,7 +1237,7 @@ def parse_town(obj: dict) -> dict:
     if obj["has_custom_buildings"]:
         obj["buildings_built"] = io.read_bits(6)
         obj["buildings_disabled"] = io.read_bits(6)
-        obj["has_fort"] = True
+        obj["has_fort"] = True if obj["buildings_built"][3] else False
     else:
         obj["buildings_built"] = ""
         obj["buildings_disabled"] = ""
