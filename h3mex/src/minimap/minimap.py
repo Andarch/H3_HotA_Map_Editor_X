@@ -373,32 +373,96 @@ def generate(generate_type: str, minimap_type: str) -> None:
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en_others"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+            },
+            num,
+            "tmp_monoliths1_en_others",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en_white"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
+            num,
+            "tmp_monoliths1_en_white",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+                objects.SubID.MonolithPortal.OneWay.White_Monolith,
+            },
+            num,
+            "monoliths1_en",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex_others"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Exit},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+            },
+            num,
+            "tmp_monoliths1_ex_others",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex_white"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
+            num,
+            "tmp_monoliths1_ex_white",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex"
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Exit},
+            {
+                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+                objects.SubID.MonolithPortal.OneWay.White_Monolith,
+            },
+            num,
+            "monoliths1_ex",
         )
 
         num += 1
