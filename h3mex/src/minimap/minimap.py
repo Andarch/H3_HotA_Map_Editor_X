@@ -567,7 +567,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         # )
 
         num += 1
-        _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, num, "oceanbottles")
+        # _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, num, "oceanbottles")
 
 
 def _process_image(
