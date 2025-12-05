@@ -102,7 +102,7 @@ class Menu:
             ],
             [
                 ("1", "Heroes: Reset identity details"),
-                ("2", "Heroes: Move heroes"),
+                ("2", "Heroes: Move heroes from towns to map"),
                 ("3", "Heroes: Swap hero indexes"),
             ],
         ],
