@@ -389,30 +389,6 @@ def generate(generate_type: str, minimap_type: str) -> None:
             num,
             "monoliths1_en",
         )
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Entrance},
-            {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-            },
-            num,
-            "tmp_monoliths1_en_others",
-        )
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Entrance},
-            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
-            num,
-            "tmp_monoliths1_en_white",
-        )
 
         num += 1
         _process_image(
@@ -432,38 +408,36 @@ def generate(generate_type: str, minimap_type: str) -> None:
             num,
             "monoliths1_ex",
         )
+
+        num += 1
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.One_Way_MonolithPortal_Entrance},
+            {
+                objects.SubID.MonolithPortal.OneWay.Purple_Portal,
+                objects.SubID.MonolithPortal.OneWay.Orange_Portal,
+                objects.SubID.MonolithPortal.OneWay.Red_Portal,
+                objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
+            },
+            num,
+            "portals1_en",
+        )
+
+        num += 1
         _process_image(
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Exit},
             {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+                objects.SubID.MonolithPortal.OneWay.Purple_Portal,
+                objects.SubID.MonolithPortal.OneWay.Orange_Portal,
+                objects.SubID.MonolithPortal.OneWay.Red_Portal,
+                objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
             },
             num,
-            "tmp_monoliths1_ex_others",
+            "portals1_ex",
         )
-        _process_image(
-            generate_type,
-            minimap_type,
-            {objects.ID.One_Way_MonolithPortal_Entrance},
-            {objects.SubID.MonolithPortal.OneWay.White_Monolith},
-            num,
-            "tmp_monoliths1_ex_white",
-        )
-
-        num += 1
-        _process_image(
-            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "portals1_en"
-        )
-
-        num += 1
-        _process_image(generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Exit}, None, num, "portals1_ex")
 
         num += 1
         _process_image(
