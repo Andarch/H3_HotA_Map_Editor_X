@@ -283,35 +283,35 @@ border_objects = {
 
 
 two_way_land_portals = {
-    objects.SubID.Portal.TwoWay.Small_Green,
-    objects.SubID.Portal.TwoWay.Small_Brown,
-    objects.SubID.Portal.TwoWay.Small_Violet,
-    objects.SubID.Portal.TwoWay.Small_Orange,
-    objects.SubID.Portal.TwoWay.Big_Green,
-    objects.SubID.Portal.TwoWay.Big_Yellow,
-    objects.SubID.Portal.TwoWay.Big_Red,
-    objects.SubID.Portal.TwoWay.Big_Cyan,
-    objects.SubID.Portal.TwoWay.Small_Pink,
-    objects.SubID.Portal.TwoWay.Small_Turquoise,
-    objects.SubID.Portal.TwoWay.Small_Yellow,
-    objects.SubID.Portal.TwoWay.Small_Black,
-    objects.SubID.Portal.TwoWay.Big_Chartreuse,
-    objects.SubID.Portal.TwoWay.Big_Turquoise,
-    objects.SubID.Portal.TwoWay.Big_Violet,
-    objects.SubID.Portal.TwoWay.Big_Orange,
-    objects.SubID.Portal.TwoWay.Small_Blue,
-    objects.SubID.Portal.TwoWay.Small_Red,
-    objects.SubID.Portal.TwoWay.Big_Pink,
-    objects.SubID.Portal.TwoWay.Big_Blue,
+    objects.SubID.MonolithPortal.TwoWay.Green_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Brown_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Violet_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Orange_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Pink_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Turquoise_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Yellow_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Black_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Chartreuse_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Turquoise_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Violet_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Big_Pink,
+    objects.SubID.MonolithPortal.TwoWay.Big_Blue,
 }
 
 
-two_way_water_portals = {
-    objects.SubID.Portal.TwoWay.Water_White,
-    objects.SubID.Portal.TwoWay.Water_Red,
-    objects.SubID.Portal.TwoWay.Water_Blue,
-    objects.SubID.Portal.TwoWay.Water_Chartreuse,
-    objects.SubID.Portal.TwoWay.Water_Yellow,
+two_way_sea_portals = {
+    objects.SubID.MonolithPortal.TwoWay.White_SeaPortal,
+    objects.SubID.MonolithPortal.TwoWay.Red_SeaPortal,
+    objects.SubID.MonolithPortal.TwoWay.Blue_SeaPortal,
+    objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
+    objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
 }
 
 
@@ -359,90 +359,185 @@ def generate(generate_type: str, minimap_type: str) -> None:
     if minimap_type == "Standard":
         _process_image(generate_type, minimap_type, None, None, None, None)
     elif minimap_type == "Extended":
-        _process_image(generate_type, minimap_type, groups.DECOR, None, 1, "base1")
-        _process_image(generate_type, minimap_type, None, None, 2, "base2")
-        _process_image(generate_type, minimap_type, border_objects, None, 3, "border")
-        _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, 4, "tents")
-        _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Entrance}, None, 5, "portals1en")
-        _process_image(generate_type, minimap_type, {objects.ID.One_Way_Portal_Exit}, None, 6, "portals1ex")
+        num = 1
+        _process_image(generate_type, minimap_type, groups.DECOR, None, num, "base1")
+
+        num += 1
+        _process_image(generate_type, minimap_type, None, None, num, "base2")
+
+        num += 1
+        _process_image(generate_type, minimap_type, border_objects, None, num, "border")
+
+        num += 1
+        _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, num, "tents")
+
+        num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_land_portals, 7, "portals2land"
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en_others"
         )
+
+        num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_Portal}, two_way_water_portals, 8, "portals2water"
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en_white"
         )
-        _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, 9, "whirlpools")
-        # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, 10, "prisons")
-        # _process_image(generate_type, minimap_type, monster_objects, None, 11, "monsters")
-        # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, 12, "spellscrolls")
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_en"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex_others"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex_white"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "monoliths1_ex"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Entrance}, None, num, "portals1_en"
+        )
+
+        num += 1
+        _process_image(generate_type, minimap_type, {objects.ID.One_Way_MonolithPortal_Exit}, None, num, "portals1_ex")
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_land_portals, num, "portals2_land"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_sea_portals, num, "portals2_sea"
+        )
+
+        num += 1
+        _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, num, "whirlpools")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, num, "prisons")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, monster_objects, None, num, "monsters")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, num, "spellscrolls")
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.Shrine_1_and_4},
         #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
-        #     13,
+        #     num,
         #     "shrine1",
         # )
-        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, 14, "shrine2")
-        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, 15, "shrine3")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, num, "shrine2")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, num, "shrine3")
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.Shrine_1_and_4},
         #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
-        #     16,
+        #     num,
         #     "shrine4",
         # )
-        # _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, 17, "pyramids")
-        # _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, 18, "artifacts")
-        # _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, 19, "randomartifacts")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, num, "pyramids")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, num, "artifacts")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, num, "randomartifacts")
+
+        # num += 1
         # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, 20, "randomtreasureartifacts"
+        #     generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, num, "randomtreasureartifacts"
         # )
+
+        # num += 1
         # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, 21, "randomminorartifacts"
+        #     generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, num, "randomminorartifacts"
         # )
+
+        # num += 1
         # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, 22, "randommajorartifacts"
+        #     generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, num, "randommajorartifacts"
         # )
-        # _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, 23, "randomrelics")
-        # _process_image(generate_type, minimap_type, resource_objects, None, 24, "resources")
-        # _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, 25, "treasurechests")
-        # _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, 26, "scholars")
-        # _process_image(generate_type, minimap_type, {objects.ID.Event}, None, 27, "eventobjects")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, num, "randomrelics")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, resource_objects, None, num, "resources")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, num, "treasurechests")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, num, "scholars")
+
+        # num += 1
+        # _process_image(generate_type, minimap_type, {objects.ID.Event}, None, num, "eventobjects")
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.Trading_Post, objects.ID.Trading_Post_Snow},
         #     None,
-        #     28,
+        #     num,
         #     "tradingposts",
         # )
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.HotA_Visitable_1},
         #     {objects.SubID.HotAVisitable1.Warlocks_Lab},
-        #     29,
+        #     num,
         #     "warlockslabs",
         # )
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.Redwood_Observatory},
         #     None,
-        #     30,
+        #     num,
         #     "redwoodobservatories",
         # )
+
+        # num += 1
         # _process_image(
         #     generate_type,
         #     minimap_type,
         #     {objects.ID.Cover_of_Darkness},
         #     None,
-        #     31,
+        #     num,
         #     "coversofdarkness",
         # )
-        # _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, 32, "oceanbottles")
+
+        num += 1
+        _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, num, "oceanbottles")
 
 
 def _process_image(
@@ -529,9 +624,12 @@ def _determine_owner(export_type: str, obj: dict) -> int | tuple | None:
             return (1999, obj["owner"])
         elif obj["id"] == objects.ID.Quest_Guard:
             return 2000
-        elif obj["id"] == objects.ID.One_Way_Portal_Entrance or obj["id"] == objects.ID.One_Way_Portal_Exit:
+        elif (
+            obj["id"] == objects.ID.One_Way_MonolithPortal_Entrance
+            or obj["id"] == objects.ID.One_Way_MonolithPortal_Exit
+        ):
             return obj["sub_id"] + 3000
-        elif obj["id"] == objects.ID.Two_Way_Portal:
+        elif obj["id"] == objects.ID.Two_Way_MonolithPortal:
             return obj["sub_id"] + 3500
         elif obj["id"] not in groups.DECOR:
             return 10000

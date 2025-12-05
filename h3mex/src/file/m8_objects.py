@@ -92,12 +92,12 @@ def get_subtype(obj_type: int, i: int) -> int:
             return heroes.Classes(i)
         case objects.ID.Hill_Fort:
             return objects.SubID.HillFort(i)
-        case objects.ID.One_Way_Portal_Entrance:
-            return objects.SubID.Portal.OneWay(i)
-        case objects.ID.One_Way_Portal_Exit:
-            return objects.SubID.Portal.OneWay(i)
-        case objects.ID.Two_Way_Portal:
-            return objects.SubID.Portal.TwoWay(i)
+        case objects.ID.One_Way_MonolithPortal_Entrance:
+            return objects.SubID.MonolithPortal.OneWay(i)
+        case objects.ID.One_Way_MonolithPortal_Exit:
+            return objects.SubID.MonolithPortal.OneWay(i)
+        case objects.ID.Two_Way_MonolithPortal:
+            return objects.SubID.MonolithPortal.TwoWay(i)
         case objects.ID.Mine:
             return objects.SubID.Resource(i)
         case objects.ID.Monster:
@@ -1872,9 +1872,9 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Hero,
         objects.ID.Hut_of_the_Magi,
         objects.ID.Library_of_Enlightenment,
-        objects.ID.One_Way_Portal_Entrance,
-        objects.ID.One_Way_Portal_Exit,
-        objects.ID.Two_Way_Portal,
+        objects.ID.One_Way_MonolithPortal_Entrance,
+        objects.ID.One_Way_MonolithPortal_Exit,
+        objects.ID.Two_Way_MonolithPortal,
         objects.ID.Mercenary_Camp,
         objects.ID.Mermaids,
         objects.ID.Mine,
@@ -1917,9 +1917,9 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
     }
     CONDITIONAL_X_MINUS_1 = {
         objects.ID.Creature_Bank,
-        objects.ID.One_Way_Portal_Entrance,
-        objects.ID.One_Way_Portal_Exit,
-        objects.ID.Two_Way_Portal,
+        objects.ID.One_Way_MonolithPortal_Entrance,
+        objects.ID.One_Way_MonolithPortal_Exit,
+        objects.ID.Two_Way_MonolithPortal,
         objects.ID.Prison,
         objects.ID.War_Machine_Factory,
         objects.ID.HotA_Visitable_1,
@@ -1954,31 +1954,31 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.SubID.CreatureBank.Ruins,
             }
 
-        if obj_id in {objects.ID.One_Way_Portal_Entrance, objects.ID.One_Way_Portal_Exit}:
+        if obj_id in {objects.ID.One_Way_MonolithPortal_Entrance, objects.ID.One_Way_MonolithPortal_Exit}:
             return sub_id in {
-                objects.SubID.Portal.OneWay.Big_Purple,
-                objects.SubID.Portal.OneWay.Big_Orange,
-                objects.SubID.Portal.OneWay.Big_Red,
-                objects.SubID.Portal.OneWay.Big_Cyan,
+                objects.SubID.MonolithPortal.OneWay.Purple_Portal,
+                objects.SubID.MonolithPortal.OneWay.Orange_Portal,
+                objects.SubID.MonolithPortal.OneWay.Red_Portal,
+                objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
             }
 
-        if obj_id == objects.ID.Two_Way_Portal:
+        if obj_id == objects.ID.Two_Way_MonolithPortal:
             return sub_id in {
-                objects.SubID.Portal.TwoWay.Big_Green,
-                objects.SubID.Portal.TwoWay.Big_Yellow,
-                objects.SubID.Portal.TwoWay.Big_Red,
-                objects.SubID.Portal.TwoWay.Big_Cyan,
-                objects.SubID.Portal.TwoWay.Water_White,
-                objects.SubID.Portal.TwoWay.Big_Chartreuse,
-                objects.SubID.Portal.TwoWay.Big_Turquoise,
-                objects.SubID.Portal.TwoWay.Big_Violet,
-                objects.SubID.Portal.TwoWay.Big_Orange,
-                objects.SubID.Portal.TwoWay.Big_Pink,
-                objects.SubID.Portal.TwoWay.Big_Blue,
-                objects.SubID.Portal.TwoWay.Water_Red,
-                objects.SubID.Portal.TwoWay.Water_Blue,
-                objects.SubID.Portal.TwoWay.Water_Chartreuse,
-                objects.SubID.Portal.TwoWay.Water_Yellow,
+                objects.SubID.MonolithPortal.TwoWay.Green_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Red_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
+                objects.SubID.MonolithPortal.TwoWay.White_SeaPortal,
+                objects.SubID.MonolithPortal.TwoWay.Chartreuse_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Turquoise_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Violet_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
+                objects.SubID.MonolithPortal.TwoWay.Big_Pink,
+                objects.SubID.MonolithPortal.TwoWay.Big_Blue,
+                objects.SubID.MonolithPortal.TwoWay.Red_SeaPortal,
+                objects.SubID.MonolithPortal.TwoWay.Blue_SeaPortal,
+                objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
+                objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
             }
 
         if obj_id == objects.ID.Prison:

@@ -46,9 +46,9 @@ class ID(IntEnum):
     # 40
     Library_of_Enlightenment = 41
     Lighthouse = 42
-    One_Way_Portal_Entrance = 43
-    One_Way_Portal_Exit = 44
-    Two_Way_Portal = 45
+    One_Way_MonolithPortal_Entrance = 43
+    One_Way_MonolithPortal_Exit = 44
+    Two_Way_MonolithPortal = 45
     Magic_Plains_RoE = 46
     School_of_Magic = 47
     Magic_Spring = 48
@@ -422,47 +422,47 @@ class SubID(IntEnum):
         Redwood_Observatory = 0
         Observation_Tower = 1
 
-    class Portal:
+    class MonolithPortal:
         class OneWay(IntEnum):  # ID 43 & 44
-            Small_Blue = 0
-            Small_Pink = 1
-            Small_Orange = 2
-            Small_Yellow = 3
-            Big_Purple = 4
-            Big_Orange = 5
-            Big_Red = 6
-            Big_Cyan = 7
-            Small_Turquoise = 8
-            Small_Violet = 9
-            Small_Chartreuse = 10
-            Small_White = 11
+            Blue_Monolith = 0
+            Pink_Monolith = 1
+            Orange_Monolith = 2
+            Yellow_Monolith = 3
+            Purple_Portal = 4
+            Orange_Portal = 5
+            Red_Portal = 6
+            Cyan_Portal = 7
+            Turquoise_Monolith = 8
+            Violet_Monolith = 9
+            Chartreuse_Monolith = 10
+            White_Monolith = 11
 
         class TwoWay(IntEnum):  # ID 45
-            Small_Green = 0
-            Small_Brown = 1
-            Small_Violet = 2
-            Small_Orange = 3
-            Big_Green = 4
-            Big_Yellow = 5
-            Big_Red = 6
-            Big_Cyan = 7
-            Water_White = 8
-            Small_Pink = 9
-            Small_Turquoise = 10
-            Small_Yellow = 11
-            Small_Black = 12
-            Big_Chartreuse = 13
-            Big_Turquoise = 14
-            Big_Violet = 15
-            Big_Orange = 16
-            Small_Blue = 17
-            Small_Red = 18
+            Green_Monolith = 0
+            Brown_Monolith = 1
+            Violet_Monolith = 2
+            Orange_Monolith = 3
+            Green_Portal = 4
+            Yellow_Portal = 5
+            Red_Portal = 6
+            Cyan_Portal = 7
+            White_SeaPortal = 8
+            Pink_Monolith = 9
+            Turquoise_Monolith = 10
+            Yellow_Monolith = 11
+            Black_Monolith = 12
+            Chartreuse_Portal = 13
+            Turquoise_Portal = 14
+            Violet_Portal = 15
+            Orange_Portal = 16
+            Blue_Monolith = 17
+            Red_Monolith = 18
             Big_Pink = 19
             Big_Blue = 20
-            Water_Red = 21
-            Water_Blue = 22
-            Water_Chartreuse = 23
-            Water_Yellow = 24
+            Red_SeaPortal = 21
+            Blue_SeaPortal = 22
+            Chartreuse_SeaPortal = 23
+            Yellow_SeaPortal = 24
 
     class Prison(IntEnum):  # ID 62
         Normal = 0

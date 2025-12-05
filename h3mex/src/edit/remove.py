@@ -28,7 +28,7 @@ def remove_objects() -> None:
     monoliths = [
         obj
         for obj in map_data["object_data"]
-        if obj["id"] == objects.ID.One_Way_Portal_Entrance and not (4 <= obj["sub_id"] <= 7 and obj["sub_id"] != 11)
+        if obj["id"] == objects.ID.One_Way_M | P_Entrance and not (4 <= obj["sub_id"] <= 7 and obj["sub_id"] != 11)
     ]
     removable_monoliths = [m for m in monoliths if m["coords"] not in protected_coords]
     protected_monoliths = [m for m in monoliths if m["coords"] in protected_coords]
@@ -39,7 +39,7 @@ def remove_objects() -> None:
     map_data["object_data"] = [
         obj
         for obj in map_data["object_data"]
-        if not (obj["id"] == objects.ID.One_Way_Portal_Entrance and id(obj) in removed_set)
+        if not (obj["id"] == objects.ID.One_Way_M | P_Entrance and id(obj) in removed_set)
     ]
 
     xprint(type=TextType.DONE)
