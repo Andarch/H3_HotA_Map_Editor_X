@@ -61,7 +61,11 @@ class Menu:
         "name": "EDIT",
         "menus": [
             [
-                ("1", "Towns…"),
+                ("1", "Replace objects…"),
+                None,
+                ("2", "Remove objects"),
+                None,
+                ("3", "Towns…"),
                 None,
                 ("4", "Heroes: Reset identity details"),
                 None,

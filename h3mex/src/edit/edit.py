@@ -10,6 +10,8 @@ from . import (
     heroes,
     monsters,
     pandoras,
+    remove,
+    replace,
     seershuts,
     towns,
     treasures,
@@ -26,6 +28,10 @@ def menu() -> None:
 
         match keypress:
             case "1":
+                replace.replace_objects()
+            case "2":
+                remove.remove_objects()
+            case "3":
                 while True:
                     keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][2]))
                     if keypress == Keypress.ESC:
