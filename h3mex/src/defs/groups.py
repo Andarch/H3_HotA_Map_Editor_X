@@ -130,28 +130,48 @@ BARRIERS = {
 
 
 ##############################
-# PORTALS
+# MONOLITHS/PORTALS
 ##############################
 
-TWO_WAY_LAND_PORTALS = {
+ONE_WAY_MONOLITHS = {
+    objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+    objects.SubID.MonolithPortal.OneWay.White_Monolith,
+}
+
+ONE_WAY_PORTALS = {
+    objects.SubID.MonolithPortal.OneWay.Purple_Portal,
+    objects.SubID.MonolithPortal.OneWay.Orange_Portal,
+    objects.SubID.MonolithPortal.OneWay.Red_Portal,
+    objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
+}
+
+TWO_WAY_MONOLITHS = {
     objects.SubID.MonolithPortal.TwoWay.Green_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Brown_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Violet_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Orange_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
     objects.SubID.MonolithPortal.TwoWay.Pink_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Turquoise_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Yellow_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Black_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
+}
+TWO_WAY_PORTALS = {
+    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
     objects.SubID.MonolithPortal.TwoWay.Chartreuse_Portal,
     objects.SubID.MonolithPortal.TwoWay.Turquoise_Portal,
     objects.SubID.MonolithPortal.TwoWay.Violet_Portal,
     objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Pink_Portal,
     objects.SubID.MonolithPortal.TwoWay.Blue_Portal,
 }
@@ -161,6 +181,19 @@ TWO_WAY_SEA_PORTALS = {
     objects.SubID.MonolithPortal.TwoWay.Blue_SeaPortal,
     objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
     objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
+}
+
+
+##############################
+# BORDER
+##############################
+
+BORDER = {
+    objects.ID.Border_Gate,
+    objects.ID.Border_Guard,
+    objects.ID.Garrison,
+    objects.ID.Garrison_Vertical,
+    objects.ID.Quest_Guard,
 }
 
 

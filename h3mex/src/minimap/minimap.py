@@ -1,5 +1,4 @@
 import os
-from enum import IntEnum
 from io import BytesIO
 from pathlib import Path
 
@@ -10,340 +9,17 @@ from src.ui.menus import Menu
 from src.ui.xprint import xprint
 from src.utilities import display_image, wait_for_keypress
 
-ROWS = 6
-COLUMNS = 8
-BLOCKED_OFFSET = 20
-
-
-class TERRAIN(IntEnum):
-    # normal
-    DIRT = 0
-    SAND = 1
-    GRASS = 2
-    SNOW = 3
-    SWAMP = 4
-    ROUGH = 5
-    SUBTERRANEAN = 6
-    LAVA = 7
-    WATER = 8
-    ROCK = 9
-    HIGHLANDS = 10
-    WASTELAND = 11
-
-    # blocked
-    BDIRT = 20
-    BSAND = 21
-    BGRASS = 22
-    BSNOW = 23
-    BSWAMP = 24
-    BROUGH = 25
-    BSUBTERRANEAN = 26
-    BLAVA = 27
-    BWATER = 28
-    BROCK = 29
-    BHIGHLANDS = 30
-    BWASTELAND = 31
-
-
-class OBJECTS(IntEnum):
-    RED = 0
-    BLUE = 1
-    TAN = 2
-    GREEN = 3
-    ORANGE = 4
-    PURPLE = 5
-    TEAL = 6
-    PINK = 7
-    NEUTRAL = 255
-
-    KM_LIGHTBLUE = 1000
-    KM_GREEN = 1001
-    KM_RED = 1002
-    KM_DARKBLUE = 1003
-    KM_BROWN = 1004
-    KM_PURPLE = 1005
-    KM_WHITE = 1006
-    KM_BLACK = 1007
-    GARRISON = 1999
-    QUEST = 2000
-
-    M1_BLUE = 3000
-    M1_PINK = 3001
-    M1_ORANGE = 3002
-    M1_YELLOW = 3003
-    P1_PURPLE = 3004
-    P1_ORANGE = 3005
-    P1_RED = 3006
-    P1_CYAN = 3007
-    M1_TURQUOISE = 3008
-    M1_VIOLET = 3009
-    M1_CHARTREUSE = 3010
-    M1_WHITE = 3011
-    M2_GREEN = 3500
-    M2_BROWN = 3501
-    M2_VIOLET = 3502
-    M2_ORANGE = 3503
-    P2_GREEN = 3504
-    P2_YELLOW = 3505
-    P2_RED = 3506
-    P2_CYAN = 3507
-    S2_WHITE = 3508
-    M2_PINK = 3509
-    M2_TURQUOISE = 3510
-    M2_YELLOW = 3511
-    M2_BLACK = 3512
-    P2_CHARTREUSE = 3513
-    P2_TURQUOISE = 3514
-    P2_VIOLET = 3515
-    P2_ORANGE = 3516
-    M2_BLUE = 3517
-    M2_RED = 3518
-    P2_PINK = 3519
-    P2_BLUE = 3520
-    S2_RED = 3521
-    S2_BLUE = 3522
-    S2_CHARTREUSE = 3523
-    S2_YELLOW = 3524
-
-    INTERACTIVE = 9999
-    ALL_OTHERS = 10000
-
-
-terrain_colors = {
-    # Terrain
-    TERRAIN.DIRT: (0x52, 0x39, 0x08),
-    TERRAIN.SAND: (0xDE, 0xCE, 0x8C),
-    TERRAIN.GRASS: (0x00, 0x42, 0x00),
-    TERRAIN.SNOW: (0xB5, 0xC6, 0xC6),
-    TERRAIN.SWAMP: (0x4A, 0x84, 0x6B),
-    TERRAIN.ROUGH: (0x84, 0x73, 0x31),
-    TERRAIN.SUBTERRANEAN: (0x84, 0x31, 0x00),
-    TERRAIN.LAVA: (0x4A, 0x4A, 0x4A),
-    TERRAIN.WATER: (0x08, 0x52, 0x94),
-    TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS: (0x29, 0x73, 0x18),
-    TERRAIN.WASTELAND: (0xBD, 0x5A, 0x08),
-    # Blocked Terrain
-    TERRAIN.BDIRT: (0x39, 0x29, 0x08),
-    TERRAIN.BSAND: (0xA5, 0x9C, 0x6B),
-    TERRAIN.BGRASS: (0x00, 0x31, 0x00),
-    TERRAIN.BSNOW: (0x8C, 0x9C, 0x9C),
-    TERRAIN.BSWAMP: (0x21, 0x5A, 0x42),
-    TERRAIN.BROUGH: (0x63, 0x52, 0x21),
-    TERRAIN.BSUBTERRANEAN: (0x5A, 0x08, 0x00),
-    TERRAIN.BLAVA: (0x29, 0x29, 0x29),
-    TERRAIN.BWATER: (0x00, 0x29, 0x6B),
-    TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x21, 0x52, 0x10),
-    TERRAIN.BWASTELAND: (0x9C, 0x42, 0x08),
-}
-
-terrain_colors_alt = {
-    # Terrain
-    TERRAIN.DIRT: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SAND: (0x4D, 0x4D, 0x4D),
-    TERRAIN.GRASS: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SNOW: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SWAMP: (0x4D, 0x4D, 0x4D),
-    TERRAIN.ROUGH: (0x4D, 0x4D, 0x4D),
-    TERRAIN.SUBTERRANEAN: (0x4D, 0x4D, 0x4D),
-    TERRAIN.LAVA: (0x4D, 0x4D, 0x4D),
-    TERRAIN.WATER: (0x4B, 0x56, 0x5E),
-    TERRAIN.ROCK: (0x00, 0x00, 0x00),
-    TERRAIN.HIGHLANDS: (0x4D, 0x4D, 0x4D),
-    TERRAIN.WASTELAND: (0x4D, 0x4D, 0x4D),
-    # Blocked Terrain
-    TERRAIN.BDIRT: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSAND: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BGRASS: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSNOW: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSWAMP: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BROUGH: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BSUBTERRANEAN: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BLAVA: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BWATER: (0x3C, 0x45, 0x4D),
-    TERRAIN.BROCK: (0x00, 0x00, 0x00),
-    TERRAIN.BHIGHLANDS: (0x3D, 0x3D, 0x3D),
-    TERRAIN.BWASTELAND: (0x3D, 0x3D, 0x3D),
-}
-
-object_colors = {
-    OBJECTS.RED: (0xFF, 0x00, 0x00),
-    OBJECTS.BLUE: (0x31, 0x52, 0xFF),
-    OBJECTS.TAN: (0x9C, 0x73, 0x52),
-    OBJECTS.GREEN: (0x42, 0x94, 0x29),
-    OBJECTS.ORANGE: (0xFF, 0x84, 0x00),
-    OBJECTS.PURPLE: (0x8C, 0x29, 0xA5),
-    OBJECTS.TEAL: (0x08, 0x9C, 0xA5),
-    OBJECTS.PINK: (0xC6, 0x7B, 0x8C),
-    OBJECTS.NEUTRAL: (0x84, 0x84, 0x84),
-    OBJECTS.KM_LIGHTBLUE: (0x00, 0xB7, 0xFF),
-    OBJECTS.KM_GREEN: (0x06, 0xC6, 0x2F),
-    OBJECTS.KM_RED: (0xCE, 0x19, 0x1A),
-    OBJECTS.KM_DARKBLUE: (0x14, 0x14, 0xFE),
-    OBJECTS.KM_BROWN: (0xC8, 0x82, 0x46),
-    OBJECTS.KM_PURPLE: (0xA8, 0x43, 0xE0),
-    OBJECTS.KM_WHITE: (0xF7, 0xF7, 0xF7),
-    OBJECTS.KM_BLACK: (0x12, 0x12, 0x12),
-    OBJECTS.GARRISON: (0x9C, 0x9A, 0x8B),
-    OBJECTS.QUEST: (0xFF, 0xFF, 0x00),
-    OBJECTS.M1_BLUE: (0x1E, 0x40, 0xCF),
-    OBJECTS.M1_PINK: (0xF7, 0x38, 0xA6),
-    OBJECTS.M1_ORANGE: (0xFF, 0x8C, 0x1A),
-    OBJECTS.M1_YELLOW: (0xFF, 0xF7, 0x1A),
-    OBJECTS.P1_PURPLE: (0x8E, 0x44, 0xAD),
-    OBJECTS.P1_ORANGE: (0xFF, 0xB3, 0x47),
-    OBJECTS.P1_RED: (0xE7, 0x2B, 0x2B),
-    OBJECTS.P1_CYAN: (0x1A, 0xE6, 0xE6),
-    OBJECTS.M1_TURQUOISE: (0x1A, 0xC6, 0xB7),
-    OBJECTS.M1_VIOLET: (0x7C, 0x3C, 0xBD),
-    OBJECTS.M1_CHARTREUSE: (0x7D, 0xFF, 0x1A),
-    OBJECTS.M1_WHITE: (0xF7, 0xF7, 0xF7),
-    OBJECTS.M2_GREEN: (0x1A, 0xB5, 0x3B),
-    OBJECTS.M2_BROWN: (0x8B, 0x5C, 0x2B),
-    OBJECTS.M2_VIOLET: (0xB0, 0x5D, 0xE6),
-    OBJECTS.M2_ORANGE: (0xFF, 0x6F, 0x00),
-    OBJECTS.P2_GREEN: (0x3B, 0xE6, 0x1A),
-    OBJECTS.P2_YELLOW: (0xFF, 0xE6, 0x1A),
-    OBJECTS.P2_RED: (0xD9, 0x2B, 0x2B),
-    OBJECTS.P2_CYAN: (0x1A, 0xB5, 0xE6),
-    OBJECTS.S2_WHITE: (0xFF, 0xFF, 0xFF),
-    OBJECTS.M2_PINK: (0xFF, 0x69, 0xB4),
-    OBJECTS.M2_TURQUOISE: (0x40, 0xE0, 0xD0),
-    OBJECTS.M2_YELLOW: (0xFF, 0xFF, 0x99),
-    OBJECTS.M2_BLACK: (0x22, 0x22, 0x22),
-    OBJECTS.P2_CHARTREUSE: (0x7F, 0xFF, 0x00),
-    OBJECTS.P2_TURQUOISE: (0x00, 0xFF, 0xFF),
-    OBJECTS.P2_VIOLET: (0xEE, 0x82, 0xEE),
-    OBJECTS.P2_ORANGE: (0xFF, 0xA5, 0x00),
-    OBJECTS.M2_BLUE: (0x00, 0x7F, 0xFF),
-    OBJECTS.M2_RED: (0xFF, 0x45, 0x00),
-    OBJECTS.P2_PINK: (0xFF, 0xC0, 0xCB),
-    OBJECTS.P2_BLUE: (0x00, 0x00, 0xFF),
-    OBJECTS.S2_RED: (0xB2, 0x22, 0x22),
-    OBJECTS.S2_BLUE: (0x41, 0x69, 0xE1),
-    OBJECTS.S2_CHARTREUSE: (0xAD, 0xFF, 0x2F),
-    OBJECTS.S2_YELLOW: (0xFF, 0xFA, 0xCD),
-    OBJECTS.INTERACTIVE: (0xFF, 0x00, 0x00),
-    OBJECTS.ALL_OTHERS: (0xFF, 0xFF, 0xFF),
-}
-
-ignored_owned_objects = {
-    objects.ID.Hero,
-    objects.ID.Prison,
-    objects.ID.Random_Hero,
-    objects.ID.Hero_Placeholder,
-}
-
-ignored_pickups = {
-    objects.ID.Treasure_Chest,
-    objects.ID.Scholar,
-    objects.ID.Campfire,
-    objects.ID.Flotsam,
-    objects.ID.Sea_Chest,
-    objects.ID.Shipwreck_Survivor,
-    objects.ID.Ocean_Bottle,
-    objects.ID.Grail,
-    objects.ID.Monster,
-    objects.ID.Event_Object,
-    objects.ID.Artifact,
-    objects.ID.Pandoras_Box,
-    objects.ID.Spell_Scroll,
-    objects.ID.HotA_Pickup,
-    objects.ID.Random_Artifact,
-    objects.ID.Random_Treasure_Artifact,
-    objects.ID.Random_Minor_Artifact,
-    objects.ID.Random_Major_Artifact,
-    objects.ID.Random_Relic,
-    objects.ID.Random_Monster,
-    objects.ID.Random_Monster_1,
-    objects.ID.Random_Monster_2,
-    objects.ID.Random_Monster_3,
-    objects.ID.Random_Monster_4,
-    objects.ID.Random_Monster_5,
-    objects.ID.Random_Monster_6,
-    objects.ID.Random_Monster_7,
-    objects.ID.Random_Resource,
-    objects.ID.Resource,
-    objects.ID.Boat,
-}
-
-border_objects = {
-    objects.ID.Border_Gate,
-    objects.ID.Border_Guard,
-    objects.ID.Garrison,
-    objects.ID.Garrison_Vertical,
-    objects.ID.Quest_Guard,
-}
-
-one_way_monoliths = {
-    objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-    objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-    objects.SubID.MonolithPortal.OneWay.White_Monolith,
-}
-
-one_way_portals = {
-    objects.SubID.MonolithPortal.OneWay.Purple_Portal,
-    objects.SubID.MonolithPortal.OneWay.Orange_Portal,
-    objects.SubID.MonolithPortal.OneWay.Red_Portal,
-    objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
-}
-
-two_way_monoliths = {
-    objects.SubID.MonolithPortal.TwoWay.Green_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Brown_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Violet_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Orange_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Pink_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Turquoise_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Yellow_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Black_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
-}
-
-two_way_portals = {
-    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Chartreuse_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Turquoise_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Violet_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Pink_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Blue_Portal,
-}
-
-two_way_sea_portals = {
-    objects.SubID.MonolithPortal.TwoWay.White_SeaPortal,
-    objects.SubID.MonolithPortal.TwoWay.Red_SeaPortal,
-    objects.SubID.MonolithPortal.TwoWay.Blue_SeaPortal,
-    objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
-    objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
-}
-
-monster_objects = {
-    objects.ID.Monster,
-    objects.ID.Random_Monster,
-    objects.ID.Random_Monster_1,
-    objects.ID.Random_Monster_2,
-    objects.ID.Random_Monster_3,
-    objects.ID.Random_Monster_4,
-    objects.ID.Random_Monster_5,
-    objects.ID.Random_Monster_6,
-    objects.ID.Random_Monster_7,
-}
-
-
-resource_objects = {objects.ID.Resource, objects.ID.Random_Resource}
-
-base_layers = {"base1g": None, "base1u": None, "base2g": None, "base2u": None}
+from .mmsupport import (
+    BLOCKED_TERRAIN_ID_OFFSET,
+    IGNORED_OBJECTS_EXTENDED_MM_BASE2,
+    IGNORED_OBJECTS_STANDARD_MM,
+    OBJECT_COLORS,
+    TERRAIN_COLORS,
+    TERRAIN_COLORS_ALT,
+    MaskSize,
+    MinimapObjectID,
+    MinimapTerrainID,
+)
 
 
 def view() -> None:
@@ -379,7 +55,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
         _process_image(generate_type, minimap_type, None, None, num, "base2")
 
         num += 1
-        _process_image(generate_type, minimap_type, border_objects, None, num, "border")
+        _process_image(generate_type, minimap_type, groups.BORDER, None, num, "border")
 
         num += 1
         _process_image(generate_type, minimap_type, {objects.ID.Keymasters_Tent}, None, num, "tents")
@@ -389,7 +65,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Entrance},
-            one_way_monoliths,
+            groups.ONE_WAY_MONOLITHS,
             num,
             "monoliths1_en",
         )
@@ -399,7 +75,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Exit},
-            one_way_monoliths,
+            groups.ONE_WAY_MONOLITHS,
             num,
             "monoliths1_ex",
         )
@@ -409,7 +85,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Entrance},
-            one_way_portals,
+            groups.ONE_WAY_PORTALS,
             num,
             "portals1_en",
         )
@@ -419,145 +95,155 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Exit},
-            one_way_portals,
+            groups.ONE_WAY_PORTALS,
             num,
             "portals1_ex",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_monoliths, num, "monoliths2"
+            generate_type,
+            minimap_type,
+            {objects.ID.Two_Way_MonolithPortal},
+            groups.TWO_WAY_MONOLITHS,
+            num,
+            "monoliths2",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_portals, num, "portals2"
+            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, groups.TWO_WAY_PORTALS, num, "portals2"
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_sea_portals, num, "portals2_sea"
+            generate_type,
+            minimap_type,
+            {objects.ID.Two_Way_MonolithPortal},
+            groups.TWO_WAY_SEA_PORTALS,
+            num,
+            "portals2_sea",
         )
 
         num += 1
         _process_image(generate_type, minimap_type, {objects.ID.Whirlpool}, None, num, "whirlpools")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, num, "prisons")
+        _process_image(generate_type, minimap_type, {objects.ID.Prison}, None, num, "prisons")
 
         num += 1
-        # _process_image(generate_type, minimap_type, monster_objects, None, num, "monsters")
+        _process_image(generate_type, minimap_type, groups.MONSTERS, None, num, "monsters")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, num, "spellscrolls")
+        _process_image(generate_type, minimap_type, {objects.ID.Spell_Scroll}, None, num, "spellscrolls")
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.Shrine_1_and_4},
-        #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
-        #     num,
-        #     "shrine1",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Shrine_1_and_4},
+            {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
+            num,
+            "shrine1",
+        )
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, num, "shrine2")
+        _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Gesture}, None, num, "shrine2")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, num, "shrine3")
+        _process_image(generate_type, minimap_type, {objects.ID.Shrine_of_Magic_Thought}, None, num, "shrine3")
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.Shrine_1_and_4},
-        #     {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
-        #     num,
-        #     "shrine4",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Shrine_1_and_4},
+            {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
+            num,
+            "shrine4",
+        )
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, num, "pyramids")
+        _process_image(generate_type, minimap_type, {objects.ID.Pyramid}, None, num, "pyramids")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, num, "artifacts")
+        _process_image(generate_type, minimap_type, {objects.ID.Artifact}, None, num, "artifacts")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, num, "randomartifacts")
+        _process_image(generate_type, minimap_type, {objects.ID.Random_Artifact}, None, num, "randomartifacts")
 
         num += 1
-        # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, num, "randomtreasureartifacts"
-        # )
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Random_Treasure_Artifact}, None, num, "randomtreasureartifacts"
+        )
 
         num += 1
-        # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, num, "randomminorartifacts"
-        # )
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Random_Minor_Artifact}, None, num, "randomminorartifacts"
+        )
 
         num += 1
-        # _process_image(
-        #     generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, num, "randommajorartifacts"
-        # )
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Random_Major_Artifact}, None, num, "randommajorartifacts"
+        )
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, num, "randomrelics")
+        _process_image(generate_type, minimap_type, {objects.ID.Random_Relic}, None, num, "randomrelics")
 
         num += 1
-        # _process_image(generate_type, minimap_type, resource_objects, None, num, "resources")
+        _process_image(generate_type, minimap_type, groups.RESOURCES, None, num, "resources")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, num, "treasurechests")
+        _process_image(generate_type, minimap_type, {objects.ID.Treasure_Chest}, None, num, "treasurechests")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, num, "scholars")
+        _process_image(generate_type, minimap_type, {objects.ID.Scholar}, None, num, "scholars")
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Event}, None, num, "eventobjects")
+        _process_image(generate_type, minimap_type, {objects.ID.Event}, None, num, "eventobjects")
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.Trading_Post, objects.ID.Trading_Post_Snow},
-        #     None,
-        #     num,
-        #     "tradingposts",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Trading_Post, objects.ID.Trading_Post_Snow},
+            None,
+            num,
+            "tradingposts",
+        )
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.HotA_Visitable_1},
-        #     {objects.SubID.HotAVisitable1.Warlocks_Lab},
-        #     num,
-        #     "warlockslabs",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.HotA_Visitable_1},
+            {objects.SubID.HotAVisitable1.Warlocks_Lab},
+            num,
+            "warlockslabs",
+        )
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.Redwood_Observatory},
-        #     None,
-        #     num,
-        #     "redwoodobservatories",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Redwood_Observatory},
+            None,
+            num,
+            "redwoodobservatories",
+        )
 
         num += 1
-        # _process_image(
-        #     generate_type,
-        #     minimap_type,
-        #     {objects.ID.Cover_of_Darkness},
-        #     None,
-        #     num,
-        #     "coversofdarkness",
-        # )
+        _process_image(
+            generate_type,
+            minimap_type,
+            {objects.ID.Cover_of_Darkness},
+            None,
+            num,
+            "coversofdarkness",
+        )
 
         num += 1
-        # _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, num, "oceanbottles")
+        _process_image(generate_type, minimap_type, {objects.ID.Ocean_Bottle}, None, num, "oceanbottles")
 
 
 def _process_image(
@@ -597,7 +283,8 @@ def _process_image(
     # Iterate through objects
     for obj in filtered_objects:
         if png_name == "base2" and (
-            obj["id"] in ignored_pickups or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)
+            obj["id"] in IGNORED_OBJECTS_EXTENDED_MM_BASE2
+            or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)
         ):
             continue
         elif png_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
@@ -630,7 +317,7 @@ def _process_image(
 
 def _determine_owner(export_type: str, obj: dict) -> int | tuple | None:
     if (
-        export_type == "Standard" and "owner" in obj and obj["id"] not in ignored_owned_objects
+        export_type == "Standard" and "owner" in obj and obj["id"] not in IGNORED_OBJECTS_STANDARD_MM
     ):  # Check if object has "owner" key and should not be ignored
         return obj["owner"]
     elif export_type == "Extended":
@@ -691,8 +378,8 @@ def _process_object(
     png_layer="",
 ) -> None:
     obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
-    for r in range(ROWS):  # 6 rows y-axis, from top to bottom
-        for c in range(COLUMNS):  # 8 columns x-axis, from left to right
+    for r in range(MaskSize.ROWS):  # 6 rows y-axis, from top to bottom
+        for c in range(MaskSize.COLUMNS):  # 8 columns x-axis, from left to right
             index = r * 8 + c  # Calculate the index into blockMask/interactiveMask
             if blockMask[index] != 1:
                 blocked_tile_x = obj_x - 7 + c
@@ -707,7 +394,7 @@ def _process_object(
                         )  # Add the coordinates of the blocked tile to the overworld set
                         if ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
+                                ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = None
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
@@ -727,7 +414,7 @@ def _process_object(
                         )  # Add the coordinates of the blocked tile to the underground set
                         if ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] is None:
                             if png_layer == "base2" and interactiveMask[index] == 1:
-                                ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = OBJECTS.INTERACTIVE
+                                ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = None
                             elif png_layer == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
@@ -780,6 +467,8 @@ def _view_minimap_images(
             img.putpixel((x, y), color)
 
         minimap_images.append(img)
+
+    base_layers = {"base1g": None, "base1u": None, "base2g": None, "base2u": None}
 
     for layer in range(len(minimap_images)):
         minimap_images[layer] = minimap_images[layer].resize(
@@ -923,27 +612,27 @@ def _get_pixel_color(
 ) -> tuple:
     if export_type == "Standard":
         if owner is not None:
-            return object_colors[owner]
+            return OBJECT_COLORS[owner]
         elif (x, y) in blocked_tiles[map_layer_index]:
-            return terrain_colors[TERRAIN(tile["terrain_type"]) + BLOCKED_OFFSET]
+            return TERRAIN_COLORS[MinimapTerrainID(tile["terrain_type"]) + BLOCKED_TERRAIN_ID_OFFSET]
         else:
-            return terrain_colors[tile["terrain_type"]]
+            return TERRAIN_COLORS[tile["terrain_type"]]
     elif export_type == "Extended":
         if png_name == "base1":
             if (x, y) in blocked_tiles[map_layer_index]:
-                return terrain_colors_alt[TERRAIN(tile["terrain_type"]) + BLOCKED_OFFSET]
+                return TERRAIN_COLORS_ALT[MinimapTerrainID(tile["terrain_type"]) + BLOCKED_TERRAIN_ID_OFFSET]
             else:
-                return terrain_colors_alt[tile["terrain_type"]]
+                return TERRAIN_COLORS_ALT[tile["terrain_type"]]
         elif png_name == "base2":
-            if owner == OBJECTS.ALL_OTHERS:
-                color = terrain_colors_alt[TERRAIN(tile["terrain_type"]) + BLOCKED_OFFSET]
-                if color == terrain_colors_alt[TERRAIN.BROCK]:
+            if owner == MinimapObjectID.ALL_OTHERS:
+                color = TERRAIN_COLORS_ALT[MinimapTerrainID(tile["terrain_type"]) + BLOCKED_TERRAIN_ID_OFFSET]
+                if color == TERRAIN_COLORS_ALT[MinimapTerrainID.BROCK]:
                     return transparent
                 return color
             else:
                 return transparent
         else:
             if owner is not None:
-                return object_colors[owner] + (255,)
+                return OBJECT_COLORS[owner] + (255,)
             else:
                 return transparent
