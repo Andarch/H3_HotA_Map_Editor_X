@@ -247,7 +247,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
 
 
 def _process_image(
-    generate_type: str, minimap_type: str, filter: set, subfilter: set | None, png_number: int, png_name: str
+    generate_type: str, minimap_type: str, filter: set, subfilter: set | None, image_number: int, image_name: str
 ) -> None:
     if generate_type == "Export":
         if minimap_type == "Standard":
@@ -255,7 +255,7 @@ def _process_image(
         elif minimap_type == "Extended":
             xprint(
                 type=TextType.ACTION,
-                text=f"Generating minimap_{png_number:02d}_{png_name}…",
+                text=f"Generating minimap_{image_number:02d}_{image_name}…",
             )
     # Get map size
     map_size = map_data["general"]["map_size"]
@@ -282,12 +282,12 @@ def _process_image(
         filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in subfilter]
     # Iterate through objects
     for obj in filtered_objects:
-        if png_name == "base2" and (
+        if image_name == "base2" and (
             obj["id"] in IGNORED_OBJECTS_EXTENDED_MM_BASE2
             or (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001)
         ):
             continue
-        elif png_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
+        elif image_name == "border" and (obj["id"] == objects.ID.Border_Gate and obj["sub_id"] == 1001):
             continue
         # Get object masks
         def_ = map_data["object_defs"][obj["def_id"]]
@@ -305,13 +305,13 @@ def _process_image(
             blocked_tiles,
             ownership,
             owner,
-            png_name,
+            image_name,
         )
     # Generate and save minimap images
     if generate_type == "View":
-        _view_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
+        _view_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, image_number, image_name)
     if generate_type == "Export":
-        _export_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, png_number, png_name)
+        _export_minimap_images(minimap_type, map_layers, blocked_tiles, ownership, image_number, image_name)
         xprint(type=TextType.DONE)
 
 
@@ -375,7 +375,7 @@ def _process_object(
     blocked_tiles: dict,
     ownership: dict,
     owner: int | tuple | None,
-    png_layer="",
+    image_name="",
 ) -> None:
     obj_x, obj_y, obj_z = obj["coords"]  # Get the object's coordinates
     for r in range(MaskSize.ROWS):  # 6 rows y-axis, from top to bottom
@@ -393,9 +393,9 @@ def _process_object(
                             (blocked_tile_x, blocked_tile_y)
                         )  # Add the coordinates of the blocked tile to the overworld set
                         if ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] is None:
-                            if png_layer == "base2" and interactiveMask[index] == 1:
+                            if image_name == "base2" and interactiveMask[index] == 1:
                                 ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = None
-                            elif png_layer == "border" and isinstance(owner, tuple):
+                            elif image_name == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[Layer.Ground][obj_y - 5 + r][obj_x - 7 + c] = owner[
                                         1
@@ -413,9 +413,9 @@ def _process_object(
                             (blocked_tile_x, blocked_tile_y)
                         )  # Add the coordinates of the blocked tile to the underground set
                         if ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] is None:
-                            if png_layer == "base2" and interactiveMask[index] == 1:
+                            if image_name == "base2" and interactiveMask[index] == 1:
                                 ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = None
-                            elif png_layer == "border" and isinstance(owner, tuple):
+                            elif image_name == "border" and isinstance(owner, tuple):
                                 if owner[1] != 255 and (r == 5 and c == 6 or r == 4 and c == 7):  # Middle tiles
                                     ownership[Layer.Underground][obj_y - 5 + r][obj_x - 7 + c] = owner[
                                         1
@@ -435,8 +435,8 @@ def _view_minimap_images(
     map_layers: list,
     blocked_tiles: dict,
     ownership: dict,
-    png_number: int,
-    png_name: str,
+    image_number: int,
+    image_name: str,
 ) -> None:
     xprint(text="Loading minimap…")
 
@@ -455,7 +455,7 @@ def _view_minimap_images(
             owner = ownership[layer_index][y][x]
             color = _get_pixel_color(
                 minimap_type,
-                png_name,
+                image_name,
                 tile,
                 owner,
                 blocked_tiles,
@@ -475,7 +475,7 @@ def _view_minimap_images(
             (IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST
         )
 
-        if png_name == "base1":
+        if image_name == "base1":
             if layer == 0:
                 base_layers["base1g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base1g"].paste(minimap_images[layer], (0, 0))
@@ -484,7 +484,7 @@ def _view_minimap_images(
                 base_layers["base1u"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base1u"].paste(minimap_images[layer], (0, 0))
                 base_layers["base1u"] = ImageEnhance.Brightness(base_layers["base1u"]).enhance(0.75)
-        if png_name == "base2":
+        if image_name == "base2":
             if layer == 0:
                 base_layers["base2g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base2g"].paste(minimap_images[layer], (0, 0))
@@ -495,7 +495,7 @@ def _view_minimap_images(
                 base_layers["base2u"] = ImageEnhance.Brightness(base_layers["base2u"]).enhance(0.75)
 
         canvas = Image.new("RGBA", minimap_images[layer].size)
-        if minimap_type == "Extended" and png_name not in {"base1", "base2"}:
+        if minimap_type == "Extended" and image_name not in {"base1", "base2"}:
             if layer == 0:
                 canvas.paste(base_layers["base1g"], (0, 0), base_layers["base1g"])
                 canvas.paste(base_layers["base2g"], (0, 0), base_layers["base2g"])
@@ -518,7 +518,7 @@ def _view_minimap_images(
     if minimap_type == "Standard":
         xprint(text="STANDARD MINIMAP", align=TextAlign.CENTER, overwrite=2)
     else:
-        xprint(text=f"EXTENDED MINIMAP - {png_number:02d}_{png_name}", align=TextAlign.CENTER, overwrite=2)
+        xprint(text=f"EXTENDED MINIMAP - {image_number:02d}_{image_name}", align=TextAlign.CENTER, overwrite=2)
     xprint()
 
     display_image(buffer)
@@ -530,8 +530,8 @@ def _export_minimap_images(
     map_layers: list,
     blocked_tiles: dict,
     ownership: dict,
-    png_number: int,
-    png_name: str,
+    image_number: int,
+    image_name: str,
 ) -> None:
 
     export_path = os.path.join("exports/minimap", map_data["filename"][:-4])
@@ -541,7 +541,7 @@ def _export_minimap_images(
         os.mkdir(export_path + "/extended")
 
     map_size = map_data["general"]["map_size"]
-    mode = "RGB" if png_name == "base1" else "RGBA"
+    mode = "RGB" if image_name == "base1" else "RGBA"
     transparent = (0, 0, 0, 0)
 
     # Determine if we're creating a combined image
@@ -553,7 +553,7 @@ def _export_minimap_images(
         img = Image.new(
             mode,
             (combined_width, map_size),
-            None if png_name == "base1" else transparent,
+            None if image_name == "base1" else transparent,
         )
 
     for map_layer_index, map_layer in enumerate(map_layers):
@@ -562,7 +562,7 @@ def _export_minimap_images(
             img = Image.new(
                 mode,
                 (map_size, map_size),
-                None if png_name == "base1" else transparent,
+                None if image_name == "base1" else transparent,
             )
 
         # Calculate x offset for combined images (0 for ground, map_size + 2 for underground)
@@ -575,7 +575,7 @@ def _export_minimap_images(
             owner = ownership[map_layer_index][y][x]
             color = _get_pixel_color(
                 minimap_type,
-                png_name,
+                image_name,
                 tile,
                 owner,
                 blocked_tiles,
@@ -594,14 +594,14 @@ def _export_minimap_images(
             img.save(
                 os.path.join(
                     f"{export_path}/extended",
-                    f"{png_number:02d}_{png_name}.png",
+                    f"{image_number:02d}_{image_name}.png",
                 )
             )
 
 
 def _get_pixel_color(
     export_type: str,
-    png_name: str,
+    image_name: str,
     tile: tuple,
     owner: int,
     blocked_tiles: dict,
@@ -618,12 +618,12 @@ def _get_pixel_color(
         else:
             return TERRAIN_COLORS[tile["terrain_type"]]
     elif export_type == "Extended":
-        if png_name == "base1":
+        if image_name == "base1":
             if (x, y) in blocked_tiles[map_layer_index]:
                 return TERRAIN_COLORS_ALT[MinimapTerrainID(tile["terrain_type"]) + BLOCKED_TERRAIN_ID_OFFSET]
             else:
                 return TERRAIN_COLORS_ALT[tile["terrain_type"]]
-        elif png_name == "base2":
+        elif image_name == "base2":
             if owner == MinimapObjectID.ALL_OTHERS:
                 color = TERRAIN_COLORS_ALT[MinimapTerrainID(tile["terrain_type"]) + BLOCKED_TERRAIN_ID_OFFSET]
                 if color == TERRAIN_COLORS_ALT[MinimapTerrainID.BROCK]:
