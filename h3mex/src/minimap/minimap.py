@@ -751,6 +751,9 @@ def _view_minimap_images(
 ) -> None:
     xprint(text="Loading minimap…")
 
+    IMAGE_SIZE = 504
+    GAP_SIZE = 30
+
     map_size = map_data["general"]["map_size"]
     transparent = (0, 0, 0, 0)
 
@@ -777,24 +780,26 @@ def _view_minimap_images(
         minimap_images.append(img)
 
     for layer in range(len(minimap_images)):
-        minimap_images[layer] = minimap_images[layer].resize((370, 370), resample=Image.Resampling.NEAREST)
+        minimap_images[layer] = minimap_images[layer].resize(
+            (IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST
+        )
 
         if png_name == "base1":
             if layer == 0:
-                base_layers["base1g"] = Image.new("RGBA", (370, 370))
+                base_layers["base1g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base1g"].paste(minimap_images[layer], (0, 0))
                 base_layers["base1g"] = ImageEnhance.Brightness(base_layers["base1g"]).enhance(0.75)
             elif layer == 1:
-                base_layers["base1u"] = Image.new("RGBA", (370, 370))
+                base_layers["base1u"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base1u"].paste(minimap_images[layer], (0, 0))
                 base_layers["base1u"] = ImageEnhance.Brightness(base_layers["base1u"]).enhance(0.75)
         if png_name == "base2":
             if layer == 0:
-                base_layers["base2g"] = Image.new("RGBA", (370, 370))
+                base_layers["base2g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base2g"].paste(minimap_images[layer], (0, 0))
                 base_layers["base2g"] = ImageEnhance.Brightness(base_layers["base2g"]).enhance(0.75)
             elif layer == 1:
-                base_layers["base2u"] = Image.new("RGBA", (370, 370))
+                base_layers["base2u"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
                 base_layers["base2u"].paste(minimap_images[layer], (0, 0))
                 base_layers["base2u"] = ImageEnhance.Brightness(base_layers["base2u"]).enhance(0.75)
 
@@ -811,9 +816,9 @@ def _view_minimap_images(
 
     bg = Image.open(Path(os.getcwd()).parent / "h3mex" / "res" / "graphics" / "minimap_bg.png")
     minimap = bg.copy()
-    minimap.paste(minimap_images[0], (20, 20))
+    minimap.paste(minimap_images[0], (GAP_SIZE, GAP_SIZE))
     if len(minimap_images) > 1:
-        minimap.paste(minimap_images[1], (410, 20))
+        minimap.paste(minimap_images[1], (IMAGE_SIZE + (GAP_SIZE * 2), GAP_SIZE))
 
     buffer = BytesIO()
     minimap.save(buffer, format="PNG")
