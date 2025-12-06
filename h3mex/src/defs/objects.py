@@ -457,8 +457,8 @@ class SubID(IntEnum):
             Orange_Portal = 16
             Blue_Monolith = 17
             Red_Monolith = 18
-            Big_Pink = 19
-            Big_Blue = 20
+            Pink_Portal = 19
+            Blue_Portal = 20
             Red_SeaPortal = 21
             Blue_SeaPortal = 22
             Chartreuse_SeaPortal = 23

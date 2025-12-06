@@ -152,8 +152,8 @@ TWO_WAY_LAND_PORTALS = {
     objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
     objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Big_Pink,
-    objects.SubID.MonolithPortal.TwoWay.Big_Blue,
+    objects.SubID.MonolithPortal.TwoWay.Pink_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Blue_Portal,
 }
 TWO_WAY_SEA_PORTALS = {
     objects.SubID.MonolithPortal.TwoWay.White_SeaPortal,

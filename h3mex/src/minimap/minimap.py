@@ -138,7 +138,6 @@ terrain_colors = {
     TERRAIN.BWASTELAND: (0x9C, 0x42, 0x08),
 }
 
-
 terrain_colors_alt = {
     # Terrain
     TERRAIN.DIRT: (0x4D, 0x4D, 0x4D),
@@ -167,7 +166,6 @@ terrain_colors_alt = {
     TERRAIN.BHIGHLANDS: (0x3D, 0x3D, 0x3D),
     TERRAIN.BWASTELAND: (0x3D, 0x3D, 0x3D),
 }
-
 
 object_colors = {
     OBJECTS.RED: (0xFF, 0x00, 0x00),
@@ -230,14 +228,12 @@ object_colors = {
     OBJECTS.ALL_OTHERS: (0xFF, 0xFF, 0xFF),
 }
 
-
 ignored_owned_objects = {
     objects.ID.Hero,
     objects.ID.Prison,
     objects.ID.Random_Hero,
     objects.ID.Hero_Placeholder,
 }
-
 
 ignored_pickups = {
     objects.ID.Treasure_Chest,
@@ -272,7 +268,6 @@ ignored_pickups = {
     objects.ID.Boat,
 }
 
-
 border_objects = {
     objects.ID.Border_Gate,
     objects.ID.Border_Guard,
@@ -280,31 +275,48 @@ border_objects = {
     objects.ID.Garrison_Vertical,
     objects.ID.Quest_Guard,
 }
+one_way_monoliths = {
+    objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
+    objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
+    objects.SubID.MonolithPortal.OneWay.White_Monolith,
+}
+one_way_portals = {
+    objects.SubID.MonolithPortal.OneWay.Purple_Portal,
+    objects.SubID.MonolithPortal.OneWay.Orange_Portal,
+    objects.SubID.MonolithPortal.OneWay.Red_Portal,
+    objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
+}
 
-
-two_way_land_portals = {
+two_way_monoliths = {
     objects.SubID.MonolithPortal.TwoWay.Green_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Brown_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Violet_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Orange_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
     objects.SubID.MonolithPortal.TwoWay.Pink_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Turquoise_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Yellow_Monolith,
     objects.SubID.MonolithPortal.TwoWay.Black_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
+    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
+}
+
+two_way_portals = {
+    objects.SubID.MonolithPortal.TwoWay.Green_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Yellow_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Red_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Cyan_Portal,
     objects.SubID.MonolithPortal.TwoWay.Chartreuse_Portal,
     objects.SubID.MonolithPortal.TwoWay.Turquoise_Portal,
     objects.SubID.MonolithPortal.TwoWay.Violet_Portal,
     objects.SubID.MonolithPortal.TwoWay.Orange_Portal,
-    objects.SubID.MonolithPortal.TwoWay.Blue_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Red_Monolith,
-    objects.SubID.MonolithPortal.TwoWay.Big_Pink,
-    objects.SubID.MonolithPortal.TwoWay.Big_Blue,
+    objects.SubID.MonolithPortal.TwoWay.Pink_Portal,
+    objects.SubID.MonolithPortal.TwoWay.Blue_Portal,
 }
-
 
 two_way_sea_portals = {
     objects.SubID.MonolithPortal.TwoWay.White_SeaPortal,
@@ -313,7 +325,6 @@ two_way_sea_portals = {
     objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
     objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
 }
-
 
 monster_objects = {
     objects.ID.Monster,
@@ -376,16 +387,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Entrance},
-            {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-                objects.SubID.MonolithPortal.OneWay.White_Monolith,
-            },
+            one_way_monoliths,
             num,
             "monoliths1_en",
         )
@@ -395,16 +397,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Exit},
-            {
-                objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Orange_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Yellow_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Turquoise_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Violet_Monolith,
-                objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
-                objects.SubID.MonolithPortal.OneWay.White_Monolith,
-            },
+            one_way_monoliths,
             num,
             "monoliths1_ex",
         )
@@ -414,12 +407,7 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Entrance},
-            {
-                objects.SubID.MonolithPortal.OneWay.Purple_Portal,
-                objects.SubID.MonolithPortal.OneWay.Orange_Portal,
-                objects.SubID.MonolithPortal.OneWay.Red_Portal,
-                objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
-            },
+            one_way_portals,
             num,
             "portals1_en",
         )
@@ -429,19 +417,19 @@ def generate(generate_type: str, minimap_type: str) -> None:
             generate_type,
             minimap_type,
             {objects.ID.One_Way_MonolithPortal_Exit},
-            {
-                objects.SubID.MonolithPortal.OneWay.Purple_Portal,
-                objects.SubID.MonolithPortal.OneWay.Orange_Portal,
-                objects.SubID.MonolithPortal.OneWay.Red_Portal,
-                objects.SubID.MonolithPortal.OneWay.Cyan_Portal,
-            },
+            one_way_portals,
             num,
             "portals1_ex",
         )
 
         num += 1
         _process_image(
-            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_land_portals, num, "portals2_land"
+            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_monoliths, num, "monoliths2"
+        )
+
+        num += 1
+        _process_image(
+            generate_type, minimap_type, {objects.ID.Two_Way_MonolithPortal}, two_way_portals, num, "portals2"
         )
 
         num += 1
