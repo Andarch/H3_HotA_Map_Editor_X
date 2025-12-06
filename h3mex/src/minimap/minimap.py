@@ -275,6 +275,7 @@ border_objects = {
     objects.ID.Garrison_Vertical,
     objects.ID.Quest_Guard,
 }
+
 one_way_monoliths = {
     objects.SubID.MonolithPortal.OneWay.Blue_Monolith,
     objects.SubID.MonolithPortal.OneWay.Pink_Monolith,
@@ -285,6 +286,7 @@ one_way_monoliths = {
     objects.SubID.MonolithPortal.OneWay.Chartreuse_Monolith,
     objects.SubID.MonolithPortal.OneWay.White_Monolith,
 }
+
 one_way_portals = {
     objects.SubID.MonolithPortal.OneWay.Purple_Portal,
     objects.SubID.MonolithPortal.OneWay.Orange_Portal,
@@ -751,8 +753,8 @@ def _view_minimap_images(
 ) -> None:
     xprint(text="Loading minimap…")
 
-    IMAGE_SIZE = 504
-    GAP_SIZE = 30
+    IMAGE_SIZE = 756
+    GAP_SIZE = 45
 
     map_size = map_data["general"]["map_size"]
     transparent = (0, 0, 0, 0)

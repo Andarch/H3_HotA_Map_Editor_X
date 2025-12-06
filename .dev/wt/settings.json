@@ -3,7 +3,8 @@
 {
     "centerOnLaunch": true,
     "defaultProfile": "{ed82cbca-d0eb-43b9-ab28-3a57145ceb49}",
-    "initialRows": 50,
+    "initialCols": 170,
+    "initialRows": 54,
     "profiles": 
     {
         "defaults": {

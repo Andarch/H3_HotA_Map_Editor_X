@@ -35,7 +35,7 @@ def display_image(buffer: BytesIO) -> None:
     if os.environ.get("TERM_PROGRAM") != "vscode":
         xprint(type=TextType.INDENT)
         img2sixel = str(Path(os.getcwd()).parent / "h3mex" / "res" / "bin" / "img2sixel.exe")
-        subprocess.run([img2sixel], input=buffer.getvalue(), stdout=sys.stdout.buffer, check=True)
+        subprocess.run([img2sixel, "-I"], input=buffer.getvalue(), stdout=sys.stdout.buffer, check=True)
         sys.stdout.write("\r\n")
         sys.stdout.flush()
     else:

@@ -6,7 +6,7 @@ from src.common import Wait
 from src.ui import header
 from src.ui.xprint import xprint
 
-MAX_WIDTH = 110
+MAX_WIDTH = 165
 
 cache = []
 redrawing = False
