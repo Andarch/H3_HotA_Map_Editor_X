@@ -2,12 +2,10 @@ import msvcrt
 import os
 import subprocess
 import sys
-import time
 from io import BytesIO
 from pathlib import Path
 
-from src.common import Cursor, TextAlign, TextColor, TextType, Wait
-from src.ui import header
+from src.common import TextAlign, TextColor, TextType
 from src.ui.xprint import xprint
 
 
@@ -40,13 +38,3 @@ def display_image(buffer: BytesIO) -> None:
         sys.stdout.flush()
     else:
         xprint(type=TextType.ERROR, text="Image display is not supported in the VS Code terminal.")
-
-
-def exit() -> None:
-    header.draw()
-    xprint(text="Exiting…")
-    xprint()
-    time.sleep(Wait.NORMAL.value)
-    os.system("cls" if os.name == "nt" else "clear")
-    print(Cursor.SHOW, end="", flush=True)
-    sys.exit(0)

@@ -1,7 +1,7 @@
 import json
 import re
 
-from src.ui.ui import MAX_WIDTH
+from src.ui import ui
 from src.ui.xprint import xprint
 
 REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
@@ -89,7 +89,7 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
 
     # 1. Try flat list (single-line list on same line as key)
     flat_final = f"{indent}{list_prefix}{flat_list}{list_suffix}"
-    if len(flat_final) <= MAX_WIDTH:
+    if len(flat_final) <= ui.MAX_PRINT_WIDTH:
         return flat_final
 
     # Define for #2 and #3
@@ -98,19 +98,19 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
     # 2. Try hanging flat list (single-line list on its own indented line)
     lines = [f"{indent}{list_prefix}["]
     line = f"{hanging_indent}{flat_list}{list_suffix}"
-    if len(line) <= MAX_WIDTH:
+    if len(line) <= ui.MAX_PRINT_WIDTH:
         lines.append(line)
         hanging_flat_final = "\n".join(lines)
         return hanging_flat_final
 
-    # 3. Wrapped version - pack items per line up to MAX_WIDTH (word-like wrapping)
+    # 3. Wrapped version - pack items per line up to ui.MAX_PRINT_WIDTH (word-like wrapping)
     lines = [f"{indent}{list_prefix}["]
     current_line = ""
     for i, list_item in enumerate(list_items):
         is_last_item = i + 1 == len(list_items)
         token = f"{list_item}{'' if is_last_item else ','}"
         test_line = token if current_line == "" else f"{current_line} {token}"
-        if len(f"{hanging_indent}{test_line}") <= MAX_WIDTH:
+        if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH:
             current_line = test_line
         else:
             if current_line:
@@ -126,7 +126,7 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
     result_flat = f"{indent}{prefix} {values}{comma}"
 
     # If it fits on one line, return it
-    if len(result_flat) <= MAX_WIDTH:
+    if len(result_flat) <= ui.MAX_PRINT_WIDTH:
         return result_flat
 
     # For long strings, force multi-line
@@ -137,7 +137,7 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
 
     # If string has no spaces, use character-by-character wrapping
     if " " not in content:
-        available_width = MAX_WIDTH - len(hanging_indent) - 2  # -2 for quotes
+        available_width = ui.MAX_PRINT_WIDTH - len(hanging_indent) - 2  # -2 for quotes
         lines = [f"{indent}{prefix}"]
         for i in range(0, len(content), available_width):
             chunk = content[i : i + available_width]
@@ -155,7 +155,7 @@ def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
         current_line = '"'
         for word in words:
             test_line = current_line + (" " if current_line != '"' else "") + word
-            if len(f"{hanging_indent}{test_line}") <= MAX_WIDTH - 1:
+            if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH - 1:
                 current_line = test_line
             else:
                 if current_line:
@@ -172,7 +172,7 @@ def _format_dict(indent: str, prefix: str, values: str, comma: str) -> str:
     # For standalone dictionaries (no prefix), just try to flatten if it fits
     if not prefix.strip():
         result_flat = f"{indent}{flat_dict}{comma}"
-        if len(result_flat) <= MAX_WIDTH:
+        if len(result_flat) <= ui.MAX_PRINT_WIDTH:
             return result_flat
         # If it doesn't fit flat, keep original formatting
         return f"{indent}{values}{comma}"
@@ -181,13 +181,13 @@ def _format_dict(indent: str, prefix: str, values: str, comma: str) -> str:
     result_flat = f"{indent}{prefix}{flat_dict}{comma}"
 
     # 1. Try flat on same line as key
-    if len(result_flat) <= MAX_WIDTH:
+    if len(result_flat) <= ui.MAX_PRINT_WIDTH:
         return result_flat
 
     # 2. Try hanging flat (dict on its own indented line)
     hanging_indent = indent + (" " * 4)
     hanging_line = f"{hanging_indent}{flat_dict}{comma}"
-    if len(hanging_line) <= MAX_WIDTH:
+    if len(hanging_line) <= ui.MAX_PRINT_WIDTH:
         return f"{indent}{prefix}\n{hanging_line}"
 
     # 3. Keep original formatting and let strings inside be processed later

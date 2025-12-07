@@ -18,15 +18,20 @@ def xprint(
 ) -> None | str:
     if menu:
         return _menu_prompt(menu[0], menu[1])
+
     if not ui.redrawing and type != TextType.HEADER:
         ui.cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
+
     if overwrite > 0:
         _overwrite(overwrite)
+
     match type:
         case TextType.NORMAL:
             print(_align_text(align=align, text=f"{TextColor.WHITE}{text}{TextColor.RESET}"))
+
         case TextType.INFO:
             print(_align_text(text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
+
         case TextType.MENU:
             spacing = 3 - len(menu_num)
             menu_num_formatted = f"{' ' * spacing}[{TextColor.YELLOW}{menu_num}{TextColor.RESET}]"
@@ -34,10 +39,12 @@ def xprint(
             print(
                 _align_text(align=TextAlign.MENU, text=f"{menu_num_formatted} {text_formatted}", menu_width=menu_width)
             )
+
         case TextType.PROMPT:
             xprint()
             input = _string_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
             return input
+
         case TextType.ACTION:
             print(
                 _align_text(text=f"{TextColor.WHITE}{text}{TextColor.RESET}"),
@@ -45,11 +52,14 @@ def xprint(
                 flush=True,
             )
             time.sleep(Wait.NORMAL.value)
+
         case TextType.DONE:
             print(f"{TextColor.GREEN}{"DONE"}{TextColor.RESET}")
             time.sleep(Wait.NORMAL.value)
+
         case TextType.HEADER:
             print(_align_text(align=TextAlign.CENTER, text=text))
+
         case TextType.ERROR:
             match align:
                 case TextAlign.LEFT:
@@ -59,12 +69,14 @@ def xprint(
                 case TextAlign.FLUSH:
                     print(f"{TextColor.RED}Error: {text}{TextColor.RESET}")
             time.sleep(Wait.LONG.value)
+
         case TextType.INDENT:
             print(
                 _align_text(text=text),
                 end="",
                 flush=True,
             )
+
     return None
 
 
@@ -78,13 +90,13 @@ def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
     cleaned_text = _clean(str(text))
     text_length = len(cleaned_text)
     if align == TextAlign.LEFT:
-        padding = (ui.terminal_width // 2) - (ui.MAX_WIDTH // 2)
+        padding = (ui.terminal_width - ui.MAX_PRINT_WIDTH) // 2
         return " " * padding + str(text)
     elif align == TextAlign.CENTER:
-        padding = ui.terminal_width // 2 - text_length // 2
+        padding = (ui.terminal_width - text_length) // 2
         return " " * padding + str(text)
     elif align == TextAlign.MENU:
-        padding = ui.terminal_width // 2 - menu_width // 2
+        padding = (ui.terminal_width - menu_width) // 2
         return " " * padding + str(text)
 
 

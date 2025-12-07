@@ -35,7 +35,7 @@ def draw() -> None:
 
 def _create_header_line(text_color: str = "", text: str = "") -> str:
     if text:
-        fill_length = ui.width - (len(text) + 2)
+        fill_length = ui.print_width - (len(text) + 2)
         line_left = f"{Fill.Color}{Fill.Char * (fill_length // 2)}{TextColor.RESET}"
         if fill_length % 2 == 0:
             line_right = line_left
@@ -43,4 +43,4 @@ def _create_header_line(text_color: str = "", text: str = "") -> str:
             line_right = f"{Fill.Color}{Fill.Char * ((fill_length // 2) + 1)}{TextColor.RESET}"
         return f"{line_left} {text_color}{text}{TextColor.RESET} {line_right}"
     else:
-        return f"{Fill.Color}{Fill.Char * ui.width}{TextColor.RESET}"
+        return f"{Fill.Color}{Fill.Char * ui.print_width}{TextColor.RESET}"

@@ -28,11 +28,11 @@
                 "hidden": false,
                 "historySize": 9000,
                 "icon": "C:\\Users\\Andy\\Repos\\H3_HotA_Map_Editor_X\\h3mex\\h3mex.ico",
-                "name": "H3 HotA Map Editor X",
+                "name": "H3MEX",
                 "padding": "8, 8, 8, 8",
                 "snapOnInput": true,
                 "startingDirectory": "C:\\Users\\Andy\\Repos\\H3_HotA_Map_Editor_X",
-                "tabTitle": "H3 HotA Map Editor X",
+                "tabTitle": "H3MEX",
                 "useAcrylic": false
             }
         ]

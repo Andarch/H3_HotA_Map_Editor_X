@@ -5,7 +5,7 @@ from typing import Tuple
 from src.common import Keypress, TextType, map_data
 from src.ui import header
 from src.ui.xprint import xprint
-from src.utilities import exit, is_file_writable
+from src.utilities import is_file_writable
 
 from . import (
     io,
@@ -27,7 +27,7 @@ def choose_map() -> Tuple[str, int]:
     filenames = [f for f in sorted(os.listdir(), key=str.lower) if f.lower().endswith(".h3m") and os.path.isfile(f)]
     if not filenames:
         xprint(type=TextType.ERROR, text="No .h3m files found in the current directory.")
-        exit()
+        return ""
 
     total_pages = (len(filenames) + 8) // 9
     pages = [filenames[i : i + 9] for i in range(0, len(filenames), 9)]
@@ -58,6 +58,8 @@ def choose_map() -> Tuple[str, int]:
 
 def load(filename: str = None) -> None:
     header.draw()
+
+    filename = ensure_h3m_extension(filename)
 
     xprint(text=f"Loading {filename}…")
     xprint()
@@ -113,8 +115,6 @@ def load(filename: str = None) -> None:
 
 
 def save(filename: str = None) -> bool:
-    global map_file
-
     header.draw()
 
     # Prompt for filename if not provided
@@ -124,7 +124,7 @@ def save(filename: str = None) -> bool:
             return False
 
     # Ensure the filename has the correct extension
-    filename = filename if filename[-4:] == ".h3m" else filename + ".h3m"
+    filename = ensure_h3m_extension(filename)
 
     # Check if the file is writable
     if not is_file_writable(filename):
@@ -163,8 +163,10 @@ def save(filename: str = None) -> bool:
         m6_rumors_and_events.write_events(map_data["global_events"])
         m9_null.write_null(map_data["null_bytes"])
 
-    map_file = None
-
     xprint(type=TextType.DONE)
 
     return True
+
+
+def ensure_h3m_extension(filename: str) -> str:
+    return filename if filename.lower().endswith(".h3m") else filename + ".h3m"
