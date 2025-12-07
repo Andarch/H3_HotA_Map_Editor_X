@@ -8,6 +8,7 @@ from src.common import App, Cursor, Keypress, TextType, map_data
 from src.edit import edit
 from src.export import export
 from src.file import file
+from src.ui import ui
 from src.ui.menus import Menu
 from src.ui.xprint import xprint
 from src.utilities import exit
@@ -55,6 +56,7 @@ def _initialize():
     mutex_name = App.NAME.replace(" ", "_")
     ctypes.windll.kernel32.CreateMutexW(None, False, mutex_name)
     if ctypes.windll.kernel32.GetLastError() != 183:
+        ui.monitor_terminal_width()
         return True
     else:
         xprint(type=TextType.ERROR, text="Another instance of the editor is already running.")
