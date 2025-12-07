@@ -28,6 +28,8 @@ from .mm_support import (
     ObjectMask,
 )
 
+base_layers = {"base1g": None, "base1u": None, "base2g": None, "base2u": None}
+
 
 def view() -> None:
     if os.environ.get("TERM_PROGRAM") == "vscode":
@@ -68,6 +70,8 @@ def generate(mm_action: MMAction, mm_type: MMType) -> None:
             )
         case MMType.EXTENDED:
             for mm_number, mm_key in enumerate(MM_LAYERS.keys()):
+                if mm_key == "standard":
+                    continue
                 mm_layer = MM_LAYERS[mm_key]
                 _process_image(
                     mm_action,
@@ -274,6 +278,8 @@ def _view_minimap_images(
     mm_number: int,
     mm_key: str,
 ) -> None:
+    global base_layers
+
     xprint(text="Loading minimap…")
 
     IMAGE_SIZE = 756
@@ -303,8 +309,6 @@ def _view_minimap_images(
             img.putpixel((x, y), color)
 
         mm_images.append(img)
-
-    base_layers = {"base1g": None, "base1u": None, "base2g": None, "base2u": None}
 
     for map_z in range(len(mm_images)):
         mm_images[map_z] = mm_images[map_z].resize((IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST)
