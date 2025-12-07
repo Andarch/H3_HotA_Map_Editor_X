@@ -101,7 +101,7 @@ MAGICAL_TERRAIN = {
 #     *COLLECTIBLES,
 #     *MAGICAL_TERRAIN,
 #     objects.ID.Boat,
-#     objects.ID.Event,
+#     objects.ID.Event_Object,
 #     objects.ID.Grail,
 #     objects.ID.HotA_Decor_1,
 #     objects.ID.HotA_Decor_2,
@@ -120,7 +120,7 @@ MAGICAL_TERRAIN = {
 # BARRIERS
 ##############################
 
-BARRIERS = {
+BORDER = {
     objects.ID.Border_Gate,
     objects.ID.Border_Guard,
     objects.ID.Garrison,
@@ -185,7 +185,7 @@ TWO_WAY_SEA_PORTALS = {
 
 
 ##############################
-# BORDER
+# BARRIERS
 ##############################
 
 BORDER = {
@@ -194,6 +194,16 @@ BORDER = {
     objects.ID.Garrison,
     objects.ID.Garrison_Vertical,
     objects.ID.Quest_Guard,
+}
+
+
+##############################
+# TRADING POSTS
+##############################
+
+TRADING_POSTS = {
+    objects.ID.Trading_Post,
+    objects.ID.Trading_Post_Snow,
 }
 
 

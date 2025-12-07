@@ -2,8 +2,9 @@ from enum import Enum, IntEnum, StrEnum
 
 
 class App(StrEnum):
-    NAME = "H3 HotA Map Editor X"
-    VERSION = "v0.3.1"
+    # NAME = "H3 HotA Map Editor X"
+    NAME = "H3MEX"
+    VERSION = "1.0.0"
 
 
 class Cursor(StrEnum):
@@ -40,7 +41,7 @@ class TextAlign(Enum):
 
 class TextColor(StrEnum):
     RESET = "\x1b[0m"
-    BOLD = "\x1b[1m"
+    # BOLD = "\x1b[1m"
     FAINT = "\x1b[2m"
     ITALIC = "\x1b[3m"
     UNDERLINE = "\x1b[4m"
@@ -56,7 +57,7 @@ class TextColor(StrEnum):
     MAGENTA = "\x1b[35m"
     CYAN = "\x1b[96m"
     WHITE = "\x1b[97m"
-    GREY = "\x1b[90m"
+    GRAY = "\x1b[90m"
 
 
 class Wait(float, Enum):
@@ -66,7 +67,7 @@ class Wait(float, Enum):
     LONG = 1.5
 
 
-class Layer(IntEnum):
+class MapZ(IntEnum):
     Ground = 0
     Underground = 1
 

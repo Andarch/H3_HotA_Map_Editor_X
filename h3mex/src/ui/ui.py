@@ -8,26 +8,29 @@ from src.ui.xprint import xprint
 
 MAX_WIDTH = 165
 
+# _terminal_width = shutil.get_terminal_size().columns
+width = MAX_WIDTH if shutil.get_terminal_size().columns >= MAX_WIDTH else shutil.get_terminal_size().columns
+
 cache = []
 redrawing = False
-width = shutil.get_terminal_size().columns
 
 
-def monitor_width():
-    monitor_thread1 = threading.Thread(target=_monitor_width, daemon=True)
+def monitor_terminal_width():
+    monitor_thread1 = threading.Thread(target=_monitor_terminal_width, daemon=True)
     monitor_thread1.start()
 
 
-def _monitor_width() -> None:
+def _monitor_terminal_width() -> None:
     global width, redrawing
-    old_width = 0
+    old_terminal_cols = 0
     while True:
-        width = shutil.get_terminal_size().columns
-        if width != old_width:
-            old_width = width
+        terminal_cols = shutil.get_terminal_size().columns
+        if terminal_cols != old_terminal_cols:
+            old_terminal_cols = terminal_cols
             if not redrawing:
                 redrawing = True
                 threading.Timer(0, _redraw).start()
+        width = MAX_WIDTH if terminal_cols >= MAX_WIDTH else terminal_cols
         time.sleep(Wait.SHORT.value)
 
 

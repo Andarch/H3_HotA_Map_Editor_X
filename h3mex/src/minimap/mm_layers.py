@@ -1,0 +1,108 @@
+from src.defs import groups, objects
+
+MM_LAYERS = {
+    "standard": {"display_name": "Standard Minimap", "filter": None, "subfilter": None},
+    "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
+    "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
+    "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
+    "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
+    "monoliths1_en": {
+        "display_name": "One-Way Monolith Entrances",
+        "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
+        "subfilter": groups.ONE_WAY_MONOLITHS,
+    },
+    "monoliths1_ex": {
+        "display_name": "One-Way Monolith Exits",
+        "filter": {objects.ID.One_Way_MonolithPortal_Exit},
+        "subfilter": groups.ONE_WAY_MONOLITHS,
+    },
+    "portals1_en": {
+        "display_name": "One-Way Portal Entrances",
+        "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
+        "subfilter": groups.ONE_WAY_PORTALS,
+    },
+    "portals1_ex": {
+        "display_name": "One-Way Portal Exits",
+        "filter": {objects.ID.One_Way_MonolithPortal_Exit},
+        "subfilter": groups.ONE_WAY_PORTALS,
+    },
+    "monoliths2": {
+        "display_name": "Two-Way Monoliths",
+        "filter": {objects.ID.Two_Way_MonolithPortal},
+        "subfilter": groups.TWO_WAY_MONOLITHS,
+    },
+    "portals2": {
+        "display_name": "Two-Way Portals",
+        "filter": {objects.ID.Two_Way_MonolithPortal},
+        "subfilter": groups.TWO_WAY_PORTALS,
+    },
+    "portals2_sea": {
+        "display_name": "Two-Way Sea Portals",
+        "filter": {objects.ID.Two_Way_MonolithPortal},
+        "subfilter": groups.TWO_WAY_SEA_PORTALS,
+    },
+    "whirlpools": {"display_name": "Whirlpools", "filter": {objects.ID.Whirlpool}, "subfilter": None},
+    "prisons": {"display_name": "Prisons", "filter": {objects.ID.Prison}, "subfilter": None},
+    "monsters": {"display_name": "Monsters", "filter": groups.MONSTERS, "subfilter": None},
+    "spellscrolls": {"display_name": "Spell Scrolls", "filter": {objects.ID.Spell_Scroll}, "subfilter": None},
+    "shrine1": {
+        "display_name": "Shrine Level 1",
+        "filter": {objects.ID.Shrine_1_and_4},
+        "subfilter": {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Incantation},
+    },
+    "shrine2": {
+        "display_name": "Shrine Level 2",
+        "filter": {objects.ID.Shrine_of_Magic_Gesture},
+        "subfilter": None,
+    },
+    "shrine3": {
+        "display_name": "Shrine Level 3",
+        "filter": {objects.ID.Shrine_of_Magic_Thought},
+        "subfilter": None,
+    },
+    "shrine4": {
+        "display_name": "Shrine Level 4",
+        "filter": {objects.ID.Shrine_1_and_4},
+        "subfilter": {objects.SubID.Shrine_1_and_4.Shrine_of_Magic_Mystery},
+    },
+    "pyramids": {"display_name": "Pyramids", "filter": {objects.ID.Pyramid}, "subfilter": None},
+    "artifacts": {"display_name": "Artifacts", "filter": {objects.ID.Artifact}, "subfilter": None},
+    "randomartifacts": {"display_name": "Random Artifacts", "filter": {objects.ID.Random_Artifact}, "subfilter": None},
+    "randomtreasureartifacts": {
+        "display_name": "Random Treasure Artifacts",
+        "filter": {objects.ID.Random_Treasure_Artifact},
+        "subfilter": None,
+    },
+    "randomminorartifacts": {
+        "display_name": "Random Minor Artifacts",
+        "filter": {objects.ID.Random_Minor_Artifact},
+        "subfilter": None,
+    },
+    "randommajorartifacts": {
+        "display_name": "Random Major Artifacts",
+        "filter": {objects.ID.Random_Major_Artifact},
+        "subfilter": None,
+    },
+    "randomrelics": {"display_name": "Random Relics", "filter": {objects.ID.Random_Relic}, "subfilter": None},
+    "resources": {"display_name": "Resources", "filter": groups.RESOURCES, "subfilter": None},
+    "treasurechests": {"display_name": "Treasure Chests", "filter": {objects.ID.Treasure_Chest}, "subfilter": None},
+    "scholars": {"display_name": "Scholars", "filter": {objects.ID.Scholar}, "subfilter": None},
+    "eventobjects": {"display_name": "Event Objects", "filter": {objects.ID.Event_Object}, "subfilter": None},
+    "tradingposts": {"display_name": "Trading Posts", "filter": groups.TRADING_POSTS, "subfilter": None},
+    "warlockslabs": {
+        "display_name": "Warlock's Labs",
+        "filter": {objects.ID.HotA_Visitable_1},
+        "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
+    },
+    "redwoodobservatories": {
+        "display_name": "Redwood Observatories",
+        "filter": {objects.ID.Redwood_Observatory},
+        "subfilter": None,
+    },
+    "coversofdarkness": {
+        "display_name": "Covers of Darkness",
+        "filter": {objects.ID.Cover_of_Darkness},
+        "subfilter": None,
+    },
+    "oceanbottles": {"display_name": "Ocean Bottles", "filter": {objects.ID.Ocean_Bottle}, "subfilter": None},
+}
