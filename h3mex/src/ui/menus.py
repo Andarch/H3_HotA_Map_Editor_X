@@ -15,7 +15,7 @@ class Menu:
     _MINIMAP = [
         ("1", "Standard minimap"),
         None,
-        ("2", "Custom minimap…"),
+        ("2", "Extended minimap…"),
     ]
 
     MAIN = {
