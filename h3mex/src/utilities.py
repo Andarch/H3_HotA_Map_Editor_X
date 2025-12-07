@@ -6,7 +6,7 @@ import time
 from io import BytesIO
 from pathlib import Path
 
-from src.common import Cursor, TextColor, TextType, Wait
+from src.common import Cursor, TextAlign, TextColor, TextType, Wait
 from src.ui import header
 from src.ui.xprint import xprint
 
@@ -22,10 +22,10 @@ def is_file_writable(filepath: str) -> bool:
         return False
 
 
-def wait_for_keypress(suffix: str = " to return to the menu") -> int:
-    xprint()
-    xprint()
-    xprint(text=f"{TextColor.YELLOW + TextColor.FAINT}[Press any key{suffix}]{TextColor.RESET}")
+def wait_for_keypress(suffix: str = " to return to the menu", blank_lines: int = 2) -> int:
+    for _ in range(blank_lines):
+        xprint()
+    xprint(text=f"{TextColor.YELLOW + TextColor.FAINT}[Press any key{suffix}]{TextColor.RESET}", align=TextAlign.CENTER)
     while True:
         keypress = msvcrt.getwch()
         return keypress

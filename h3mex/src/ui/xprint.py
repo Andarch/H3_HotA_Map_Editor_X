@@ -78,13 +78,13 @@ def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
     cleaned_text = _clean(str(text))
     text_length = len(cleaned_text)
     if align == TextAlign.LEFT:
-        padding = (ui.width // 2) - (ui.MAX_WIDTH // 2)
+        padding = (ui.terminal_width // 2) - (ui.MAX_WIDTH // 2)
         return " " * padding + str(text)
     elif align == TextAlign.CENTER:
-        padding = ui.width // 2 - text_length // 2
+        padding = ui.terminal_width // 2 - text_length // 2
         return " " * padding + str(text)
     elif align == TextAlign.MENU:
-        padding = ui.width // 2 - menu_width // 2
+        padding = ui.terminal_width // 2 - menu_width // 2
         return " " * padding + str(text)
 
 

@@ -6,29 +6,36 @@ from src.common import Wait
 from src.ui import header
 from src.ui.xprint import xprint
 
+
+def _set_width() -> None:
+    global width
+    while True:
+        width = MAX_WIDTH if terminal_width >= MAX_WIDTH else terminal_width
+        time.sleep(Wait.TIC.value)
+
+
 MAX_WIDTH = 165
 
-_terminal_cols = shutil.get_terminal_size().columns
+terminal_width = shutil.get_terminal_size().columns
+old_terminal_width = terminal_width
+monitor_thread1 = threading.Thread(target=_set_width, daemon=True)
+monitor_thread1.start()
 
-
-width = MAX_WIDTH if _terminal_cols >= MAX_WIDTH else _terminal_cols
 cache = []
 redrawing = False
 
 
 def monitor_terminal_width():
-    monitor_thread1 = threading.Thread(target=_monitor_terminal_width, daemon=True)
-    monitor_thread1.start()
+    monitor_thread2 = threading.Thread(target=_monitor_terminal_width, daemon=True)
+    monitor_thread2.start()
 
 
 def _monitor_terminal_width() -> None:
-    global width, redrawing, _terminal_cols
-    old_terminal_cols = 0
+    global width, redrawing, terminal_width, old_terminal_width
     while True:
-        _terminal_cols = shutil.get_terminal_size().columns
-        width = MAX_WIDTH if _terminal_cols >= MAX_WIDTH else _terminal_cols
-        if _terminal_cols != old_terminal_cols:
-            old_terminal_cols = _terminal_cols
+        terminal_width = shutil.get_terminal_size().columns
+        if terminal_width != old_terminal_width:
+            old_terminal_width = terminal_width
             if not redrawing:
                 redrawing = True
                 threading.Timer(0, _redraw).start()

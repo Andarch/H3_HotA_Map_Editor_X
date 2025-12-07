@@ -1,3 +1,4 @@
+import msvcrt
 import os
 from io import BytesIO
 from pathlib import Path
@@ -47,7 +48,10 @@ def view() -> None:
             case "2":
                 generate(MMAction.VIEW, MMType.EXTENDED)
 
-        wait_for_keypress()
+        while True:
+            keypress = msvcrt.getwch()
+            if keypress == Keypress.ESC:
+                break
 
 
 def generate(mm_action: MMAction, mm_type: MMType) -> None:
@@ -352,7 +356,6 @@ def _view_minimap_images(
     xprint()
 
     display_image(buffer)
-    xprint()
 
 
 def _export_minimap_images(
