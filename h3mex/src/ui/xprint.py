@@ -27,7 +27,7 @@ def xprint(
 
     match type:
         case TextType.NORMAL:
-            print(_align_text(align=align, text=f"{TextColor.WHITE}{text}{TextColor.RESET}"))
+            print(_align_text(align=TextAlign.CENTER, text=f"{TextColor.WHITE}{text}{TextColor.RESET}"))
 
         case TextType.INFO:
             print(_align_text(text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
@@ -47,7 +47,7 @@ def xprint(
 
         case TextType.ACTION:
             print(
-                _align_text(text=f"{TextColor.WHITE}{text}{TextColor.RESET}"),
+                _align_text(align=TextAlign.CENTER, text=f"{TextColor.WHITE}{text}{TextColor.RESET}"),
                 end=" ",
                 flush=True,
             )
