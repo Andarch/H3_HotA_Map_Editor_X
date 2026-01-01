@@ -99,10 +99,18 @@ def write_events(info: list, is_town: bool = False) -> None:
         io.write_int(event["allowed_difficulties"], 4)
 
         if is_town:
-            io.write_int(event["hota_lvl7b_amount"], 4)
-            io.write_int(event["hota_unknown_byte"], 1)
-            io.write_int(event["hota_unknown_constant"], 4)
-            io.write_bits(event["hota_special"])
+            io.write_int(event["eventType"], 1)
+
+            if event["eventType"] == 0:
+                io.write_int(event["hotaLevel7b"], 4)
+            elif event["eventType"] == 1:
+                io.write_int(event["hotaTownEventId"], 4)
+                io.write_raw(event["unknown_bytes"])
+
+            io.write_int(event["hotaAmount"], 4)
+            for special in event["hotaSpecial"]:
+                io.write_int(special, 1)
+
             io.write_int(event["apply_neutral_towns"], 1)
             io.write_bits(event["buildings"])
 
