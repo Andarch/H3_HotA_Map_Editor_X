@@ -72,6 +72,8 @@ def parse_events(town: str = None, coords: list = None) -> list:
 
             event["end_trash"] = io.read_raw(4)
             map_data["town_events"][f"{town} {coords}"].append(event)
+        else:
+            io.seek(1)
 
         info.append(event)
 
@@ -118,3 +120,5 @@ def write_events(info: list, is_town: bool = False) -> None:
                 io.write_int(creature, 2)
 
             io.write_raw(event["end_trash"])
+        else:
+            io.write_int(0, 1)
