@@ -1396,6 +1396,7 @@ class HotA_Q(IntEnum):
     BELONG_TO_SPECIFIC_CLASS = 0
     RETURN_NOT_BEFORE_DATE = 1
     PLAY_ON_DIFFICULTY = 2
+    EXTENDED_EVENT = 3
 
 
 def parse_quest() -> dict:
@@ -1462,6 +1463,10 @@ def parse_quest() -> dict:
             elif quest["hota_type"] == HotA_Q.PLAY_ON_DIFFICULTY:
                 quest["value"] = io.read_int(4)
 
+            elif quest["hota_type"] == HotA_Q.EXTENDED_EVENT:
+                quest["hotaQuestEventId"] = io.read_int(4)
+                quest["unknown_byte"] = io.read_int(1)
+
     quest["deadline"] = io.read_int(4)
     quest["proposal_message"] = io.read_str(io.read_int(4))
     quest["progress_message"] = io.read_str(io.read_int(4))
@@ -1516,6 +1521,10 @@ def write_quest(info: dict) -> None:
 
             elif info["hota_type"] == HotA_Q.PLAY_ON_DIFFICULTY:
                 io.write_int(info["value"], 4)
+
+            elif info["hota_type"] == HotA_Q.EXTENDED_EVENT:
+                io.write_int(info["hotaQuestEventId"], 4)
+                io.write_int(info["unknown_byte"], 1)
 
     io.write_int(info["deadline"], 4)
     io.write_int(len(info["proposal_message"]), 4)
