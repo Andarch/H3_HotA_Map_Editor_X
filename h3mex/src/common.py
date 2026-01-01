@@ -72,6 +72,20 @@ class MapZ(IntEnum):
     Underground = 1
 
 
+class HotAEventType(IntEnum):
+    Hero = 0
+    Player = 1
+    Town = 2
+    Quest = 3
+
+
+class HotAEventAction(IntEnum):
+    ModifyVariable = 3
+    RemoveCurrentObject = 5
+    ExecuteEvent = 24
+    DisableEvent = 27
+
+
 class VariableValueMode(IntEnum):
     InitialValue = 0
     ImportFromPrevious = 1
