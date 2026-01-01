@@ -792,6 +792,13 @@ def parse_event_object(obj: dict) -> dict:
     # HotA 1.7.1 Difficulty Settings
     obj["difficulty"] = io.read_bits(4)
 
+    unknown_byte = io.read_int(1)
+    if unknown_byte != 0:
+        obj["hero_event_id"] = io.read_int(4)
+        obj["unknown_byte"] = io.read_int(1)
+    else:
+        obj["unknown_byte"] = unknown_byte
+
     return obj
 
 
@@ -813,6 +820,12 @@ def write_event_object(obj: dict) -> None:
     io.write_int(obj["contents"]["Movement_Points"], 4)
 
     io.write_bits(obj["difficulty"])
+
+    if obj["unknown_byte"] != 0:
+        io.write_int(obj["hero_event_id"], 4)
+        io.write_int(obj["unknown_byte"], 1)
+    else:
+        io.write_int(0, 1)
 
 
 def parse_flotsam(obj: dict) -> dict:
