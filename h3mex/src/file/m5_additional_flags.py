@@ -109,14 +109,14 @@ def parse_hota_events() -> list:
 
     # Variables
     for _ in range(hota_events["variable_count"]):
-        variable = {}
-        variable["variable_id"] = io.read_int(4)
-        variable["variable_name"] = io.read_str(io.read_int(4))
-        variable["save_in_campaign"] = bool(io.read_int(1))
-        variable["value_mode"] = VariableValueMode(io.read_int(1))
-        if variable["value_mode"] == VariableValueMode.InitialValue:
-            variable["value"] = io.read_int(4)
-        hota_events["variables"].append(variable)
+        var = {}
+        var["variable_id"] = io.read_int(4)
+        var["variable_name"] = io.read_str(io.read_int(4))
+        var["save_in_campaign"] = bool(io.read_int(1))
+        var["value_mode"] = VariableValueMode(io.read_int(1))
+        if var["value_mode"] == VariableValueMode.InitialValue:
+            var["value"] = io.read_int(4)
+        hota_events["variables"].append(var)
 
     # IDs
     for _ in range(io.read_int(4)):

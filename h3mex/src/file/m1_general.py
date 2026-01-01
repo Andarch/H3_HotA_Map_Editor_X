@@ -112,7 +112,14 @@ def write(info: dict) -> None:
     io.write_bits(info["allowed_difficulties"])
     io.write_int(info["can_hire_defeated_heroes"], 1)
     io.write_int(info["hota_versionLocked"], 1)
+
     io.write_int(info["variable_count"], 4)
+    for var in info["variables"]:
+        io.write_int(len(var["name"]), 4)
+        io.write_str(var["name"])
+        io.write_int(var["initial_value"], 4)
+        io.write_int(var["value_mode"], 1)
+
     io.write_int(info["has_hero"], 1)
     io.write_int(info["map_size"], 4)
     io.write_int(info["has_underground"], 1)
