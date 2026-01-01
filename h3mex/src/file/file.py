@@ -56,6 +56,7 @@ def choose_map() -> Tuple[str, int]:
             return filenames[current_page * 9 + (int(keypress) - 1)]
 
 
+@io.with_position_tracking
 def load(filename: str = None) -> None:
     header.draw()
 
@@ -66,6 +67,7 @@ def load(filename: str = None) -> None:
 
     try:
         with gzopen(filename, "rb") as io.in_file:
+            io.reset_position()
             map_data["filename"] = filename
 
             xprint(text="Parsing 1/13: General…")

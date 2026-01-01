@@ -7,7 +7,7 @@ def parse_starting_heroes() -> dict:
     info = {"total_heroes": 0, "hero_flags": [], "placeholders": [], "custom_heroes": [], "unhandled_bytes": b""}
 
     info["total_heroes"] = io.read_int(4)
-    info["hero_flags"] = io.read_bits(25)
+    info["hero_flags"] = io.read_bits(27)
 
     for _ in range(io.read_int(4)):  # Amount of placeholder heroes
         info["placeholders"].append(heroes.ID(io.read_int(1)))

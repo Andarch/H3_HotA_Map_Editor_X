@@ -34,29 +34,32 @@ def menu() -> None:
                 data = format_map_data(("starting_heroes", map_data["starting_heroes"]))
                 _print_lines(data)
             case "4":
-                data = format_map_data(("rumors", map_data["rumors"]))
+                data = format_map_data(("ban_flags", map_data["ban_flags"]))
                 _print_lines(data)
             case "5":
-                data = format_map_data(("hero_data", map_data["hero_data"]))
+                data = format_map_data(("rumors", map_data["rumors"]))
                 _print_lines(data)
             case "6":
+                data = format_map_data(("hero_data", map_data["hero_data"]))
+                _print_lines(data)
+            case "7":
                 xprint(text="Loading terrain data…")
                 data = format_map_data(("terrain", map_data["terrain"]))
                 _print_lines(data)
-            case "7":
+            case "8":
                 xprint(text="Loading object defs…")
                 data = format_map_data(("object_defs", map_data["object_defs"]))
                 _print_lines(data)
-            case "8":
+            case "9":
                 xprint(text="Loading object data…")
                 object_data = [obj for obj in map_data["object_data"] if obj["id"] in OBJECT_FILTER]
                 data = format_map_data(("object_data", object_data))
                 _print_lines(data)
-            case "9":
-                data = format_map_data(("global_events", map_data["global_events"]))
-                _print_lines(data)
             case "0":
                 data = format_map_data(("town_events", map_data["town_events"]))
+                _print_lines(data)
+            case "E":
+                data = format_map_data(("global_events", map_data["global_events"]))
                 _print_lines(data)
             case "M":
                 minimap.view()

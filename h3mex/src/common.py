@@ -72,4 +72,9 @@ class MapZ(IntEnum):
     Underground = 1
 
 
+class VariableValueMode(IntEnum):
+    InitialValue = 0
+    ImportFromPrevious = 1
+
+
 map_data = {}

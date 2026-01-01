@@ -1,23 +1,47 @@
+import sys
 from typing import BinaryIO, Optional
 
 in_file: Optional[BinaryIO] = None
 out_file: Optional[BinaryIO] = None
+bytes_read: int = 0
+
+
+def get_position() -> int:
+    """Get the current byte position in the file."""
+    return bytes_read
+
+
+def reset_position() -> None:
+    """Reset the byte position counter (call when opening a new file)."""
+    global bytes_read
+    bytes_read = 0
 
 
 def seek(length: int) -> None:
+    global bytes_read
     in_file.seek(length, 1)
+    bytes_read += length
 
 
 def read_raw(length: int) -> bytes:
-    return in_file.read(length)
+    global bytes_read
+    data = in_file.read(length)
+    bytes_read += len(data)
+    return data
 
 
 def read_int(length: int) -> int:
-    return int.from_bytes(in_file.read(length), "little")
+    global bytes_read
+    data = in_file.read(length)
+    bytes_read += len(data)
+    return int.from_bytes(data, "little")
 
 
 def read_str(length: int) -> str:
-    return in_file.read(length).decode("latin-1")
+    global bytes_read
+    data = in_file.read(length)
+    bytes_read += len(data)
+    return data.decode("latin-1")
 
 
 def read_bits(length: int) -> list:
@@ -53,3 +77,19 @@ def write_bits(data: list) -> None:
         for b in range(8):
             s += "1" if data[i + b] else "0"
         write_int(int(s[::-1], 2), 1)
+
+
+def with_position_tracking(func):
+    """Decorator that catches exceptions and adds byte position information."""
+
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception:
+            position = get_position()
+            print(f"\n{'='*60}", file=sys.stderr)
+            print(f"ERROR at byte position: {position} (0x{position:X})", file=sys.stderr)
+            print(f"{'='*60}\n", file=sys.stderr)
+            raise
+
+    return wrapper

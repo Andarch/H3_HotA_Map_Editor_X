@@ -1,5 +1,7 @@
 from enum import IntEnum
 
+from src.common import VariableValueMode
+
 from . import io
 
 
@@ -44,6 +46,8 @@ def read_general() -> dict:
         "allowed_difficulties": b"",
         "can_hire_defeated_heroes": False,
         "hota_versionLocked": False,
+        "variable_count": 0,
+        "variables": [],
         "has_hero": False,
         "map_size": MapSize.S,
         "has_underground": False,
@@ -60,7 +64,7 @@ def read_general() -> dict:
 
     info["hota_version"] = io.read_int(4)
 
-    if info["hota_version"] < 8:
+    if info["hota_version"] < 9:
         raise NotImplementedError(f"unsupported hota version: {info["hota_version"]}")
 
     info["hota_versionMajor"] = io.read_int(4)
@@ -74,6 +78,15 @@ def read_general() -> dict:
     info["allowed_difficulties"] = io.read_bits(1)
     info["can_hire_defeated_heroes"] = bool(io.read_int(1))
     info["hota_versionLocked"] = bool(io.read_int(1))
+
+    info["variable_count"] = io.read_int(4)
+    for _ in range(info["variable_count"]):
+        var = {}
+        var["name"] = io.read_str(io.read_int(4))
+        var["initial_value"] = io.read_int(4)
+        var["value_mode"] = VariableValueMode(io.read_int(1))
+        info["variables"].append(var)
+
     info["has_hero"] = bool(io.read_int(1))
     info["map_size"] = MapSize(io.read_int(4))
     info["has_underground"] = bool(io.read_int(1))
@@ -99,6 +112,7 @@ def write(info: dict) -> None:
     io.write_bits(info["allowed_difficulties"])
     io.write_int(info["can_hire_defeated_heroes"], 1)
     io.write_int(info["hota_versionLocked"], 1)
+    io.write_int(info["variable_count"], 4)
     io.write_int(info["has_hero"], 1)
     io.write_int(info["map_size"], 4)
     io.write_int(info["has_underground"], 1)

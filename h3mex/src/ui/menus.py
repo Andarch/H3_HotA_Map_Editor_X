@@ -3,13 +3,14 @@ class Menu:
         ("1", "General"),
         ("2", "Player Specs"),
         ("3", "Start Heroes"),
-        ("4", "Rumors"),
-        ("5", "Hero Data"),
-        ("6", "Terrain"),
-        ("7", "Object Defs"),
-        ("8", "Object Data"),
-        ("9", "Global Events"),
+        ("4", "Ban Flags"),
+        ("5", "Rumors"),
+        ("6", "Hero Data"),
+        ("7", "Terrain"),
+        ("8", "Object Defs"),
+        ("9", "Object Data"),
         ("0", "Town Events"),
+        ("E", "Global Events"),
     ]
 
     _MINIMAP = [
