@@ -88,7 +88,7 @@ def get_subtype(obj_type: int, i: int) -> int:
         case objects.ID.Creature_Generator_1:
             return objects.SubID.Dwelling.Normal(i)
         case objects.ID.Creature_Generator_4:
-            return objects.SubID.Dwelling.Special(i)
+            return objects.SubID.Dwelling.Multi(i)
         case objects.ID.Hero:
             return heroes.Classes(i)
         case objects.ID.Hill_Fort:

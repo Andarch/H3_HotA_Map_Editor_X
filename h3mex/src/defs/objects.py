@@ -402,7 +402,7 @@ class SubID(IntEnum):
             Couatl = 109
             Dreadnought = 110
 
-        class Special(IntEnum):  # ID 20
+        class Multi(IntEnum):  # ID 20
             Elementals = 0
             Golems = 1
 

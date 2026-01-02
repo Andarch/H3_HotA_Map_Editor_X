@@ -33,7 +33,7 @@ class Classes(IntEnum):
     Navigator = 19
     Mercenary = 20
     Artificer = 21
-    Chieftan = 22
+    Chieftain = 22
     Elder = 23
 
 
