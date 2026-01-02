@@ -10,7 +10,9 @@ from src.utilities import wait_for_keypress
 from .format import format_map_data
 
 ###################################
-OBJECT_FILTER = [*objects.ID]
+# OBJECT_FILTER = [*objects.ID]
+OBJECT_FILTER = [objects.ID.Town]
+OBJECT_SUBFILTER = [objects.SubID.Town.Bulwark]
 ###################################
 
 
@@ -51,7 +53,11 @@ def menu() -> None:
                 _print_lines(data)
             case "9":
                 xprint(text="Loading object data…")
-                object_data = [obj for obj in map_data["object_data"] if obj["id"] in OBJECT_FILTER]
+                object_data = [
+                    obj
+                    for obj in map_data["object_data"]
+                    if obj["id"] in OBJECT_FILTER and obj["sub_id"] in OBJECT_SUBFILTER
+                ]
                 data = format_map_data(("object_data", object_data))
                 _print_lines(data)
             case "0":
