@@ -11,7 +11,7 @@ BOSS_EVENT_NAME = "[Boss Bonus]"
 ##################################################
 # Set lvl7 creature bonus amounts (max 666 each)
 HUMAN_LVL7_CREATURES = 5
-AI_LVL7_CREATURES = 25
+AI_LVL7_CREATURES = 15
 BOSS_LVL7_CREATURES = 50
 
 # Set which players receive each bonus type
@@ -97,12 +97,11 @@ def _create_events() -> None:
         first: int,
         subsequent: int,
         lvl7b_creatures: int,
-        random_town_buildings: list,
+        hota_special: list,
         buildings: list,
         creatures: list,
     ) -> dict:
         return {
-            "isTown": True,
             "name": name,
             "message": "",
             "resources": [0] * 7,
@@ -113,9 +112,10 @@ def _create_events() -> None:
             "subsequent_occurences": subsequent,
             "trash_bytes": b"\x00" * 16,
             "allowed_difficulties": 31,
-            "hota_lvl7b_amount": lvl7b_creatures,
-            "hota_unknown_constant": 44,
-            "hota_special": random_town_buildings,
+            "eventType": 0,
+            "hotaLevel7b": lvl7b_creatures,
+            "hotaAmount": 48,
+            "hotaSpecial": hota_special,
             "apply_neutral_towns": False,
             "buildings": buildings,
             "creatures": creatures,
@@ -139,7 +139,7 @@ def _create_events() -> None:
                     first=7,
                     subsequent=7,
                     lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
-                    random_town_buildings=[0] * 48,
+                    hota_special=[0] * 6,
                     buildings=[0] * 48,
                     creatures=[
                         HUMAN_LVL1_CREATURES,
@@ -162,7 +162,7 @@ def _create_events() -> None:
                     first=0,
                     subsequent=7,
                     lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
-                    random_town_buildings=[1] * 48,
+                    hota_special=[255, 255, 255, 255, 255, 15],
                     buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                     creatures=[
                         AI_LVL1_CREATURES,
@@ -185,7 +185,7 @@ def _create_events() -> None:
             #         first=0,
             #         subsequent=7,
             #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == Town.Factory else 0,
-            #         random_buildings=[1] * 48,
+            #         hota_special=[255, 255, 255, 255, 255, 15],
             #         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
             #         creatures=[
             #             BOSS_LVL1_CREATURES,

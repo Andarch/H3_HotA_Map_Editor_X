@@ -10,7 +10,8 @@ from src.utilities import wait_for_keypress
 from .format import format_map_data
 
 ###################################
-OBJECT_FILTER = [*objects.ID]
+# OBJECT_FILTER = [*objects.ID]
+OBJECT_FILTER = [objects.ID.Town, objects.ID.Random_Town]
 ###################################
 
 

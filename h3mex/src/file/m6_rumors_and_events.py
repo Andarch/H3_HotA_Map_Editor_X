@@ -53,7 +53,6 @@ def parse_events(town: str = None, coords: list = None) -> list:
 
         if town:
             event["eventType"] = io.read_int(1)
-            event["hotaSpecial"] = []
 
             if event["eventType"] == 0:
                 event["hotaLevel7b"] = io.read_int(4)
