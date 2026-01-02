@@ -171,22 +171,37 @@ def parse_object_data(object_defs: list, filename: str) -> list:
             if has_zone_images:
                 ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}
                 obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+
                 if obj["id"] in (objects.ID.Shipwreck, objects.ID.Creature_Generator_1, objects.ID.Prison) and (
                     obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
                 ):
                     obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1], obj["coords"][2]]
                     obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+
                 if obj["id"] == objects.ID.Fountain_of_Youth and (
                     obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
                 ):
                     obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1] - 1, obj["coords"][2]]
                     obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+
                 if (
                     obj["id"] == objects.ID.Border_Gate
                     and obj["sub_id"] == objects.SubID.Border.Quest_Gate
                     and (obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES)
                 ):
                     obj["coords_offset"] = [obj["coords"][0], obj["coords"][1] - 1, obj["coords"][2]]
+                    obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+
+                if obj["id"] == objects.ID.Garrison and (
+                    obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
+                ):
+                    obj["coords_offset"] = [obj["coords"][0] - 2, obj["coords"][1] - 2, obj["coords"][2]]
+                    obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
+
+                if obj["id"] == objects.ID.Garrison_Vertical and (
+                    obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
+                ):
+                    obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1] - 2, obj["coords"][2]]
                     obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
 
         match obj["id"]:
