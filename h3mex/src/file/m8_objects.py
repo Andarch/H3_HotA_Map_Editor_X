@@ -250,8 +250,12 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 else:
                     obj["owner"] = io.read_int(4)
 
+            case objects.ID.HotA_Visitable_1:
+                if obj["sub_id"] == objects.SubID.HotAVisitable1.Trapper_Lodge:
+                    obj = parse_trapper_lodge(obj)
+
             case objects.ID.HotA_Visitable_2:
-                if obj["sub_id"] == 0:  # HotA Seafaring_Academy
+                if obj["sub_id"] == objects.SubID.HotAVisitable2.Seafaring_Academy:
                     obj = parse_university(obj)
 
             # Some of the HotA objects are implemented in a pretty hacky way.
@@ -404,9 +408,14 @@ def write_object_data(info: list) -> None:
                 else:
                     io.write_int(obj["owner"], 4)
 
+            case objects.ID.HotA_Visitable_1:
+                if obj["sub_id"] == objects.SubID.HotAVisitable1.Trapper_Lodge:
+                    write_trapper_lodge(obj)
+
             case objects.ID.HotA_Visitable_2:
-                if obj["sub_id"] == 0:  # HotA Seafaring_Academy
+                if obj["sub_id"] == objects.SubID.HotAVisitable2.Seafaring_Academy:
                     write_university(obj)
+
             case objects.ID.Border_Gate:
                 if obj["sub_id"] == 1000:  # HotA Quest Gate
                     write_quest(obj["quest"])
@@ -1882,6 +1891,32 @@ def write_grave(obj: dict) -> None:
     io.write_int(obj["amount"], 4)
     io.write_int(obj["resource"], 1)
     io.write_raw(obj["mystery_bytes"])
+
+
+def parse_trapper_lodge(obj: dict) -> dict:
+    obj["reward_type"] = objects.TrapperLodgeReward(io.read_int(4))
+    obj["gold_amount"] = io.read_int(4)
+    obj["creature_amount"] = io.read_int(4)
+    obj["creature_id"] = io.read_int(4)
+
+    if obj["reward_type"] == objects.TrapperLodgeReward.Random:
+        obj["gold_amount"] = 0
+        obj["creature_amount"] = 0
+        obj["creature_id"] = 0
+    elif obj["reward_type"] == objects.TrapperLodgeReward.Gold:
+        obj["creature_amount"] = 0
+        obj["creature_id"] = 0
+    elif obj["reward_type"] == objects.TrapperLodgeReward.Creatures:
+        obj["gold_amount"] = 0
+
+    return obj
+
+
+def write_trapper_lodge(obj: dict) -> None:
+    io.write_int(obj["reward_type"], 4)
+    io.write_int(obj["gold_amount"], 4)
+    io.write_int(obj["creature_amount"], 4)
+    io.write_int(obj["creature_id"], 4)
 
 
 def get_zone(coords: list) -> tuple:

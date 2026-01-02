@@ -523,6 +523,7 @@ class SubID(IntEnum):
         Warlocks_Lab = 9
         Prospector = 10
         Trailblazer = 11
+        Trapper_Lodge = 12
 
     class HotAVisitable2(IntEnum):  # ID 146
         Seafaring_Academy = 0
@@ -585,6 +586,7 @@ class SubID(IntEnum):
         Predatory_Plants = 11
         Maple_Trees = 12
         Natural_Arch = 13
+        Glacier = 14
 
 
 class TownAlignment(IntEnum):
@@ -782,6 +784,12 @@ class CreatureBankStack(IntEnum):
     Random = 255
     No = 0
     Yes = 1
+
+
+class TrapperLodgeReward(IntEnum):
+    Random = 4294967295
+    Gold = 0
+    Creatures = 1
 
 
 class ZoneInfo:
