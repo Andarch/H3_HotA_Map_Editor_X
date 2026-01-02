@@ -2072,6 +2072,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.SubID.HotAVisitable1.Gazebo,
                 objects.SubID.HotAVisitable1.Warlocks_Lab,
                 objects.SubID.HotAVisitable1.Prospector,
+                objects.SubID.HotAVisitable1.Trapper_Lodge,
             }
 
         if obj_id == objects.ID.HotA_Pickup:
