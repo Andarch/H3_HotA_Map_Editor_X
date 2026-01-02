@@ -213,6 +213,20 @@ class ID(IntEnum):
     Crimson_Couatl = 183
     Dreadnought = 184
     Juggernaut = 185
+    Kobold = 186
+    Kobold_Foreman = 187
+    Mountain_Ram = 188
+    Argali = 189
+    Snow_Elf = 190
+    Steel_Elf = 191
+    Yeti = 192
+    Yeti_Runemaster = 193
+    Shaman = 194
+    Great_Shaman = 195
+    Mammoth = 196
+    War_Mammoth = 197
+    Jotunn = 198
+    Jotunn_Warlord = 199
 
 
 class Level1Creatures(IntEnum):
@@ -238,6 +252,8 @@ class Level1Creatures(IntEnum):
     Oceanid = ID.Oceanid
     Halfling = ID.Halfling
     Halfling_Grenadier = ID.Halfling_Grenadier
+    Kobold = ID.Kobold
+    Kobold_Foreman = ID.Kobold_Foreman
     Peasant = ID.Peasant
 
 
@@ -264,6 +280,8 @@ class Level2Creatures(IntEnum):
     Seaman = ID.Seaman
     Mechanic = ID.Mechanic
     Engineer = ID.Engineer
+    Mountain_Ram = ID.Mountain_Ram
+    Argali = ID.Argali
     Boar = ID.Boar
     Rogue = ID.Rogue
     Leprechaun = ID.Leprechaun
@@ -292,6 +310,8 @@ class Level3Creatures(IntEnum):
     Corsair = ID.Corsair
     Armadillo = ID.Armadillo
     Bellwether_Armadillo = ID.Bellwether_Armadillo
+    Snow_Elf = ID.Snow_Elf
+    Steel_Elf = ID.Steel_Elf
     Mummy = ID.Mummy
     Nomad = ID.Nomad
     Sea_Dog = ID.Sea_Dog
@@ -320,6 +340,8 @@ class Level4Creatures(IntEnum):
     Ayssid = ID.Ayssid
     Automaton = ID.Automaton
     Sentinel_Automaton = ID.Sentinel_Automaton
+    Yeti = ID.Yeti
+    Yeti_Runemaster = ID.Yeti_Runemaster
     Sharpshooter = ID.Sharpshooter
     Satyr = ID.Satyr
     Steel_Golem = ID.Steel_Golem
@@ -348,6 +370,8 @@ class Level5Creatures(IntEnum):
     Sorceress = ID.Sorceress
     Sandworm = ID.Sandworm
     Olgoi_Khorkhoi = ID.Olgoi_Khorkhoi
+    Shaman = ID.Shaman
+    Great_Shaman = ID.Great_Shaman
     Troll = ID.Troll
     Gold_Golem = ID.Gold_Golem
     Fangarm = ID.Fangarm
@@ -376,6 +400,8 @@ class Level6Creatures(IntEnum):
     Nix_Warrior = ID.Nix_Warrior
     Gunslinger = ID.Gunslinger
     Bounty_Hunter = ID.Bounty_Hunter
+    Mammoth = ID.Mammoth
+    War_Mammoth = ID.War_Mammoth
     Diamond_Golem = ID.Diamond_Golem
     Enchanter = ID.Enchanter
 
@@ -409,384 +435,5 @@ class Level7Creatures(IntEnum):
     Crimson_Couatl = ID.Crimson_Couatl
     Dreadnought = ID.Dreadnought
     Juggernaut = ID.Juggernaut
-
-
-"""
-NAME = [
-    "Pikemen",
-    "Halberdiers",
-    "Archers",
-    "Marksmen",
-    "Griffins",
-    "Royal Griffins",
-    "Swordsmen",
-    "Crusaders",
-    "Monks",
-    "Zealots",
-    "Cavaliers",
-    "Champions",
-    "Angels",
-    "Archangels",
-    "Centaurs",
-    "Centaur Captains",
-    "Dwarves",
-    "Battle Dwarves",
-    "Wood Elves",
-    "Grand Elves",
-    "Pegasi",
-    "Silver Pegasi",
-    "Dendroid Guards",
-    "Dendroid Soldiers",
-    "Unicorns",
-    "War Unicorns",
-    "Green Dragons",
-    "Gold Dragons",
-    "Gremlins",
-    "Master Gremlins",
-    "Stone Gargoyles",
-    "Obsidian Gargoyles",
-    "Stone Golems",
-    "Iron Golems",
-    "Magi",
-    "Arch Magi",
-    "Genies",
-    "Master Genies",
-    "Nagas",
-    "Naga Queens",
-    "Giants",
-    "Titans",
-    "Imps",
-    "Familiars",
-    "Gogs",
-    "Magogs",
-    "Hell Hounds",
-    "Cerberi",
-    "Demons",
-    "Horned Demons",
-    "Pit Fiends",
-    "Pit Lords",
-    "Efreet",
-    "Efreet Sultans",
-    "Devils",
-    "Arch Devils",
-    "Skeletons",
-    "Skeleton Warriors",
-    "Walking Dead",
-    "Zombies",
-    "Wights",
-    "Wraiths",
-    "Vampires",
-    "Vampire Lords",
-    "Liches",
-    "Power Liches",
-    "Black Knights",
-    "Dread Knights",
-    "Bone Dragons",
-    "Ghost Dragons",
-    "Troglodytes",
-    "Infernal Troglodytes",
-    "Harpies",
-    "Harpy Hags",
-    "Beholders",
-    "Evil Eyes",
-    "Medusas",
-    "Medusa Queens",
-    "Minotaurs",
-    "Minotaur Kings",
-    "Manticores",
-    "Scorpicores",
-    "Red Dragons",
-    "Black Dragons",
-    "Goblins",
-    "Hobgoblins",
-    "Wolf Riders",
-    "Wolf Raiders",
-    "Orcs",
-    "Orc Chieftains",
-    "Ogres",
-    "Ogre Magi",
-    "Rocs",
-    "Thunderbirds",
-    "Cyclopes",
-    "Cyclops Kings",
-    "Behemoths",
-    "Ancient Behemoths",
-    "Gnolls",
-    "Gnoll Marauders",
-    "Lizardmen",
-    "Lizard Warriors",
-    "Gorgons",
-    "Mighty Gorgons",
-    "Serpent Flies",
-    "Dragon Flies",
-    "Basilisks",
-    "Greater Basilisks",
-    "Wyverns",
-    "Wyvern Monarchs",
-    "Hydras",
-    "Chaos Hydras",
-    "Air Elementals",
-    "Earth Elementals",
-    "Fire Elementals",
-    "Water Elementals",
-    "Gold Golems",
-    "Diamond Golems",
-    "Pixies",
-    "Sprites",
-    "Psychic Elementals",
-    "Magic Elementals",
-    "NOT USED 1",
-    "Ice Elementals",
-    "NOT USED 2",
-    "Magma Elementals",
-    "NOT USED 3",
-    "Storm Elementals",
-    "NOT USED 4",
-    "Energy Elementals",
-    "Firebirds",
-    "Phoenixes",
-    "Azure Dragons",
-    "Crystal Dragons",
-    "Faerie Dragons",
-    "Rust Dragons",
-    "Enchanters",
-    "Sharpshooters",
-    "Halflings",
-    "Peasants",
-    "Boars",
-    "Mummies",
-    "Nomads",
-    "Rogues",
-    "Trolls",
-    "Catapults",
-    "Ballistas",
-    "First Aid Tents",
-    "Ammo Carts",
-    "Arrow Towers",
-    "Cannons",
-    "Sea Dogs",
-    "Electric Towers",
-    "Nymphs",
-    "Oceanids",
-    "Crew Mates",
-    "Seamen",
-    "Pirates",
-    "Corsairs",
-    "Stormbirds",
-    "Ayssids",
-    "Sea Witches",
-    "Sorceresses",
-    "Nixes",
-    "Nix Warriors",
-    "Sea Serpents",
-    "Haspids",
-    "Satyrs",
-    "Fangarms",
-    "Leprechauns",
-    "Steel Golems",
-    "Halfling Grenadiers",
-    "Mechanics",
-    "Engineers",
-    "Armadillos",
-    "Bellwether Armadillos",
-    "Automatons",
-    "Sentinel Automatons",
-    "Sandworms",
-    "Olgoi-Khorkhoi",
-    "Gunslingers",
-    "Bounty Hunters",
-    "Couatls",
-    "Crimson Couatls",
-    "Dreadnoughts",
-    "Juggernauts",
-]
-
-AI_VALUE = [
-    80,  # Pikeman
-    115,  # Halberdier
-    126,  # Archer
-    184,  # Marksman
-    351,  # Griffin
-    448,  # Royal_Griffin
-    445,  # Swordsman
-    588,  # Crusader
-    582,  # Monk
-    750,  # Zealot
-    1946,  # Cavalier
-    2100,  # Champion
-    5019,  # Angel
-    8776,  # Archangel
-    100,  # Centaur
-    138,  # Centaur_Captain
-    138,  # Dwarf
-    209,  # Battle_Dwarf
-    234,  # Wood_Elf
-    331,  # Grand_Elf
-    518,  # Pegasus
-    532,  # Silver_Pegasus
-    517,  # Dendroid_Guard
-    803,  # Dendroid_Soldier
-    1806,  # Unicorn
-    2030,  # War_Unicorn
-    4872,  # Green_Dragon
-    8613,  # Gold_Dragon
-    44,  # Gremlin
-    66,  # Master_Gremlin
-    165,  # Stone_Gargoyle
-    201,  # Obsidian_Gargoyle
-    250,  # Stone_Golem
-    412,  # Iron_Golem
-    570,  # Mage
-    680,  # Arch_Mage
-    884,  # Genie
-    942,  # Master_Genie
-    2016,  # Naga
-    2840,  # Naga_Queen
-    3718,  # Giant
-    7500,  # Titan
-    50,  # Imp
-    60,  # Familiar
-    159,  # Gog
-    240,  # Magog
-    357,  # Hell_Hound
-    392,  # Cerberus
-    445,  # Demon
-    480,  # Horned_Demon
-    765,  # Pit_Fiend
-    1224,  # Pit_Lord
-    1670,  # Efreeti
-    2343,  # Efreet_Sultan
-    5101,  # Devil
-    7115,  # Arch_Devil
-    60,  # Skeleton
-    85,  # Skeleton_Warrior
-    98,  # Walking_Dead
-    128,  # Zombie
-    252,  # Wight
-    315,  # Wraith
-    555,  # Vampire
-    783,  # Vampire_Lord
-    848,  # Lich
-    1079,  # Power_Lich
-    2087,  # Black_Knight
-    2382,  # Dread_Knight
-    3388,  # Bone_Dragon
-    4696,  # Ghost_Dragon
-    59,  # Troglodyte
-    84,  # Infernal_Troglodyte
-    154,  # Harpy
-    238,  # Harpy_Hag
-    336,  # Beholder
-    367,  # Evil_Eye
-    517,  # Medusa
-    577,  # Medusa_Queen
-    835,  # Minotaur
-    1068,  # Minotaur_King
-    1547,  # Manticore
-    1589,  # Scorpicore
-    4702,  # Red_Dragon
-    8721,  # Black_Dragon
-    60,  # Goblin
-    78,  # Hobgoblin
-    130,  # Wolf_Rider
-    203,  # Wolf_Raider
-    192,  # Orc
-    240,  # Orc_Chieftain
-    416,  # Ogre
-    672,  # Ogre_Mage
-    1027,  # Roc
-    1106,  # Thunderbird
-    1266,  # Cyclops
-    1443,  # Cyclops_King
-    3162,  # Behemoth
-    6188,  # Ancient_Behemoth
-    56,  # Gnoll
-    90,  # Gnoll_Marauder
-    126,  # Lizardman
-    156,  # Lizard_Warrior
-    890,  # Gorgon
-    1028,  # Mighty_Gorgon
-    268,  # Serpent_Fly
-    312,  # Dragon_Fly
-    552,  # Basilisk
-    714,  # Greater_Basilisk
-    1350,  # Wyvern
-    1518,  # Wyvern_Monarch
-    4120,  # Hydra
-    5931,  # Chaos_Hydra
-    356,  # Air_Elemental
-    330,  # Earth_Elemental
-    345,  # Fire_Elemental
-    315,  # Water_Elemental
-    600,  # Gold_Golem
-    775,  # Diamond_Golem
-    55,  # Pixie
-    95,  # Sprite
-    1669,  # Psychic_Elemental
-    2012,  # Magic_Elemental
-    0,  # NOT_USED_1
-    380,  # Ice_Elemental
-    0,  # NOT_USED_2
-    490,  # Magma_Elemental
-    0,  # NOT_USED_3
-    486,  # Storm_Elemental
-    0,  # NOT_USED_4
-    470,  # Energy_Elemental
-    4336,  # Firebird
-    6721,  # Phoenix
-    78845,  # Azure_Dragon
-    39338,  # Crystal_Dragon
-    30501,  # Faerie_Dragon
-    26433,  # Rust_Dragon
-    1210,  # Enchanter
-    585,  # Sharpshooter
-    75,  # Halfling
-    15,  # Peasant
-    145,  # Boar
-    270,  # Mummy
-    345,  # Nomad
-    135,  # Rogue
-    1024,  # Troll
-    500,  # Catapult
-    600,  # Ballista
-    300,  # First_Aid_Tent
-    400,  # Ammo_Cart
-    400,  # Arrow_Tower
-    875,  # Cannon
-    602,  # Sea_Dog
-    0,  # Electric Tower
-    57,  # Nymph
-    75,  # Oceanid
-    155,  # Crew_Mate
-    174,  # Seaman
-    312,  # Pirate
-    407,  # Corsair
-    502,  # Stormbird
-    645,  # Ayssid
-    790,  # Sea_Witch
-    852,  # Sorceress
-    1415,  # Nix
-    2116,  # Nix_Warrior
-    3953,  # Sea_Serpent
-    7220,  # Haspid
-    518,  # Satyr
-    929,  # Fangarm
-    208,  # Leprechaun
-    597,  # Steel_Golem
-    95,  # Halfling Grenadier
-    186,  # Mechanic
-    278,  # Engineer
-    198,  # Armadillo
-    256,  # Bellwether Armadillo
-    669,  # Automaton
-    947,  # Sentinel Automaton
-    991,  # Sandworm
-    1220,  # Olgoi-Khorkhoi
-    1351,  # Gunslinger
-    1454,  # Bounty Hunter
-    3574,  # Couatl
-    5341,  # Crimson Couatl
-    3879,  # Dreadnought
-    6433,  # Juggernaut
-]
-"""
+    Jotunn = ID.Jotunn
+    Jotunn_Warlord = ID.Jotunn_Warlord

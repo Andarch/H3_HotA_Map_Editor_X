@@ -498,6 +498,7 @@ class SubID(IntEnum):
         Conflux = 8
         Cove = 9
         Factory = 10
+        Bulwark = 11
         Random = 255
 
     class WarMachineFactory(IntEnum):  # ID 106
@@ -711,6 +712,10 @@ class TownBuildings:
         Gantry_Factory = 41
         Upg_Gantry_Factory = 42
         Mana_Generator_Factory = 43
+        Fair = 44
+        Sieidi_of_the_Runes = 45
+        Altar_of_the_Runes = 46
+        Unknown_Special = 47
 
 
 class ScholarReward(IntEnum):

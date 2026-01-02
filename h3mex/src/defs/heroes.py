@@ -33,8 +33,8 @@ class Classes(IntEnum):
     Navigator = 19
     Mercenary = 20
     Artificer = 21
-    # UNUSED
-    # UNUSED
+    Chieftan = 22
+    Elder = 23
 
 
 class ID(IntEnum):
@@ -312,7 +312,29 @@ class ID(IntEnum):
     Frederick = 195
     Tavin = 196
     Murdoch = 197
-    # UNUSED
+    Dhuin = 198
+    Oidana = 199
+    #
+    # Byte 26 ... (200-207)
+    #
+    Neia = 200
+    Eikthum = 201
+    Creyle = 202
+    Spadum = 203
+    Kynr = 204
+    Ergon = 205
+    Kriv = 206
+    Glacius = 207
+    #
+    # Byte 27 ... (208-215)
+    #
+    Sial = 208
+    Dalton = 209
+    Biarma = 210
+    Akka = 211
+    Vehr = 212
+    Allora = 213
+    Haugir = 214
     # UNUSED
 
 
@@ -546,3 +568,20 @@ class Portrait(IntEnum):
     Gruezak = 225
     Maximus = 226
     Balfour = 227
+    Dhuin = 228
+    Oidana = 229
+    Neia = 230
+    Eikthum = 231
+    Creyle = 232
+    Spadum = 233
+    Kynr = 234
+    Ergon = 235
+    Kriv = 236
+    Glacius = 237
+    Sial = 238
+    Dalton = 239
+    Biarma = 240
+    Akka = 241
+    Vehr = 242
+    Allora = 243
+    Haugir = 244
