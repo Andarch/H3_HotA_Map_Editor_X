@@ -45,10 +45,14 @@ def menu() -> None:
                         case "2":
                             towns.edit(add_events=True)
                         case "3":
-                            towns.edit(human=True)
+                            towns.edit(fourth_town=True)
                         case "4":
-                            towns.edit(copy_events=True)
+                            towns.edit(mega_town=True)
                         case "5":
+                            towns.edit(human=True)
+                        case "6":
+                            towns.edit(copy_events=True)
+                        case "7":
                             towns.edit(copy_buildings=True)
             case "4":
                 while True:

@@ -97,9 +97,11 @@ class Menu:
             [
                 ("1", "Towns: Enable all spells/research and all buildings"),
                 ("2", "Towns: Add creature bonus events"),
-                ("3", "Towns: Add humans to AI-only events"),
-                ("4", "Towns: Copy events from source town to target towns"),
-                ("5", "Towns: Copy buildings from source town to target towns"),
+                ("3", "Towns: Add fourth-town events"),
+                ("4", "Towns: Add mega-town events"),
+                ("5", "Towns: Add humans to AI-only events"),
+                ("6", "Towns: Copy events from source town to target towns"),
+                ("7", "Towns: Copy buildings from source town to target towns"),
             ],
             [
                 ("1", "Heroes: Reset identity details"),

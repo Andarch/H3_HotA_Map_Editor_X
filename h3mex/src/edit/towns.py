@@ -7,17 +7,23 @@ TOWN_IDS = [objects.ID.Town, objects.ID.Random_Town]
 HUMAN_EVENT_NAME = "[Human Bonus]"
 AI_EVENT_NAME = "[AI Bonus]"
 BOSS_EVENT_NAME = "[Boss Bonus]"
+FOURTH_TOWN_EVENT_NAME = "[Bonus]"
+MEGA_TOWN_EVENT_NAME = "[Bonus]"
 
 ##################################################
 # Set lvl7 creature bonus amounts (max 666 each)
 HUMAN_LVL7_CREATURES = 5
 AI_LVL7_CREATURES = 15
 BOSS_LVL7_CREATURES = 50
+FOURTH_TOWN_LVL7_CREATURES = 15
+MEGA_TOWN_LVL7_CREATURES = 20
 
 # Set which players receive each bonus type
 HUMAN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
 AI_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
 BOSS_PLAYERS = [1, 0, 0, 0, 0, 0, 0, 0]
+FOURTH_TOWN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
+MEGA_TOWN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
 ##################################################
 
 HUMAN_LVL1_CREATURES = round(HUMAN_LVL7_CREATURES * 25)
@@ -41,11 +47,27 @@ BOSS_LVL4_CREATURES = round(BOSS_LVL7_CREATURES * 10)
 BOSS_LVL5_CREATURES = round(BOSS_LVL7_CREATURES * 6)
 BOSS_LVL6_CREATURES = round(BOSS_LVL7_CREATURES * 3)
 
+FOURTH_TOWN_LVL1_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 25)
+FOURTH_TOWN_LVL2_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 20)
+FOURTH_TOWN_LVL3_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 15)
+FOURTH_TOWN_LVL4_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 10)
+FOURTH_TOWN_LVL5_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 6)
+FOURTH_TOWN_LVL6_CREATURES = round(FOURTH_TOWN_LVL7_CREATURES * 3)
+
+MEGA_TOWN_LVL1_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 25)
+MEGA_TOWN_LVL2_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 20)
+MEGA_TOWN_LVL3_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 15)
+MEGA_TOWN_LVL4_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 10)
+MEGA_TOWN_LVL5_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 6)
+MEGA_TOWN_LVL6_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 3)
+
 
 def edit(
     spells: bool = False,
     buildings: bool = False,
     add_events: bool = False,
+    fourth_town: bool = False,
+    mega_town: bool = False,
     human: bool = False,
     copy_events: bool = False,
     copy_buildings: bool = False,
@@ -56,6 +78,10 @@ def edit(
         _enable_buildings()
     if add_events:
         _create_events()
+    if fourth_town:
+        _create_fourth_town_events()
+    if mega_town:
+        _create_mega_town_events()
     if human:
         _change_ai_events()
     if copy_events:
@@ -96,7 +122,7 @@ def _create_events() -> None:
         ai: bool,
         first: int,
         subsequent: int,
-        lvl7b_creatures: int,
+        hota_level7b: int,
         hota_special: list,
         buildings: list,
         creatures: list,
@@ -113,7 +139,7 @@ def _create_events() -> None:
             "trash_bytes": b"\x00" * 16,
             "allowed_difficulties": 31,
             "eventType": 0,
-            "hotaLevel7b": lvl7b_creatures,
+            "hotaLevel7b": hota_level7b,
             "hotaAmount": 48,
             "hotaSpecial": hota_special,
             "apply_neutral_towns": False,
@@ -138,7 +164,7 @@ def _create_events() -> None:
                     ai=False,
                     first=7,
                     subsequent=7,
-                    lvl7b_creatures=HUMAN_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
+                    hota_level7b=HUMAN_LVL7_CREATURES if obj["sub_id"] == objects.SubID.Town.Factory else 0,
                     hota_special=[0] * 6,
                     buildings=[0] * 48,
                     creatures=[
@@ -161,7 +187,7 @@ def _create_events() -> None:
                     ai=True,
                     first=0,
                     subsequent=7,
-                    lvl7b_creatures=AI_LVL7_CREATURES if obj["owner"] == objects.SubID.Town.Factory else 0,
+                    hota_level7b=AI_LVL7_CREATURES if obj["sub_id"] == objects.SubID.Town.Factory else 0,
                     hota_special=[255, 255, 255, 255, 255, 15],
                     buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
                     creatures=[
@@ -184,7 +210,7 @@ def _create_events() -> None:
             #         ai=True,
             #         first=0,
             #         subsequent=7,
-            #         lvl7b_creatures=BOSS_LVL7_CREATURES if obj["owner"] == Town.Factory else 0,
+            #         hota_level7b=BOSS_LVL7_CREATURES if obj["sub_id"] == Town.Factory else 0,
             #         hota_special=[255, 255, 255, 255, 255, 15],
             #         buildings=[0 if i in (2, 17) or 41 <= i <= 47 else 1 for i in range(48)],
             #         creatures=[
@@ -198,6 +224,97 @@ def _create_events() -> None:
             #         ],
             #     )
             #     obj["town_events"].extend([boss_event])
+    xprint(type=TextType.DONE)
+
+
+def _create_fourth_town_events() -> None:
+    xprint(type=TextType.ACTION, text="Configuring 4th-town events…")
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["name"] in {
+            "Knight's Niche",
+            "Grim Galley",
+            "Feather Lodge",
+            "Hacksaw Hole",
+            "Skull Temple",
+            "Pirate Piazza",
+            "Mage's Retreat",
+        }:
+            # Remove any existing events with the same name
+            obj["town_events"] = [e for e in obj["town_events"] if e["name"] != FOURTH_TOWN_EVENT_NAME]
+            # Create event
+            fourth_town_event = {
+                "name": FOURTH_TOWN_EVENT_NAME,
+                "message": "",
+                "resources": [10, 5, 10, 5, 5, 5, 25000],
+                "apply_to": FOURTH_TOWN_PLAYERS,
+                "apply_human": True,
+                "apply_ai": True,
+                "first_occurence": 0,
+                "subsequent_occurences": 7,
+                "trash_bytes": b"\x00" * 16,
+                "allowed_difficulties": 31,
+                "eventType": 0,
+                "hotaLevel7b": FOURTH_TOWN_LVL7_CREATURES if obj["sub_id"] == objects.SubID.Town.Factory else 0,
+                "hotaAmount": 48,
+                "hotaSpecial": [0] * 6,
+                "apply_neutral_towns": True,
+                "buildings": [0] * 48,
+                "creatures": [
+                    FOURTH_TOWN_LVL1_CREATURES,
+                    FOURTH_TOWN_LVL2_CREATURES,
+                    FOURTH_TOWN_LVL3_CREATURES,
+                    FOURTH_TOWN_LVL4_CREATURES,
+                    FOURTH_TOWN_LVL5_CREATURES,
+                    FOURTH_TOWN_LVL6_CREATURES,
+                    FOURTH_TOWN_LVL7_CREATURES,
+                ],
+                "end_trash": b"\x00" * 4,
+            }
+            obj["town_events"].extend([fourth_town_event])
+    xprint(type=TextType.DONE)
+
+
+def _create_mega_town_events() -> None:
+    xprint(type=TextType.ACTION, text="Configuring mega-town events…")
+    for obj in map_data["object_data"]:
+        if obj["id"] in TOWN_IDS and obj["name"] in {
+            "The Vault",
+            "Hag's Hollow",
+            "Cragspire",
+            "Grandview",
+        }:
+            # Remove any existing events with the same name
+            obj["town_events"] = [e for e in obj["town_events"] if e["name"] != MEGA_TOWN_EVENT_NAME]
+            # Create event
+            mega_town_event = {
+                "name": MEGA_TOWN_EVENT_NAME,
+                "message": "",
+                "resources": [20, 10, 20, 10, 10, 10, 50000],
+                "apply_to": MEGA_TOWN_PLAYERS,
+                "apply_human": True,
+                "apply_ai": True,
+                "first_occurence": 0,
+                "subsequent_occurences": 7,
+                "trash_bytes": b"\x00" * 16,
+                "allowed_difficulties": 31,
+                "eventType": 0,
+                "hotaLevel7b": MEGA_TOWN_LVL7_CREATURES if obj["sub_id"] == objects.SubID.Town.Factory else 0,
+                "hotaAmount": 48,
+                "hotaSpecial": [0] * 6,
+                "apply_neutral_towns": True,
+                "buildings": [0] * 48,
+                "creatures": [
+                    MEGA_TOWN_LVL1_CREATURES,
+                    MEGA_TOWN_LVL2_CREATURES,
+                    MEGA_TOWN_LVL3_CREATURES,
+                    MEGA_TOWN_LVL4_CREATURES,
+                    MEGA_TOWN_LVL5_CREATURES,
+                    MEGA_TOWN_LVL6_CREATURES,
+                    MEGA_TOWN_LVL7_CREATURES,
+                ],
+                "end_trash": b"\x00" * 4,
+            }
+            obj["town_events"].extend([mega_town_event])
     xprint(type=TextType.DONE)
 
 
