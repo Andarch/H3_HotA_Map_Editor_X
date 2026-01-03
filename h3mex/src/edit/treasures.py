@@ -2,11 +2,69 @@ import random
 
 import src.file.m8_objects as m8_objects
 from src.common import TextType, map_data
-from src.defs import objects
+from src.defs import artifacts, objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
 RANDOM_CONTENTS = 4294967295
+
+
+def remove_sea_treasures():
+    xprint(type=TextType.ACTION, text="Removing sea treasures with land on either side…")
+
+    # Remove sea treasures as defined in add_treasures() if the tile directly to the left or right is a land tile
+    # For HotA_Pickup, only sub_ids 1-3 are sea treasures (Ancient Lamp sub_id 0 is land-only)
+    size = map_data["general"]["map_size"]
+
+    # Build set of objects to remove
+    objects_to_remove = set()
+
+    for obj in map_data["object_data"]:
+        is_sea_treasure = obj["id"] in {objects.ID.Sea_Chest, objects.ID.Flotsam, objects.ID.Shipwreck_Survivor} or (
+            obj["id"] == objects.ID.HotA_Pickup and obj["sub_id"] in {1, 2, 3}
+        )
+        if is_sea_treasure:
+            x, y, z = obj["coords"]
+
+            # Determine terrain layer
+            if z == 0:  # Overworld
+                terrain_layer = (
+                    map_data["terrain"][: size * size]
+                    if map_data["general"]["has_underground"]
+                    else map_data["terrain"]
+                )
+            else:  # Underground
+                terrain_layer = map_data["terrain"][size * size :]
+
+            # Check left tile
+            left_x = x - 1
+            if 0 <= left_x < size:
+                idx_left = y * size + left_x
+                terrain_type_left = terrain_layer[idx_left]["terrain_type"]
+                if terrain_type_left != 8:  # Not sea
+                    objects_to_remove.add(id(obj))
+                    continue
+
+            # Check right tile
+            right_x = x + 1
+            if 0 <= right_x < size:
+                idx_right = y * size + right_x
+                terrain_type_right = terrain_layer[idx_right]["terrain_type"]
+                if terrain_type_right != 8:  # Not sea
+                    objects_to_remove.add(id(obj))
+                    continue
+
+    # Rebuild object_data excluding removed treasures
+    removed_count = len(objects_to_remove)
+    map_data["object_data"] = [obj for obj in map_data["object_data"] if id(obj) not in objects_to_remove]
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(
+        type=TextType.INFO,
+        text=f"Removed {removed_count} sea treasures.",
+    )
+    wait_for_keypress()
 
 
 def remove_scholars():
@@ -92,6 +150,46 @@ def remove_scholars():
         type=TextType.INFO,
         text=f"Removed {removed_count} scholars. Protected {len(protected_scholars)} scholars.",
     )
+    wait_for_keypress()
+
+
+def fix_empty_contents() -> None:
+    xprint(type=TextType.ACTION, text="Fixing empty contents in objects…")
+
+    target_ids = {
+        objects.ID.Sea_Chest,
+        objects.ID.Shipwreck_Survivor,
+        objects.ID.Treasure_Chest,
+        objects.ID.Warriors_Tomb,
+    }
+    empty_markers = {
+        artifacts.ID.Empty_1_Byte,
+        artifacts.ID.Empty_2_Bytes,
+        artifacts.ID.Empty_Unknown,
+        artifacts.ID.Empty_4_Bytes,
+    }
+
+    def enum_name_by_value(enum_cls, value: int) -> str:
+        try:
+            return enum_cls(value).name
+        except ValueError:
+            return f"0x{value:08X}"
+
+    count = 0
+    for obj in map_data["object_data"]:
+        id = obj.get("id")
+        if id in target_ids:
+            contents = obj.get("contents")
+            if contents in empty_markers:
+                obj["artifact"] = contents
+                count += 1
+                xprint(
+                    type=TextType.INFO,
+                    text=f"{obj.get('type')} at {obj.get('coords')} contains {enum_name_by_value(artifacts.ID, contents)}",
+                )
+    xprint()
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+
     wait_for_keypress()
 
 

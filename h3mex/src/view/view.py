@@ -10,9 +10,9 @@ from src.utilities import wait_for_keypress
 from .format import format_map_data
 
 ###################################
-# OBJECT_FILTER = [*objects.ID]
-OBJECT_FILTER = [objects.ID.HotA_Decor_2]
-OBJECT_SUBFILTER = [objects.SubID.HotADecor2.Glacier]
+OBJECT_FILTER = [*objects.ID]
+# OBJECT_FILTER = [objects.ID.HotA_Decor_2]
+# OBJECT_SUBFILTER = [objects.SubID.HotADecor2.Glacier]
 # OBJECT_COORDS_FILTER = [[53, 238, 1], [59, 238, 1], [63, 239, 1], [68, 239, 1], [72, 239, 1], [76, 239, 1]]
 ###################################
 
@@ -57,8 +57,8 @@ def menu() -> None:
                 object_data = [
                     obj
                     for obj in map_data["object_data"]
-                    # if obj["id"] in OBJECT_FILTER
-                    if obj["id"] in OBJECT_FILTER and obj["sub_id"] in OBJECT_SUBFILTER
+                    if obj["id"] in OBJECT_FILTER
+                    # if obj["id"] in OBJECT_FILTER and obj["sub_id"] in OBJECT_SUBFILTER
                     # if obj["id"] in OBJECT_FILTER and obj["coords"] in OBJECT_COORDS_FILTER
                 ]
                 data = format_map_data(("object_data", object_data))

@@ -5,7 +5,6 @@ from src.ui.xprint import xprint
 from ..common import Keypress
 from . import (
     eventobjects,
-    fix,
     garrisons,
     heroes,
     monsters,
@@ -70,17 +69,37 @@ def menu() -> None:
                         case "3":
                             heroes.swap_hero_indexes()
             case "5":
-                monsters.set_random_monsters()
+                while True:
+                    keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][4]))
+                    if keypress == Keypress.ESC:
+                        break
+
+                    header.draw()
+
+                    match keypress:
+                        case "1":
+                            monsters.set_random_monsters()
+                        case "2":
+                            monsters.set_monster_values()
+                        case "3":
+                            monsters.set_compliant_monster_values()
             case "6":
-                monsters.set_monster_values()
-            case "7":
-                monsters.set_compliant_monster_values()
-            case "8":
-                treasures.add_treasures()
-            case "9":
-                fix.fix_empty_contents()
-            case "0":
-                treasures.add_scholars()
+                while True:
+                    keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][5]))
+                    if keypress == Keypress.ESC:
+                        break
+
+                    header.draw()
+
+                    match keypress:
+                        case "1":
+                            treasures.add_treasures()
+                        case "2":
+                            treasures.fix_empty_contents()
+                        case "3":
+                            treasures.add_scholars()
+                        case "4":
+                            treasures.remove_sea_treasures()
             case "M":
                 while True:
                     keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][1]))

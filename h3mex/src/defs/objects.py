@@ -20,10 +20,10 @@ class ID(IntEnum):
     Swan_Pond = 14
     Cover_of_Darkness = 15
     Creature_Bank = 16
-    Creature_Generator_1 = 17
-    Creature_Generator_2 = 18
-    Creature_Generator_3 = 19
-    Creature_Generator_4 = 20
+    Creature_Dwelling_Normal = 17
+    Creature_Dwelling_2 = 18
+    Creature_Dwelling_3 = 19
+    Creature_Dwelling_Multi = 20
     Cursed_Ground_RoE = 21
     Corpse = 22
     Marletto_Tower = 23

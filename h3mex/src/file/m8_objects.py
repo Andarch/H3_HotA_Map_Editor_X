@@ -85,9 +85,9 @@ def get_subtype(obj_type: int, i: int) -> int:
             return objects.SubID.Cartographer(i)
         case objects.ID.Creature_Bank:
             return objects.SubID.CreatureBank(i)
-        case objects.ID.Creature_Generator_1:
+        case objects.ID.Creature_Dwelling_Normal:
             return objects.SubID.Dwelling.Normal(i)
-        case objects.ID.Creature_Generator_4:
+        case objects.ID.Creature_Dwelling_Multi:
             return objects.SubID.Dwelling.Multi(i)
         case objects.ID.Hero:
             return heroes.Classes(i)
@@ -172,7 +172,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 ERROR_TYPES = {"Out of Bounds", "Void", "Unknown"}
                 obj["zone_type"], obj["zone_color"] = get_zone(obj["coords_offset"])
 
-                if obj["id"] in (objects.ID.Shipwreck, objects.ID.Creature_Generator_1, objects.ID.Prison) and (
+                if obj["id"] in (objects.ID.Shipwreck, objects.ID.Creature_Dwelling_Normal, objects.ID.Prison) and (
                     obj["zone_type"] in ERROR_TYPES or obj["zone_color"] in ERROR_TYPES
                 ):
                     obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1], obj["coords"][2]]
@@ -317,9 +317,9 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj["garbage_bytes"] = io.read_raw(4)
 
             case (
-                objects.ID.Creature_Generator_1
+                objects.ID.Creature_Dwelling_Normal
                 | objects.ID.Lighthouse
-                | objects.ID.Creature_Generator_4
+                | objects.ID.Creature_Dwelling_Multi
                 | objects.ID.Shipyard
             ):
                 obj["owner"] = io.read_int(4)
@@ -475,9 +475,9 @@ def write_object_data(info: list) -> None:
                 io.write_raw(obj["garbage_bytes"])
 
             case (
-                objects.ID.Creature_Generator_1
+                objects.ID.Creature_Dwelling_Normal
                 | objects.ID.Lighthouse
-                | objects.ID.Creature_Generator_4
+                | objects.ID.Creature_Dwelling_Multi
                 | objects.ID.Shipyard
             ):
                 io.write_int(obj["owner"], 4)
