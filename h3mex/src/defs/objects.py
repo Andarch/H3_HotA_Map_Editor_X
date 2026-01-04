@@ -816,7 +816,7 @@ class ZoneInfo:
         (0, 62, 128): "W3",
         (0, 23, 64): "W4",
     }
-    COLORS = {
+    PLAYERS = {
         (77, 77, 77): "Neutral",
         (80, 85, 88): "Neutral",
         (89, 110, 184): "Blue",

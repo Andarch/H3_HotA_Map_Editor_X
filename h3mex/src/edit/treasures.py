@@ -325,7 +325,7 @@ def add_scholars():
             "coords": coords,
             "coords_offset": coords,
             "zone_type": current_zone_type,
-            "zone_color": current_zone_color,
+            "zone_player": current_zone_color,
             "def_id": scholar_def_id,
             "id": objects.ID.Scholar,
             "sub_id": 0,
@@ -537,15 +537,15 @@ def add_treasures():
 
 def _get_base_object(coords, id, def_id):
     """Common object creation logic"""
-    zone_type, zone_color = ("", "")
+    zone_type, zone_player = ("", "")
     if m8_objects.has_zone_images:
-        zone_type, zone_color = m8_objects.get_zone(coords)
+        zone_type, zone_player = m8_objects.get_zone(coords)
 
     return {
         "coords": coords,
         "coords_offset": coords,
         "zone_type": zone_type,
-        "zone_color": zone_color,
+        "zone_player": zone_player,
         "def_id": def_id,
         "id": id,
         "sub_id": 0,

@@ -17,6 +17,8 @@ class Menu:
         ("1", "Standard minimap"),
         None,
         ("2", "Extended minimap…"),
+        ("3", "Extended minimap with zone types…"),
+        ("4", "Extended minimap with zone players…"),
     ]
 
     MAIN = {

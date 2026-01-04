@@ -46,17 +46,44 @@ def view() -> None:
 
         match keypress:
             case "1":
-                generate(MMAction.VIEW, MMType.STANDARD)
+                generate(MMAction.VIEW, MMType.STANDARD, None)
             case "2":
-                generate(MMAction.VIEW, MMType.EXTENDED)
-
+                generate(MMAction.VIEW, MMType.EXTENDED, None)
+            case "3":
+                mm_overlay = {
+                    "name": "types",
+                    "ground": Path(os.getcwd()).parent
+                    / "maps"
+                    / "images"
+                    / f"{map_data["filename"][:-4]}_zonetypes_g.png",
+                    "underground": (
+                        Path(os.getcwd()).parent / "maps" / "images" / f"{map_data["filename"][:-4]}_zonetypes_u.png"
+                        if map_data["general"]["has_underground"]
+                        else None
+                    ),
+                }
+                generate(MMAction.VIEW, MMType.EXTENDED, mm_overlay)
+            case "4":
+                mm_overlay = {
+                    "name": "players",
+                    "ground": Path(os.getcwd()).parent
+                    / "maps"
+                    / "images"
+                    / f"{map_data["filename"][:-4]}_zoneplayers_g.png",
+                    "underground": (
+                        Path(os.getcwd()).parent / "maps" / "images" / f"{map_data["filename"][:-4]}_zoneplayers_u.png"
+                        if map_data["general"]["has_underground"]
+                        else None
+                    ),
+                }
+                generate(MMAction.VIEW, MMType.EXTENDED, mm_overlay)
         while True:
             keypress = msvcrt.getwch()
             if keypress == Keypress.ESC:
                 break
 
 
-def generate(mm_action: MMAction, mm_type: MMType) -> None:
+def generate(mm_action: MMAction, mm_type: MMType, mm_overlay: dict | None) -> None:
     match mm_type:
         case MMType.STANDARD:
             mm_key = "standard"
@@ -67,6 +94,7 @@ def generate(mm_action: MMAction, mm_type: MMType) -> None:
                 MM_LAYERS[mm_key]["subfilter"],
                 None,
                 mm_key,
+                None,
             )
         case MMType.EXTENDED:
             for mm_number, mm_key in enumerate(MM_LAYERS.keys()):
@@ -80,6 +108,7 @@ def generate(mm_action: MMAction, mm_type: MMType) -> None:
                     mm_layer["subfilter"],
                     mm_number,
                     mm_key,
+                    mm_overlay,
                 )
 
 
@@ -90,6 +119,7 @@ def _process_image(
     mm_subfilter: set | None,
     mm_number: int,
     mm_key: str,
+    mm_overlay: dict | None,
 ) -> None:
     if mm_action == MMAction.EXPORT:
         if mm_type == MMType.STANDARD:
@@ -149,7 +179,7 @@ def _process_image(
         )
     # Generate and save minimap images
     if mm_action == MMAction.VIEW:
-        _view_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_number, mm_key)
+        _view_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_key, mm_overlay)
     if mm_action == MMAction.EXPORT:
         _export_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_number, mm_key)
         xprint(type=TextType.DONE)
@@ -275,12 +305,15 @@ def _view_minimap_images(
     terrain_data: list,
     blocked_tiles: dict,
     tile_ownership: dict,
-    mm_number: int,
     mm_key: str,
+    mm_overlay: dict | None,
 ) -> None:
     global base_layers
 
-    xprint(text="Loading minimap…")
+    if mm_key in {"standard", "base1"}:
+        xprint(text="Loading…")
+    else:
+        xprint(text="Loading…", overwrite=1)
 
     IMAGE_SIZE = 756
     GAP_SIZE = 45
@@ -289,19 +322,19 @@ def _view_minimap_images(
     transparent = (0, 0, 0, 0)
 
     mm_images = []
-    for map_z, terrain_chunk in enumerate(terrain_data):
+    for map_layer, terrain_chunk in enumerate(terrain_data):
         img = Image.new("RGBA", (map_size, map_size))
         for i, tile in enumerate(terrain_chunk):
             x = i % map_size
             y = i // map_size
-            mm_objectid = tile_ownership[map_z][y][x]
+            mm_objectid = tile_ownership[map_layer][y][x]
             color = _get_pixel_color(
                 mm_type,
                 mm_key,
                 tile,
                 mm_objectid,
                 blocked_tiles,
-                map_z,
+                map_layer,
                 x,
                 y,
                 transparent,
@@ -310,38 +343,49 @@ def _view_minimap_images(
 
         mm_images.append(img)
 
-    for map_z in range(len(mm_images)):
-        mm_images[map_z] = mm_images[map_z].resize((IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST)
+    for map_layer in range(len(mm_images)):
+        mm_images[map_layer] = mm_images[map_layer].resize((IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST)
 
         if mm_key == "base1":
-            if map_z == 0:
+            if map_layer == 0:
                 base_layers["base1g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
-                base_layers["base1g"].paste(mm_images[map_z], (0, 0))
-                base_layers["base1g"] = ImageEnhance.Brightness(base_layers["base1g"]).enhance(0.75)
-            elif map_z == 1:
+                base_layers["base1g"].paste(mm_images[map_layer], (0, 0))
+            elif map_layer == 1:
                 base_layers["base1u"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
-                base_layers["base1u"].paste(mm_images[map_z], (0, 0))
-                base_layers["base1u"] = ImageEnhance.Brightness(base_layers["base1u"]).enhance(0.75)
+                base_layers["base1u"].paste(mm_images[map_layer], (0, 0))
         if mm_key == "base2":
-            if map_z == 0:
+            if map_layer == 0:
                 base_layers["base2g"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
-                base_layers["base2g"].paste(mm_images[map_z], (0, 0))
-                base_layers["base2g"] = ImageEnhance.Brightness(base_layers["base2g"]).enhance(0.75)
-            elif map_z == 1:
+                base_layers["base2g"].paste(mm_images[map_layer], (0, 0))
+            elif map_layer == 1:
                 base_layers["base2u"] = Image.new("RGBA", (IMAGE_SIZE, IMAGE_SIZE))
-                base_layers["base2u"].paste(mm_images[map_z], (0, 0))
-                base_layers["base2u"] = ImageEnhance.Brightness(base_layers["base2u"]).enhance(0.75)
+                base_layers["base2u"].paste(mm_images[map_layer], (0, 0))
 
-        canvas = Image.new("RGBA", mm_images[map_z].size)
+        canvas = Image.new("RGBA", mm_images[map_layer].size)
         if mm_type == MMType.EXTENDED and mm_key not in {"base1", "base2"}:
-            if map_z == 0:
+            if map_layer == 0:
                 canvas.paste(base_layers["base1g"], (0, 0), base_layers["base1g"])
                 canvas.paste(base_layers["base2g"], (0, 0), base_layers["base2g"])
-            elif map_z == 1:
+            elif map_layer == 1:
                 canvas.paste(base_layers["base1u"], (0, 0), base_layers["base1u"])
                 canvas.paste(base_layers["base2u"], (0, 0), base_layers["base2u"])
-        canvas.paste(mm_images[map_z], (0, 0), mm_images[map_z])
-        mm_images[map_z] = canvas.convert("RGB")
+
+        # Paste overlay images if provided
+        if mm_overlay is not None and mm_key not in {"base1", "base2"}:
+            if map_layer == 0:
+                overlay_img = Image.open(mm_overlay["ground"])
+                overlay_img = overlay_img.resize((IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST)
+                canvas.paste(overlay_img, (0, 0), overlay_img)
+            elif map_layer == 1:
+                overlay_img = Image.open(mm_overlay["underground"])
+                overlay_img = overlay_img.resize((IMAGE_SIZE, IMAGE_SIZE), resample=Image.Resampling.NEAREST)
+                canvas.paste(overlay_img, (0, 0), overlay_img)
+
+        factor = 0.5 if mm_overlay is None or mm_overlay["name"] == "players" else 0.25
+        canvas = ImageEnhance.Brightness(canvas).enhance(factor)
+
+        canvas.paste(mm_images[map_layer], (0, 0), mm_images[map_layer])
+        mm_images[map_layer] = canvas.convert("RGB")
 
     bg = Image.open(Path(os.getcwd()).parent / "h3mex" / "res" / "graphics" / "minimap_bg.png")
     minimap = bg.copy()
@@ -352,14 +396,16 @@ def _view_minimap_images(
     buffer = BytesIO()
     minimap.save(buffer, format="PNG")
 
-    xprint()
+    # xprint()
     if mm_type == MMType.STANDARD:
-        xprint(text="STANDARD MINIMAP", align=TextAlign.CENTER, overwrite=2)
-    else:
-        xprint(text=f"EXTENDED MINIMAP - {mm_number:02d}_{mm_key}", align=TextAlign.CENTER, overwrite=2)
-    xprint()
-
-    display_image(buffer)
+        xprint(text="STANDARD MINIMAP", align=TextAlign.CENTER, overwrite=1)
+        xprint()
+        display_image(buffer)
+    elif mm_key not in {"base1", "base2"}:
+        xprint(text=f"EXTENDED MINIMAP - {mm_key}", align=TextAlign.CENTER, overwrite=1)
+        xprint()
+        display_image(buffer)
+        xprint()
 
 
 def _export_minimap_images(
