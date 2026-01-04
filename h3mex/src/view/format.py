@@ -4,16 +4,17 @@ import re
 from src.ui import ui
 from src.ui.xprint import xprint
 
-REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
-REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("(?:\\.|[^"\\])*")(,?)'
-REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
 REGEX_ARRAY_DICTS = r"([ \t]+)()(\{[^\[\]{}]*\})(,?)"
+REGEX_LISTS = r'([ \t]*)("[^"]+":\s*)(\[[^\[\]{}]*\])(,?)'
+REGEX_BYTES = r'([ \t]*)("[^"]+":)\s*"(b\\"[^"]*\\")"(,?)'
+REGEX_STRINGS = r'([ \t]*)("[^"]+":)\s*("[^"]*")(,?)'
+REGEX_DICTS = r'([ \t]*)("[^"]+":) (\{[\s\S]*?\})(,?)'
 
 
 def format_map_data(section: tuple[str, dict | list]) -> list[str]:
     # Perform JSON dump
     name = section[0]
-    data = json.dumps(section[1], indent=4, default=str)
+    data = json.dumps(section[1], indent=4, default=_bytes_to_hex)
 
     # Special case: if the entire section is just an empty list, format it inline
     if data.strip() == "[]":
@@ -23,6 +24,7 @@ def format_map_data(section: tuple[str, dict | list]) -> list[str]:
     # Apply formatting in sequence - array dicts first, then lists
     data = re.sub(REGEX_ARRAY_DICTS, _format_map_data, data)
     data = re.sub(REGEX_LISTS, _format_map_data, data)
+    data = re.sub(REGEX_BYTES, _format_map_data, data)
     data = re.sub(REGEX_STRINGS, _format_map_data, data)
     data = re.sub(REGEX_DICTS, _format_map_data, data)
 
@@ -44,16 +46,18 @@ def _format_map_data(m: re.Match) -> str:
         return _format_lists(indent, prefix, value, suffix)
     elif value.startswith('"') and value.endswith('"'):  # Strings
         return _format_string(indent, prefix, value, suffix)
+    elif value.startswith("b") and value.endswith('"'):  # Bytes
+        return _format_bytes(indent, prefix, value, suffix)
     elif value.startswith("{") and value.endswith("}"):  # Dictionaries
         return _format_dict(indent, prefix, value, suffix)
     else:
         return m.group(0)  # Fallback - return unchanged
 
 
-def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -> str:
+def _format_lists(indent: str, prefix: str, value: str, suffix: str) -> str:
     # Split on commas that are not inside dictionaries
     list_items = []
-    content = list_.strip("[]")
+    content = value.strip("[]")
     brace_level = 0
     current_item = ""
     for char in content:
@@ -72,7 +76,7 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
         list_items.append(current_item.strip())
 
     if not list_items:
-        return f"{indent}{list_prefix}[]{list_suffix}"
+        return f"{indent}{prefix}[]{suffix}"
 
     for list_item in list_items:
         if list_item.startswith("{") and list_item.endswith("}"):
@@ -81,14 +85,14 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
             list_contains_dicts = False
             break
     if list_contains_dicts:
-        original_format = f"{indent}{list_prefix}{list_}{list_suffix}"
+        original_format = f"{indent}{prefix}{value}{suffix}"
         return original_format
 
     # Define for #1 and #2
     flat_list = "[" + ", ".join(list_items) + "]"
 
     # 1. Try flat list (single-line list on same line as key)
-    flat_final = f"{indent}{list_prefix}{flat_list}{list_suffix}"
+    flat_final = f"{indent}{prefix}{flat_list}{suffix}"
     if len(flat_final) <= ui.MAX_PRINT_WIDTH:
         return flat_final
 
@@ -96,15 +100,15 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
     hanging_indent = indent + (" " * 4)
 
     # 2. Try hanging flat list (single-line list on its own indented line)
-    lines = [f"{indent}{list_prefix}["]
-    line = f"{hanging_indent}{flat_list}{list_suffix}"
+    lines = [f"{indent}{prefix}["]
+    line = f"{hanging_indent}{flat_list}{suffix}"
     if len(line) <= ui.MAX_PRINT_WIDTH:
         lines.append(line)
         hanging_flat_final = "\n".join(lines)
         return hanging_flat_final
 
     # 3. Wrapped version - pack items per line up to ui.MAX_PRINT_WIDTH (word-like wrapping)
-    lines = [f"{indent}{list_prefix}["]
+    lines = [f"{indent}{prefix}["]
     current_line = ""
     for i, list_item in enumerate(list_items):
         is_last_item = i + 1 == len(list_items)
@@ -118,56 +122,85 @@ def _format_lists(indent: str, list_prefix: str, list_: str, list_suffix: str) -
             current_line = token
     if current_line:
         lines.append(f"{hanging_indent}{current_line}")
-    lines.append(f"{indent}]{list_suffix}")
+    lines.append(f"{indent}]{suffix}")
     return "\n".join(lines)
 
 
-def _format_string(indent: str, prefix: str, values: str, comma: str) -> str:
-    result_flat = f"{indent}{prefix} {values}{comma}"
-
+def _format_string(indent: str, prefix: str, value: str, suffix: str) -> str:
     # If it fits on one line, return it
+    result_flat = f"{indent}{prefix} {value}{suffix}"
     if len(result_flat) <= ui.MAX_PRINT_WIDTH:
         return result_flat
 
-    # For long strings, force multi-line
+    # Else perform wrapping
     hanging_indent = indent + (" " * 4)
+    lines = [f"{indent}{prefix}"]
+    current_line = ""
 
-    # Extract content without quotes for processing
-    content = values[1:-1]  # Remove surrounding quotes
+    value = value + suffix
 
-    # If string has no spaces, use character-by-character wrapping
-    if " " not in content:
-        available_width = ui.MAX_PRINT_WIDTH - len(hanging_indent) - 2  # -2 for quotes
-        lines = [f"{indent}{prefix}"]
-        for i in range(0, len(content), available_width):
-            chunk = content[i : i + available_width]
-            if i == 0:
-                lines.append(f'\n{hanging_indent}"{chunk}')
-            elif i + available_width >= len(content):
-                lines.append(f'\n{hanging_indent}{chunk}"{comma}')
-            else:
-                lines.append(f"\n{hanging_indent}{chunk}")
-        return "".join(lines)
-    else:
+    if " " in value:
         # Word-based wrapping for strings with spaces
-        words = content.split(" ")
-        lines = [f"{indent}{prefix}"]
-        current_line = '"'
-        for word in words:
-            test_line = current_line + (" " if current_line != '"' else "") + word
-            if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH - 1:
+        words = value.split()
+        for i, word in enumerate(words):
+            if i == 0:
+                current_line = word
+                continue
+            test_line = current_line + " " + word
+            if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH:
                 current_line = test_line
             else:
-                if current_line:
-                    lines.append(f"\n{hanging_indent}{current_line}")
+                lines.append(f"{hanging_indent}{current_line}")
                 current_line = word
-        lines.append(f'\n{hanging_indent}{current_line}"{comma}')
-        return "".join(lines)
+        lines.append(f"{hanging_indent}{current_line}")
+        return "\n".join(lines)
+    else:
+        # Character-by-character wrapping for strings with no spaces
+        i = 0
+        while i < len(value):
+            token = value[i]
+            test_line = current_line + token
+            if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH:
+                current_line = test_line
+            else:
+                lines.append(f"{hanging_indent}{current_line}")
+                current_line = token
+            i += 1
+        lines.append(f"{hanging_indent}{current_line}")
+        return "\n".join(lines)
 
 
-def _format_dict(indent: str, prefix: str, values: str, comma: str) -> str:
+def _format_bytes(indent: str, prefix: str, value: str, suffix: str) -> str:
+    value = value.replace("\\\\", "\\").replace('\\"', '"') + suffix
+
+    # If it fits on one line, return it
+    result_flat = f"{indent}{prefix} {value}"
+    if len(result_flat) <= ui.MAX_PRINT_WIDTH:
+        return result_flat
+
+    # Else perform wrapping
+    hanging_indent = indent + (" " * 4)
+    lines = [f"{indent}{prefix}"]
+    current_line = ""
+
+    i = 0
+    while i < len(value):
+        token = value[i]
+        test_line = current_line + token
+        if len(f"{hanging_indent}{test_line}") <= ui.MAX_PRINT_WIDTH:
+            current_line = test_line
+        else:
+            lines.append(f"{hanging_indent}{current_line}")
+            current_line = token
+        i += 1
+
+    lines.append(f"{hanging_indent}{current_line}")
+    return "\n".join(lines)
+
+
+def _format_dict(indent: str, prefix: str, value: str, comma: str) -> str:
     # Parse dictionary into flat format
-    flat_dict = re.sub(r"\s+", " ", values.strip())
+    flat_dict = re.sub(r"\s+", " ", value.strip())
 
     # For standalone dictionaries (no prefix), just try to flatten if it fits
     if not prefix.strip():
@@ -175,7 +208,7 @@ def _format_dict(indent: str, prefix: str, values: str, comma: str) -> str:
         if len(result_flat) <= ui.MAX_PRINT_WIDTH:
             return result_flat
         # If it doesn't fit flat, keep original formatting
-        return f"{indent}{values}{comma}"
+        return f"{indent}{value}{comma}"
 
     # For key-value dictionaries, use the original logic
     result_flat = f"{indent}{prefix}{flat_dict}{comma}"
@@ -191,4 +224,12 @@ def _format_dict(indent: str, prefix: str, values: str, comma: str) -> str:
         return f"{indent}{prefix}\n{hanging_line}"
 
     # 3. Keep original formatting and let strings inside be processed later
-    return f"{indent}{prefix}{values}{comma}"
+    return f"{indent}{prefix}{value}{comma}"
+
+
+def _bytes_to_hex(obj):
+    """Convert bytes objects to bytes literal format with all hex escapes."""
+    if isinstance(obj, bytes):
+        hex_string = "".join(f"\\x{byte:02x}" for byte in obj)
+        return f'b"{hex_string}"'
+    return str(obj)

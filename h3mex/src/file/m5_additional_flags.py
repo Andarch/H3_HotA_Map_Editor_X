@@ -46,16 +46,25 @@ def parse_flags() -> dict:
 
 
 def parse_hota_events() -> bytes:
-    # Read bytes until we find 166, then seek back so next section can read it
+    # Read bytes until we find 166 as u-int32 (A6 00 00 00), then seek back so next section can read it
+    marker = b"\xa6\x00\x00\x00"  # 166 as little-endian u-int32
     hota_events = b""
+    buffer = b""
+
     while True:
         byte_data = io.read_raw(1)
-        byte = int.from_bytes(byte_data, "little")
-        if byte == 166:
-            # Seek back 1 byte to leave 166 for the next section
-            io.seek(-1)
+        buffer += byte_data
+
+        # Check if we found the marker
+        if buffer == marker:
+            # Seek back 4 bytes to leave marker for next section
+            io.seek(-4)
             return hota_events
-        hota_events += byte_data
+
+        # If buffer is full (4 bytes), move the oldest byte to hota_events
+        if len(buffer) == 4:
+            hota_events += buffer[:1]
+            buffer = buffer[1:]
 
     # hota_events = {
     #     "hero_events": [],
