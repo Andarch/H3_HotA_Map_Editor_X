@@ -23,8 +23,8 @@ def read_players() -> list:
             "starting_hero_id": 255,
             "starting_hero_face": 255,
             "starting_hero_name": "",
-            "available_heroes": [],
             "garbage_byte": b"\x00",
+            "available_heroes": [],
             "placeholder_heroes": [],
         }
 
