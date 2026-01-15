@@ -4,7 +4,7 @@ MM_LAYERS = {
     "standard": {"display_name": "Standard Minimap", "filter": None, "subfilter": None},
     "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
     "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
-    "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
+    # "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
     # "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
     # "monoliths1_en": {
     #     "display_name": "One-Way Monolith Entrances",
@@ -106,12 +106,12 @@ MM_LAYERS = {
     # "treasurechests": {"display_name": "Treasure Chests", "filter": {objects.ID.Treasure_Chest}, "subfilter": None},
     # "scholars": {"display_name": "Scholars", "filter": {objects.ID.Scholar}, "subfilter": None},
     # "eventobjects": {"display_name": "Event Objects", "filter": {objects.ID.Event_Object}, "subfilter": None},
-    # "tradingposts": {"display_name": "Trading Posts", "filter": groups.TRADING_POSTS, "subfilter": None},
-    # "warlockslabs": {
-    #     "display_name": "Warlock's Labs",
-    #     "filter": {objects.ID.HotA_Visitable_1},
-    #     "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
-    # },
+    "tradingposts": {"display_name": "Trading Posts", "filter": groups.TRADING_POSTS, "subfilter": None},
+    "warlockslabs": {
+        "display_name": "Warlock's Labs",
+        "filter": {objects.ID.HotA_Visitable_1},
+        "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
+    },
     # "redwoodobservatories": {
     #     "display_name": "Redwood Observatories",
     #     "filter": {objects.ID.Redwood_Observatory},

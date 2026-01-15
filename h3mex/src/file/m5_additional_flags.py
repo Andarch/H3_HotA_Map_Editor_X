@@ -57,31 +57,13 @@ def parse_hota_events() -> bytes:
 
         # Check if we found the marker
         if buffer == marker:
-            # Validate this is actually the artifact section by checking next bytes
-            # Artifacts section has 166 artifacts represented as bits (ceil(166/8) = 21 bytes)
-            # So we peek ahead to see if the next ~21 bytes look like bit flags (not ASCII text)
+            # Validate by peeking 38 bytes ahead for the hero count (expected 215 / 0xD7)
             current_pos = io.get_position()
-            validation_bytes = []
-            is_valid_artifact_section = True
+            io.read_raw(38)
+            hero_count = io.read_int(4)
+            io.seek(current_pos - io.get_position())  # restore position
 
-            # Read next 21 bytes for validation
-            for i in range(21):
-                validation_bytes.append(io.read_int(1))
-
-            # Check if these bytes look like text (ASCII printable range: 32-126)
-            ascii_count = 0
-            for v_byte in validation_bytes:
-                if 32 <= v_byte <= 126:
-                    ascii_count += 1
-
-            # If more than 15 bytes are ASCII printable, this is likely a string, not artifact bits
-            if ascii_count > 15:
-                is_valid_artifact_section = False
-
-            # Restore position
-            io.seek(current_pos - io.get_position())
-
-            if is_valid_artifact_section:
+            if hero_count == 215:
                 # Seek back 4 bytes to leave marker for next section
                 io.seek(-4)
                 return hota_events
