@@ -106,21 +106,21 @@ MM_LAYERS = {
     # "treasurechests": {"display_name": "Treasure Chests", "filter": {objects.ID.Treasure_Chest}, "subfilter": None},
     # "scholars": {"display_name": "Scholars", "filter": {objects.ID.Scholar}, "subfilter": None},
     # "eventobjects": {"display_name": "Event Objects", "filter": {objects.ID.Event_Object}, "subfilter": None},
-    "tradingposts": {"display_name": "Trading Posts", "filter": groups.TRADING_POSTS, "subfilter": None},
-    "warlockslabs": {
-        "display_name": "Warlock's Labs",
-        "filter": {objects.ID.HotA_Visitable_1},
-        "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
+    # "tradingposts": {"display_name": "Trading Posts", "filter": groups.TRADING_POSTS, "subfilter": None},
+    # "warlockslabs": {
+    #     "display_name": "Warlock's Labs",
+    #     "filter": {objects.ID.HotA_Visitable_1},
+    #     "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
+    # },
+    "redwoodobservatories": {
+        "display_name": "Redwood Observatories",
+        "filter": {objects.ID.Redwood_Observatory, objects.ID.Pillar_of_Fire},
+        "subfilter": None,
     },
-    # "redwoodobservatories": {
-    #     "display_name": "Redwood Observatories",
-    #     "filter": {objects.ID.Redwood_Observatory},
-    #     "subfilter": None,
-    # },
-    # "coversofdarkness": {
-    #     "display_name": "Covers of Darkness",
-    #     "filter": {objects.ID.Cover_of_Darkness},
-    #     "subfilter": None,
-    # },
+    "coversofdarkness": {
+        "display_name": "Covers of Darkness",
+        "filter": {objects.ID.Cover_of_Darkness},
+        "subfilter": None,
+    },
     # "oceanbottles": {"display_name": "Ocean Bottles", "filter": {objects.ID.Ocean_Bottle}, "subfilter": None},
 }
