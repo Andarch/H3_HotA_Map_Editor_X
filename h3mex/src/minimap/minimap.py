@@ -208,6 +208,13 @@ def _determine_owner(mm_type: MMType, obj: dict) -> int | tuple | None:
             return obj["sub_id"] + MP1_ID_OFFSET
         elif obj["id"] == objects.ID.Two_Way_MonolithPortal:
             return obj["sub_id"] + MP2_ID_OFFSET
+        elif (
+            obj["id"] == objects.ID.Redwood_Observatory
+            and obj["sub_id"] == objects.SubID.Observation.Redwood_Observatory
+        ):
+            return MMObjectID.REDWOOD
+        elif obj["id"] == objects.ID.Pillar_of_Fire:
+            return MMObjectID.PILLAR
         elif obj["id"] not in groups.DECOR:
             return MMObjectID.ALL_OTHERS
     else:

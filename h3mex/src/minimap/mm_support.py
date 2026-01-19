@@ -118,6 +118,9 @@ class MMObjectID(IntEnum):
     S2_CHARTREUSE = 3523
     S2_YELLOW = 3524
 
+    REDWOOD = 4000
+    PILLAR = 4001
+
     ALL_OTHERS = 10000
 
 
@@ -236,6 +239,8 @@ MM_OBJECT_COLORS = {
     MMObjectID.S2_BLUE: (0x41, 0x69, 0xE1),
     MMObjectID.S2_CHARTREUSE: (0xAD, 0xFF, 0x2F),
     MMObjectID.S2_YELLOW: (0xFF, 0xFA, 0xCD),
+    MMObjectID.REDWOOD: (0xFF, 0x00, 0x00),
+    MMObjectID.PILLAR: (0xFF, 0xFF, 0x00),
     MMObjectID.ALL_OTHERS: (0xFF, 0xFF, 0xFF),
 }
 
