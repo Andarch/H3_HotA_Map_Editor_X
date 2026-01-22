@@ -113,7 +113,12 @@ MM_LAYERS = {
     #     "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
     # },
     "redwoodobservatories": {
-        "display_name": "Redwood Observatories",
+        "display_name": "Redwood Observatories & Pillars of Fire",
+        "filter": {objects.ID.Redwood_Observatory, objects.ID.Pillar_of_Fire},
+        "subfilter": {objects.SubID.Observation.Redwood_Observatory},
+    },
+    "observationtowers": {
+        "display_name": "Observation Towers",
         "filter": {objects.ID.Redwood_Observatory},
         "subfilter": {objects.SubID.Observation.Observation_Tower},
     },

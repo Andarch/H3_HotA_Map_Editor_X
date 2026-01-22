@@ -95,6 +95,7 @@ def generate(mm_action: MMAction, mm_type: MMType, mm_overlay: dict | None) -> N
                 None,
                 mm_key,
                 None,
+                MM_LAYERS[mm_key]["display_name"],
             )
         case MMType.EXTENDED:
             for mm_number, mm_key in enumerate(MM_LAYERS.keys()):
@@ -109,6 +110,7 @@ def generate(mm_action: MMAction, mm_type: MMType, mm_overlay: dict | None) -> N
                     mm_number,
                     mm_key,
                     mm_overlay,
+                    mm_layer["display_name"],
                 )
 
 
@@ -120,6 +122,7 @@ def _process_image(
     mm_number: int,
     mm_key: str,
     mm_overlay: dict | None,
+    mm_display_name: str,
 ) -> None:
     if mm_action == MMAction.EXPORT:
         if mm_type == MMType.STANDARD:
@@ -179,7 +182,7 @@ def _process_image(
         )
     # Generate and save minimap images
     if mm_action == MMAction.VIEW:
-        _view_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_key, mm_overlay)
+        _view_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_key, mm_overlay, mm_display_name)
     if mm_action == MMAction.EXPORT:
         _export_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_number, mm_key)
         xprint(type=TextType.DONE)
@@ -314,6 +317,7 @@ def _view_minimap_images(
     tile_ownership: dict,
     mm_key: str,
     mm_overlay: dict | None,
+    mm_display_name: str,
 ) -> None:
     global base_layers
 
@@ -409,9 +413,10 @@ def _view_minimap_images(
         xprint()
         display_image(buffer)
     elif mm_key not in {"base1", "base2"}:
-        xprint(text=f"EXTENDED MINIMAP - {mm_key}", align=TextAlign.CENTER, overwrite=1)
+        xprint(text=f"EXTENDED MINIMAP - {mm_display_name}", align=TextAlign.CENTER, overwrite=1)
         xprint()
         display_image(buffer)
+        xprint()
         xprint()
 
 
