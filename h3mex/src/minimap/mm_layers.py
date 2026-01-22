@@ -122,15 +122,15 @@ MM_LAYERS = {
     #     "filter": {objects.ID.Redwood_Observatory},
     #     "subfilter": {objects.SubID.Observation.Observation_Tower},
     # },
-    "observatories": {
-        "display_name": "Observatories",
-        "filter": {objects.ID.HotA_Visitable_2},
-        "subfilter": {objects.SubID.HotAVisitable2.Observatory},
-    },
-    # "coversofdarkness": {
-    #     "display_name": "Covers of Darkness",
-    #     "filter": {objects.ID.Cover_of_Darkness},
-    #     "subfilter": None,
+    # "observatories": {
+    #     "display_name": "Observatories",
+    #     "filter": {objects.ID.HotA_Visitable_2},
+    #     "subfilter": {objects.SubID.HotAVisitable2.Observatory},
     # },
+    "coversofdarkness": {
+        "display_name": "Covers of Darkness",
+        "filter": {objects.ID.Cover_of_Darkness},
+        "subfilter": None,
+    },
     # "oceanbottles": {"display_name": "Ocean Bottles", "filter": {objects.ID.Ocean_Bottle}, "subfilter": None},
 }
