@@ -112,15 +112,20 @@ MM_LAYERS = {
     #     "filter": {objects.ID.HotA_Visitable_1},
     #     "subfilter": {objects.SubID.HotAVisitable1.Warlocks_Lab},
     # },
-    "redwoodobservatories": {
-        "display_name": "Redwood Observatories & Pillars of Fire",
-        "filter": {objects.ID.Redwood_Observatory, objects.ID.Pillar_of_Fire},
-        "subfilter": {objects.SubID.Observation.Redwood_Observatory},
-    },
-    "observationtowers": {
-        "display_name": "Observation Towers",
-        "filter": {objects.ID.Redwood_Observatory},
-        "subfilter": {objects.SubID.Observation.Observation_Tower},
+    # "redwoodobservatories": {
+    #     "display_name": "Redwood Observatories & Pillars of Fire",
+    #     "filter": {objects.ID.Redwood_Observatory, objects.ID.Pillar_of_Fire},
+    #     "subfilter": {objects.SubID.Observation.Redwood_Observatory},
+    # },
+    # "observationtowers": {
+    #     "display_name": "Observation Towers",
+    #     "filter": {objects.ID.Redwood_Observatory},
+    #     "subfilter": {objects.SubID.Observation.Observation_Tower},
+    # },
+    "observatories": {
+        "display_name": "Observatories",
+        "filter": {objects.ID.HotA_Visitable_2},
+        "subfilter": {objects.SubID.HotAVisitable2.Observatory},
     },
     # "coversofdarkness": {
     #     "display_name": "Covers of Darkness",
