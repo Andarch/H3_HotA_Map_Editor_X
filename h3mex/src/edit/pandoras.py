@@ -22,12 +22,16 @@ def modify_pandoras():
             # if obj["zone_type"] not in {"P1", "P2", "P3", "P4"}:
             #     continue
 
-            obj["has_common"] = 1
-            if not obj["contents"]["Spells"]:
-                obj["guards"] = _get_random_guards(obj["zone_type"])
-                modified = True
-            if not obj["contents"]["Spells"] and not obj["contents"]["Artifacts"]:
-                obj["contents"] = _get_random_contents(obj["zone_type"])
+            # obj["has_common"] = 1
+            # if not obj["contents"]["Spells"]:
+            #     obj["guards"] = _get_random_guards(obj["zone_type"])
+            #     modified = True
+            # if not obj["contents"]["Spells"] and not obj["contents"]["Artifacts"]:
+            #     obj["contents"] = _get_random_contents(obj["zone_type"])
+            #     modified = True
+
+            if obj["has_common"] and obj["contents"]["Spell_Points"] > 0 and obj["contents"]["Spell_Points"] != 999:
+                obj["contents"]["Spell_Points"] = int(obj["contents"]["Spell_Points"] / 10)
                 modified = True
 
             if modified:
