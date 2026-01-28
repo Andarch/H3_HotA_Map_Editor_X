@@ -106,6 +106,7 @@ class Menu:
                 ("1", "Monsters: Change level-specific random monsters to any level"),
                 ("2", "Monsters: Set monster values"),
                 ("3", "Monsters: Set compliant monster values"),
+                ("4", "Monsters: Set monster flee values"),
             ],
             [
                 ("1", "Treasures: Add treasures"),

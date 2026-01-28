@@ -105,3 +105,20 @@ def set_compliant_monster_values() -> None:
     xprint(type=TextType.INFO, text=f"Updated {count} objects.")
 
     wait_for_keypress()
+
+
+def set_monster_flee_values() -> None:
+    xprint(type=TextType.ACTION, text="Setting monster flee values…")
+
+    count = 0
+    for obj in map_data["object_data"]:
+        if obj["id"] == objects.ID.Monster:
+            if obj["disposition"] != creatures.Disposition.Compliant and not obj["monster_never_flees"]:
+                obj["monster_never_flees"] = True
+                count += 1
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+
+    wait_for_keypress()
