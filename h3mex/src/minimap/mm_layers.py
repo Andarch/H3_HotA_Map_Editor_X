@@ -42,11 +42,11 @@ MM_LAYERS = {
         "subfilter": groups.TWO_WAY_SEA_PORTALS,
     },
     "whirlpools": {"display_name": "Whirlpools", "filter": {objects.ID.Whirlpool}, "subfilter": None},
-    "junkmen": {
-        "display_name": "Junkmen",
-        "filter": {objects.ID.HotA_Visitable_1},
-        "subfilter": {objects.SubID.HotAVisitable1.Junkman},
-    },
+    # "junkmen": {
+    #     "display_name": "Junkmen",
+    #     "filter": {objects.ID.HotA_Visitable_1},
+    #     "subfilter": {objects.SubID.HotAVisitable1.Junkman},
+    # },
     # "dwellings": {
     #     "display_name": "Dwellings",
     #     "filter": {
