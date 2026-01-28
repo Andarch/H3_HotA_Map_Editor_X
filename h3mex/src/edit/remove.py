@@ -7,45 +7,44 @@ from src.utilities import wait_for_keypress
 def remove_objects() -> None:
     xprint(type=TextType.ACTION, text="Removing objects…")
 
-    # Protected coordinates
-    protected_coords = [
-        [85, 84, 0],
-        [83, 86, 0],
-        [87, 86, 0],
-        [6, 231, 1],
-        [4, 233, 1],
-        [8, 233, 1],
-        [12, 239, 1],
-        [14, 239, 1],
-        [16, 239, 1],
-        [18, 239, 1],
-        [12, 244, 1],
-        [14, 244, 1],
-        [16, 244, 1],
-    ]
+    removed_count = 0
 
-    # Separate monoliths into removable and protected
-    monoliths = [
-        obj
-        for obj in map_data["object_data"]
-        if obj["id"] == objects.ID.One_Way_M | P_Entrance and not (4 <= obj["sub_id"] <= 7 and obj["sub_id"] != 11)
-    ]
-    removable_monoliths = [m for m in monoliths if m["coords"] not in protected_coords]
-    protected_monoliths = [m for m in monoliths if m["coords"] in protected_coords]
+    # Find all Vials of Mana
+    vials = []
+    for obj in map_data["object_data"]:
+        if obj["id"] == objects.ID.HotA_Pickup and obj["sub_id"] == objects.SubID.HotAPickups.Vial_of_Mana:
+            vials.append(obj)
 
-    # Remove all removable monoliths
-    removed_count = len(removable_monoliths)
-    removed_set = set(id(m) for m in removable_monoliths)
-    map_data["object_data"] = [
-        obj
-        for obj in map_data["object_data"]
-        if not (obj["id"] == objects.ID.One_Way_M | P_Entrance and id(obj) in removed_set)
-    ]
+    # Track which vials to remove (indices to avoid during iteration issues)
+    vials_to_remove = set()
+
+    # Check each pair of vials
+    for i in range(len(vials)):
+        if i in vials_to_remove:
+            continue
+
+        for j in range(i + 1, len(vials)):
+            if j in vials_to_remove:
+                continue
+
+            # Calculate distance between vials
+            x1, y1 = vials[i]["coords"][0], vials[i]["coords"][1]
+            x2, y2 = vials[j]["coords"][0], vials[j]["coords"][1]
+            distance = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+
+            # If within 20 tiles, mark the second vial for removal
+            if distance <= 20:
+                vials_to_remove.add(j)
+
+    # Remove marked vials from map_data
+    for idx in sorted(vials_to_remove, reverse=True):
+        map_data["object_data"].remove(vials[idx])
+        removed_count += 1
 
     xprint(type=TextType.DONE)
     xprint()
     xprint(
         type=TextType.INFO,
-        text=f"Removed {removed_count} monoliths. Protected {len(protected_monoliths)} monoliths.",
+        text=f"Removed {removed_count} Vials of Mana.",
     )
     wait_for_keypress()
