@@ -121,14 +121,12 @@ class Menu:
         "name": "EXPORT",
         "menus": [
             [
-                ("1", "JSON: All data"),
-                ("2", "JSON: Hero data"),
-                ("3", "JSON: Terrain data"),
-                ("4", "JSON: Town data"),
+                ("1", "PNG: Standard minimap"),
+                ("2", "PNG: Extended minimap"),
                 None,
-                ("5", "PNG: Standard minimap…"),
-                ("6", "PNG: Extended minimap…"),
-            ]
+                ("3", "JSON…"),
+            ],
+            [*_H3M],
         ],
     }
 
