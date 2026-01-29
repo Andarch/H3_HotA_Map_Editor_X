@@ -14,6 +14,7 @@ def modify_pandoras():
     for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Pandoras_Box:
             modified = False
+
             # is_default = _check_default(obj)
             # if not is_default:
             #     continue
@@ -30,8 +31,26 @@ def modify_pandoras():
             #     obj["contents"] = _get_random_contents(obj["zone_type"])
             #     modified = True
 
-            if obj["has_common"] and obj["contents"]["Spell_Points"] > 0 and obj["contents"]["Spell_Points"] != 999:
-                obj["contents"]["Spell_Points"] = int(obj["contents"]["Spell_Points"] / 10)
+            # if any(skill > 0 for skill in obj["contents"]["Primary_Skills"]) and obj["zone_type"] not in {
+            #     "R1",
+            #     "R2",
+            #     "R3",
+            #     "R4",
+            # }:
+            #     obj["contents"]["Primary_Skills"] = modify_primary_skills(obj["zone_type"])
+            #     modified = True
+
+            if any(resource > 0 for resource in obj["contents"]["Resources"]) and obj["zone_type"] not in {
+                "P1",
+                "P2",
+                "P3",
+                "P4",
+                "L4",
+            }:
+                # Divide all resources except the last one by 4 (rounded)
+                obj["contents"]["Resources"] = [resource // 4 for resource in obj["contents"]["Resources"][:-1]] + [
+                    obj["contents"]["Resources"][-1]
+                ]
                 modified = True
 
             if modified:
@@ -82,7 +101,7 @@ def _rand_enum_value(enum_cls):
     return random.choice(list(enum_cls)).value
 
 
-def _get_random_guards(zone_type):
+def _get_random_guards(zone_type) -> list:
     if zone_type in {"P1", "L1", "W1"}:
         return [
             {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(50, 75)},
@@ -125,7 +144,7 @@ def _get_random_guards(zone_type):
         ]
 
 
-def _get_random_contents(zone_type):
+def _get_random_contents(zone_type) -> dict:
     if zone_type in {"P1"}:
         return {
             "Experience": 15000,
@@ -421,3 +440,34 @@ def _get_random_contents(zone_type):
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
+
+
+def modify_primary_skills(zone_type) -> list:
+    """
+    Distribute primary skill points evenly but randomly.
+    Creates a distribution array respecting constraints, then shuffles it.
+    """
+    if zone_type in {"P1"}:
+        # 1 point in a random skill
+        skills = [1, 0, 0, 0]
+    elif zone_type in {"P2", "P3", "L1", "W1"}:
+        # 2 points in random skills (can be both in same skill)
+        skills = random.choice([[1, 1, 0, 0], [2, 0, 0, 0]])
+    elif zone_type in {"P4", "L2", "W2"}:
+        # 3 points in random skills (distribute however, but max 2 in one skill)
+        skills = random.choice([[1, 1, 1, 0], [2, 1, 0, 0]])
+    elif zone_type in {"L3", "W3"}:
+        # 4 points in random skills (distribute however, but max 2 in one skill)
+        skills = random.choice([[2, 1, 1, 0], [1, 1, 1, 1]])
+    elif zone_type in {"L4", "W4"}:
+        # 5 points in random skills (distribute however, but max 2 in one skill)
+        skills = random.choice([[2, 1, 1, 1], [2, 2, 1, 0]])
+    else:
+        xprint(
+            type=TextType.ERROR,
+            text=f"Tried to modify pandoras box in invalid zone type '{zone_type}'.",
+        )
+
+    # Shuffle to randomize which skill gets which points
+    random.shuffle(skills)
+    return skills

@@ -19,8 +19,8 @@ from .m6_rumors_and_events import parse_events, write_events
 
 zonetypes_img_g = None
 zonetypes_img_u = None
-zonecolors_img_g = None
-zonecolors_img_u = None
+zoneplayers_img_g = None
+zoneplayers_img_u = None
 has_zone_images = False
 
 
@@ -129,21 +129,21 @@ def get_subtype(obj_type: int, i: int) -> int:
 
 
 def parse_object_data(object_defs: list, filename: str) -> list:
-    global zonetypes_img_g, zonetypes_img_u, zonecolors_img_g, zonecolors_img_u, has_zone_images
+    global zonetypes_img_g, zonetypes_img_u, zoneplayers_img_g, zoneplayers_img_u, has_zone_images
     filename = filename[:-4]
     zonetypes_img_g_path = os.path.join("..", "maps/images", f"{filename}_zonetypes_g.png")
     zonetypes_img_u_path = os.path.join("..", "maps/images", f"{filename}_zonetypes_u.png")
     zonetypes_img_g = Image.open(zonetypes_img_g_path).convert("RGBA") if os.path.exists(zonetypes_img_g_path) else None
     zonetypes_img_u = Image.open(zonetypes_img_u_path).convert("RGBA") if os.path.exists(zonetypes_img_u_path) else None
-    zonecolors_img_g_path = os.path.join("..", "maps/images", f"{filename}_zonecolors_g.png")
-    zonecolors_img_u_path = os.path.join("..", "maps/images", f"{filename}_zonecolors_u.png")
-    zonecolors_img_g = (
-        Image.open(zonecolors_img_g_path).convert("RGBA") if os.path.exists(zonecolors_img_g_path) else None
+    zoneplayers_img_g_path = os.path.join("..", "maps/images", f"{filename}_zoneplayers_g.png")
+    zoneplayers_img_u_path = os.path.join("..", "maps/images", f"{filename}_zoneplayers_u.png")
+    zoneplayers_img_g = (
+        Image.open(zoneplayers_img_g_path).convert("RGBA") if os.path.exists(zoneplayers_img_g_path) else None
     )
-    zonecolors_img_u = (
-        Image.open(zonecolors_img_u_path).convert("RGBA") if os.path.exists(zonecolors_img_u_path) else None
+    zoneplayers_img_u = (
+        Image.open(zoneplayers_img_u_path).convert("RGBA") if os.path.exists(zoneplayers_img_u_path) else None
     )
-    has_zone_images = True if zonetypes_img_g and zonetypes_img_u and zonecolors_img_g and zonecolors_img_u else False
+    has_zone_images = True if zonetypes_img_g and zonetypes_img_u and zoneplayers_img_g and zoneplayers_img_u else False
 
     info = []
 
@@ -1950,7 +1950,7 @@ def get_zone(coords: list) -> tuple:
     rgb_types, error_types = get_pixel_rgb(zonetypes_img_g, zonetypes_img_u)
     zone_type = error_types if error_types else objects.ZoneInfo.TYPES.get(rgb_types, "Unknown")
 
-    rgb_colors, error_colors = get_pixel_rgb(zonecolors_img_g, zonecolors_img_u)
+    rgb_colors, error_colors = get_pixel_rgb(zoneplayers_img_g, zoneplayers_img_u)
     zone_player = error_colors if error_colors else objects.ZoneInfo.PLAYERS.get(rgb_colors, "Unknown")
 
     return zone_type, zone_player
