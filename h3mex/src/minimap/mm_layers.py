@@ -133,9 +133,14 @@ MM_LAYERS = {
     #     "subfilter": None,
     # },
     # "oceanbottles": {"display_name": "Ocean Bottles", "filter": {objects.ID.Ocean_Bottle}, "subfilter": None},
-    "vialsofmana": {
-        "display_name": "Vials of Mana",
-        "filter": {objects.ID.HotA_Pickup},
-        "subfilter": {objects.SubID.HotAPickups.Vial_of_Mana},
+    # "vialsofmana": {
+    #     "display_name": "Vials of Mana",
+    #     "filter": {objects.ID.HotA_Pickup},
+    #     "subfilter": {objects.SubID.HotAPickups.Vial_of_Mana},
+    # },
+    "obelisks": {
+        "display_name": "Obelisks",
+        "filter": {objects.ID.Obelisk},
+        "subfilter": None,
     },
 }
