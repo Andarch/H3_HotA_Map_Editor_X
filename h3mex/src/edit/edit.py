@@ -102,6 +102,8 @@ def menu() -> None:
                             treasures.add_scholars()
                         case "4":
                             treasures.remove_sea_treasures()
+                        case "5":
+                            treasures.modify_treasure_rewards()
             case "M":
                 while True:
                     keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][1]))

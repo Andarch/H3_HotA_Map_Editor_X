@@ -113,6 +113,7 @@ class Menu:
                 ("2", "Treasures: Fix empty contents"),
                 ("3", "Treasures: Add scholars"),
                 ("4", "Treasures: Remove sea treasures"),
+                ("5", "Treasures: Modify treasure rewards"),
             ],
         ],
     }

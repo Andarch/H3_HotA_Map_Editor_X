@@ -9,6 +9,60 @@ from src.utilities import wait_for_keypress
 RANDOM_CONTENTS = 4294967295
 
 
+def modify_treasure_rewards() -> None:
+    TREASURE_OBJECTS = {
+        objects.ID.Campfire,
+        objects.ID.Treasure_Chest,
+        objects.ID.Resource,
+        objects.ID.Random_Resource,
+        objects.ID.Sea_Chest,
+        objects.ID.Flotsam,
+        objects.ID.HotA_Pickup,
+    }
+
+    for obj in map_data["object_data"]:
+        if obj["id"] in TREASURE_OBJECTS:
+            match obj["id"]:
+                case objects.ID.Campfire:
+                    zone_type = obj.get("zone_type", "")
+                    if zone_type in {"P1"}:
+                        gold = random.randint(400, 1000)
+                        other = random.randint(6, 10)
+                    elif zone_type in {"P2", "P3", "L1", "W1"}:
+                        gold = random.randint(1000, 3000)
+                        other = random.randint(11, 15)
+                    elif zone_type in {"P4", "L2", "W2"}:
+                        gold = random.randint(3000, 5000)
+                        other = random.randint(16, 20)
+                    elif zone_type in {"L3", "W3"}:
+                        gold = random.randint(5000, 7000)
+                        other = random.randint(21, 25)
+                    elif zone_type in {"L4", "W4"}:
+                        gold = random.randint(7000, 10000)
+                        other = random.randint(25, 30)
+                    else:
+                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        break
+                    secondary_resource = random.randint(0, 5)
+                    obj["mode"] = 0
+                    obj["resources"] = {6: gold, secondary_resource: other}
+
+                case objects.ID.Treasure_Chest:
+                    pass
+
+                case objects.ID.Resource | objects.ID.Random_Resource:
+                    pass
+
+                case objects.ID.Sea_Chest:
+                    pass
+
+                case objects.ID.Flotsam:
+                    pass
+
+                case objects.ID.HotA_Pickup:
+                    pass
+
+
 def remove_sea_treasures():
     xprint(type=TextType.ACTION, text="Removing sea treasures with land on either side…")
 
