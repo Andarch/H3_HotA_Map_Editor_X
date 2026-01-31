@@ -1,857 +1,462 @@
 [
     {
         "coords": [
-            141,
-            235,
-            0
-        ],
-        "coords_offset": [
-            141,
-            235,
-            0
-        ],
-        "zone_type": "P3",
-        "zone_player": "Teal",
-        "def_id": 847,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            249,
-            177,
-            0
-        ],
-        "coords_offset": [
-            249,
-            177,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            245,
-            93,
-            0
-        ],
-        "coords_offset": [
-            245,
-            93,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 970,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            53,
-            114,
-            0
-        ],
-        "coords_offset": [
-            53,
-            114,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            139,
-            187,
-            0
-        ],
-        "coords_offset": [
-            139,
-            187,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            163,
-            250,
-            0
-        ],
-        "coords_offset": [
-            163,
-            250,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1053,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            171,
-            228,
-            0
-        ],
-        "coords_offset": [
-            171,
-            228,
-            0
-        ],
-        "zone_type": "P3",
-        "zone_player": "Blue",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            233,
-            24,
-            0
-        ],
-        "coords_offset": [
-            233,
-            24,
-            0
-        ],
-        "zone_type": "P2",
-        "zone_player": "Purple",
-        "def_id": 1104,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            202,
-            168,
-            0
-        ],
-        "coords_offset": [
-            202,
-            168,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 847,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            2,
-            144,
-            0
-        ],
-        "coords_offset": [
-            2,
-            144,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1208,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            200,
-            126,
-            0
-        ],
-        "coords_offset": [
-            200,
-            126,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            106,
-            23,
-            0
-        ],
-        "coords_offset": [
-            106,
-            23,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            84,
-            90,
-            0
-        ],
-        "coords_offset": [
-            84,
-            90,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1104,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            86,
-            90,
-            0
-        ],
-        "coords_offset": [
-            86,
-            90,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1104,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            230,
-            3,
-            0
-        ],
-        "coords_offset": [
-            230,
-            3,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            4,
-            223,
-            0
-        ],
-        "coords_offset": [
-            4,
-            223,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1053,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            116,
-            226,
-            0
-        ],
-        "coords_offset": [
-            116,
-            226,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 970,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            5,
-            247,
-            0
-        ],
-        "coords_offset": [
-            5,
-            247,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            155,
-            33,
-            0
-        ],
-        "coords_offset": [
-            155,
-            33,
-            0
-        ],
-        "zone_type": "P1",
-        "zone_player": "Green",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            42,
-            217,
-            0
-        ],
-        "coords_offset": [
-            42,
-            217,
-            0
-        ],
-        "zone_type": "P1",
-        "zone_player": "Pink",
-        "def_id": 1104,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            46,
-            9,
-            0
-        ],
-        "coords_offset": [
-            46,
-            9,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1053,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            114,
-            2,
-            0
-        ],
-        "coords_offset": [
-            114,
-            2,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 970,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            109,
-            43,
-            0
-        ],
-        "coords_offset": [
-            109,
-            43,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 970,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            176,
-            33,
-            0
-        ],
-        "coords_offset": [
-            176,
-            33,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1469,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            15,
-            153,
-            0
-        ],
-        "coords_offset": [
-            15,
-            153,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            207,
-            194,
-            0
-        ],
-        "coords_offset": [
-            207,
-            194,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            148,
-            141,
-            0
-        ],
-        "coords_offset": [
-            148,
-            141,
-            0
-        ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 847,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            121,
-            106,
-            0
-        ],
-        "coords_offset": [
-            121,
-            106,
-            0
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            201,
-            245,
-            1
-        ],
-        "coords_offset": [
-            201,
-            245,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1656,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            220,
-            204,
-            1
-        ],
-        "coords_offset": [
-            220,
-            204,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            57,
-            46,
-            1
-        ],
-        "coords_offset": [
-            57,
-            46,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            162,
-            189,
-            1
-        ],
-        "coords_offset": [
-            162,
-            189,
-            1
-        ],
-        "zone_type": "P1",
-        "zone_player": "Teal",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            238,
-            39,
-            1
-        ],
-        "coords_offset": [
-            238,
-            39,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            120,
-            37,
-            1
-        ],
-        "coords_offset": [
-            120,
-            37,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            173,
-            50,
-            1
-        ],
-        "coords_offset": [
-            173,
-            50,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1020,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            220,
-            243,
-            1
-        ],
-        "coords_offset": [
-            220,
-            243,
-            1
-        ],
-        "zone_type": "L1",
-        "zone_player": "Neutral",
-        "def_id": 932,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            178,
-            137,
-            1
-        ],
-        "coords_offset": [
-            178,
-            137,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1046,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            206,
-            96,
-            1
-        ],
-        "coords_offset": [
-            206,
-            96,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1104,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            77,
-            125,
-            1
-        ],
-        "coords_offset": [
-            77,
-            125,
-            1
-        ],
-        "zone_type": "P1",
-        "zone_player": "Tan",
-        "def_id": 1656,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            189,
-            7,
-            1
-        ],
-        "coords_offset": [
-            189,
-            7,
-            1
-        ],
-        "zone_type": "P1",
-        "zone_player": "Orange",
-        "def_id": 970,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            88,
+            82,
             172,
             1
         ],
         "coords_offset": [
-            88,
+            80,
             172,
             1
         ],
-        "zone_type": "L3",
+        "zone_type": "L4",
         "zone_player": "Neutral",
-        "def_id": 1208,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            72,
-            172,
-            1
+        "def_id": 1808,
+        "id": 98,
+        "sub_id": 11,
+        "type": "Town",
+        "subtype": "Bulwark",
+        "start_bytes": "\u00f3\u009bkw",
+        "owner": 255,
+        "color": "Neutral",
+        "has_name": 1,
+        "name": "Grandvj\u00f8w",
+        "garrison_guards": [
+            {
+                "id": 199,
+                "amount": 500
+            },
+            {
+                "id": 197,
+                "amount": 1000
+            },
+            {
+                "id": 195,
+                "amount": 1500
+            },
+            {
+                "id": 193,
+                "amount": 2000
+            },
+            {
+                "id": 191,
+                "amount": 3000
+            },
+            {
+                "id": 189,
+                "amount": 4000
+            },
+            {
+                "id": 187,
+                "amount": 5000
+            }
         ],
-        "coords_offset": [
-            72,
-            172,
-            1
+        "garrison_formation": 0,
+        "has_fort": true,
+        "has_custom_buildings": true,
+        "buildings_built": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1208,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            90,
-            127,
-            1
+        "buildings_disabled": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         ],
-        "coords_offset": [
-            90,
-            127,
-            1
+        "buildings_special": [
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            2,
+            2,
+            2,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
         ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1656,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            4,
-            201,
-            1
+        "spell_research": true,
+        "spells_must_appear": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         ],
-        "coords_offset": [
-            4,
-            201,
-            1
+        "spells_cant_appear": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
         ],
-        "zone_type": "L3",
-        "zone_player": "Neutral",
-        "def_id": 1656,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
-    },
-    {
-        "coords": [
-            19,
-            158,
-            1
+        "town_events": [
+            {
+                "name": "[Bonus]",
+                "message": "",
+                "resources": [
+                    20,
+                    10,
+                    20,
+                    10,
+                    10,
+                    10,
+                    50000
+                ],
+                "apply_to": [
+                    0,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "apply_human": true,
+                "apply_ai": true,
+                "first_occurence": 0,
+                "subsequent_occurences": 7,
+                "trash_bytes": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+                "allowed_difficulties": 31,
+                "eventType": 0,
+                "hotaLevel7b": 0,
+                "hotaAmount": 48,
+                "hotaSpecial": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "apply_neutral_towns": true,
+                "buildings": [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "creatures": [
+                    500,
+                    400,
+                    300,
+                    200,
+                    120,
+                    60,
+                    20
+                ],
+                "end_trash": "\u0000\u0000\u0000\u0000"
+            }
         ],
-        "coords_offset": [
-            19,
-            158,
-            1
-        ],
-        "zone_type": "L2",
-        "zone_player": "Neutral",
-        "def_id": 1469,
-        "id": 57,
-        "sub_id": 0,
-        "type": "Obelisk",
-        "subtype": "Obelisk"
+        "alignment": 8
     }
 ]
