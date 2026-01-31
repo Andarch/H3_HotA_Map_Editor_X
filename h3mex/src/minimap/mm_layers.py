@@ -138,9 +138,14 @@ MM_LAYERS = {
     #     "filter": {objects.ID.HotA_Pickup},
     #     "subfilter": {objects.SubID.HotAPickups.Vial_of_Mana},
     # },
-    "obelisks": {
-        "display_name": "Obelisks",
-        "filter": {objects.ID.Obelisk},
-        "subfilter": None,
+    # "obelisks": {
+    #     "display_name": "Obelisks",
+    #     "filter": {objects.ID.Obelisk},
+    #     "subfilter": None,
+    # },
+    "towngates": {
+        "display_name": "Town Gates",
+        "filter": {objects.ID.HotA_Visitable_2},
+        "subfilter": {objects.SubID.HotAVisitable2.Town_Gate},
     },
 }
