@@ -8,21 +8,13 @@ def replace_objects() -> None:
     xprint(type=TextType.ACTION, text="Replacing objects…")
 
     replaced_count = 0
-    size = map_data["general"]["map_size"]
 
     for obj in map_data["object_data"]:
-        if obj["id"] == objects.ID.Seers_Hut:
-            # Get terrain coordinates
-            x, y, z = obj["coords_offset"]
-
-            # Calculate terrain index (z=0 is surface, z=1 is underground)
-            terrain_index = y * size + x + (size * size if z == 1 else 0)
-
-            # Check if on snow tile
-            if map_data["terrain"][terrain_index]["terrain_type"] == terrain.ID.Snow:
-                obj["def_id"] = 1552
-                obj["sub_id"] = 7
-                replaced_count += 1
+        if obj["id"] == objects.ID.Random_Town:
+            obj["def_id"] = 1808
+            obj["id"] = 98
+            obj["sub_id"] = 11
+            replaced_count += 1
 
     xprint(type=TextType.DONE)
     xprint()
