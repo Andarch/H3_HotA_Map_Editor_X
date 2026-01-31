@@ -36,6 +36,11 @@ MM_LAYERS = {
     #     "filter": {objects.ID.Two_Way_MonolithPortal},
     #     "subfilter": groups.TWO_WAY_PORTALS,
     # },
+    "portal2red": {
+        "display_name": "Two-Way Red Portal",
+        "filter": {objects.ID.Two_Way_MonolithPortal},
+        "subfilter": {objects.SubID.MonolithPortal.TwoWay.Red_Portal},
+    },
     # "portals2_sea": {
     #     "display_name": "Two-Way Sea Portals",
     #     "filter": {objects.ID.Two_Way_MonolithPortal},
@@ -143,9 +148,9 @@ MM_LAYERS = {
     #     "filter": {objects.ID.Obelisk},
     #     "subfilter": None,
     # },
-    "towngates": {
-        "display_name": "Town Gates",
-        "filter": {objects.ID.HotA_Visitable_2},
-        "subfilter": {objects.SubID.HotAVisitable2.Town_Gate},
-    },
+    # "towngates": {
+    #     "display_name": "Town Gates",
+    #     "filter": {objects.ID.HotA_Visitable_2},
+    #     "subfilter": {objects.SubID.HotAVisitable2.Town_Gate},
+    # },
 }

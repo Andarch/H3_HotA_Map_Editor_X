@@ -401,6 +401,13 @@ class SubID(IntEnum):
             Gunslinger = 108
             Couatl = 109
             Dreadnought = 110
+            Kobold = 111
+            Mountain_Ram = 112
+            Snow_Elf = 113
+            Yeti = 114
+            Shaman = 115
+            Mammoth = 116
+            Jotunn = 117
 
         class Multi(IntEnum):  # ID 20
             Elementals = 0
