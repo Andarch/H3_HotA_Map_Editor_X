@@ -10,18 +10,23 @@ RANDOM_CONTENTS = 4294967295
 
 
 def modify_treasure_rewards() -> None:
+    xprint(type=TextType.ACTION, text="Modifying treasure rewards…")
+
     TREASURE_OBJECTS = {
-        objects.ID.Campfire,
-        objects.ID.Treasure_Chest,
-        objects.ID.Resource,
-        objects.ID.Random_Resource,
-        objects.ID.Sea_Chest,
+        # objects.ID.Campfire,
+        # objects.ID.Treasure_Chest,
+        # objects.ID.Resource,
+        # objects.ID.Random_Resource,
+        # objects.ID.Sea_Chest,
         objects.ID.Flotsam,
         objects.ID.HotA_Pickup,
     }
 
+    modified_count = 0
+
     for obj in map_data["object_data"]:
         if obj["id"] in TREASURE_OBJECTS:
+            modified_count += 1
             match obj["id"]:
                 case objects.ID.Campfire:
                     zone_type = obj.get("zone_type", "")
@@ -37,7 +42,7 @@ def modify_treasure_rewards() -> None:
                     elif zone_type in {"L3", "W3"}:
                         gold = random.randint(5000, 7000)
                         other = random.randint(21, 25)
-                    elif zone_type in {"L4", "W4"}:
+                    elif zone_type in {"L4", "W4", "R1", "R2", "R3", "R4"}:
                         gold = random.randint(7000, 10000)
                         other = random.randint(25, 30)
                     else:
@@ -76,7 +81,7 @@ def modify_treasure_rewards() -> None:
                             obj["contents"] = 1
                         else:
                             obj["contents"] = 2
-                    elif zone_type in {"L3", "W3", "L4", "W4"}:
+                    elif zone_type in {"L3", "W3", "L4", "W4", "R1", "R2", "R3", "R4"}:
                         obj["contents"] = 2
                     else:
                         xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
@@ -92,7 +97,7 @@ def modify_treasure_rewards() -> None:
                         obj["amount"] = random.randint(25, 30)
                     elif zone_type in {"L3", "W3"}:
                         obj["amount"] = random.randint(35, 40)
-                    elif zone_type in {"L4", "W4"}:
+                    elif zone_type in {"L4", "W4", "R1", "R2", "R3", "R4"}:
                         obj["amount"] = random.randint(45, 50)
                     else:
                         xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
@@ -130,7 +135,7 @@ def modify_treasure_rewards() -> None:
                             obj["contents"] = 2
                         else:
                             obj["contents"] = 3
-                    elif zone_type in {"L3", "W3", "L4", "W4"}:
+                    elif zone_type in {"L3", "W3", "L4", "W4", "R1", "R2", "R3", "R4"}:
                         obj["contents"] = 3
                     else:
                         xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
@@ -145,12 +150,12 @@ def modify_treasure_rewards() -> None:
                         case objects.SubID.HotAPickups.Sea_Barrel:
                             obj["contents"] = 0
                             obj["resource"] = random.choice(
-                                {
+                                [
                                     objects.SubID.Resource.Mercury,
                                     objects.SubID.Resource.Sulfur,
                                     objects.SubID.Resource.Crystal,
                                     objects.SubID.Resource.Gems,
-                                }
+                                ]
                             )
                             zone_type = obj.get("zone_type", "")
                             if zone_type in {"P1"}:
@@ -161,7 +166,7 @@ def modify_treasure_rewards() -> None:
                                 obj["amount"] = random.randint(25, 30)
                             elif zone_type in {"L3", "W3"}:
                                 obj["amount"] = random.randint(35, 40)
-                            elif zone_type in {"L4", "W4"}:
+                            elif zone_type in {"L4", "W4", "R1", "R2", "R3", "R4"}:
                                 obj["amount"] = random.randint(45, 50)
                             else:
                                 xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
@@ -196,7 +201,7 @@ def modify_treasure_rewards() -> None:
                                     obj["contents"] = 2
                                 else:
                                     obj["contents"] = 3
-                            elif zone_type in {"L3", "W3", "L4", "W4"}:
+                            elif zone_type in {"L3", "W3", "L4", "W4", "R1", "R2", "R3", "R4"}:
                                 obj["contents"] = 3
                             else:
                                 xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
@@ -237,11 +242,19 @@ def modify_treasure_rewards() -> None:
                                     obj["contents"] = 2
                                 else:
                                     obj["contents"] = 3
-                            elif zone_type in {"L3", "W3", "L4", "W4"}:
+                            elif zone_type in {"L3", "W3", "L4", "W4", "R1", "R2", "R3", "R4"}:
                                 obj["contents"] = 3
                             else:
                                 xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
                                 break
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(
+        type=TextType.INFO,
+        text=f"Modified {modified_count} treasures.",
+    )
+    wait_for_keypress()
 
 
 def remove_sea_treasures():
