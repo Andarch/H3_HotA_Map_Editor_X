@@ -1,5 +1,5 @@
 from src.common import TextType, map_data
-from src.defs import objects, terrain
+from src.defs import objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
