@@ -3,6 +3,8 @@ from src.defs import objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
+RANDOM_CONTENTS = 4294967295
+
 
 def replace_objects() -> None:
     xprint(type=TextType.ACTION, text="Replacing objects…")
@@ -10,10 +12,8 @@ def replace_objects() -> None:
     replaced_count = 0
 
     for obj in map_data["object_data"]:
-        if obj["id"] == objects.ID.Random_Town:
-            obj["def_id"] = 1808
-            obj["id"] = 98
-            obj["sub_id"] = 11
+        if obj["id"] == objects.ID.HotA_Pickup and obj["sub_id"] == objects.SubID.HotAPickups.Vial_of_Mana:
+            obj["trash_bytes"] = b"\xff\xff\xff\xff"
             replaced_count += 1
 
     xprint(type=TextType.DONE)

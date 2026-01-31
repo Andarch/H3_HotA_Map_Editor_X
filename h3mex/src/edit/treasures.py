@@ -18,7 +18,7 @@ def modify_treasure_rewards() -> None:
         # objects.ID.Resource,
         # objects.ID.Random_Resource,
         # objects.ID.Sea_Chest,
-        objects.ID.Flotsam,
+        # objects.ID.Flotsam,
         objects.ID.HotA_Pickup,
     }
 
@@ -107,6 +107,7 @@ def modify_treasure_rewards() -> None:
                     obj["contents"] = 1
 
                 case objects.ID.Flotsam:
+                    obj["trash_bytes"] = RANDOM_CONTENTS
                     zone_type = obj.get("zone_type", "")
                     if zone_type in {"P1"}:
                         # 60% chance 1, 30% chance 2, 10% chance 3
@@ -173,6 +174,7 @@ def modify_treasure_rewards() -> None:
                                 break
 
                         case objects.SubID.HotAPickups.Jetsam:
+                            obj["trash_bytes"] = RANDOM_CONTENTS
                             zone_type = obj.get("zone_type", "")
                             if zone_type in {"P1"}:
                                 # 60% chance 1, 30% chance 2, 10% chance 3
