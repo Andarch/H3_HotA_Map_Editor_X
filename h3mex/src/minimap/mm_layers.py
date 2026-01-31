@@ -4,44 +4,44 @@ MM_LAYERS = {
     "standard": {"display_name": "Standard Minimap", "filter": None, "subfilter": None},
     "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
     "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
-    "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
-    "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
-    "monoliths1_en": {
-        "display_name": "One-Way Monolith Entrances",
-        "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
-        "subfilter": groups.ONE_WAY_MONOLITHS,
-    },
-    "monoliths1_ex": {
-        "display_name": "One-Way Monolith Exits",
-        "filter": {objects.ID.One_Way_MonolithPortal_Exit},
-        "subfilter": groups.ONE_WAY_MONOLITHS,
-    },
-    "portals1_en": {
-        "display_name": "One-Way Portal Entrances",
-        "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
-        "subfilter": groups.ONE_WAY_PORTALS,
-    },
-    "portals1_ex": {
-        "display_name": "One-Way Portal Exits",
-        "filter": {objects.ID.One_Way_MonolithPortal_Exit},
-        "subfilter": groups.ONE_WAY_PORTALS,
-    },
-    "monoliths2": {
-        "display_name": "Two-Way Monoliths",
-        "filter": {objects.ID.Two_Way_MonolithPortal},
-        "subfilter": groups.TWO_WAY_MONOLITHS,
-    },
-    "portals2": {
-        "display_name": "Two-Way Portals",
-        "filter": {objects.ID.Two_Way_MonolithPortal},
-        "subfilter": groups.TWO_WAY_PORTALS,
-    },
-    "portals2_sea": {
-        "display_name": "Two-Way Sea Portals",
-        "filter": {objects.ID.Two_Way_MonolithPortal},
-        "subfilter": groups.TWO_WAY_SEA_PORTALS,
-    },
-    "whirlpools": {"display_name": "Whirlpools", "filter": {objects.ID.Whirlpool}, "subfilter": None},
+    # "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
+    # "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
+    # "monoliths1_en": {
+    #     "display_name": "One-Way Monolith Entrances",
+    #     "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
+    #     "subfilter": groups.ONE_WAY_MONOLITHS,
+    # },
+    # "monoliths1_ex": {
+    #     "display_name": "One-Way Monolith Exits",
+    #     "filter": {objects.ID.One_Way_MonolithPortal_Exit},
+    #     "subfilter": groups.ONE_WAY_MONOLITHS,
+    # },
+    # "portals1_en": {
+    #     "display_name": "One-Way Portal Entrances",
+    #     "filter": {objects.ID.One_Way_MonolithPortal_Entrance},
+    #     "subfilter": groups.ONE_WAY_PORTALS,
+    # },
+    # "portals1_ex": {
+    #     "display_name": "One-Way Portal Exits",
+    #     "filter": {objects.ID.One_Way_MonolithPortal_Exit},
+    #     "subfilter": groups.ONE_WAY_PORTALS,
+    # },
+    # "monoliths2": {
+    #     "display_name": "Two-Way Monoliths",
+    #     "filter": {objects.ID.Two_Way_MonolithPortal},
+    #     "subfilter": groups.TWO_WAY_MONOLITHS,
+    # },
+    # "portals2": {
+    #     "display_name": "Two-Way Portals",
+    #     "filter": {objects.ID.Two_Way_MonolithPortal},
+    #     "subfilter": groups.TWO_WAY_PORTALS,
+    # },
+    # "portals2_sea": {
+    #     "display_name": "Two-Way Sea Portals",
+    #     "filter": {objects.ID.Two_Way_MonolithPortal},
+    #     "subfilter": groups.TWO_WAY_SEA_PORTALS,
+    # },
+    # "whirlpools": {"display_name": "Whirlpools", "filter": {objects.ID.Whirlpool}, "subfilter": None},
     # "junkmen": {
     #     "display_name": "Junkmen",
     #     "filter": {objects.ID.HotA_Visitable_1},
@@ -138,9 +138,9 @@ MM_LAYERS = {
     #     "filter": {objects.ID.HotA_Pickup},
     #     "subfilter": {objects.SubID.HotAPickups.Vial_of_Mana},
     # },
-    # "obelisks": {
-    #     "display_name": "Obelisks",
-    #     "filter": {objects.ID.Obelisk},
-    #     "subfilter": None,
-    # },
+    "obelisks": {
+        "display_name": "Obelisks",
+        "filter": {objects.ID.Obelisk},
+        "subfilter": None,
+    },
 }
