@@ -48,19 +48,200 @@ def modify_treasure_rewards() -> None:
                     obj["resources"] = {6: gold, secondary_resource: other}
 
                 case objects.ID.Treasure_Chest:
-                    pass
+                    zone_type = obj.get("zone_type", "")
+                    if zone_type in {"P1"}:
+                        # 60% chance 0, 30% chance 1, 10% chance 2
+                        rand = random.random()
+                        if rand < 0.6:
+                            obj["contents"] = 0
+                        elif rand < 0.9:
+                            obj["contents"] = 1
+                        else:
+                            obj["contents"] = 2
+                    elif zone_type in {"P2", "P3", "L1", "W1"}:
+                        # 20% chance 0, 40% chance 1, 40% chance 2
+                        rand = random.random()
+                        if rand < 0.2:
+                            obj["contents"] = 0
+                        elif rand < 0.6:
+                            obj["contents"] = 1
+                        else:
+                            obj["contents"] = 2
+                    elif zone_type in {"P4", "L2", "W2"}:
+                        # 10% chance 0, 20% chance 1, 70% chance 2
+                        rand = random.random()
+                        if rand < 0.1:
+                            obj["contents"] = 0
+                        elif rand < 0.3:
+                            obj["contents"] = 1
+                        else:
+                            obj["contents"] = 2
+                    elif zone_type in {"L3", "W3", "L4", "W4"}:
+                        obj["contents"] = 2
+                    else:
+                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        break
 
                 case objects.ID.Resource | objects.ID.Random_Resource:
-                    pass
+                    zone_type = obj.get("zone_type", "")
+                    if zone_type in {"P1"}:
+                        obj["amount"] = random.randint(5, 10)
+                    elif zone_type in {"P2", "P3", "L1", "W1"}:
+                        obj["amount"] = random.randint(15, 20)
+                    elif zone_type in {"P4", "L2", "W2"}:
+                        obj["amount"] = random.randint(25, 30)
+                    elif zone_type in {"L3", "W3"}:
+                        obj["amount"] = random.randint(35, 40)
+                    elif zone_type in {"L4", "W4"}:
+                        obj["amount"] = random.randint(45, 50)
+                    else:
+                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        break
 
                 case objects.ID.Sea_Chest:
-                    pass
+                    obj["contents"] = 1
 
                 case objects.ID.Flotsam:
-                    pass
+                    zone_type = obj.get("zone_type", "")
+                    if zone_type in {"P1"}:
+                        # 60% chance 1, 30% chance 2, 10% chance 3
+                        rand = random.random()
+                        if rand < 0.6:
+                            obj["contents"] = 1
+                        elif rand < 0.9:
+                            obj["contents"] = 2
+                        else:
+                            obj["contents"] = 3
+                    elif zone_type in {"P2", "P3", "L1", "W1"}:
+                        # 20% chance 1, 40% chance 2, 40% chance 3
+                        rand = random.random()
+                        if rand < 0.2:
+                            obj["contents"] = 1
+                        elif rand < 0.6:
+                            obj["contents"] = 2
+                        else:
+                            obj["contents"] = 3
+                    elif zone_type in {"P4", "L2", "W2"}:
+                        # 10% chance 1, 20% chance 2, 70% chance 3
+                        rand = random.random()
+                        if rand < 0.1:
+                            obj["contents"] = 1
+                        elif rand < 0.3:
+                            obj["contents"] = 2
+                        else:
+                            obj["contents"] = 3
+                    elif zone_type in {"L3", "W3", "L4", "W4"}:
+                        obj["contents"] = 3
+                    else:
+                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        break
 
                 case objects.ID.HotA_Pickup:
-                    pass
+                    match obj["sub_id"]:
+                        case objects.SubID.HotAPickups.Ancient_Lamp:
+                            obj["contents"] = 0
+                            obj["amount"] = random.randint(25, 150)
+
+                        case objects.SubID.HotAPickups.Sea_Barrel:
+                            obj["contents"] = 0
+                            obj["resource"] = random.choice(
+                                {
+                                    objects.SubID.Resource.Mercury,
+                                    objects.SubID.Resource.Sulfur,
+                                    objects.SubID.Resource.Crystal,
+                                    objects.SubID.Resource.Gems,
+                                }
+                            )
+                            zone_type = obj.get("zone_type", "")
+                            if zone_type in {"P1"}:
+                                obj["amount"] = random.randint(5, 10)
+                            elif zone_type in {"P2", "P3", "L1", "W1"}:
+                                obj["amount"] = random.randint(15, 20)
+                            elif zone_type in {"P4", "L2", "W2"}:
+                                obj["amount"] = random.randint(25, 30)
+                            elif zone_type in {"L3", "W3"}:
+                                obj["amount"] = random.randint(35, 40)
+                            elif zone_type in {"L4", "W4"}:
+                                obj["amount"] = random.randint(45, 50)
+                            else:
+                                xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                                break
+
+                        case objects.SubID.HotAPickups.Jetsam:
+                            zone_type = obj.get("zone_type", "")
+                            if zone_type in {"P1"}:
+                                # 60% chance 1, 30% chance 2, 10% chance 3
+                                rand = random.random()
+                                if rand < 0.6:
+                                    obj["contents"] = 1
+                                elif rand < 0.9:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"P2", "P3", "L1", "W1"}:
+                                # 20% chance 1, 40% chance 2, 40% chance 3
+                                rand = random.random()
+                                if rand < 0.2:
+                                    obj["contents"] = 1
+                                elif rand < 0.6:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"P4", "L2", "W2"}:
+                                # 10% chance 1, 20% chance 2, 70% chance 3
+                                rand = random.random()
+                                if rand < 0.1:
+                                    obj["contents"] = 1
+                                elif rand < 0.3:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"L3", "W3", "L4", "W4"}:
+                                obj["contents"] = 3
+                            else:
+                                xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                                break
+
+                        case objects.SubID.HotAPickups.Vial_of_Mana:
+                            zone_type = obj.get("zone_type", "")
+                            if zone_type in {"P1"}:
+                                # 40% chance 0, 30% chance 1, 20% chance 2, 10% chance 3
+                                rand = random.random()
+                                if rand < 0.4:
+                                    obj["contents"] = 0
+                                elif rand < 0.7:
+                                    obj["contents"] = 1
+                                elif rand < 0.9:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"P2", "P3", "L1", "W1"}:
+                                # 25% chance 0, 25% chance 1, 25% chance 2, 25% chance 3
+                                rand = random.random()
+                                if rand < 0.25:
+                                    obj["contents"] = 0
+                                elif rand < 0.5:
+                                    obj["contents"] = 1
+                                elif rand < 0.75:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"P4", "L2", "W2"}:
+                                # 10% chance 0, 20% chance 1, 30% chance 2, 40% chance 3
+                                rand = random.random()
+                                if rand < 0.1:
+                                    obj["contents"] = 0
+                                elif rand < 0.3:
+                                    obj["contents"] = 1
+                                elif rand < 0.6:
+                                    obj["contents"] = 2
+                                else:
+                                    obj["contents"] = 3
+                            elif zone_type in {"L3", "W3", "L4", "W4"}:
+                                obj["contents"] = 3
+                            else:
+                                xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                                break
 
 
 def remove_sea_treasures():
