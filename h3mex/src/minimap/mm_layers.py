@@ -36,11 +36,6 @@ MM_LAYERS = {
     #     "filter": {objects.ID.Two_Way_MonolithPortal},
     #     "subfilter": groups.TWO_WAY_PORTALS,
     # },
-    "portal2red": {
-        "display_name": "Two-Way Red Portal",
-        "filter": {objects.ID.Two_Way_MonolithPortal},
-        "subfilter": {objects.SubID.MonolithPortal.TwoWay.Red_Portal},
-    },
     # "portals2_sea": {
     #     "display_name": "Two-Way Sea Portals",
     #     "filter": {objects.ID.Two_Way_MonolithPortal},
@@ -153,4 +148,18 @@ MM_LAYERS = {
     #     "filter": {objects.ID.HotA_Visitable_2},
     #     "subfilter": {objects.SubID.HotAVisitable2.Town_Gate},
     # },
+    "primaryskillobjects": {
+        "display_name": "Primary Skill Objects",
+        "combofilter": [
+            (objects.ID.Mercenary_Camp, {0}),
+            (objects.ID.Marletto_Tower, {0}),
+            (objects.ID.Star_Axis, {0}),
+            (objects.ID.Garden_of_Revelation, {0}),
+            (objects.ID.School_of_War, {0}),
+            (objects.ID.School_of_Magic, {0}),
+            (objects.ID.Arena, {0}),
+            (objects.ID.HotA_Visitable_1, {objects.SubID.HotAVisitable1.Colosseum_of_the_Magi}),
+            (objects.ID.Library_of_Enlightenment, {0}),
+        ],
+    },
 }

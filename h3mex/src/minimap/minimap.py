@@ -102,11 +102,15 @@ def generate(mm_action: MMAction, mm_type: MMType, mm_overlay: dict | None) -> N
                 if mm_key == "standard":
                     continue
                 mm_layer = MM_LAYERS[mm_key]
+                mm_filter = mm_layer.get("filter", None)
+                mm_subfilter = mm_layer.get("subfilter", None)
+                mm_combofilter = mm_layer.get("combofilter", None)
                 _process_image(
                     mm_action,
                     mm_type,
-                    mm_layer["filter"],
-                    mm_layer["subfilter"],
+                    mm_filter,
+                    mm_subfilter,
+                    mm_combofilter,
                     mm_number,
                     mm_key,
                     mm_overlay,
@@ -119,6 +123,7 @@ def _process_image(
     mm_type: MMType,
     mm_filter: set | None,
     mm_subfilter: set | None,
+    mm_combofilter: list | None,
     mm_number: int,
     mm_key: str,
     mm_overlay: dict | None,
@@ -132,8 +137,10 @@ def _process_image(
                 type=TextType.ACTION,
                 text=f"Generating minimap_{mm_number:02d}_{mm_key}…",
             )
+
     # Get map size
     map_size = map_data["general"]["map_size"]
+
     # Initialize map layer list
     if map_data["general"]["has_underground"]:
         half = map_size * map_size
@@ -141,19 +148,27 @@ def _process_image(
         terrain_data.append(map_data["terrain"][half:])  # underground
     else:
         terrain_data = [map_data["terrain"]]  # overworld only
+
     # Initialize tile dictionaries
     tile_ownership = {
         map_z: [[None for _ in range(map_size)] for _ in range(map_size)] for map_z in [MapZ.Ground, MapZ.Underground]
     }
     blocked_tiles = {map_z: set() for map_z in [MapZ.Ground, MapZ.Underground]}
+
     # Filter objects if a filter is provided
-    if mm_filter is None:
-        filtered_objects = map_data["object_data"]
-    else:
+    if mm_filter is not None:
         filtered_objects = [obj for obj in map_data["object_data"] if obj["id"] in mm_filter]
-    # Apply subfilter if provided
-    if mm_subfilter is not None:
-        filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in mm_subfilter]
+        if mm_subfilter is not None:
+            filtered_objects = [obj for obj in filtered_objects if obj["sub_id"] in mm_subfilter]
+    elif mm_combofilter is not None:
+        filtered_objects = []
+        for obj_id, sub_ids in mm_combofilter:
+            filtered_objects.extend(
+                [obj for obj in map_data["object_data"] if obj["id"] == obj_id and obj["sub_id"] in sub_ids]
+            )
+    else:
+        filtered_objects = map_data["object_data"]
+
     # Iterate through objects
     for obj in filtered_objects:
         if mm_key == "base2" and (
@@ -180,6 +195,7 @@ def _process_image(
             mm_objectid,
             mm_key,
         )
+
     # Generate and save minimap images
     if mm_action == MMAction.VIEW:
         _view_minimap_images(mm_type, terrain_data, blocked_tiles, tile_ownership, mm_key, mm_overlay, mm_display_name)
@@ -218,6 +234,29 @@ def _determine_owner(mm_type: MMType, obj: dict) -> int | tuple | None:
             return MMObjectID.REDWOOD
         elif obj["id"] == objects.ID.Pillar_of_Fire:
             return MMObjectID.PILLAR
+        elif obj["id"] == objects.ID.Mercenary_Camp:
+            return MMObjectID.MERCENARY_CAMP
+        elif obj["id"] == objects.ID.Marletto_Tower:
+            return MMObjectID.MARLETTO_TOWER
+        elif obj["id"] == objects.ID.Star_Axis:
+            return MMObjectID.STAR_AXIS
+        elif obj["id"] == objects.ID.Garden_of_Revelation:
+            return MMObjectID.GARDEN_OF_REVELATION
+        elif obj["id"] == objects.ID.School_of_War:
+            return MMObjectID.SCHOOL_OF_WAR
+        elif obj["id"] == objects.ID.School_of_Magic and obj["sub_id"] == 0:
+            return MMObjectID.SCHOOL_OF_MAGIC_LAND
+        elif obj["id"] == objects.ID.School_of_Magic and obj["sub_id"] == 1:
+            return MMObjectID.SCHOOL_OF_MAGIC_SEA
+        elif obj["id"] == objects.ID.Arena:
+            return MMObjectID.ARENA
+        elif (
+            obj["id"] == objects.ID.HotA_Visitable_1
+            and obj["sub_id"] == objects.SubID.HotAVisitable1.Colosseum_of_the_Magi
+        ):
+            return MMObjectID.COLOSSEUM_OF_THE_MAGI
+        elif obj["id"] == objects.ID.Library_of_Enlightenment:
+            return MMObjectID.LIBRARY_OF_ENLIGHTENMENT
         elif obj["id"] not in groups.DECOR:
             return MMObjectID.ALL_OTHERS
     else:
