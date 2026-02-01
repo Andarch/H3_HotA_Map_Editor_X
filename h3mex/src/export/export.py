@@ -17,9 +17,9 @@ class CustomEncoder(json.JSONEncoder):
 
 
 ###################################
-OBJECT_FILTER = [*objects.ID]
-# OBJECT_FILTER = [objects.ID.Town]
-# OBJECT_SUBFILTER = [objects.SubID.Town.Bulwark]
+# OBJECT_FILTER = [*objects.ID]
+OBJECT_FILTER = [objects.ID.Town, objects.ID.Hero]
+# OBJECT_SUBFILTER = [objects.SubID.HotADecor2.Glacier]
 # OBJECT_COORDS_FILTER = [[53, 238, 1], [59, 238, 1], [63, 239, 1], [68, 239, 1], [72, 239, 1], [76, 239, 1]]
 ###################################
 
