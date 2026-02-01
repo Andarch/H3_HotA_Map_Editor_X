@@ -90,8 +90,9 @@ def generate(mm_action: MMAction, mm_type: MMType, mm_overlay: dict | None) -> N
             _process_image(
                 mm_action,
                 mm_type,
-                MM_LAYERS[mm_key]["filter"],
-                MM_LAYERS[mm_key]["subfilter"],
+                None,
+                None,
+                None,
                 None,
                 mm_key,
                 None,
