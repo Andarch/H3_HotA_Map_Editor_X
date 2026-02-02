@@ -1,10 +1,10 @@
-from src.defs import groups, objects
+from src.defs import groups, objects  # noqa: F401
 
 MM_LAYERS = {
     "standard": {"display_name": "Standard Minimap", "filter": None, "subfilter": None},
     "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
     "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
-    "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
+    # "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
     # "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
     # "monoliths1_en": {
     #     "display_name": "One-Way Monolith Entrances",
@@ -148,68 +148,68 @@ MM_LAYERS = {
     #     "filter": {objects.ID.HotA_Visitable_2},
     #     "subfilter": {objects.SubID.HotAVisitable2.Town_Gate},
     # },
-    # "primaryskillobjects": {
-    #     "display_name": "Primary Skill Objects",
-    #     "combofilter": [
-    #         (objects.ID.Mercenary_Camp, {0}),
-    #         (objects.ID.Marletto_Tower, {0}),
-    #         (objects.ID.Star_Axis, {0}),
-    #         (objects.ID.Garden_of_Revelation, {0}),
-    #         (objects.ID.School_of_War, {0}),
-    #         (objects.ID.School_of_Magic, {0}),
-    #         (objects.ID.Arena, {0}),
-    #         (objects.ID.HotA_Visitable_1, {objects.SubID.HotAVisitable1.Colosseum_of_the_Magi}),
-    #         (objects.ID.Library_of_Enlightenment, {0}),
-    #     ],
-    # },
-    # "mercenarycamps": {
-    #     "display_name": "Mercenary Camps",
-    #     "filter": {objects.ID.Mercenary_Camp},
-    #     "subfilter": None,
-    # },
-    # "marlettotowers": {
-    #     "display_name": "Marletto Towers",
-    #     "filter": {objects.ID.Marletto_Tower},
-    #     "subfilter": None,
-    # },
-    # "staraxis": {
-    #     "display_name": "Star Axis",
-    #     "filter": {objects.ID.Star_Axis},
-    #     "subfilter": None,
-    # },
-    # "gardensofrevelation": {
-    #     "display_name": "Gardens of Revelation",
-    #     "filter": {objects.ID.Garden_of_Revelation},
-    #     "subfilter": None,
-    # },
-    # "schoolsofwar": {
-    #     "display_name": "Schools of War",
-    #     "filter": {objects.ID.School_of_War},
-    #     "subfilter": None,
-    # },
-    # "schoolsofmagicland": {
-    #     "display_name": "Schools of Magic - Land",
-    #     "filter": {objects.ID.School_of_Magic},
-    #     "subfilter": {0},
-    # },
-    # "schoolsofmagicsea": {
-    #     "display_name": "Schools of Magic - Sea",
-    #     "filter": {objects.ID.School_of_Magic},
-    #     "subfilter": {1},
-    # },
-    # "arenas": {
-    #     "display_name": "Arenas",
-    #     "filter": {objects.ID.Arena},
-    #     "subfilter": None,
-    # },
-    # "colosseumsofthemagi": {
-    #     "display_name": "Colosseums of the Magi",
-    #     "filter": {objects.ID.HotA_Visitable_1},
-    #     "subfilter": {objects.SubID.HotAVisitable1.Colosseum_of_the_Magi},
-    # },
-    # "librariesofenlightenment": {
-    #     "display_name": "Libraries of Enlightenment",
-    #     "filter": {objects.ID.Library_of_Enlightenment},
-    #     "subfilter": None,
-    # },
+    "primaryskillobjects": {
+        "display_name": "Primary Skill Objects",
+        "combofilter": [
+            (objects.ID.Mercenary_Camp, {0}),
+            (objects.ID.Marletto_Tower, {0}),
+            (objects.ID.Star_Axis, {0}),
+            (objects.ID.Garden_of_Revelation, {0}),
+            (objects.ID.School_of_War, {0}),
+            (objects.ID.School_of_Magic, {0}),
+            (objects.ID.Arena, {0}),
+            (objects.ID.HotA_Visitable_1, {objects.SubID.HotAVisitable1.Colosseum_of_the_Magi}),
+            (objects.ID.Library_of_Enlightenment, {0}),
+        ],
+    },
+    "mercenarycamps": {
+        "display_name": "Mercenary Camps",
+        "filter": {objects.ID.Mercenary_Camp},
+        "subfilter": None,
+    },
+    "marlettotowers": {
+        "display_name": "Marletto Towers",
+        "filter": {objects.ID.Marletto_Tower},
+        "subfilter": None,
+    },
+    "staraxis": {
+        "display_name": "Star Axis",
+        "filter": {objects.ID.Star_Axis},
+        "subfilter": None,
+    },
+    "gardensofrevelation": {
+        "display_name": "Gardens of Revelation",
+        "filter": {objects.ID.Garden_of_Revelation},
+        "subfilter": None,
+    },
+    "schoolsofwar": {
+        "display_name": "Schools of War",
+        "filter": {objects.ID.School_of_War},
+        "subfilter": None,
+    },
+    "schoolsofmagicland": {
+        "display_name": "Schools of Magic - Land",
+        "filter": {objects.ID.School_of_Magic},
+        "subfilter": {0},
+    },
+    "schoolsofmagicsea": {
+        "display_name": "Schools of Magic - Sea",
+        "filter": {objects.ID.School_of_Magic},
+        "subfilter": {1},
+    },
+    "arenas": {
+        "display_name": "Arenas",
+        "filter": {objects.ID.Arena},
+        "subfilter": None,
+    },
+    "colosseumsofthemagi": {
+        "display_name": "Colosseums of the Magi",
+        "filter": {objects.ID.HotA_Visitable_1},
+        "subfilter": {objects.SubID.HotAVisitable1.Colosseum_of_the_Magi},
+    },
+    "librariesofenlightenment": {
+        "display_name": "Libraries of Enlightenment",
+        "filter": {objects.ID.Library_of_Enlightenment},
+        "subfilter": None,
+    },
 }
