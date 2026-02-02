@@ -4,7 +4,7 @@ MM_LAYERS = {
     "standard": {"display_name": "Standard Minimap", "filter": None, "subfilter": None},
     "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
     "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
-    "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
+    # "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
     # "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
     # "monoliths1_en": {
     #     "display_name": "One-Way Monolith Entrances",
@@ -212,9 +212,14 @@ MM_LAYERS = {
     #     "filter": {objects.ID.Library_of_Enlightenment},
     #     "subfilter": None,
     # },
-    "denofthieves": {
-        "display_name": "Dens of Thieves",
-        "filter": {objects.ID.Den_of_Thieves},
+    # "denofthieves": {
+    #     "display_name": "Dens of Thieves",
+    #     "filter": {objects.ID.Den_of_Thieves},
+    #     "subfilter": None,
+    # },
+    "taverns": {
+        "display_name": "Taverns",
+        "filter": {objects.ID.Tavern},
         "subfilter": None,
     },
 }
