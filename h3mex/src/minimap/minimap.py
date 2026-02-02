@@ -568,6 +568,20 @@ def _get_pixel_color(
                 return transparent
         else:
             if mm_objectid is not None:
-                return MM_OBJECT_COLORS[mm_objectid] + (255,)
+                if mm_key not in {
+                    "mercenarycamps",
+                    "marlettotowers",
+                    "staraxis",
+                    "gardensofrevelation",
+                    "schoolsofwar",
+                    "schoolsofmagicland",
+                    "schoolsofmagicsea",
+                    "arenas",
+                    "colosseumsofthemagi",
+                    "librariesofenlightenment",
+                }:
+                    return MM_OBJECT_COLORS[mm_objectid] + (255,)
+                else:
+                    return (0xFF, 0xFF, 0xFF) + (255,)
             else:
                 return transparent
