@@ -253,9 +253,9 @@ def add_explorer_bonuses():
 
 
 def _get_explorer_bonus(coords, def_id):
-    zone_type, zone_player = ("", "")
+    zone_type, zone_owner = ("", "")
     if has_zone_images:
-        zone_type, zone_player = get_zone(coords)
+        zone_type, zone_owner = get_zone(coords)
 
     # Always add 1 to one random primary skill
     primary_skills = [0, 0, 0, 0]
@@ -287,7 +287,7 @@ def _get_explorer_bonus(coords, def_id):
         "coords": coords,
         "coords_offset": coords,
         "zone_type": zone_type,
-        "zone_player": zone_player,
+        "zone_owner": zone_owner,
         "def_id": def_id,
         "id": objects.ID.Event_Object,
         "sub_id": 0,

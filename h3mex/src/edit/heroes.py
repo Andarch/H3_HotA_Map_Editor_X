@@ -106,7 +106,7 @@ def move_heroes_from_towns_to_map() -> None:
             hero["coords"] = [obj["coords"][0] + 1, obj["coords"][1], obj["coords"][2]]
             hero["coords_offset"] = obj["coords_offset"]
             hero["zone_type"] = obj["zone_type"]
-            hero["zone_player"] = obj["zone_player"]
+            hero["zone_owner"] = obj["zone_owner"]
 
             object_data[i] = hero
             moved_count += 1

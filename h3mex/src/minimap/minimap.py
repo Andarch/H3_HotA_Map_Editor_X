@@ -69,9 +69,9 @@ def view() -> None:
                     "ground": Path(os.getcwd()).parent
                     / "maps"
                     / "images"
-                    / f"{map_data["filename"][:-4]}_zoneplayers_g.png",
+                    / f"{map_data["filename"][:-4]}_zoneowners_g.png",
                     "underground": (
-                        Path(os.getcwd()).parent / "maps" / "images" / f"{map_data["filename"][:-4]}_zoneplayers_u.png"
+                        Path(os.getcwd()).parent / "maps" / "images" / f"{map_data["filename"][:-4]}_zoneowners_u.png"
                         if map_data["general"]["has_underground"]
                         else None
                     ),

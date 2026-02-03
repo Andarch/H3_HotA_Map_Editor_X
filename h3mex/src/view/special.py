@@ -136,13 +136,13 @@ def list_invalid_zone_objects() -> None:
 
     for obj in map_data["object_data"]:
         zone_type = obj["zone_type"]
-        zone_player = obj["zone_player"]
+        zone_owner = obj["zone_owner"]
 
-        if zone_type in errors or zone_player in errors:
+        if zone_type in errors or zone_owner in errors:
             invalid_found = True
             xprint(type=TextType.INFO, text=f"{obj['type']} at {obj['coords']}:")
             xprint(type=TextType.INFO, text=f"  Zone Type: {zone_type}")
-            xprint(type=TextType.INFO, text=f"  Zone Color: {zone_player}")
+            xprint(type=TextType.INFO, text=f"  Zone Color: {zone_owner}")
             xprint()
 
     if not invalid_found:
