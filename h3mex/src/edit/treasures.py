@@ -470,14 +470,14 @@ def add_scholars():
     zone_tiles = {0: {}, 1: {}}  # {level: {(x, y): zone_type}}
 
     # Create reverse mapping: zone_type -> RGB color
-    zone_colors = {}
+    zone_type_colors = {}
     if hasattr(objects, "ZoneInfo") and hasattr(objects.ZoneInfo, "TYPES"):
         # Reverse the TYPES dict: zone_type -> color tuple
         for color_tuple, zone_type in objects.ZoneInfo.TYPES.items():
             if zone_type in zone_distribution:
-                zone_colors[zone_type] = color_tuple
+                zone_type_colors[zone_type] = color_tuple
 
-    if not zone_colors:
+    if not zone_type_colors:
         xprint(type=TextType.ERROR, text="Could not map zone types to colors.")
         return
 
@@ -488,7 +488,7 @@ def add_scholars():
                 pixel = m8_objects.zonetypes_img_g.getpixel((x, y))
                 # pixel may be (r,g,b,a); compare only RGB
                 rgb = pixel[0:3] if len(pixel) >= 3 else pixel
-                for zone_type, color in zone_colors.items():
+                for zone_type, color in zone_type_colors.items():
                     if rgb == color:
                         zone_tiles[0][(x, y)] = zone_type
                         break
@@ -499,7 +499,7 @@ def add_scholars():
             for x in range(size):
                 pixel = m8_objects.zonetypes_img_u.getpixel((x, y))
                 rgb = pixel[0:3] if len(pixel) >= 3 else pixel
-                for zone_type, color in zone_colors.items():
+                for zone_type, color in zone_type_colors.items():
                     if rgb == color:
                         zone_tiles[1][(x, y)] = zone_type
                         break
@@ -567,7 +567,7 @@ def add_scholars():
             continue
 
         # Get zone color
-        current_zone_color = zone_colors.get(current_zone_type, "")
+        current_zone_color = zone_type_colors.get(current_zone_type, "")
 
         # Create scholar
         coords = list(coords_tuple)

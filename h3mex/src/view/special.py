@@ -142,7 +142,7 @@ def list_invalid_zone_objects() -> None:
             invalid_found = True
             xprint(type=TextType.INFO, text=f"{obj['type']} at {obj['coords']}:")
             xprint(type=TextType.INFO, text=f"  Zone Type: {zone_type}")
-            xprint(type=TextType.INFO, text=f"  Zone Color: {zone_owner}")
+            xprint(type=TextType.INFO, text=f"  Zone Owner: {zone_owner}")
             xprint()
 
     if not invalid_found:

@@ -204,6 +204,12 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                     obj["coords_offset"] = [obj["coords"][0] - 1, obj["coords"][1] - 2, obj["coords"][2]]
                     obj["zone_type"], obj["zone_owner"] = get_zone(obj["coords_offset"])
 
+                if obj["id"] == objects.ID.Tavern and (
+                    obj["zone_type"] in ERROR_TYPES or obj["zone_owner"] in ERROR_TYPES
+                ):
+                    obj["coords_offset"] = [obj["coords"][0] - 2, obj["coords"][1], obj["coords"][2]]
+                    obj["zone_type"], obj["zone_owner"] = get_zone(obj["coords_offset"])
+
         match obj["id"]:
             case objects.ID.Pandoras_Box:
                 obj = parse_pandoras_box(obj)
@@ -1947,13 +1953,15 @@ def get_zone(coords: list) -> tuple:
             return None, "Void"
         return pixel[:3], None
 
-    rgb_types, error_types = get_pixel_rgb(zonetypes_img_g, zonetypes_img_u)
-    zone_type = error_types if error_types else objects.ZoneInfo.TYPES.get(rgb_types, "Unknown")
+    zone_info = {}
+    for (img_g, img_u), lookup, key in (
+        ((zonetypes_img_g, zonetypes_img_u), objects.ZoneInfo.TYPES, "zone_type"),
+        ((zoneowners_img_g, zoneowners_img_u), objects.ZoneInfo.OWNERS, "zone_owner"),
+    ):
+        rgb, error = get_pixel_rgb(img_g, img_u)
+        zone_info[key] = error or lookup[rgb]
 
-    rgb_colors, error_colors = get_pixel_rgb(zoneowners_img_g, zoneowners_img_u)
-    zone_owner = error_colors if error_colors else objects.ZoneInfo.OWNERS.get(rgb_colors, "Unknown")
-
-    return zone_type, zone_owner
+    return zone_info["zone_type"], zone_info["zone_owner"]
 
 
 def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
@@ -2010,6 +2018,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
         objects.ID.Creature_Bank,
         objects.ID.Random_Town,
         objects.ID.Town,
+        objects.ID.HotA_Visitable_2,
     }
     CONDITIONAL_X_MINUS_1 = {
         objects.ID.Creature_Bank,
@@ -2025,6 +2034,7 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
     }
     CONDITIONAL_X_MINUS_2 = {
         objects.ID.Creature_Bank,
+        objects.ID.HotA_Visitable_2,
     }
     OBJS_Y_OFFSET_MINUS_1 = {
         objects.ID.Garrison_Vertical,
@@ -2116,6 +2126,9 @@ def get_coords_offset(coords: list, id: int, sub_id: int) -> list:
                 objects.SubID.CreatureBank.Temple_of_the_Sea,
                 objects.SubID.CreatureBank.Red_Tower,
             }
+
+        if obj_id == objects.ID.HotA_Visitable_2:
+            return sub_id == objects.SubID.HotAVisitable2.Seafaring_Academy
 
         return False
 

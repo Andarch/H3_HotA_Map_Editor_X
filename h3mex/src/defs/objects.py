@@ -1,5 +1,7 @@
 from enum import IntEnum
 
+from . import players
+
 
 class ID(IntEnum):
     ### Normal ###
@@ -806,32 +808,24 @@ class TrapperLodgeReward(IntEnum):
 
 class ZoneInfo:
     TYPES = {
-        (0, 255, 30): "P1",
-        (0, 191, 22): "P2",
-        (0, 128, 15): "P3",
-        (0, 64, 7): "P4",
-        (255, 0, 0): "R1",
-        (191, 0, 0): "R2",
-        (128, 0, 0): "R3",
-        (64, 0, 0): "R4",
-        (255, 217, 0): "L1",
-        (191, 140, 0): "L2",
-        (128, 79, 0): "L3",
-        (64, 32, 0): "L4",
-        (0, 213, 255): "W1",
-        (0, 115, 191): "W2",
-        (0, 62, 128): "W3",
-        (0, 23, 64): "W4",
+        (255, 217, 0): "I",
+        (191, 140, 0): "II",
+        (128, 79, 0): "III",
+        (64, 32, 0): "IV",
+        (0, 213, 255): "I",
+        (0, 115, 191): "II",
+        (0, 62, 128): "III",
+        (0, 23, 64): "IV",
     }
     OWNERS = {
-        (77, 77, 77): "Neutral",
-        (80, 85, 88): "Neutral",
-        (89, 110, 184): "Blue",
-        (129, 108, 88): "Tan",
-        (71, 109, 54): "Green",
-        (179, 129, 76): "Orange",
-        (109, 59, 120): "Purple",
-        (50, 112, 116): "Teal",
-        (171, 129, 140): "Pink",
-        (179, 76, 76): "Red",
+        (179, 76, 76): players.ID.Red,
+        (89, 110, 184): players.ID.Blue,
+        (129, 108, 88): players.ID.Tan,
+        (71, 109, 54): players.ID.Green,
+        (179, 129, 76): players.ID.Orange,
+        (109, 59, 120): players.ID.Purple,
+        (50, 112, 116): players.ID.Teal,
+        (171, 129, 140): players.ID.Pink,
+        (77, 77, 77): players.ID.Neutral,
+        (80, 85, 88): players.ID.Neutral,
     }
