@@ -1,7 +1,7 @@
 import random  # noqa: F401
 
 from src.common import TextType, map_data
-from src.defs import creatures, groups, objects
+from src.defs import creatures, groups, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
@@ -117,6 +117,59 @@ def set_monster_flee_values() -> None:
                 obj["monster_never_flees"] = True
                 count += 1
 
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+
+    wait_for_keypress()
+
+
+def make_compliant_monsters_not_grow() -> None:
+    xprint(type=TextType.ACTION, text="Making compliant monsters not grow…")
+
+    count = 0
+    for obj in map_data["object_data"]:
+        if (
+            obj["id"] == objects.ID.Monster
+            and obj["disposition"] == creatures.Disposition.Compliant
+            and not obj["quantity_does_not_grow"]
+        ):
+            obj["quantity_does_not_grow"] = True
+            count += 1
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+
+    wait_for_keypress()
+
+
+def increase_creature_stashes() -> None:
+    xprint(type=TextType.ACTION, text="Increasing creature stashes…")
+    xprint()
+
+    count = 0
+    for obj in map_data["object_data"]:
+        if (
+            obj["id"] == objects.ID.Monster
+            and obj["disposition"] == creatures.Disposition.Compliant
+            and obj["zone_owner"] == players.ID.Neutral
+            and obj["zone_type"] in {"I", "II"}
+            and not obj["is_value"]
+            and obj["sub_id"]
+            not in {
+                *creatures.Stronghold,
+                *creatures.Fortress,
+                *creatures.Conflux,
+                *creatures.Bulwark,
+                *creatures.Neutral,
+            }
+        ):
+            obj["quantity"] *= 2
+            xprint(type=TextType.INFO, text=obj["subtype"])
+            count += 1
+
+    xprint()
     xprint(type=TextType.DONE)
     xprint()
     xprint(type=TextType.INFO, text=f"Updated {count} objects.")

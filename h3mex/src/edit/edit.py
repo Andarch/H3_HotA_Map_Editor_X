@@ -85,6 +85,10 @@ def menu() -> None:
                             monsters.set_compliant_monster_values()
                         case "4":
                             monsters.set_monster_flee_values()
+                        case "5":
+                            monsters.make_compliant_monsters_not_grow()
+                        case "6":
+                            monsters.increase_creature_stashes()
             case "6":
                 while True:
                     keypress = xprint(menu=(Menu.EDIT["name"], Menu.EDIT["menus"][5]))

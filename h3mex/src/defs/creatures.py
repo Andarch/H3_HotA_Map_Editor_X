@@ -229,7 +229,234 @@ class ID(IntEnum):
     Jotunn_Warlord = 199
 
 
-class Level1Creatures(IntEnum):
+class Castle(IntEnum):
+    Pikeman = ID.Pikeman
+    Halberdier = ID.Halberdier
+    Archer = ID.Archer
+    Marksman = ID.Marksman
+    Griffin = ID.Griffin
+    Royal_Griffin = ID.Royal_Griffin
+    Swordsman = ID.Swordsman
+    Crusader = ID.Crusader
+    Monk = ID.Monk
+    Zealot = ID.Zealot
+    Cavalier = ID.Cavalier
+    Champion = ID.Champion
+    Angel = ID.Angel
+    Archangel = ID.Archangel
+
+
+class Rampart(IntEnum):
+    Centaur = ID.Centaur
+    Centaur_Captain = ID.Centaur_Captain
+    Dwarf = ID.Dwarf
+    Battle_Dwarf = ID.Battle_Dwarf
+    Wood_Elf = ID.Wood_Elf
+    Grand_Elf = ID.Grand_Elf
+    Pegasus = ID.Pegasus
+    Silver_Pegasus = ID.Silver_Pegasus
+    Dendroid_Guard = ID.Dendroid_Guard
+    Dendroid_Soldier = ID.Dendroid_Soldier
+    Unicorn = ID.Unicorn
+    War_Unicorn = ID.War_Unicorn
+    Green_Dragon = ID.Green_Dragon
+    Gold_Dragon = ID.Gold_Dragon
+
+
+class Tower(IntEnum):
+    Gremlin = ID.Gremlin
+    Master_Gremlin = ID.Master_Gremlin
+    Stone_Gargoyle = ID.Stone_Gargoyle
+    Obsidian_Gargoyle = ID.Obsidian_Gargoyle
+    Stone_Golem = ID.Stone_Golem
+    Iron_Golem = ID.Iron_Golem
+    Mage = ID.Mage
+    Arch_Mage = ID.Arch_Mage
+    Genie = ID.Genie
+    Master_Genie = ID.Master_Genie
+    Naga = ID.Naga
+    Naga_Queen = ID.Naga_Queen
+    Giant = ID.Giant
+    Titan = ID.Titan
+
+
+class Inferno(IntEnum):
+    Imp = ID.Imp
+    Familiar = ID.Familiar
+    Gog = ID.Gog
+    Magog = ID.Magog
+    Hell_Hound = ID.Hell_Hound
+    Cerberus = ID.Cerberus
+    Demon = ID.Demon
+    Horned_Demon = ID.Horned_Demon
+    Pit_Fiend = ID.Pit_Fiend
+    Pit_Lord = ID.Pit_Lord
+    Efreeti = ID.Efreeti
+    Efreet_Sultan = ID.Efreet_Sultan
+    Devil = ID.Devil
+    Arch_Devil = ID.Arch_Devil
+
+
+class Necropolis(IntEnum):
+    Skeleton = ID.Skeleton
+    Skeleton_Warrior = ID.Skeleton_Warrior
+    Walking_Dead = ID.Walking_Dead
+    Zombie = ID.Zombie
+    Wight = ID.Wight
+    Wraith = ID.Wraith
+    Vampire = ID.Vampire
+    Vampire_Lord = ID.Vampire_Lord
+    Lich = ID.Lich
+    Power_Lich = ID.Power_Lich
+    Black_Knight = ID.Black_Knight
+    Dread_Knight = ID.Dread_Knight
+    Bone_Dragon = ID.Bone_Dragon
+    Ghost_Dragon = ID.Ghost_Dragon
+
+
+class Dungeon(IntEnum):
+    Troglodyte = ID.Troglodyte
+    Infernal_Troglodyte = ID.Infernal_Troglodyte
+    Harpy = ID.Harpy
+    Harpy_Hag = ID.Harpy_Hag
+    Beholder = ID.Beholder
+    Evil_Eye = ID.Evil_Eye
+    Medusa = ID.Medusa
+    Medusa_Queen = ID.Medusa_Queen
+    Minotaur = ID.Minotaur
+    Minotaur_King = ID.Minotaur_King
+    Manticore = ID.Manticore
+    Scorpicore = ID.Scorpicore
+    Red_Dragon = ID.Red_Dragon
+    Black_Dragon = ID.Black_Dragon
+
+
+class Stronghold(IntEnum):
+    Goblin = ID.Goblin
+    Hobgoblin = ID.Hobgoblin
+    Wolf_Rider = ID.Wolf_Rider
+    Wolf_Raider = ID.Wolf_Raider
+    Orc = ID.Orc
+    Orc_Chieftain = ID.Orc_Chieftain
+    Ogre = ID.Ogre
+    Ogre_Mage = ID.Ogre_Mage
+    Roc = ID.Roc
+    Thunderbird = ID.Thunderbird
+    Cyclops = ID.Cyclops
+    Cyclops_King = ID.Cyclops_King
+    Behemoth = ID.Behemoth
+    Ancient_Behemoth = ID.Ancient_Behemoth
+
+
+class Fortress(IntEnum):
+    Gnoll = ID.Gnoll
+    Gnoll_Marauder = ID.Gnoll_Marauder
+    Lizardman = ID.Lizardman
+    Lizard_Warrior = ID.Lizard_Warrior
+    Gorgon = ID.Gorgon
+    Mighty_Gorgon = ID.Mighty_Gorgon
+    Serpent_Fly = ID.Serpent_Fly
+    Dragon_Fly = ID.Dragon_Fly
+    Basilisk = ID.Basilisk
+    Greater_Basilisk = ID.Greater_Basilisk
+    Wyvern = ID.Wyvern
+    Wyvern_Monarch = ID.Wyvern_Monarch
+    Hydra = ID.Hydra
+    Chaos_Hydra = ID.Chaos_Hydra
+
+
+class Conflux(IntEnum):
+    Pixie = ID.Pixie
+    Sprite = ID.Sprite
+    Air_Elemental = ID.Air_Elemental
+    Storm_Elemental = ID.Storm_Elemental
+    Water_Elemental = ID.Water_Elemental
+    Ice_Elemental = ID.Ice_Elemental
+    Fire_Elemental = ID.Fire_Elemental
+    Energy_Elemental = ID.Energy_Elemental
+    Earth_Elemental = ID.Earth_Elemental
+    Magma_Elemental = ID.Magma_Elemental
+    Psychic_Elemental = ID.Psychic_Elemental
+    Magic_Elemental = ID.Magic_Elemental
+    Firebird = ID.Firebird
+    Phoenix = ID.Phoenix
+
+
+class Cove(IntEnum):
+    Oceanid = ID.Oceanid
+    Crew_Mate = ID.Crew_Mate
+    Seaman = ID.Seaman
+    Pirate = ID.Pirate
+    Corsair = ID.Corsair
+    Sea_Dog = ID.Sea_Dog
+    Stormbird = ID.Stormbird
+    Ayssid = ID.Ayssid
+    Sea_Witch = ID.Sea_Witch
+    Sorceress = ID.Sorceress
+    Nix = ID.Nix
+    Nix_Warrior = ID.Nix_Warrior
+    Sea_Serpent = ID.Sea_Serpent
+    Haspid = ID.Haspid
+
+
+class Factory(IntEnum):
+    Halfling = ID.Halfling
+    Halfling_Grenadier = ID.Halfling_Grenadier
+    Mechanic = ID.Mechanic
+    Engineer = ID.Engineer
+    Armadillo = ID.Armadillo
+    Bellwether_Armadillo = ID.Bellwether_Armadillo
+    Automaton = ID.Automaton
+    Sentinel_Automaton = ID.Sentinel_Automaton
+    Sandworm = ID.Sandworm
+    Olgoi_Khorkhoi = ID.Olgoi_Khorkhoi
+    Gunslinger = ID.Gunslinger
+    Bounty_Hunter = ID.Bounty_Hunter
+    Couatl = ID.Couatl
+    Crimson_Couatl = ID.Crimson_Couatl
+    Dreadnought = ID.Dreadnought
+    Juggernaut = ID.Juggernaut
+
+
+class Bulwark(IntEnum):
+    Kobold = ID.Kobold
+    Kobold_Foreman = ID.Kobold_Foreman
+    Mountain_Ram = ID.Mountain_Ram
+    Argali = ID.Argali
+    Snow_Elf = ID.Snow_Elf
+    Steel_Elf = ID.Steel_Elf
+    Yeti = ID.Yeti
+    Yeti_Runemaster = ID.Yeti_Runemaster
+    Shaman = ID.Shaman
+    Great_Shaman = ID.Great_Shaman
+    Mammoth = ID.Mammoth
+    War_Mammoth = ID.War_Mammoth
+    Jotunn = ID.Jotunn
+    Jotunn_Warlord = ID.Jotunn_Warlord
+
+
+class Neutral(IntEnum):
+    Peasant = ID.Peasant
+    Boar = ID.Boar
+    Rogue = ID.Rogue
+    Leprechaun = ID.Leprechaun
+    Mummy = ID.Mummy
+    Nomad = ID.Nomad
+    Sharpshooter = ID.Sharpshooter
+    Satyr = ID.Satyr
+    Steel_Golem = ID.Steel_Golem
+    Troll = ID.Troll
+    Gold_Golem = ID.Gold_Golem
+    Fangarm = ID.Fangarm
+    Diamond_Golem = ID.Diamond_Golem
+    Enchanter = ID.Enchanter
+    Faerie_Dragon = ID.Faerie_Dragon
+    Rust_Dragon = ID.Rust_Dragon
+    Crystal_Dragon = ID.Crystal_Dragon
+    Azure_Dragon = ID.Azure_Dragon
+
+
+class Level1(IntEnum):
     Pikeman = ID.Pikeman
     Halberdier = ID.Halberdier
     Centaur = ID.Centaur
@@ -257,7 +484,7 @@ class Level1Creatures(IntEnum):
     Peasant = ID.Peasant
 
 
-class Level2Creatures(IntEnum):
+class Level2(IntEnum):
     Archer = ID.Archer
     Marksman = ID.Marksman
     Dwarf = ID.Dwarf
@@ -287,7 +514,7 @@ class Level2Creatures(IntEnum):
     Leprechaun = ID.Leprechaun
 
 
-class Level3Creatures(IntEnum):
+class Level3(IntEnum):
     Griffin = ID.Griffin
     Royal_Griffin = ID.Royal_Griffin
     Wood_Elf = ID.Wood_Elf
@@ -317,7 +544,7 @@ class Level3Creatures(IntEnum):
     Sea_Dog = ID.Sea_Dog
 
 
-class Level4Creatures(IntEnum):
+class Level4(IntEnum):
     Swordsman = ID.Swordsman
     Crusader = ID.Crusader
     Pegasus = ID.Pegasus
@@ -347,7 +574,7 @@ class Level4Creatures(IntEnum):
     Steel_Golem = ID.Steel_Golem
 
 
-class Level5Creatures(IntEnum):
+class Level5(IntEnum):
     Monk = ID.Monk
     Zealot = ID.Zealot
     Dendroid_Guard = ID.Dendroid_Guard
@@ -377,7 +604,7 @@ class Level5Creatures(IntEnum):
     Fangarm = ID.Fangarm
 
 
-class Level6Creatures(IntEnum):
+class Level6(IntEnum):
     Cavalier = ID.Cavalier
     Champion = ID.Champion
     Unicorn = ID.Unicorn
@@ -406,7 +633,7 @@ class Level6Creatures(IntEnum):
     Enchanter = ID.Enchanter
 
 
-class Level7Creatures(IntEnum):
+class Level7(IntEnum):
     Angel = ID.Angel
     Archangel = ID.Archangel
     Green_Dragon = ID.Green_Dragon

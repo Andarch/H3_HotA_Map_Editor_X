@@ -717,11 +717,10 @@ def parse_pandoras_box(obj: dict) -> dict:
     obj["difficulty"] = io.read_bits(4)
 
     unknown_byte = io.read_int(1)
-    if unknown_byte != 0:
+    if unknown_byte:
         obj["hero_event_id"] = io.read_int(4)
-        obj["unknown_byte"] = io.read_int(1)
-    else:
-        obj["unknown_byte"] = unknown_byte
+        unknown_byte = io.read_int(1)
+    obj["unknown_byte"] = unknown_byte
 
     return obj
 
@@ -741,6 +740,7 @@ def write_pandoras_box(obj: dict) -> None:
     io.write_bits(obj["difficulty"])
 
     if obj["unknown_byte"] != 0:
+        io.write_int(1, 1)
         io.write_int(obj["hero_event_id"], 4)
         io.write_int(obj["unknown_byte"], 1)
     else:
