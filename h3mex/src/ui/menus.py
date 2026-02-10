@@ -103,12 +103,13 @@ class Menu:
                 ("3", "Heroes: Swap hero indexes"),
             ],
             [
-                ("1", "Monsters: Change level-specific random monsters to any level"),
-                ("2", "Monsters: Set monster values"),
+                ("1", "Monsters: Change non-level-specific random monsters to level 1-7"),
+                ("2", "Monsters: Set monster quantities"),
                 ("3", "Monsters: Set compliant monster values"),
                 ("4", "Monsters: Set monster flee values"),
                 ("5", "Monsters: Make compliant monsters not grow"),
-                ("6", "Monsters: Increase creature stashes"),
+                ("6", "Monsters: Make non-compliant monsters grow"),
+                ("7", "Monsters: Increase creature stashes"),
             ],
             [
                 ("1", "Treasures: Add treasures"),

@@ -1,6 +1,6 @@
 import src.view.special as special
 from src.common import Cursor, Keypress, TextType, map_data
-from src.defs import objects
+from src.defs import groups, objects  # noqa: F401
 from src.minimap import minimap
 from src.ui import header
 from src.ui.menus import Menu
@@ -10,8 +10,8 @@ from src.utilities import wait_for_keypress
 from .format import format_map_data
 
 ###################################
-# OBJECT_FILTER = [*objects.ID]
-OBJECT_FILTER = [objects.ID.Tavern]
+OBJECT_FILTER = [*objects.ID]
+# OBJECT_FILTER = [*groups.RANDOM_MONSTERS_LEVEL]
 # OBJECT_SUBFILTER = [objects.SubID.HotADecor2.Glacier]
 # OBJECT_COORDS_FILTER = [[53, 238, 1], [59, 238, 1], [63, 239, 1], [68, 239, 1], [72, 239, 1], [76, 239, 1]]
 ###################################

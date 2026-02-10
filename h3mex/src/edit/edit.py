@@ -80,7 +80,7 @@ def menu() -> None:
                         case "1":
                             monsters.set_random_monsters()
                         case "2":
-                            monsters.set_monster_values()
+                            monsters.set_monster_quantities()
                         case "3":
                             monsters.set_compliant_monster_values()
                         case "4":
@@ -88,6 +88,8 @@ def menu() -> None:
                         case "5":
                             monsters.make_compliant_monsters_not_grow()
                         case "6":
+                            monsters.make_non_compliant_monsters_grow()
+                        case "7":
                             monsters.increase_creature_stashes()
             case "6":
                 while True:
