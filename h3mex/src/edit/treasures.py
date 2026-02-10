@@ -2,7 +2,7 @@ import random
 
 import src.file.m8_objects as m8_objects
 from src.common import TextType, map_data
-from src.defs import artifacts, objects
+from src.defs import artifacts, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
@@ -13,13 +13,13 @@ def modify_treasure_rewards() -> None:
     xprint(type=TextType.ACTION, text="Modifying treasure rewards…")
 
     TREASURE_OBJECTS = {
-        # objects.ID.Campfire,
+        objects.ID.Campfire,
         # objects.ID.Treasure_Chest,
         # objects.ID.Resource,
         # objects.ID.Random_Resource,
         # objects.ID.Sea_Chest,
         # objects.ID.Flotsam,
-        objects.ID.HotA_Pickup,
+        # objects.ID.HotA_Pickup,
     }
 
     modified_count = 0
@@ -29,24 +29,36 @@ def modify_treasure_rewards() -> None:
             modified_count += 1
             match obj["id"]:
                 case objects.ID.Campfire:
-                    zone_type = obj.get("zone_type", "")
-                    if zone_type in {"P1"}:
-                        gold = random.randint(400, 1000)
-                        other = random.randint(6, 10)
-                    elif zone_type in {"P2", "P3", "L1", "W1"}:
-                        gold = random.randint(1000, 3000)
-                        other = random.randint(11, 15)
-                    elif zone_type in {"P4", "L2", "W2"}:
-                        gold = random.randint(3000, 5000)
-                        other = random.randint(16, 20)
-                    elif zone_type in {"L3", "W3"}:
-                        gold = random.randint(5000, 7000)
-                        other = random.randint(21, 25)
-                    elif zone_type in {"L4", "W4", "R1", "R2", "R3", "R4"}:
-                        gold = random.randint(7000, 10000)
-                        other = random.randint(25, 30)
+                    zone_type = obj["zone_type"]
+                    zone_owner = obj["zone_owner"]
+                    # P1
+                    if zone_type == "I" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
+                        gold = random.randint(500, 2500)
+                        other = random.randint(5, 10)
+                    # P2, P3, L1, W1
+                    elif (zone_type == "II" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "I" and zone_owner == players.ID.Neutral
+                    ):
+                        gold = random.randint(2500, 5000)
+                        other = random.randint(10, 20)
+                    # P3, L2, W2
+                    elif (zone_type == "III" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "II" and zone_owner == players.ID.Neutral
+                    ):
+                        gold = random.randint(5000, 10000)
+                        other = random.randint(20, 30)
+                    # P4, L3, W3
+                    elif (zone_type == "IV" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "III" and zone_owner == players.ID.Neutral
+                    ):
+                        gold = random.randint(10000, 15000)
+                        other = random.randint(30, 40)
+                    # L4, W4, R1, R2, R3, R4
+                    elif (zone_type == "IV" and zone_owner == players.ID.Neutral) or (zone_owner == players.ID.Red):
+                        gold = random.randint(15000, 20000)
+                        other = random.randint(40, 50)
                     else:
-                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        xprint(type=TextType.ERROR, text="Unknown zone type/owner")
                         break
                     secondary_resource = random.randint(0, 5)
                     obj["mode"] = 0
@@ -88,19 +100,31 @@ def modify_treasure_rewards() -> None:
                         break
 
                 case objects.ID.Resource | objects.ID.Random_Resource:
-                    zone_type = obj.get("zone_type", "")
-                    if zone_type in {"P1"}:
-                        obj["amount"] = random.randint(5, 10)
-                    elif zone_type in {"P2", "P3", "L1", "W1"}:
-                        obj["amount"] = random.randint(15, 20)
-                    elif zone_type in {"P4", "L2", "W2"}:
-                        obj["amount"] = random.randint(25, 30)
-                    elif zone_type in {"L3", "W3"}:
-                        obj["amount"] = random.randint(35, 40)
-                    elif zone_type in {"L4", "W4", "R1", "R2", "R3", "R4"}:
-                        obj["amount"] = random.randint(45, 50)
+                    zone_type = obj["zone_type"]
+                    zone_owner = obj["zone_owner"]
+                    # P1
+                    if zone_type == "I" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
+                        obj["amount"] = random.randint(5, 20)
+                    # P2, P3, L1, W1
+                    elif (zone_type == "II" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "I" and zone_owner == players.ID.Neutral
+                    ):
+                        obj["amount"] = random.randint(20, 40)
+                    # P3, L2, W2
+                    elif (zone_type == "III" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "II" and zone_owner == players.ID.Neutral
+                    ):
+                        obj["amount"] = random.randint(40, 60)
+                    # P4, L3, W3
+                    elif (zone_type == "IV" and zone_owner not in {players.ID.Red, players.ID.Neutral}) or (
+                        zone_type == "III" and zone_owner == players.ID.Neutral
+                    ):
+                        obj["amount"] = random.randint(60, 80)
+                    # L4, W4, R1, R2, R3, R4
+                    elif (zone_type == "IV" and zone_owner == players.ID.Neutral) or (zone_owner == players.ID.Red):
+                        obj["amount"] = random.randint(80, 100)
                     else:
-                        xprint(type=TextType.ERROR, text=f"Unknown zone type: {zone_type}")
+                        xprint(type=TextType.ERROR, text="Unknown zone type/owner")
                         break
 
                 case objects.ID.Sea_Chest:
