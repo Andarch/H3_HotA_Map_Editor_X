@@ -19,9 +19,9 @@ FOURTH_TOWN_LVL7_CREATURES = 15
 MEGA_TOWN_LVL7_CREATURES = 20
 
 # Set which players receive each bonus type
-HUMAN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
-AI_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
-BOSS_PLAYERS = [1, 0, 0, 0, 0, 0, 0, 0]
+HUMAN_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
+AI_PLAYERS = [1, 1, 1, 1, 1, 1, 1, 0]
+BOSS_PLAYERS = [0, 0, 0, 0, 0, 0, 0, 1]
 FOURTH_TOWN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
 MEGA_TOWN_PLAYERS = [0, 1, 1, 1, 1, 1, 1, 1]
 ##################################################
