@@ -11,7 +11,7 @@ from .format import format_map_data
 
 ###################################
 OBJECT_FILTER = [*objects.ID]
-# OBJECT_FILTER = [*groups.RANDOM_MONSTERS_LEVEL]
+# OBJECT_FILTER = [objects.ID.Obelisk]
 # OBJECT_SUBFILTER = [objects.SubID.HotADecor2.Glacier]
 # OBJECT_COORDS_FILTER = [[53, 238, 1], [59, 238, 1], [63, 239, 1], [68, 239, 1], [72, 239, 1], [76, 239, 1]]
 ###################################
