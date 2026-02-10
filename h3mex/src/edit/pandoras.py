@@ -1,7 +1,7 @@
 import random
 
 from src.common import TextType, map_data
-from src.defs import creatures, objects
+from src.defs import creatures, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
@@ -10,6 +10,12 @@ def modify_pandoras():
     xprint(type=TextType.ACTION, text="Modifying Pandora's Boxes…")
 
     modified_count = 0
+
+    target_boxes = {
+        (154, 152, 1),
+        (159, 154, 1),
+        (157, 150, 1),
+    }
 
     for obj in map_data["object_data"]:
         if obj["id"] == objects.ID.Pandoras_Box:
@@ -31,26 +37,11 @@ def modify_pandoras():
             #     obj["contents"] = _get_random_contents(obj["zone_type"])
             #     modified = True
 
-            # if any(skill > 0 for skill in obj["contents"]["Primary_Skills"]) and obj["zone_type"] not in {
-            #     "R1",
-            #     "R2",
-            #     "R3",
-            #     "R4",
-            # }:
-            #     obj["contents"]["Primary_Skills"] = modify_primary_skills(obj["zone_type"])
-            #     modified = True
-
-            if any(resource > 0 for resource in obj["contents"]["Resources"]) and obj["zone_type"] not in {
-                "P1",
-                "P2",
-                "P3",
-                "P4",
-                "L4",
-            }:
-                # Divide all resources except the last one by 4 (rounded)
-                obj["contents"]["Resources"] = [resource // 4 for resource in obj["contents"]["Resources"][:-1]] + [
-                    obj["contents"]["Resources"][-1]
-                ]
+            # Check if obj["coords"] is in target_boxes with [0] being x, [1] being y, and [2] being z
+            if tuple(obj["coords"]) in target_boxes:
+                obj["has_common"] = 1
+                obj["guards"] = _get_random_guards(obj["zone_type"], obj["zone_owner"])
+                obj["contents"] = _get_random_contents(obj["zone_type"], obj["zone_owner"])
                 modified = True
 
             if modified:
@@ -101,51 +92,53 @@ def _rand_enum_value(enum_cls):
     return random.choice(list(enum_cls)).value
 
 
-def _get_random_guards(zone_type) -> list:
-    if zone_type in {"P1", "L1", "W1"}:
+def _get_random_guards(zone_type, zone_owner) -> list:
+    if zone_type == "I" and zone_owner != players.ID.Red:
         return [
-            {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(50, 75)},
-            {"id": _rand_enum_value(creatures.Level4Creatures), "amount": random.randint(20, 30)},
-            {"id": _rand_enum_value(creatures.Level6Creatures), "amount": random.randint(5, 10)},
-            {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(2, 5)},
-            {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(10, 20)},
-            {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(30, 50)},
-            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(75, 100)},
+            {"id": _rand_enum_value(creatures.Level2), "amount": random.randint(50, 75)},
+            {"id": _rand_enum_value(creatures.Level4), "amount": random.randint(20, 30)},
+            {"id": _rand_enum_value(creatures.Level6), "amount": random.randint(5, 10)},
+            {"id": _rand_enum_value(creatures.Level7), "amount": random.randint(2, 5)},
+            {"id": _rand_enum_value(creatures.Level5), "amount": random.randint(10, 20)},
+            {"id": _rand_enum_value(creatures.Level3), "amount": random.randint(30, 50)},
+            {"id": _rand_enum_value(creatures.Level1), "amount": random.randint(75, 100)},
         ]
-    elif zone_type in {"P2", "L2", "W2"}:
+    elif zone_type == "II" and zone_owner != players.ID.Red:
         return [
-            {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(550, 700)},
-            {"id": _rand_enum_value(creatures.Level4Creatures), "amount": random.randint(200, 350)},
-            {"id": _rand_enum_value(creatures.Level6Creatures), "amount": random.randint(100, 150)},
-            {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(50, 75)},
-            {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(150, 200)},
-            {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(350, 550)},
-            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(700, 900)},
+            {"id": _rand_enum_value(creatures.Level2), "amount": random.randint(550, 700)},
+            {"id": _rand_enum_value(creatures.Level4), "amount": random.randint(200, 350)},
+            {"id": _rand_enum_value(creatures.Level6), "amount": random.randint(100, 150)},
+            {"id": _rand_enum_value(creatures.Level7), "amount": random.randint(50, 75)},
+            {"id": _rand_enum_value(creatures.Level5), "amount": random.randint(150, 200)},
+            {"id": _rand_enum_value(creatures.Level3), "amount": random.randint(350, 550)},
+            {"id": _rand_enum_value(creatures.Level1), "amount": random.randint(700, 900)},
         ]
-    elif zone_type in {"P3", "R1", "R2", "L3", "W3"}:
+    elif (zone_type == "III" and zone_owner != players.ID.Red) or (
+        zone_type in {"I", "II"} and zone_owner == players.ID.Red
+    ):
         return [
-            {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(2000, 2700)},
-            {"id": _rand_enum_value(creatures.Level4Creatures), "amount": random.randint(800, 1300)},
-            {"id": _rand_enum_value(creatures.Level6Creatures), "amount": random.randint(300, 600)},
-            {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(200, 350)},
-            {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(600, 800)},
-            {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(1400, 2000)},
-            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(2700, 3400)},
+            {"id": _rand_enum_value(creatures.Level2), "amount": random.randint(2000, 2700)},
+            {"id": _rand_enum_value(creatures.Level4), "amount": random.randint(800, 1300)},
+            {"id": _rand_enum_value(creatures.Level6), "amount": random.randint(300, 600)},
+            {"id": _rand_enum_value(creatures.Level7), "amount": random.randint(200, 350)},
+            {"id": _rand_enum_value(creatures.Level5), "amount": random.randint(600, 800)},
+            {"id": _rand_enum_value(creatures.Level3), "amount": random.randint(1400, 2000)},
+            {"id": _rand_enum_value(creatures.Level1), "amount": random.randint(2700, 3400)},
         ]
-    elif zone_type in {"P4", "R3", "R4", "L4", "W4"}:
+    elif zone_type == "IV" or (zone_type == "III" and zone_owner == players.ID.Red):
         return [
-            {"id": _rand_enum_value(creatures.Level2Creatures), "amount": random.randint(6000, 8000)},
-            {"id": _rand_enum_value(creatures.Level4Creatures), "amount": random.randint(2400, 4000)},
-            {"id": _rand_enum_value(creatures.Level6Creatures), "amount": random.randint(1000, 1600)},
-            {"id": _rand_enum_value(creatures.Level7Creatures), "amount": random.randint(600, 1000)},
-            {"id": _rand_enum_value(creatures.Level5Creatures), "amount": random.randint(1600, 2400)},
-            {"id": _rand_enum_value(creatures.Level3Creatures), "amount": random.randint(4000, 6000)},
-            {"id": _rand_enum_value(creatures.Level1Creatures), "amount": random.randint(8000, 9999)},
+            {"id": _rand_enum_value(creatures.Level2), "amount": random.randint(6000, 8000)},
+            {"id": _rand_enum_value(creatures.Level4), "amount": random.randint(2400, 4000)},
+            {"id": _rand_enum_value(creatures.Level6), "amount": random.randint(1000, 1600)},
+            {"id": _rand_enum_value(creatures.Level7), "amount": random.randint(600, 1000)},
+            {"id": _rand_enum_value(creatures.Level5), "amount": random.randint(1600, 2400)},
+            {"id": _rand_enum_value(creatures.Level3), "amount": random.randint(4000, 6000)},
+            {"id": _rand_enum_value(creatures.Level1), "amount": random.randint(8000, 9999)},
         ]
 
 
-def _get_random_contents(zone_type) -> dict:
-    if zone_type in {"P1"}:
+def _get_random_contents(zone_type, zone_owner) -> dict:
+    if zone_type == "I" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
         return {
             "Experience": 15000,
             "Spell_Points": 100,
@@ -161,7 +154,7 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": 500,
         }
-    if zone_type in {"P2"}:
+    if zone_type == "II" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
         return {
             "Experience": 50000,
             "Spell_Points": 300,
@@ -177,7 +170,7 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": 1000,
         }
-    if zone_type in {"P3"}:
+    if zone_type == "III" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
         return {
             "Experience": 100000,
             "Spell_Points": 500,
@@ -193,7 +186,7 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": 1500,
         }
-    if zone_type in {"P4"}:
+    if zone_type == "IV" and zone_owner not in {players.ID.Red, players.ID.Neutral}:
         return {
             "Experience": 200000,
             "Spell_Points": 1000,
@@ -209,11 +202,9 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": 2000,
         }
-    if zone_type in {"L1", "W1"}:
-        # Generate primary skills with at least one slot being 1
-        primary_skills = [random.randint(0, 1) for _ in range(4)]
-        if sum(primary_skills) == 0:
-            primary_skills[random.randint(0, 3)] = 1
+    if zone_type == "I" and zone_owner == players.ID.Neutral:
+        # Generate primary skills
+        primary_skills = random.choice([[1, 1, 0, 0], [2, 0, 0, 0]])
 
         # Initialize values
         experience = 0
@@ -262,16 +253,9 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"L2", "W2"}:
-        # Generate primary skills with range 1-2, but at most one slot can be 2
-        primary_skills = [random.randint(1, 2) for _ in range(4)]
-        # If more than one slot is 2, change extras to 1
-        count_twos = sum(1 for skill in primary_skills if skill == 2)
-        if count_twos > 1:
-            for i in range(len(primary_skills)):
-                if primary_skills[i] == 2 and count_twos > 1:
-                    primary_skills[i] = 1
-                    count_twos -= 1
+    elif zone_type == "II" and zone_owner == players.ID.Neutral:
+        # Generate primary skills
+        primary_skills = random.choice([[1, 1, 1, 0], [2, 1, 0, 0]])
 
         # Initialize values
         experience = 0
@@ -320,18 +304,11 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"R1", "R2", "L3", "W3"}:
-        primary_skills = [random.randint(1, 3) for _ in range(4)]
-        # Ensure at least one slot is 1
-        if 1 not in primary_skills:
-            primary_skills[random.randint(0, 3)] = 1
-        # Ensure at most one slot is 3
-        count_threes = sum(1 for skill in primary_skills if skill == 3)
-        if count_threes > 1:
-            for i in range(len(primary_skills)):
-                if primary_skills[i] == 3 and count_threes > 1:
-                    primary_skills[i] = 2
-                    count_threes -= 1
+    elif (zone_type == "III" and zone_owner == players.ID.Neutral) or (
+        zone_type in {"I", "II"} and zone_owner == players.ID.Red
+    ):
+        # Generate primary skills
+        primary_skills = random.choice([[2, 1, 1, 0], [1, 1, 1, 1]])
 
         # Initialize values
         experience = 0
@@ -380,18 +357,11 @@ def _get_random_contents(zone_type) -> dict:
             "Movement_Mode": 0,
             "Movement_Points": movement_points,
         }
-    elif zone_type in {"R3", "R4", "L4", "W4"}:
-        primary_skills = [random.randint(2, 4) for _ in range(4)]
-        # Ensure at least one slot is 2
-        if 2 not in primary_skills:
-            primary_skills[random.randint(0, 3)] = 2
-        # Ensure at most one slot is 4
-        count_fours = sum(1 for skill in primary_skills if skill == 4)
-        if count_fours > 1:
-            for i in range(len(primary_skills)):
-                if primary_skills[i] == 4 and count_fours > 1:
-                    primary_skills[i] = 3
-                    count_fours -= 1
+    elif (zone_type == "IV" and zone_owner in {players.ID.Red, players.ID.Neutral}) or (
+        zone_type == "III" and zone_owner == players.ID.Red
+    ):
+        # Generate primary skills
+        primary_skills = random.choice([[2, 1, 1, 1], [2, 2, 1, 0]])
 
         # Initialize values
         experience = 0
