@@ -823,6 +823,7 @@ def parse_event_object(obj: dict) -> dict:
     obj["has_common"] = io.read_int(1)
     if obj["has_common"]:
         obj = parse_common(obj)
+
     obj["contents"] = parse_contents()
 
     obj["allowed_players"] = io.read_bits(1)
@@ -834,9 +835,11 @@ def parse_event_object(obj: dict) -> dict:
     # HotA 1.7.0 Movement Points.
     obj["contents"]["Movement_Mode"] = Movement(io.read_int(4))
     obj["contents"]["Movement_Points"] = io.read_int(4)
+
     # HotA 1.7.1 Difficulty Settings
     obj["difficulty"] = io.read_bits(4)
 
+    # HotA 1.8.0 extended event system
     unknown_byte = io.read_int(1)
     if unknown_byte != 0:
         obj["hero_event_id"] = io.read_int(4)
