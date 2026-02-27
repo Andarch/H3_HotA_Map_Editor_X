@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image, ImageEnhance
 from src.common import Keypress, MapZ, TextAlign, TextType, map_data
 from src.defs import groups, objects
-from src.ui.menus import Menu
+from src.ui.menus import NumberedMenu
 from src.ui.xprint import xprint
 from src.utilities import display_image, wait_for_keypress
 
@@ -38,11 +38,11 @@ def view() -> None:
         return
 
     while True:
-        keypress = xprint(menu=(Menu.VIEW_MINIMAP["name"], Menu.VIEW_MINIMAP["menus"][0]))
+        keypress = xprint(menu=(NumberedMenu.VIEW_MINIMAP["name"], NumberedMenu.VIEW_MINIMAP["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
-        xprint(overwrite=len(Menu.VIEW_MINIMAP["menus"][0]) + 4)
+        xprint(overwrite=len(NumberedMenu.VIEW_MINIMAP["menus"][0]) + 4)
 
         match keypress:
             case "1":

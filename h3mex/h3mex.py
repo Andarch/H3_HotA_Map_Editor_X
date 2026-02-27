@@ -10,7 +10,7 @@ from src.edit import edit
 from src.export import export
 from src.file import file
 from src.ui import header, ui
-from src.ui.menus import Menu
+from src.ui.menus import NumberedMenu
 from src.ui.xprint import xprint
 from src.view import view
 
@@ -25,7 +25,7 @@ def main() -> None:
 
     while True:
         filename = map_data["filename"]
-        keypress = xprint(menu=(Menu.MAIN["name"], Menu.MAIN["menus"][0]))
+        keypress = xprint(menu=(NumberedMenu.MAIN["name"], NumberedMenu.MAIN["menus"][0]))
         match keypress:
             case "1":
                 view.menu()

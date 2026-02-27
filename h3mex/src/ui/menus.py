@@ -1,4 +1,4 @@
-class Menu:
+class NumberedMenu:
     _H3M = [
         ("1", "General"),
         ("2", "Player Specs"),

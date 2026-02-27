@@ -17,7 +17,7 @@ def xprint(
     menu: tuple[str, list] = None,
 ) -> None | str:
     if menu:
-        return _display_numbered_menu_prompt(menu)
+        return _display_numbered_menu(menu)
 
     if not ui.redrawing and type != TextType.HEADER:
         ui.cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
@@ -42,7 +42,7 @@ def xprint(
 
         case TextType.STRING_PROMPT:
             xprint()
-            input = _display_string_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
+            input = _display_string_input_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
             return input
 
         case TextType.ACTION:
@@ -109,7 +109,7 @@ def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
         return " " * padding + str(text)
 
 
-def _display_numbered_menu_prompt(menu: tuple[str, list]) -> str:
+def _display_numbered_menu(menu: tuple[str, list]) -> str:
     header.draw()
     name = menu[0]
     items = menu[1]
@@ -138,7 +138,7 @@ def _display_numbered_menu_prompt(menu: tuple[str, list]) -> str:
             return keypress.upper()
 
 
-def _display_string_prompt(prompt: str) -> str:
+def _display_string_input_prompt(prompt: str) -> str:
     print(prompt, end="", flush=True)
     print(Cursor.SHOW, end="", flush=True)
     chars = []

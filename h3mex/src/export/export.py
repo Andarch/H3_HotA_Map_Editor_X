@@ -5,7 +5,7 @@ from src.common import Keypress, TextType, map_data
 from src.defs import objects
 from src.minimap import minimap
 from src.ui import header
-from src.ui.menus import Menu
+from src.ui.menus import NumberedMenu
 from src.ui.xprint import xprint
 
 
@@ -26,7 +26,7 @@ OBJECT_FILTER = [*objects.ID]
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(Menu.EXPORT["name"], Menu.EXPORT["menus"][0]))
+        keypress = xprint(menu=(NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
@@ -39,7 +39,7 @@ def menu() -> None:
                 minimap.generate(minimap.MMAction.EXPORT, minimap.MMType.EXTENDED, None)
             case "3":
                 while True:
-                    keypress = xprint(menu=(Menu.EXPORT["name"], Menu.EXPORT["menus"][1]))
+                    keypress = xprint(menu=(NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][1]))
                     if keypress == Keypress.ESC:
                         break
                     match keypress:

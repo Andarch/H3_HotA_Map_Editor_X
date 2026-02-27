@@ -3,7 +3,7 @@ from src.common import Cursor, Keypress, TextType, map_data
 from src.defs import groups, objects  # noqa: F401
 from src.minimap import minimap
 from src.ui import header
-from src.ui.menus import Menu
+from src.ui.menus import NumberedMenu
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
 
@@ -19,7 +19,7 @@ OBJECT_FILTER = [*objects.ID]
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][0]))
+        keypress = xprint(menu=(NumberedMenu.VIEW["name"], NumberedMenu.VIEW["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
@@ -73,7 +73,7 @@ def menu() -> None:
                 minimap.view()
             case "S":
                 while True:
-                    keypress = xprint(menu=(Menu.VIEW["name"], Menu.VIEW["menus"][1]))
+                    keypress = xprint(menu=(NumberedMenu.VIEW["name"], NumberedMenu.VIEW["menus"][1]))
                     if keypress == Keypress.ESC:
                         break
                     match keypress:
