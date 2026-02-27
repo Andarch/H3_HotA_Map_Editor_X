@@ -1,6 +1,6 @@
 import random
 
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import creatures, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -49,7 +49,7 @@ def modify_pandoras():
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Modified {modified_count} Pandora's Boxes.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {modified_count} Pandora's Boxes.")
     wait_for_keypress()
 
 

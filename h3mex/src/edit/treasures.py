@@ -1,7 +1,7 @@
 import random
 
 import src.file.m8_objects as m8_objects
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import artifacts, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -462,7 +462,7 @@ def fix_empty_contents() -> None:
                     text=f"{obj.get('type')} at {obj.get('coords')} contains {enum_name_by_value(artifacts.ID, contents)}",
                 )
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -618,7 +618,7 @@ def add_scholars():
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Added {added} scholars.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Added {added} scholars.")
     wait_for_keypress()
 
 
@@ -805,7 +805,7 @@ def add_treasures():
         current_level_index = (current_level_index + 1) % len(levels)
 
     xprint()
-    xprint(type=TextType.INFO, text=f"Added {added} treasures.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Added {added} treasures.")
     wait_for_keypress()
 
 

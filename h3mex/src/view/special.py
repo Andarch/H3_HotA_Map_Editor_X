@@ -1,4 +1,4 @@
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.ui.xprint import xprint
 
 
@@ -124,7 +124,7 @@ def list_unreachable_tiles() -> None:
         xprint(overwrite=3)
         return unreachable_tiles
     else:
-        xprint(type=TextType.INFO, text="No unreachable tiles found.")
+        xprint(type=TextType.INFO, align=TextAlign.CENTER, text="No unreachable tiles found.")
 
 
 def list_invalid_zone_objects() -> None:
@@ -140,10 +140,10 @@ def list_invalid_zone_objects() -> None:
 
         if zone_type in errors or zone_owner in errors:
             invalid_found = True
-            xprint(type=TextType.INFO, text=f"{obj['type']} at {obj['coords']}:")
-            xprint(type=TextType.INFO, text=f"  Zone Type: {zone_type}")
-            xprint(type=TextType.INFO, text=f"  Zone Owner: {zone_owner}")
+            xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"{obj['type']} at {obj['coords']}:")
+            xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"  Zone Type: {zone_type}")
+            xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"  Zone Owner: {zone_owner}")
             xprint()
 
     if not invalid_found:
-        xprint(type=TextType.INFO, text="No invalid zone objects found.")
+        xprint(type=TextType.INFO, align=TextAlign.CENTER, text="No invalid zone objects found.")

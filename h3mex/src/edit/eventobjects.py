@@ -1,6 +1,6 @@
 import random
 
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import creatures, objects
 from src.file.m8_objects import get_zone, has_zone_images
 from src.ui.xprint import xprint
@@ -110,7 +110,7 @@ def modify_ai_main_hero_boost():
         modified += 1
 
     xprint()
-    xprint(type=TextType.INFO, text=f"Modified {modified} AI main hero boosts.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {modified} AI main hero boosts.")
     wait_for_keypress()
 
 
@@ -126,7 +126,7 @@ def delete_explorer_bonuses():
     deleted_count = initial_count - len(map_data["object_data"])
 
     xprint()
-    xprint(type=TextType.INFO, text=f"Deleted {deleted_count} explorer bonuses.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Deleted {deleted_count} explorer bonuses.")
     wait_for_keypress()
 
 
@@ -248,7 +248,7 @@ def add_explorer_bonuses():
         current_quadrant_index += 1
 
     xprint()
-    xprint(type=TextType.INFO, text=f"Added {added} explorer bonuses.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Added {added} explorer bonuses.")
     wait_for_keypress()
 
 

@@ -1,7 +1,7 @@
 import random
 from copy import deepcopy
 
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import creatures, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -23,7 +23,7 @@ def fill_empty_garrison_guards():
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Filled {modified_count} empty garrisons with guards.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Filled {modified_count} empty garrisons with guards.")
     wait_for_keypress()
 
 
@@ -71,7 +71,7 @@ def copy_garrison_guards():
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Copied {modified_count} garrison guards.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Copied {modified_count} garrison guards.")
     wait_for_keypress()
 
 

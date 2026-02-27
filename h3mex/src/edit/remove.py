@@ -1,4 +1,4 @@
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import objects
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -18,8 +18,5 @@ def remove_objects() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(
-        type=TextType.INFO,
-        text=f"Removed {removed_count} objects.",
-    )
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Removed {removed_count} objects.")
     wait_for_keypress()

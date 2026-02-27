@@ -1,6 +1,6 @@
 import random  # noqa: F401
 
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import creatures, groups, objects, players
 from src.ui.xprint import xprint
 from src.utilities import wait_for_keypress
@@ -79,7 +79,7 @@ def set_random_monsters() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -175,7 +175,7 @@ def set_monster_quantities() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -207,7 +207,7 @@ def set_compliant_monster_values() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -224,7 +224,7 @@ def set_monster_flee_values() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -244,7 +244,7 @@ def make_compliant_monsters_not_grow() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -264,7 +264,7 @@ def make_non_compliant_monsters_grow() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()
 
@@ -291,12 +291,12 @@ def increase_creature_stashes() -> None:
             }
         ):
             obj["quantity"] *= 2
-            xprint(type=TextType.INFO, text=obj["subtype"])
+            xprint(type=TextType.INFO, align=TextAlign.CENTER, text=obj["subtype"])
             count += 1
 
     xprint()
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
 
     wait_for_keypress()

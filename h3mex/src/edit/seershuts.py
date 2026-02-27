@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from src.common import TextType, map_data
+from src.common import TextAlign, TextType, map_data
 from src.defs import objects
 from src.file.m8_objects import Quest, Reward
 from src.ui.xprint import xprint
@@ -33,7 +33,7 @@ def modify_seers_huts():
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Modified {count} seers' huts.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {count} seers' huts.")
     wait_for_keypress()
 
 

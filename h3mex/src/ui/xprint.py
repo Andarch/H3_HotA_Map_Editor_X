@@ -30,7 +30,7 @@ def xprint(
             print(_align_text(align=TextAlign.CENTER, text=f"{TextColor.WHITE}{text}{TextColor.RESET}"))
 
         case TextType.INFO:
-            print(_align_text(text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
+            print(_align_text(align=align, text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
 
         case TextType.NUMBERED_MENU:
             spacing = 3 - len(menu_num)
