@@ -121,7 +121,7 @@ def save(filename: str = None) -> bool:
 
     # Prompt for filename if not provided
     if filename is None:
-        filename = xprint(type=TextType.PROMPT, text="Enter a new filename")
+        filename = xprint(type=TextType.STRING_PROMPT, text="Enter a new filename")
         if not filename:
             return False
 

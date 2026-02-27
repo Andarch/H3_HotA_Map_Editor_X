@@ -17,13 +17,13 @@ def xprint(
     menu: tuple[str, list] = None,
 ) -> None | str:
     if menu:
-        return _menu_prompt(menu[0], menu[1])
+        return _display_numbered_menu_prompt(menu)
 
     if not ui.redrawing and type != TextType.HEADER:
         ui.cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
 
     if overwrite > 0:
-        _overwrite(overwrite)
+        _overwrite_lines(overwrite)
 
     match type:
         case TextType.NORMAL:
@@ -32,7 +32,7 @@ def xprint(
         case TextType.INFO:
             print(_align_text(text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
 
-        case TextType.MENU:
+        case TextType.NUMBERED_MENU:
             spacing = 3 - len(menu_num)
             menu_num_formatted = f"{' ' * spacing}[{TextColor.YELLOW}{menu_num}{TextColor.RESET}]"
             text_formatted = f"{TextColor.WHITE}{text}{TextColor.RESET}"
@@ -40,9 +40,9 @@ def xprint(
                 _align_text(align=TextAlign.MENU, text=f"{menu_num_formatted} {text_formatted}", menu_width=menu_width)
             )
 
-        case TextType.PROMPT:
+        case TextType.STRING_PROMPT:
             xprint()
-            input = _string_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
+            input = _display_string_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
             return input
 
         case TextType.ACTION:
@@ -80,14 +80,23 @@ def xprint(
     return None
 
 
-def _overwrite(overwrite: int) -> None:
+def _overwrite_lines(overwrite: int) -> None:
     time.sleep(Wait.SHORT.value)
     for _ in range(overwrite):
         print(Cursor.RESET_PREVIOUS, end="")
 
 
+def _clean_text(text: str) -> str:
+    # Remove ANSI escape codes
+    ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
+    text = ansi_escape.sub("", text)
+    # Remove control characters except space (preserve visible spaces)
+    invisible = re.compile(r"[\x00-\x1F\x7F]")
+    return invisible.sub("", text)
+
+
 def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
-    cleaned_text = _clean(str(text))
+    cleaned_text = _clean_text(str(text))
     text_length = len(cleaned_text)
     if align == TextAlign.LEFT:
         padding = (ui.terminal_width - ui.MAX_PRINT_WIDTH) // 2
@@ -100,13 +109,15 @@ def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
         return " " * padding + str(text)
 
 
-def _menu_prompt(name: str, items: list) -> str:
+def _display_numbered_menu_prompt(menu: tuple[str, list]) -> str:
     header.draw()
+    name = menu[0]
+    items = menu[1]
     width = 0
     for item in items:
         if item is None:
             continue
-        text = _clean(item[1])
+        text = _clean_text(item[1])
         w = len(text)
         if w > width:
             width = w
@@ -117,7 +128,7 @@ def _menu_prompt(name: str, items: list) -> str:
     for item in items:
         if item:
             valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
-            xprint(type=TextType.MENU, text=item[1], menu_num=item[0], menu_width=width)
+            xprint(type=TextType.NUMBERED_MENU, text=item[1], menu_num=item[0], menu_width=width)
         else:
             xprint()
     xprint()
@@ -127,7 +138,7 @@ def _menu_prompt(name: str, items: list) -> str:
             return keypress.upper()
 
 
-def _string_prompt(prompt: str) -> str:
+def _display_string_prompt(prompt: str) -> str:
     print(prompt, end="", flush=True)
     print(Cursor.SHOW, end="", flush=True)
     chars = []
@@ -152,12 +163,3 @@ def _string_prompt(prompt: str) -> str:
             case _:
                 chars.append(keypress)
                 print(keypress, end="", flush=True)
-
-
-def _clean(text: str) -> str:
-    # Remove ANSI escape codes
-    ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
-    text = ansi_escape.sub("", text)
-    # Remove control characters except space (preserve visible spaces)
-    invisible = re.compile(r"[\x00-\x1F\x7F]")
-    return invisible.sub("", text)
