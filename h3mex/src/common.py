@@ -24,7 +24,7 @@ class TextType(Enum):
     INDENT = 0
     NORMAL = 1
     INFO = 2
-    NUMBERED_MENU = 3
+    MENU_NUMBERED = 3
     STRING_PROMPT = 4
     ACTION = 5
     DONE = 6

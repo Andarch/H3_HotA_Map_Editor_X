@@ -32,7 +32,7 @@ def xprint(
         case TextType.INFO:
             print(_align_text(align=align, text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
 
-        case TextType.NUMBERED_MENU:
+        case TextType.MENU_NUMBERED:
             spacing = 3 - len(menu_num)
             menu_num_formatted = f"{' ' * spacing}[{TextColor.YELLOW}{menu_num}{TextColor.RESET}]"
             text_formatted = f"{TextColor.WHITE}{text}{TextColor.RESET}"
@@ -128,7 +128,7 @@ def _display_numbered_menu_prompt(menu: tuple[str, list]) -> str:
     for item in items:
         if item:
             valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
-            xprint(type=TextType.NUMBERED_MENU, text=item[1], menu_num=item[0], menu_width=width)
+            xprint(type=TextType.MENU_NUMBERED, text=item[1], menu_num=item[0], menu_width=width)
         else:
             xprint()
     xprint()
