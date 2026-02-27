@@ -3,7 +3,7 @@ from src.ui.xprint import xprint
 
 
 def list_unreachable_tiles() -> None:
-    xprint(text="Calculating unreachable tiles…", overwrite=7)
+    xprint(text="Calculating unreachable tiles…", overwrite=6)
     xprint()
 
     OVERWORLD = 0
