@@ -808,14 +808,12 @@ class Corpse(IntEnum):
 
 def parse_corpse(obj: dict) -> dict:
     obj["contents"] = Corpse(io.read_int(4))
-    # obj["value"]    =  artifacts.ID(file.read_int(4))
     obj["garbage_bytes"] = io.read_raw(4)
     return obj
 
 
 def write_corpse(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    # file.write_int(obj["value"], 4)
     io.write_raw(obj["garbage_bytes"])
 
 
