@@ -30,7 +30,14 @@ def xprint(
         case TextType.INFO:
             print(_align_text(align=align, text=f"{TextColor.CYAN}{text}{TextColor.RESET}"))
 
-        case TextType.MENU_NUMBERED:
+        case TextType.GENERIC_MENU:
+            print(
+                _align_text(
+                    align=TextAlign.MENU, text=f"{TextColor.WHITE}{text}{TextColor.RESET}", menu_width=menu_width
+                )
+            )
+
+        case TextType.NUMBERED_MENU:
             spacing = 3 - len(menu_num)
             menu_num_formatted = f"{' ' * spacing}[{TextColor.YELLOW}{menu_num}{TextColor.RESET}]"
             text_formatted = f"{TextColor.WHITE}{text}{TextColor.RESET}"
@@ -103,7 +110,7 @@ def xprint(
 def _overwrite_lines(overwrite: int) -> None:
     time.sleep(Wait.SHORT.value)
     for _ in range(overwrite):
-        print(Cursor.RESET_PREVIOUS, end="")
+        print(Cursor.ERASE, end="")
 
 
 def _clean_text(text: str) -> str:

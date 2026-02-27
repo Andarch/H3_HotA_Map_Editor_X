@@ -10,26 +10,29 @@ class App(StrEnum):
 class Cursor(StrEnum):
     HIDE = "\x1b[?25l"
     SHOW = "\x1b[?25h"
-    # RESET_CURRENT = "\r\x1b[K"
-    RESET_PREVIOUS = "\x1b[F\x1b[K"
+    RESET = "\x1b[F"
+    ERASE = "\x1b[F\x1b[K"
 
 
 class Keypress(StrEnum):
     BACKSPACE = "\x08"
     ENTER = "\r"
     ESC = "\x1b"
+    DOWN = "\x1b[B"
+    UP = "\x1b[A"
 
 
 class TextType(Enum):
     INDENT = 0
     NORMAL = 1
     INFO = 2
-    MENU_NUMBERED = 3
-    STRING_PROMPT = 4
-    ACTION = 5
-    DONE = 6
-    HEADER = 7
-    ERROR = 8
+    GENERIC_MENU = 3
+    NUMBERED_MENU = 4
+    STRING_PROMPT = 5
+    ACTION = 6
+    DONE = 7
+    HEADER = 8
+    ERROR = 9
 
 
 class TextAlign(Enum):

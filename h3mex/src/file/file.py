@@ -4,7 +4,7 @@ from typing import Tuple
 
 from src.common import Keypress, TextType, map_data
 from src.ui import header
-from src.ui.menus import NumberedMenu
+from src.ui.menus import GenericMenu
 from src.ui.xprint import xprint
 from src.utilities import is_file_writable
 
@@ -30,31 +30,14 @@ def choose_map() -> Tuple[str, int]:
         xprint(type=TextType.ERROR, text="No .h3m files found in the current directory.")
         return ""
 
-    total_pages = (len(filenames) + 8) // 9
-    pages = [filenames[i : i + 9] for i in range(0, len(filenames), 9)]
+    h3m_menu = {"name": "LOAD MAP", "menu": filenames}
 
-    esc_text = "Back" if map_data else "Exit"
-    menus = []
-    for page in pages:
-        entries = [(str(i + 1), mapname) for i, mapname in enumerate(page)]
-        if total_pages > 1:
-            entries += [None, ("M", "Show more…"), None, None, ("ESC", esc_text)]
-        else:
-            entries += [None, None, ("ESC", esc_text)]
-        menus.append(entries)
-
-    h3m_menu = {"name": "LOAD MAP", "menus": menus}
-
-    current_page = 0
     while True:
-        keypress = NumberedMenu.display((h3m_menu["name"], h3m_menu["menus"][current_page]))
+        keypress = GenericMenu.display((h3m_menu["name"], h3m_menu["menu"]))
+        if isinstance(keypress, int):
+            return filenames[keypress]
         if keypress == Keypress.ESC:
             return ""
-        if keypress == "M" and total_pages > 1:
-            current_page = (current_page + 1) % total_pages
-            continue
-        if keypress.isdigit():
-            return filenames[current_page * 9 + (int(keypress) - 1)]
 
 
 @io.with_position_tracking

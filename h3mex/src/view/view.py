@@ -94,6 +94,6 @@ def _print_lines(lines: list) -> None:
             if keypress == Keypress.ESC:
                 return
             for _ in range(3):
-                print(Cursor.RESET_PREVIOUS, end="")
+                print(Cursor.ERASE, end="")
         if lines_printed == len(lines):
             wait_for_keypress()

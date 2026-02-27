@@ -1,9 +1,55 @@
 import msvcrt
 
-from src.common import Keypress, TextAlign, TextType
+from src.common import Cursor, Keypress, TextAlign, TextColor, TextType
 
 from . import header
 from .xprint import _clean_text, xprint
+
+
+class GenericMenu:
+    def display(menu: tuple[str, list]) -> str:
+        def _read_keypress() -> str:
+            keypress = msvcrt.getwch()
+            if keypress in ["\x00", "\xe0"]:
+                extended_key = msvcrt.getwch()
+                if extended_key == "P":
+                    return Keypress.DOWN
+                if extended_key == "H":
+                    return Keypress.UP
+            return keypress
+
+        header.draw()
+        name = menu[0]
+        items = menu[1]
+        width = 0
+        for item in items:
+            text = _clean_text(item)
+            w = len(text)
+            if w > width:
+                width = w
+        xprint(text=f"{name}", align=TextAlign.CENTER)
+        xprint()
+        selected_index = 0
+        while True:
+            for i, item in enumerate(items):
+                if i == selected_index:
+                    xprint(type=TextType.GENERIC_MENU, text=f"{TextColor.INVERTED}{item}", menu_width=width)
+                else:
+                    xprint(type=TextType.GENERIC_MENU, text=item, menu_width=width)
+            xprint()
+            keypress = _read_keypress()
+            if keypress == Keypress.DOWN:
+                selected_index = (selected_index + 1) % len(items)
+                for _ in range(len(items) + 1):
+                    print(Cursor.RESET, end="")
+            elif keypress == Keypress.UP:
+                selected_index = (selected_index - 1) % len(items)
+                for _ in range(len(items) + 1):
+                    print(Cursor.RESET, end="")
+            elif keypress == Keypress.ENTER:
+                return int(selected_index)
+            elif keypress == Keypress.ESC:
+                return keypress
 
 
 class NumberedMenu:
@@ -26,7 +72,7 @@ class NumberedMenu:
         for item in items:
             if item:
                 valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
-                xprint(type=TextType.MENU_NUMBERED, text=item[1], menu_num=item[0], menu_width=width)
+                xprint(type=TextType.NUMBERED_MENU, text=item[1], menu_num=item[0], menu_width=width)
             else:
                 xprint()
         xprint()
