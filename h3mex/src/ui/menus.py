@@ -1,4 +1,40 @@
+import msvcrt
+
+from src.common import Keypress, TextAlign, TextType
+
+from . import header
+from .xprint import _clean_text, xprint
+
+
 class NumberedMenu:
+    def display(menu: tuple[str, list]) -> str:
+        header.draw()
+        name = menu[0]
+        items = menu[1]
+        width = 0
+        for item in items:
+            if item is None:
+                continue
+            text = _clean_text(item[1])
+            w = len(text)
+            if w > width:
+                width = w
+        width += 8
+        valid_keys = [] if name == "MAIN MENU" else [Keypress.ESC]
+        xprint(text=f"{name}", align=TextAlign.CENTER)
+        xprint()
+        for item in items:
+            if item:
+                valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
+                xprint(type=TextType.MENU_NUMBERED, text=item[1], menu_num=item[0], menu_width=width)
+            else:
+                xprint()
+        xprint()
+        while True:
+            keypress = msvcrt.getwch()
+            if keypress.upper() in valid_keys:
+                return keypress.upper()
+
     _H3M = [
         ("1", "General"),
         ("2", "Player Specs"),

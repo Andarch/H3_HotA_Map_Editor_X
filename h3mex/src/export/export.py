@@ -26,7 +26,7 @@ OBJECT_FILTER = [*objects.ID]
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][0]))
+        keypress = NumberedMenu.display((NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
@@ -39,7 +39,7 @@ def menu() -> None:
                 minimap.generate(minimap.MMAction.EXPORT, minimap.MMType.EXTENDED, None)
             case "3":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][1]))
+                    keypress = NumberedMenu.display((NumberedMenu.EXPORT["name"], NumberedMenu.EXPORT["menus"][1]))
                     if keypress == Keypress.ESC:
                         break
                     match keypress:

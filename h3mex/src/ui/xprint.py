@@ -3,7 +3,8 @@ import re
 import time
 
 from src.common import Cursor, Keypress, TextAlign, TextColor, TextType, Wait
-from src.ui import header, ui
+
+from . import ui
 
 
 def xprint(
@@ -14,13 +15,10 @@ def xprint(
     skip_line: bool = False,
     menu_num: str = "",
     menu_width: int = 0,
-    menu: tuple[str, list] = None,
 ) -> None | str:
-    if menu:
-        return _display_numbered_menu(menu)
 
     if not ui.redrawing and type != TextType.HEADER:
-        ui.cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width, menu))
+        ui.cache.append((type, text, align, overwrite, skip_line, menu_num, menu_width))
 
     if overwrite > 0:
         _overwrite_lines(overwrite)
@@ -107,35 +105,6 @@ def _align_text(align=TextAlign.LEFT, text="", menu_width=0) -> str:
     elif align == TextAlign.MENU:
         padding = (ui.terminal_width - menu_width) // 2
         return " " * padding + str(text)
-
-
-def _display_numbered_menu(menu: tuple[str, list]) -> str:
-    header.draw()
-    name = menu[0]
-    items = menu[1]
-    width = 0
-    for item in items:
-        if item is None:
-            continue
-        text = _clean_text(item[1])
-        w = len(text)
-        if w > width:
-            width = w
-    width += 8
-    valid_keys = [] if name == "MAIN MENU" else [Keypress.ESC]
-    xprint(text=f"{name}", align=TextAlign.CENTER)
-    xprint()
-    for item in items:
-        if item:
-            valid_keys.append(item[0]) if item[0] != "ESC" else valid_keys.append(Keypress.ESC)
-            xprint(type=TextType.MENU_NUMBERED, text=item[1], menu_num=item[0], menu_width=width)
-        else:
-            xprint()
-    xprint()
-    while True:
-        keypress = msvcrt.getwch()
-        if keypress.upper() in valid_keys:
-            return keypress.upper()
 
 
 def _display_string_input_prompt(prompt: str) -> str:

@@ -38,7 +38,7 @@ def view() -> None:
         return
 
     while True:
-        keypress = xprint(menu=(NumberedMenu.VIEW_MINIMAP["name"], NumberedMenu.VIEW_MINIMAP["menus"][0]))
+        keypress = NumberedMenu.display((NumberedMenu.VIEW_MINIMAP["name"], NumberedMenu.VIEW_MINIMAP["menus"][0]))
         if keypress == Keypress.ESC:
             return
 

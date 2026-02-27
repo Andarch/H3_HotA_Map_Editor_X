@@ -4,6 +4,7 @@ from typing import Tuple
 
 from src.common import Keypress, TextType, map_data
 from src.ui import header
+from src.ui.menus import NumberedMenu
 from src.ui.xprint import xprint
 from src.utilities import is_file_writable
 
@@ -46,7 +47,7 @@ def choose_map() -> Tuple[str, int]:
 
     current_page = 0
     while True:
-        keypress = xprint(menu=(h3m_menu["name"], h3m_menu["menus"][current_page]))
+        keypress = NumberedMenu.display((h3m_menu["name"], h3m_menu["menus"][current_page]))
         if keypress == Keypress.ESC:
             return ""
         if keypress == "M" and total_pages > 1:

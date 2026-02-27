@@ -19,7 +19,7 @@ from . import (
 
 def menu() -> None:
     while True:
-        keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][0]))
+        keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][0]))
         if keypress == Keypress.ESC:
             return
 
@@ -32,7 +32,7 @@ def menu() -> None:
                 remove.remove_objects()
             case "3":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][2]))
+                    keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][2]))
                     if keypress == Keypress.ESC:
                         break
 
@@ -55,7 +55,7 @@ def menu() -> None:
                             towns.edit(copy_buildings=True)
             case "4":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][3]))
+                    keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][3]))
                     if keypress == Keypress.ESC:
                         break
 
@@ -70,7 +70,7 @@ def menu() -> None:
                             heroes.swap_hero_indexes()
             case "5":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][4]))
+                    keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][4]))
                     if keypress == Keypress.ESC:
                         break
 
@@ -93,7 +93,7 @@ def menu() -> None:
                             monsters.increase_creature_stashes()
             case "6":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][5]))
+                    keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][5]))
                     if keypress == Keypress.ESC:
                         break
 
@@ -112,7 +112,7 @@ def menu() -> None:
                             treasures.modify_treasure_rewards()
             case "M":
                 while True:
-                    keypress = xprint(menu=(NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][1]))
+                    keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][1]))
                     if keypress == Keypress.ESC:
                         break
 

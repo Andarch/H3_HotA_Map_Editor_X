@@ -25,7 +25,7 @@ def main() -> None:
 
     while True:
         filename = map_data["filename"]
-        keypress = xprint(menu=(NumberedMenu.MAIN["name"], NumberedMenu.MAIN["menus"][0]))
+        keypress = NumberedMenu.display((NumberedMenu.MAIN["name"], NumberedMenu.MAIN["menus"][0]))
         match keypress:
             case "1":
                 view.menu()
