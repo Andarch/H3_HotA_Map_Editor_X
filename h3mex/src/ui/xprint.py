@@ -40,8 +40,30 @@ def xprint(
 
         case TextType.STRING_PROMPT:
             xprint()
-            input = _display_string_input_prompt(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"))
-            return input
+            print(_align_text(text=f"{TextColor.YELLOW}[{text}] > {TextColor.WHITE}"), end="", flush=True)
+            print(Cursor.SHOW, end="", flush=True)
+            chars = []
+            while True:
+                keypress = msvcrt.getwch()
+                match keypress:
+                    case Keypress.ENTER:
+                        if chars:
+                            print(Cursor.HIDE, end="", flush=True)
+                            xprint()
+                            xprint()
+                            return "".join(chars)
+                        continue
+                    case Keypress.BACKSPACE:
+                        if chars:
+                            chars.pop()
+                            print("\b \b", end="", flush=True)
+                        continue
+                    case Keypress.ESC:
+                        print(Cursor.HIDE, end="", flush=True)
+                        return ""
+                    case _:
+                        chars.append(keypress)
+                        print(keypress, end="", flush=True)
 
         case TextType.ACTION:
             print(
