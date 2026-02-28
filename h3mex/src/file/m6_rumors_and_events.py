@@ -51,9 +51,8 @@ def parse_events(town: str = None, coords: list = None) -> list:
         event["trash_bytes"] = io.read_raw(16)
         event["allowed_difficulties"] = io.read_int(4)
 
+        event["eventType"] = io.read_int(1)
         if town:
-            event["eventType"] = io.read_int(1)
-
             if event["eventType"] == 0:
                 event["hotaLevel7b"] = io.read_int(4)
             elif event["eventType"] == 1:
@@ -72,7 +71,8 @@ def parse_events(town: str = None, coords: list = None) -> list:
             event["end_trash"] = io.read_raw(4)
             map_data["town_events"][f"{town} {coords}"].append(event)
         else:
-            io.seek(1)
+            if event["eventType"] == 1:
+                event["extBytes"] = io.read_raw(5)
 
         info.append(event)
 
@@ -99,9 +99,9 @@ def write_events(info: list, is_town: bool = False) -> None:
         io.write_raw(event["trash_bytes"])
         io.write_int(event["allowed_difficulties"], 4)
 
-        if is_town:
-            io.write_int(event["eventType"], 1)
+        io.write_int(event["eventType"], 1)
 
+        if is_town:
             if event["eventType"] == 0:
                 io.write_int(event["hotaLevel7b"], 4)
             elif event["eventType"] == 1:
@@ -120,4 +120,5 @@ def write_events(info: list, is_town: bool = False) -> None:
 
             io.write_raw(event["end_trash"])
         else:
-            io.write_int(0, 1)
+            if event["eventType"] == 1:
+                io.write_raw(event["extBytes"])
