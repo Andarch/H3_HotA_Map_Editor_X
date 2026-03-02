@@ -215,36 +215,60 @@ def set_compliant_monster_values() -> None:
 def set_random_monster_flee_values() -> None:
     xprint(type=TextType.ACTION, text="Setting random monster flee values…")
 
-    count = 0
+    aggressive_count = 0
+    hostile_count = 0
+    savage_count = 0
     modified_aggressive_count = 0
     modified_hostile_count = 0
     modified_savage_count = 0
 
     for obj in map_data["object_data"]:
         if obj["id"] in [*groups.RANDOM_MONSTERS]:
-            count += 1
+            match obj["disposition"]:
+                case creatures.Disposition.Aggressive:
+                    aggressive_count += 1
+                case creatures.Disposition.Hostile:
+                    hostile_count += 1
+                case creatures.Disposition.Savage:
+                    savage_count += 1
             if not obj["monster_never_flees"]:
                 should_never_flee = False
                 match obj["disposition"]:
                     case creatures.Disposition.Aggressive:
                         should_never_flee = random.random() < 0.30
-                        modified_aggressive_count += 1
                     case creatures.Disposition.Hostile:
                         should_never_flee = random.random() < 0.50
-                        modified_hostile_count += 1
                     case creatures.Disposition.Savage:
                         should_never_flee = random.random() < 0.70
-                        modified_savage_count += 1
                     case _:
                         continue
                 if should_never_flee:
                     obj["monster_never_flees"] = True
+                    match obj["disposition"]:
+                        case creatures.Disposition.Aggressive:
+                            modified_aggressive_count += 1
+                        case creatures.Disposition.Hostile:
+                            modified_hostile_count += 1
+                        case creatures.Disposition.Savage:
+                            modified_savage_count += 1
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_aggressive_count} aggressive objects.")
-    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_hostile_count} hostile objects.")
-    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_savage_count} savage objects.")
+    xprint(
+        type=TextType.INFO,
+        align=TextAlign.CENTER,
+        text=f"Updated {modified_aggressive_count} / {aggressive_count} aggressive objects.",
+    )
+    xprint(
+        type=TextType.INFO,
+        align=TextAlign.CENTER,
+        text=f"Updated {modified_hostile_count} / {hostile_count} hostile objects.",
+    )
+    xprint(
+        type=TextType.INFO,
+        align=TextAlign.CENTER,
+        text=f"Updated {modified_savage_count} / {savage_count} savage objects.",
+    )
 
     wait_for_keypress()
 
