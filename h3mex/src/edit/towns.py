@@ -62,35 +62,7 @@ MEGA_TOWN_LVL5_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 6)
 MEGA_TOWN_LVL6_CREATURES = round(MEGA_TOWN_LVL7_CREATURES * 3)
 
 
-def edit(
-    spells: bool = False,
-    buildings: bool = False,
-    add_events: bool = False,
-    fourth_town: bool = False,
-    mega_town: bool = False,
-    human: bool = False,
-    copy_events: bool = False,
-    copy_buildings: bool = False,
-) -> None:
-    if spells:
-        _enable_spells()
-    if buildings:
-        _enable_buildings()
-    if add_events:
-        _create_events()
-    if fourth_town:
-        _create_fourth_town_events()
-    if mega_town:
-        _create_mega_town_events()
-    if human:
-        _change_ai_events()
-    if copy_events:
-        _copy_events()
-    if copy_buildings:
-        _copy_buildings()
-
-
-def _enable_spells() -> None:
+def enable_spells() -> None:
     xprint(type=TextType.ACTION, text="Enabling spell research and all spells in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
@@ -102,7 +74,7 @@ def _enable_spells() -> None:
     xprint(type=TextType.DONE)
 
 
-def _enable_buildings() -> None:
+def enable_buildings() -> None:
     xprint(type=TextType.ACTION, text="Enabling all buildings in all towns…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
@@ -114,7 +86,7 @@ def _enable_buildings() -> None:
     xprint(type=TextType.DONE)
 
 
-def _create_events() -> None:
+def create_events() -> None:
     def _get_event_dict(
         name: str,
         players: list,
@@ -227,7 +199,7 @@ def _create_events() -> None:
     xprint(type=TextType.DONE)
 
 
-def _create_fourth_town_events() -> None:
+def create_fourth_town_events() -> None:
     xprint(type=TextType.ACTION, text="Configuring 4th-town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["name"] in {
@@ -274,7 +246,7 @@ def _create_fourth_town_events() -> None:
     xprint(type=TextType.DONE)
 
 
-def _create_mega_town_events() -> None:
+def create_mega_town_events() -> None:
     xprint(type=TextType.ACTION, text="Configuring mega-town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS and obj["name"] in {
@@ -318,7 +290,7 @@ def _create_mega_town_events() -> None:
     xprint(type=TextType.DONE)
 
 
-def _change_ai_events() -> None:
+def change_ai_events() -> None:
     xprint(type=TextType.ACTION, text="Adding Humans to AI-only town events…")
     for obj in map_data["object_data"]:
         if obj["id"] in TOWN_IDS:
@@ -328,7 +300,7 @@ def _change_ai_events() -> None:
     xprint(type=TextType.DONE)
 
 
-def _copy_events() -> None:
+def copy_events() -> None:
     xprint(type=TextType.ACTION, text="Copying events from source town to target towns…")
     events = []
     for obj in map_data["object_data"]:
@@ -343,7 +315,7 @@ def _copy_events() -> None:
     xprint(type=TextType.DONE)
 
 
-def _copy_buildings() -> None:
+def copy_buildings() -> None:
     xprint(type=TextType.ACTION, text="Copying buildings from source town to target towns…")
     buildings = {}
     for obj in map_data["object_data"]:

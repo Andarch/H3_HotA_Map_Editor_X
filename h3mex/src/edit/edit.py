@@ -40,19 +40,20 @@ def menu() -> None:
 
                     match keypress:
                         case "1":
-                            towns.edit(spells=True, buildings=True)
+                            towns.enable_spells()
+                            towns.enable_buildings()
                         case "2":
-                            towns.edit(add_events=True)
+                            towns.create_events
                         case "3":
-                            towns.edit(fourth_town=True)
+                            towns.create_fourth_town_events
                         case "4":
-                            towns.edit(mega_town=True)
+                            towns.create_mega_town_events
                         case "5":
-                            towns.edit(human=True)
+                            towns.change_ai_events
                         case "6":
-                            towns.edit(copy_events=True)
+                            towns.copy_events
                         case "7":
-                            towns.edit(copy_buildings=True)
+                            towns.copy_buildings
             case "4":
                 while True:
                     keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][3]))
