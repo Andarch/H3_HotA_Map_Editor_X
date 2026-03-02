@@ -54,6 +54,8 @@ def menu() -> None:
                             towns.copy_events
                         case "7":
                             towns.copy_buildings
+                        case "8":
+                            towns.set_guards()
             case "4":
                 while True:
                     keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][3]))

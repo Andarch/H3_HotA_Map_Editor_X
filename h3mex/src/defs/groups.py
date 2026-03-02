@@ -69,6 +69,13 @@ COLLECTIBLES = {
 
 
 ##############################
+# TOWNS
+##############################
+
+TOWNS = {objects.ID.Town, objects.ID.Random_Town}
+
+
+##############################
 # MAGICAL TERRAIN
 ##############################
 
@@ -87,33 +94,6 @@ MAGICAL_TERRAIN = {
     objects.ID.Magic_Plains,
     objects.ID.Rocklands,
 }
-
-
-##############################
-# PASSABLE
-##############################
-
-# PASSABLE = {
-#     *HEROES,
-#     *MONSTERS,
-#     *ARTIFACTS,
-#     *RESOURCES,
-#     *COLLECTIBLES,
-#     *MAGICAL_TERRAIN,
-#     objects.ID.Boat,
-#     objects.ID.Event_Object,
-#     objects.ID.Grail,
-#     objects.ID.HotA_Decor_1,
-#     objects.ID.HotA_Decor_2,
-# }
-
-# PASSABLE_HOTA_DECOR_1 = {
-#     0,
-# }
-
-# PASSABLE_HOTA_DECOR_2 = {
-#     0,
-# }
 
 
 ##############################
@@ -181,19 +161,6 @@ TWO_WAY_SEA_PORTALS = {
     objects.SubID.MonolithPortal.TwoWay.Blue_SeaPortal,
     objects.SubID.MonolithPortal.TwoWay.Chartreuse_SeaPortal,
     objects.SubID.MonolithPortal.TwoWay.Yellow_SeaPortal,
-}
-
-
-##############################
-# BARRIERS
-##############################
-
-BORDER = {
-    objects.ID.Border_Gate,
-    objects.ID.Border_Guard,
-    objects.ID.Garrison,
-    objects.ID.Garrison_Vertical,
-    objects.ID.Quest_Guard,
 }
 
 

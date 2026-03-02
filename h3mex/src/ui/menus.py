@@ -180,6 +180,7 @@ class NumberedMenu:
                 ("5", "Towns: Add humans to AI-only events"),
                 ("6", "Towns: Copy events from source town to target towns"),
                 ("7", "Towns: Copy buildings from source town to target towns"),
+                ("8", "Towns: Set guards in target towns"),
             ],
             [
                 ("1", "Heroes: Reset identity details"),

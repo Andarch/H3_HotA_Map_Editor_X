@@ -353,12 +353,12 @@ class Fortress(IntEnum):
     Gnoll_Marauder = ID.Gnoll_Marauder
     Lizardman = ID.Lizardman
     Lizard_Warrior = ID.Lizard_Warrior
-    Gorgon = ID.Gorgon
-    Mighty_Gorgon = ID.Mighty_Gorgon
     Serpent_Fly = ID.Serpent_Fly
     Dragon_Fly = ID.Dragon_Fly
     Basilisk = ID.Basilisk
     Greater_Basilisk = ID.Greater_Basilisk
+    Gorgon = ID.Gorgon
+    Mighty_Gorgon = ID.Mighty_Gorgon
     Wyvern = ID.Wyvern
     Wyvern_Monarch = ID.Wyvern_Monarch
     Hydra = ID.Hydra
@@ -383,6 +383,7 @@ class Conflux(IntEnum):
 
 
 class Cove(IntEnum):
+    Nymph = ID.Nymph
     Oceanid = ID.Oceanid
     Crew_Mate = ID.Crew_Mate
     Seaman = ID.Seaman
