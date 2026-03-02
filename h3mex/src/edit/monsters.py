@@ -218,12 +218,15 @@ def set_random_monster_flee_values() -> None:
     aggressive_count = 0
     hostile_count = 0
     savage_count = 0
+    total_count = 0
     modified_aggressive_count = 0
     modified_hostile_count = 0
     modified_savage_count = 0
+    modified_total_count = 0
 
     for obj in map_data["object_data"]:
         if obj["id"] in [*groups.RANDOM_MONSTERS]:
+            total_count += 1
             match obj["disposition"]:
                 case creatures.Disposition.Aggressive:
                     aggressive_count += 1
@@ -231,18 +234,21 @@ def set_random_monster_flee_values() -> None:
                     hostile_count += 1
                 case creatures.Disposition.Savage:
                     savage_count += 1
+                case _:
+                    continue
             if not obj["monster_never_flees"]:
                 should_never_flee = False
                 match obj["disposition"]:
                     case creatures.Disposition.Aggressive:
-                        should_never_flee = random.random() < 0.30
+                        should_never_flee = random.random() < 0.333
                     case creatures.Disposition.Hostile:
-                        should_never_flee = random.random() < 0.50
+                        should_never_flee = random.random() < 0.333
                     case creatures.Disposition.Savage:
-                        should_never_flee = random.random() < 0.70
+                        should_never_flee = random.random() < 0.333
                     case _:
                         continue
                 if should_never_flee:
+                    modified_total_count += 1
                     obj["monster_never_flees"] = True
                     match obj["disposition"]:
                         case creatures.Disposition.Aggressive:
@@ -251,23 +257,29 @@ def set_random_monster_flee_values() -> None:
                             modified_hostile_count += 1
                         case creatures.Disposition.Savage:
                             modified_savage_count += 1
-
+                        case _:
+                            continue
     xprint(type=TextType.DONE)
     xprint()
     xprint(
         type=TextType.INFO,
         align=TextAlign.CENTER,
-        text=f"Updated {modified_aggressive_count} / {aggressive_count} aggressive objects.",
+        text=f"Updated {modified_aggressive_count}/{aggressive_count} aggressive objects.",
     )
     xprint(
         type=TextType.INFO,
         align=TextAlign.CENTER,
-        text=f"Updated {modified_hostile_count} / {hostile_count} hostile objects.",
+        text=f"Updated {modified_hostile_count}/{hostile_count} hostile objects.",
     )
     xprint(
         type=TextType.INFO,
         align=TextAlign.CENTER,
-        text=f"Updated {modified_savage_count} / {savage_count} savage objects.",
+        text=f"Updated {modified_savage_count}/{savage_count} savage objects.",
+    )
+    xprint(
+        type=TextType.INFO,
+        align=TextAlign.CENTER,
+        text=f"Updated {modified_total_count}/{total_count} total objects.",
     )
 
     wait_for_keypress()
