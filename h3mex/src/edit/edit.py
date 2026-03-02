@@ -84,7 +84,7 @@ def menu() -> None:
                         case "3":
                             monsters.set_compliant_monster_values()
                         case "4":
-                            monsters.set_monster_flee_values()
+                            monsters.set_random_monster_flee_values()
                         case "5":
                             monsters.make_compliant_monsters_not_grow()
                         case "6":

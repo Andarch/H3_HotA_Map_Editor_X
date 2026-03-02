@@ -212,19 +212,39 @@ def set_compliant_monster_values() -> None:
     wait_for_keypress()
 
 
-def set_monster_flee_values() -> None:
-    xprint(type=TextType.ACTION, text="Setting monster flee values…")
+def set_random_monster_flee_values() -> None:
+    xprint(type=TextType.ACTION, text="Setting random monster flee values…")
 
     count = 0
+    modified_aggressive_count = 0
+    modified_hostile_count = 0
+    modified_savage_count = 0
+
     for obj in map_data["object_data"]:
-        if obj["id"] == objects.ID.Monster:
-            if obj["disposition"] != creatures.Disposition.Compliant and not obj["monster_never_flees"]:
-                obj["monster_never_flees"] = True
-                count += 1
+        if obj["id"] in [*groups.RANDOM_MONSTERS]:
+            count += 1
+            if not obj["monster_never_flees"]:
+                should_never_flee = False
+                match obj["disposition"]:
+                    case creatures.Disposition.Aggressive:
+                        should_never_flee = random.random() < 0.30
+                        modified_aggressive_count += 1
+                    case creatures.Disposition.Hostile:
+                        should_never_flee = random.random() < 0.50
+                        modified_hostile_count += 1
+                    case creatures.Disposition.Savage:
+                        should_never_flee = random.random() < 0.70
+                        modified_savage_count += 1
+                    case _:
+                        continue
+                if should_never_flee:
+                    obj["monster_never_flees"] = True
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_aggressive_count} aggressive objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_hostile_count} hostile objects.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {modified_savage_count} savage objects.")
 
     wait_for_keypress()
 
