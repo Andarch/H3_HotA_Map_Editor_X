@@ -493,6 +493,7 @@ def set_guards() -> None:
             zone_owner_type = "player" if obj["zone_owner"] in PLAYERS else "neutral"
             amounts = guards_config[zone_owner_type]
             if amounts is not None:
+                obj["garrison_customized"] = True
                 obj["garrison_guards"] = _build_guard_list(obj["sub_id"], amounts)
                 modified_count += 1
 

@@ -1275,6 +1275,7 @@ def parse_town(obj: dict) -> dict:
     obj["color"] = ""
     obj["has_name"] = False
     obj["name"] = ""
+    obj["garrison_customized"] = False
     obj["garrison_guards"] = []
     obj["garrison_formation"] = 0
     obj["has_fort"] = False
@@ -1296,7 +1297,8 @@ def parse_town(obj: dict) -> dict:
     if obj["has_name"]:  # Is the name set?
         obj["name"] = io.read_str(io.read_int(4))
 
-    if io.read_int(1):  # Is the garrison customized?
+    obj["garrison_customized"] = bool(io.read_int(1))
+    if obj["garrison_customized"]:
         obj["garrison_guards"] = parse_creatures()
 
     obj["garrison_formation"] = io.read_int(1)
@@ -1335,11 +1337,9 @@ def write_town(obj: dict) -> None:
         io.write_int(len(obj["name"]), 4)
         io.write_str(obj["name"])
 
-    if obj["garrison_guards"]:
-        io.write_int(1, 1)
+    io.write_int(obj["garrison_customized"], 1)
+    if obj["garrison_customized"]:
         write_creatures(obj["garrison_guards"])
-    else:
-        io.write_int(0, 1)
 
     io.write_int(obj["garrison_formation"], 1)
 
