@@ -451,7 +451,7 @@ def set_guards() -> None:
     GUARD_AMOUNTS = {
         "I": None,
         "II": {
-            "player": [300, 250, 200, 150, 100, 40, 15],
+            "player": [300, 250, 200, 150, 100, 50, 15],
             "neutral": [2000, 1500, 1000, 500, 300, 200, 100],
         },
         "III": {
@@ -495,8 +495,6 @@ def set_guards() -> None:
             if amounts is not None:
                 obj["garrison_guards"] = _build_guard_list(obj["sub_id"], amounts)
                 modified_count += 1
-                xprint(type=TextType.INFO, text=obj["garrison_guards"])
-                xprint()
 
     xprint(type=TextType.DONE)
     xprint()
