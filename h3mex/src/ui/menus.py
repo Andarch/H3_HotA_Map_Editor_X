@@ -168,6 +168,8 @@ class NumberedMenu:
                 ("6", "Garrisons: Copy garrison guards"),
                 ("7", "Garrisons: Fill empty garrisons with guards"),
                 None,
+                ("8", "Abandoned Mines: Modify abandoned mines"),
+                None,
                 ("M", "Show more…"),
             ],
             [

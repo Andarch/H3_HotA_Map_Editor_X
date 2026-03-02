@@ -1,9 +1,9 @@
 from src.ui import header
 from src.ui.menus import NumberedMenu
-from src.ui.xprint import xprint
 
 from ..common import Keypress
 from . import (
+    abandonedmines,
     eventobjects,
     garrisons,
     heroes,
@@ -133,7 +133,7 @@ def menu() -> None:
                             garrisons.copy_garrison_guards()
                         case "7":
                             garrisons.fill_empty_garrison_guards()
+                        case "8":
+                            abandonedmines.modify_abandoned_mines()
                         case "M":
                             break
-
-        # xprint()
