@@ -240,11 +240,11 @@ def set_random_monster_flee_values() -> None:
                 should_never_flee = False
                 match obj["disposition"]:
                     case creatures.Disposition.Aggressive:
-                        should_never_flee = random.random() < 0.333
+                        should_never_flee = random.random() < 0.25
                     case creatures.Disposition.Hostile:
-                        should_never_flee = random.random() < 0.333
+                        should_never_flee = random.random() < 0.275
                     case creatures.Disposition.Savage:
-                        should_never_flee = random.random() < 0.333
+                        should_never_flee = random.random() < 0.3
                     case _:
                         continue
                 if should_never_flee:
@@ -276,6 +276,7 @@ def set_random_monster_flee_values() -> None:
         align=TextAlign.CENTER,
         text=f"Updated {modified_savage_count}/{savage_count} savage objects.",
     )
+    xprint()
     xprint(
         type=TextType.INFO,
         align=TextAlign.CENTER,
