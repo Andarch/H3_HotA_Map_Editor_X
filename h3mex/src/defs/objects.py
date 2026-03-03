@@ -823,6 +823,11 @@ class WagonReward(IntEnum):
     Nothing = 1
 
 
+class WarriorsTombReward(IntEnum):
+    Random = 4294967295
+    Custom = 0
+
+
 class ZoneInfo:
     TYPES = {
         (255, 217, 0): "I",

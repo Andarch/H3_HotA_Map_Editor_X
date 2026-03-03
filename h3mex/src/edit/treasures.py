@@ -493,36 +493,53 @@ def remove_scholars():
 def fix_empty_contents() -> None:
     xprint(type=TextType.ACTION, text="Fixing empty contents in objects…")
 
-    target_ids = {
-        objects.ID.Sea_Chest,
-        objects.ID.Shipwreck_Survivor,
-        objects.ID.Treasure_Chest,
-        objects.ID.Warriors_Tomb,
-    }
-    empty_markers = {
-        artifacts.ID.Empty_1_Byte,
-        artifacts.ID.Empty_2_Bytes,
-        artifacts.ID.Empty_Unknown,
-        artifacts.ID.Empty_4_Bytes,
+    target_markers = {
+        objects.ID.Sea_Chest: {
+            objects.SeaChestReward.Random,
+            objects.SeaChestReward.Nothing,
+            objects.SeaChestReward.Gold,
+        },
+        objects.ID.Shipwreck_Survivor: {
+            objects.ShipwreckSurvivorReward.Random,
+        },
+        objects.ID.Treasure_Chest: {
+            objects.TreasureChestReward.Random,
+            objects.TreasureChestReward.Level_1,
+            objects.TreasureChestReward.Level_2,
+            objects.TreasureChestReward.Level_3,
+        },
+        objects.ID.Warriors_Tomb: {
+            objects.WarriorsTombReward.Random,
+        },
     }
 
-    def enum_name_by_value(enum_cls, value: int) -> str:
-        try:
-            return enum_cls(value).name
-        except ValueError:
-            return f"0x{value:08X}"
+    target_enums = {
+        objects.ID.Sea_Chest: (artifacts.ID, objects.SeaChestReward),
+        objects.ID.Shipwreck_Survivor: (objects.ShipwreckSurvivorReward,),
+        objects.ID.Treasure_Chest: (objects.TreasureChestReward,),
+        objects.ID.Warriors_Tomb: (objects.WarriorsTombReward,),
+    }
+
+    def enum_name_by_value(enum_classes: tuple, value: int) -> str:
+        for enum_cls in enum_classes:
+            try:
+                return enum_cls(value).name
+            except ValueError:
+                continue
+        return f"0x{value:08X}"
 
     count = 0
     for obj in map_data["object_data"]:
-        id = obj.get("id")
-        if id in target_ids:
+        obj_id = obj.get("id")
+        markers = target_markers.get(obj_id)
+        if markers is not None:
             contents = obj.get("contents")
-            if contents in empty_markers:
-                obj["artifact"] = contents
+            if contents in markers and obj["artifact"] != artifacts.ID.Empty_4_Bytes:
+                obj["artifact"] = artifacts.ID.Empty_4_Bytes
                 count += 1
                 xprint(
                     type=TextType.INFO,
-                    text=f"{obj.get('type')} at {obj.get('coords')} contains {enum_name_by_value(artifacts.ID, contents)}",
+                    text=f"{obj.get('type')} at {obj.get('coords')} contains {enum_name_by_value(target_enums[obj_id], contents)}",
                 )
     xprint()
     xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Updated {count} objects.")
