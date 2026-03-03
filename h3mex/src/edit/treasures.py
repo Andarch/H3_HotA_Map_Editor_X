@@ -69,9 +69,9 @@ def modify_stationary_treasure_rewards() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(type=TextType.INFO, text=f"Modified {modified_corpse_count} corpses.")
-    xprint(type=TextType.INFO, text=f"Modified {modified_lean_to_count} lean-tos.")
-    xprint(type=TextType.INFO, text=f"Modified {modified_wagon_count} wagons.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {modified_corpse_count} corpses.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {modified_lean_to_count} lean-tos.")
+    xprint(type=TextType.INFO, align=TextAlign.CENTER, text=f"Modified {modified_wagon_count} wagons.")
     wait_for_keypress()
 
 

@@ -113,6 +113,8 @@ def menu() -> None:
                             treasures.remove_sea_treasures()
                         case "5":
                             treasures.modify_treasure_rewards()
+                        case "6":
+                            treasures.modify_stationary_treasure_rewards()
             case "M":
                 while True:
                     keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][1]))
