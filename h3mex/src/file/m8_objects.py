@@ -808,13 +808,13 @@ class Corpse(IntEnum):
 
 def parse_corpse(obj: dict) -> dict:
     obj["contents"] = Corpse(io.read_int(4))
-    obj["garbage_bytes"] = io.read_raw(4)
+    obj["artifact"] = io.read_int(4)
     return obj
 
 
 def write_corpse(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_raw(obj["garbage_bytes"])
+    io.write_int(obj["artifact"], 4)
 
 
 def parse_event_object(obj: dict) -> dict:
@@ -1188,7 +1188,7 @@ def write_hero_placeholder(obj: dict) -> None:
 
 def parse_lean_to(obj: dict) -> dict:
     obj["contents"] = io.read_int(4)
-    obj["trash_bytes"] = io.read_int(4)
+    obj["trash_bytes"] = io.read_raw(4)
     obj["amount"] = io.read_int(4)
     obj["resource"] = objects.SubID.Resource(io.read_int(1))
     io.seek(5)
@@ -1197,7 +1197,7 @@ def parse_lean_to(obj: dict) -> dict:
 
 def write_lean_to(obj: dict) -> None:
     io.write_int(obj["contents"], 4)
-    io.write_int(obj["trash_bytes"], 4)
+    io.write_raw(obj["trash_bytes"])
     io.write_int(obj["amount"], 4)
     io.write_int(obj["resource"], 1)
     io.write_int(1, 5)

@@ -48,7 +48,7 @@ def _redraw() -> None:
     global redrawing
 
     header.draw()
-    for type, text, align, overwrite, skip_line, menu_num, menu_width, menu in cache:
-        xprint(type, text, align, overwrite, skip_line, menu_num, menu_width, menu)
+    for type, text, align, overwrite, skip_line, menu_num, menu_width in cache:
+        xprint(type, text, align, overwrite, skip_line, menu_num, menu_width)
 
     redrawing = False

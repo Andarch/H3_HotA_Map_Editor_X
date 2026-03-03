@@ -9,6 +9,72 @@ from src.utilities import wait_for_keypress
 RANDOM_CONTENTS = 4294967295
 
 
+def modify_stationary_treasure_rewards() -> None:
+    xprint(type=TextType.ACTION, text="Modifying stationary treasure rewards…")
+
+    def _get_resource_and_amount() -> tuple[int, int]:
+        VALID_RESOURCES = [
+            objects.SubID.Resource.Wood,
+            objects.SubID.Resource.Mercury,
+            objects.SubID.Resource.Ore,
+            objects.SubID.Resource.Sulfur,
+            objects.SubID.Resource.Crystal,
+            objects.SubID.Resource.Gems,
+        ]
+        match obj["zone_type"]:
+            case "I":
+                multiplier = 1
+            case "II":
+                multiplier = 2
+            case "III":
+                multiplier = 3
+            case "IV":
+                multiplier = 4
+        resource = random.choice(VALID_RESOURCES)
+        if resource in {objects.SubID.Resource.Wood, objects.SubID.Resource.Ore}:
+            amount = random.randint(20, 50) * multiplier
+        else:
+            amount = random.randint(10, 25) * multiplier
+        return resource, amount
+
+    STATIONARY_TREASURES = {
+        objects.ID.Corpse,
+        objects.ID.Lean_To,
+        objects.ID.Wagon,
+    }
+
+    modified_corpse_count = 0
+    modified_lean_to_count = 0
+    modified_wagon_count = 0
+
+    for obj in map_data["object_data"]:
+        if obj["id"] in STATIONARY_TREASURES:
+            match obj["id"]:
+                case objects.ID.Corpse:
+                    modified_corpse_count += 1
+                    obj["contents"] = objects.CorpseReward.Artifact
+                    obj["artifact"] = RANDOM_CONTENTS
+                case objects.ID.Lean_To:
+                    modified_lean_to_count += 1
+                    resource, amount = _get_resource_and_amount()
+                    obj["contents"] = objects.LeanToReward.Custom
+                    obj["amount"] = amount
+                    obj["resource"] = resource
+                case objects.ID.Wagon:
+                    modified_wagon_count += 1
+                    resource, amount = _get_resource_and_amount()
+                    obj["contents"] = objects.WagonReward.Custom
+                    obj["amount"] = amount
+                    obj["resource"] = resource
+
+    xprint(type=TextType.DONE)
+    xprint()
+    xprint(type=TextType.INFO, text=f"Modified {modified_corpse_count} corpses.")
+    xprint(type=TextType.INFO, text=f"Modified {modified_lean_to_count} lean-tos.")
+    xprint(type=TextType.INFO, text=f"Modified {modified_wagon_count} wagons.")
+    wait_for_keypress()
+
+
 def modify_treasure_rewards() -> None:
     xprint(type=TextType.ACTION, text="Modifying treasure rewards…")
 
@@ -276,10 +342,7 @@ def modify_treasure_rewards() -> None:
 
     xprint(type=TextType.DONE)
     xprint()
-    xprint(
-        type=TextType.INFO,
-        text=f"Modified {modified_count} treasures.",
-    )
+    xprint(type=TextType.INFO, text=f"Modified {modified_count} treasures.")
     wait_for_keypress()
 
 

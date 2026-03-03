@@ -806,6 +806,23 @@ class TrapperLodgeReward(IntEnum):
     Creatures = 1
 
 
+class CorpseReward(IntEnum):
+    Random = 4294967295
+    Nothing = 0
+    Artifact = 1
+
+
+class LeanToReward(IntEnum):
+    Random = 4294967295
+    Custom = 0
+
+
+class WagonReward(IntEnum):
+    Random = 4294967295
+    Custom = 0
+    Nothing = 1
+
+
 class ZoneInfo:
     TYPES = {
         (255, 217, 0): "I",
