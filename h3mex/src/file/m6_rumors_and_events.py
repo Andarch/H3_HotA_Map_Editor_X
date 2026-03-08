@@ -1,6 +1,4 @@
-from src.common import map_data
-
-from . import io
+from . import file, io
 
 
 def parse_rumors() -> list:
@@ -33,8 +31,8 @@ def parse_events(town: str = None, coords: list = None) -> list:
     for _ in range(event_count):
         event = {}
 
-        if town and town not in map_data["town_events"]:
-            map_data["town_events"][f"{town} {coords}"] = []
+        if town and coords and f"{town} {coords}" not in file.town_events:
+            file.town_events[f"{town} {coords}"] = []
 
         event["name"] = io.read_str(io.read_int(4))
         event["message"] = io.read_str(io.read_int(4))
@@ -69,7 +67,7 @@ def parse_events(town: str = None, coords: list = None) -> list:
                 event["creatures"].append(io.read_int(2))
 
             event["end_trash"] = io.read_raw(4)
-            map_data["town_events"][f"{town} {coords}"].append(event)
+            file.town_events[f"{town} {coords}"].append(event)
         else:
             if event["eventType"] == 1:
                 event["extBytes"] = io.read_raw(5)

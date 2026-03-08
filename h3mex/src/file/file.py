@@ -21,6 +21,8 @@ from . import (
     m9_null,
 )
 
+town_events = {}
+
 
 def choose_map() -> Tuple[str, int]:
     header.draw()
@@ -41,7 +43,7 @@ def choose_map() -> Tuple[str, int]:
 
 
 @io.with_position_tracking
-def load(filename: str = None) -> None:
+def load(filename: str) -> dict:
     header.draw()
 
     filename = ensure_h3m_extension(filename)
@@ -52,49 +54,57 @@ def load(filename: str = None) -> None:
     try:
         with gzopen(filename, "rb") as io.in_file:
             io.reset_position()
-            map_data["filename"] = filename
+
+            data = {}
+
+            data["filename"] = filename
 
             xprint(text="Parsing 1/13: General…")
-            map_data["general"] = m1_general.read_general()
+            data["general"] = m1_general.read_general()
 
             xprint(text="Parsing 2/13: Player Specs…", overwrite=1)
-            map_data["player_specs"] = m2_players.read_players()
+            data["player_specs"] = m2_players.read_players()
 
             xprint(text="Parsing 3/13: Victory/Loss Conditions…", overwrite=1)
-            map_data["conditions"] = m3_conditions.parse_conditions()
+            data["conditions"] = m3_conditions.parse_conditions()
 
             xprint(text="Parsing 4/13: Teams…", overwrite=1)
-            map_data["teams"] = m2_players.parse_teams()
+            data["teams"] = m2_players.parse_teams()
 
             xprint(text="Parsing 5/13: Hero Availability…", overwrite=1)
-            map_data["starting_heroes"] = m4_heroes.parse_starting_heroes()
+            data["starting_heroes"] = m4_heroes.parse_starting_heroes()
 
             xprint(text="Parsing 6/13: Additional Specs…", overwrite=1)
-            map_data["ban_flags"] = m5_additional_flags.parse_flags()
+            data["ban_flags"] = m5_additional_flags.parse_flags()
 
             xprint(text="Parsing 7/13: Rumors…", overwrite=1)
-            map_data["rumors"] = m6_rumors_and_events.parse_rumors()
+            data["rumors"] = m6_rumors_and_events.parse_rumors()
 
             xprint(text="Parsing 8/13: Hero Templates…", overwrite=1)
-            map_data["hero_data"] = m4_heroes.parse_hero_data()
+            data["hero_data"] = m4_heroes.parse_hero_data()
 
             xprint(text="Parsing 9/13: Terrain Data…", overwrite=1)
-            map_data["terrain"] = m7_terrain.parse_terrain(map_data["general"])
+            data["terrain"] = m7_terrain.parse_terrain(data["general"])
 
             xprint(text="Parsing 10/13: Object Defs…", overwrite=1)
-            map_data["object_defs"] = m8_objects.parse_object_defs()
+            data["object_defs"] = m8_objects.parse_object_defs()
 
             xprint(text="Parsing 11/13: Object Data…", overwrite=1)
-            map_data["town_events"] = {}
-            map_data["object_data"] = m8_objects.parse_object_data(map_data["object_defs"], map_data["filename"])
+            data["object_data"] = m8_objects.parse_object_data(
+                data["filename"], data["starting_heroes"]["custom_heroes"], data["object_defs"]
+            )
+            data["town_events"] = town_events.copy()
+            town_events.clear()
 
             xprint(text="Parsing 12/13: Events…", overwrite=1)
-            map_data["global_events"] = m6_rumors_and_events.parse_events()
+            data["global_events"] = m6_rumors_and_events.parse_events()
 
             xprint(type=TextType.ACTION, text="Parsing 13/13: Null Bytes…", overwrite=1)
-            map_data["null_bytes"] = m9_null.read_null()
+            data["null_bytes"] = m9_null.read_null()
 
             xprint(type=TextType.DONE)
+
+            return data
 
     except FileNotFoundError:
         xprint(type=TextType.ERROR, text=f"Could not find {filename}.")

@@ -2,7 +2,6 @@ import os
 from enum import IntEnum
 
 from PIL import Image
-from src.common import map_data
 from src.defs import (
     artifacts,
     creatures,
@@ -128,7 +127,7 @@ def get_subtype(obj_type: int, i: int) -> int:
     return i
 
 
-def parse_object_data(object_defs: list, filename: str) -> list:
+def parse_object_data(filename: str, custom_heroes: list, object_defs: list) -> list:
     global zonetypes_img_g, zonetypes_img_u, zoneowners_img_g, zoneowners_img_u, has_zone_images
     filename = filename[:-4]
     zonetypes_img_g_path = os.path.join("..", "maps/images", f"{filename}_zonetypes_g.png")
@@ -293,7 +292,7 @@ def parse_object_data(object_defs: list, filename: str) -> list:
                 obj = parse_resource(obj)
 
             case objects.ID.Hero | objects.ID.Prison | objects.ID.Random_Hero:
-                obj = parse_hero(obj)
+                obj = parse_hero(obj, custom_heroes)
 
             case (
                 objects.ID.Monster
@@ -901,7 +900,7 @@ def write_garrison(obj: dict) -> None:
     io.write_int(obj["troops_removable"], 9)
 
 
-def parse_hero(obj: dict) -> dict:
+def parse_hero(obj: dict, custom_heroes: list) -> dict:
     # This method is pretty similar to parse_hero_data() in the heroes parse,
     # but it has some additional bytes to read all over. Maybe combine them
     # into a single method some day.
@@ -948,7 +947,7 @@ def parse_hero(obj: dict) -> dict:
     hero["id"] = io.read_int(1)
 
     custom_default_name = None
-    for h in map_data["starting_heroes"]["custom_heroes"]:
+    for h in custom_heroes:
         if h["id"] == hero["id"]:
             custom_default_name = h["custom_name"]
             break

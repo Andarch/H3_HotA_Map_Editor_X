@@ -18,10 +18,10 @@ from src.view import view
 def main() -> None:
     filename = sys.argv[1] if len(sys.argv) > 1 else None
     if filename:
-        file.load(filename)
+        map_data.update(file.load(filename))
     else:
         filename = file.choose_map()
-        file.load(filename) if filename else exit()
+        map_data.update(file.load(filename)) if filename else exit()
 
     while True:
         filename = map_data["filename"]
@@ -40,9 +40,9 @@ def main() -> None:
             case "6":
                 filename = file.choose_map()
                 if filename:
-                    file.load(filename)
+                    map_data.update(file.load(filename))
             case "7":
-                file.load(filename)
+                map_data.update(file.load(filename))
             case Keypress.ESC:
                 exit()
 

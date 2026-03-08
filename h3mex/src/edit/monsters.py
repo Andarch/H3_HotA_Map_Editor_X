@@ -102,26 +102,26 @@ def set_monster_quantities() -> None:
     NEUTRAL_ZONE_III_QUANTITY_RANGES = {
         1: (3900, 4000),
         2: (3750, 4000),
-        3: (3600, 4000),
-        4: (3450, 4000),
-        5: (3300, 4000),
-        6: (3150, 4000),
-        7: (3000, 4000),
+        3: (3000, 4000),
+        4: (2500, 3000),
+        5: (2000, 2500),
+        6: (1500, 2000),
+        7: (1000, 1500),
     }
 
     NEUTRAL_ZONE_IV_QUANTITY_RANGES = {
         1: (3900, 4000),
         2: (3750, 4000),
-        3: (3600, 4000),
-        4: (3450, 4000),
-        5: (3300, 4000),
-        6: (3150, 4000),
-        7: (3000, 4000),
+        3: (3500, 4000),
+        4: (3000, 3500),
+        5: (2500, 3000),
+        6: (2000, 2500),
+        7: (1500, 2000),
     }
 
     random_monster_level_map = {
-        objects.ID.Random_Monster_1: 1,
-        objects.ID.Random_Monster_2: 2,
+        # objects.ID.Random_Monster_1: 1,
+        # objects.ID.Random_Monster_2: 2,
         objects.ID.Random_Monster_3: 3,
         objects.ID.Random_Monster_4: 4,
         objects.ID.Random_Monster_5: 5,
@@ -134,11 +134,11 @@ def set_monster_quantities() -> None:
         if obj["id"] in {*groups.MONSTERS} and obj["disposition"] != creatures.Disposition.Compliant:
             if obj["zone_owner"] not in {players.ID.Red, players.ID.Neutral}:
                 # obj["ai_value"] = random.randint(*PLAYER_ZONE_VALUE_RANGES[obj["zone_type"]])
-                pass
+                continue
             elif obj["zone_owner"] == players.ID.Neutral:
                 if obj["zone_type"] in {"I", "II"}:
                     # obj["ai_value"] = random.randint(*NEUTRAL_ZONE_VALUE_RANGES[obj["zone_type"]])
-                    pass
+                    continue
                 elif obj["zone_type"] in {"III", "IV"}:
                     count += 1
                     obj["is_value"] = False

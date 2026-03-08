@@ -7,6 +7,7 @@ from . import (
     eventobjects,
     garrisons,
     heroes,
+    hotaevents,
     monsters,
     pandoras,
     remove,
@@ -115,6 +116,9 @@ def menu() -> None:
                             treasures.modify_treasure_rewards()
                         case "6":
                             treasures.modify_stationary_treasure_rewards()
+            case "7":
+                hotaevents.copy_hota_events_from_other_map()
+
             case "M":
                 while True:
                     keypress = NumberedMenu.display((NumberedMenu.EDIT["name"], NumberedMenu.EDIT["menus"][1]))

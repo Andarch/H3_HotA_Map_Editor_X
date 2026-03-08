@@ -154,6 +154,8 @@ class NumberedMenu:
                 ("5", "Monsters…"),
                 ("6", "Treasures…"),
                 None,
+                ("7", "Copy HotA events from another map…"),
+                None,
                 ("M", "Show more…"),
             ],
             [

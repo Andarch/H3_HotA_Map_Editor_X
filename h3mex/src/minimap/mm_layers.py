@@ -5,7 +5,7 @@ MM_LAYERS = {
     "base1": {"display_name": "Base Layer 1", "filter": groups.DECOR, "subfilter": None},
     "base2": {"display_name": "Base Layer 2", "filter": None, "subfilter": None},
     "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": None},
-    # "border": {"display_name": "Border Objects", "filter": groups.BORDER, "subfilter": {objects.SubID.Border.Red}},
+    "seershuts": {"display_name": "Seer's Huts", "filter": {objects.ID.Seers_Hut}, "subfilter": None},
     # "tents": {"display_name": "Keymaster's Tents", "filter": {objects.ID.Keymasters_Tent}, "subfilter": None},
     # "monoliths1_en": {
     #     "display_name": "One-Way Monolith Entrances",
