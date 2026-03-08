@@ -57,9 +57,18 @@ def parse_hota_events() -> bytes:
 
         # Check if we found the marker
         if buffer == marker:
-            # Validate by peeking 38 bytes ahead for the hero count (expected 215 / 0xD7)
+            # Validate by peeking ahead for the hero count (expected 215 / 0xD7)
             current_pos = io.get_position()
-            io.read_raw(38)
+            io.read_raw(34)
+
+            rumor_count = io.read_int(4)
+            if rumor_count < 1000:
+                for _ in range(rumor_count):
+                    name_length = io.read_int(4)
+                    io.read_raw(name_length)
+                    desc_length = io.read_int(4)
+                    io.read_raw(desc_length)
+
             hero_count = io.read_int(4)
             io.seek(current_pos - io.get_position())  # restore position
 
